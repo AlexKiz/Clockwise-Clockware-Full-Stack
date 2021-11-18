@@ -5,7 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import axios from 'axios'
 import { access } from 'fs';
-axios.defaults.baseURL = `${process.env.REACT_APP_API_URL}`
+
+axios.defaults.baseURL = process.env.REACT_APP_API_URL
 
 axios.interceptors.request.use(
   config => {
