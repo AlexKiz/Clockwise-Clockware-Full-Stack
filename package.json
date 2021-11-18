@@ -7,7 +7,7 @@
     "node": "<= 14.x"
   },
   "scripts": {
-    "postinstall": "cd client && npm i && react-scripts build",
+    "postinstall": "cd client && npm i && npm run build",
     "start": "node src/index.js",
     "dev": "nodemon src/index.js"
   },
