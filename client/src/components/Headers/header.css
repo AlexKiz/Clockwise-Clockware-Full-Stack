@@ -1,0 +1,150 @@
+
+
+li,a, button {
+    font-family: 'Bitter', serif;
+    font-size: 22px;
+    font-weight: 400;
+}
+
+.wrapper-header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: linear-gradient(to right, rgb(129, 24, 29),rgb(230, 38, 49));
+    height: 95px;
+    margin: 0px 0px 40px 0px;
+}
+
+.wrapper-logo a, img {
+    height: 81px;
+    width: 331px; 
+}
+
+.wrapper-logo {
+    display: flex;
+    align-items: center;
+    transition: 0.5s ease;
+    transform: scale(1);
+}
+
+.wrapper-logo:hover {
+    transform: scale(1.05);
+}
+
+.inner-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-img1a {
+    background-image: url('../../img/logo1a.png');
+    background-size: cover;
+    height: 80px;
+    width: 80px;
+    transition: transform .2s;
+}
+
+.logo-img1b {
+    background-image: url('../../img/logo1b.png');
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+}
+
+.logo-img1c {
+    background-image: url('../../img/logo1c.png');
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+}
+
+.logo-text1d {
+    background-image: url('../../img/logo1d.png');
+    background-size: cover;
+    height: 81px;
+    width: 281px;
+}
+
+.inner-logo .logo-img1a {
+
+    animation: spin-reverse linear 2.5s infinite;
+}
+
+.inner-logo .logo-img1b {
+
+    animation: spin linear 2.5s infinite;
+}
+
+.inner-logo .logo-img1c {
+    animation: spin linear 6s infinite;
+}
+
+@keyframes spin-reverse{
+    from {
+    
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+@keyframes spin{
+    from {
+    
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.nav__links {
+    list-style: none;
+    
+}
+
+.nav__links li {
+    display: inline-block;
+    padding: 0px 20px;
+    border-right: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.nav__links li:last-child {
+    border-right: none;
+}
+
+.nav__links li a {
+    transition: all 0.3s ease 0s;
+    color:rgba(253, 202, 153, 0.993);
+    text-decoration: none ;
+    border-bottom: 1px solid transparent;
+}
+
+.nav__links li a:hover {
+    border-bottom: 3px solid rgba(252, 225, 209, 0.884);
+}
+
+li.active a{
+    border-bottom: 3px solid rgba(252, 225, 209, 0.884);
+}
+
+.header-button {
+    height: 55px;
+    width: 160px;
+    border: 2px solid transparent;
+    border-radius: 20px;
+    background:rgb(255, 180, 67);
+    cursor: pointer;
+    transition: all 1s ease;
+    box-sizing: border-box;
+}
+
+.header-button:hover {
+    background: rgb(247, 132, 0);
+    border: 2px solid rgb(0, 0, 0);
+    color: rgb(24, 6, 71);
+}
