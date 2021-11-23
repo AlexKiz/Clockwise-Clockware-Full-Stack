@@ -1,18 +1,21 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import {Link} from 'react-router-dom'
 import '../master.list/masters-list.css'
+import { Master } from '../../../types/types'
 
-const MastersList = () => {
+interface MasterListProps {}
 
-    const [masters, setMasters] = useState([])
+const MastersList: FC<MasterListProps> = () => {
+
+    const [masters, setMasters] = useState<Master[]>([])
 
 
     useEffect(() => {
 
         const readAllMasters = async () => {
             
-            const {data} = await axios.get(`/master`)
+            const {data} = await axios.get<Master[]>(`/master`)
             
             setMasters(data)
         }
@@ -22,7 +25,7 @@ const MastersList = () => {
     }, []) 
 
 
-    const onDelete = (id) => {
+    const onDelete = (id: number) => {
 
         if(window.confirm("Do you want to delete this master?")) {
             axios.delete(`/master`, 
@@ -59,7 +62,7 @@ const MastersList = () => {
                                 <td>{`${elem.masterId}`}</td>
                                 <td>{`${elem.masterName}`}</td>
                                 <td>{elem.cities.map((item) => {return `${item.cityName}`}).join(', ')}</td>
-                                <td>{`${elem.rating}`}</td>
+                                <td>{`${elem.masterRating}`}</td>
                                 <button className='button-update'><Link to={`/admin/master-controller/${elem.masterId}/${elem.masterName}`}>Update</Link></button>
                                 <button className='button-delete' onClick = {() => onDelete(elem.masterId)}>Delete</button>
                             </tr>

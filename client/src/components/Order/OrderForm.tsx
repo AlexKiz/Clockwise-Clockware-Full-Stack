@@ -1,7 +1,8 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, FC} from 'react'
 import axios from 'axios'
 import PublicHeader from '../Headers/PublicHeader'
 import '../Order/order-form.css'
+import { Master, City, Clock } from '../../types/types'
 
 const currentDate = new Date() 
 const currentDay = (currentDate.getDate() < 10) ? `0${currentDate.getDate()}` : currentDate.getDate()
@@ -9,36 +10,38 @@ const currentMonth = ((currentDate.getMonth() + 1) < 10) ? `0${(currentDate.getM
 const currentYear = currentDate.getFullYear()
 const today = `${currentYear}-${currentMonth}-${currentDay}`
 
-const openingHours = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00']
+const openingHours: string[] = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00']
 
-const OrderForm = () => {
+interface OrderFormProps {}
 
-    const [userName, setUserName] = useState('')
+const OrderForm: FC<OrderFormProps> = () => {
 
-    const [userEmail, setUserEmail] = useState('')
+    const [userName, setUserName] = useState<string>('')
 
-    const [orderDate, setOrderDate] = useState('')
+    const [userEmail, setUserEmail] = useState<string>('')
 
-    const [orderTime, setOrderTime] = useState('')
+    const [orderDate, setOrderDate] = useState<string>('')
 
-    const [masterId, setMasterId] = useState(0) 
-    const [masters, setMasters] = useState([])
+    const [orderTime, setOrderTime] = useState<string>('')
 
-    const [cityId, setCityId] = useState(0)
-    const [cities, setCities] = useState([])
+    const [masterId, setMasterId] = useState<number>(0) 
+    const [masters, setMasters] = useState<Master[]>([])
 
-    const [clocksId, setClocksId] = useState(0)
-    const [clockSizes, setClockSizes] = useState([])
+    const [cityId, setCityId] = useState<number>(0)
+    const [cities, setCities] = useState<City[]>([])
+
+    const [clocksId, setClocksId] = useState<number>(0)
+    const [clocks, setClocks] = useState<Clock[]>([])
 
 
     useEffect(() => {
         const cityName = async () => {
 
-            const {data} = await axios.get(`/cityForOrder`)
+            const {data} = await axios.get<City[]>(`/cityForOrder`)
 
             if(data.length) {
                 setCities(data)
-                setCityId(data[0].id)
+                setCityId(data[0].cityId)
             }
         }
 
@@ -50,7 +53,7 @@ const OrderForm = () => {
         const masterName = async () => {
 
             if(cityId && orderDate && orderTime && clocksId) {
-                const {data} = await axios.get(`/availableMasters`, {
+                const {data} = await axios.get<Master[]>(`/availableMasters`, {
                     params: {
                     city_id: cityId,
                     start_work_on: `${orderDate} ${orderTime}`,
@@ -66,7 +69,7 @@ const OrderForm = () => {
                 }
 
                 if(data.length) {
-                    setMasterId(data[0].id)
+                    setMasterId(data[0].masterId)
                     setMasters(data)
                 }
                 
@@ -81,24 +84,24 @@ const OrderForm = () => {
     useEffect(() => {
         const clockSize = async () => {
 
-            const{data} = await axios.get(`/clocks`)
+            const{data} = await axios.get<Clock[]>(`/clocks`)
             if(data.length){
-                setClocksId(data[0].id)
-                setClockSizes(data)
+                setClocksId(data[0].clockId)
+                setClocks(data)
             }
             
         }
 
         clockSize()
     },[])
+console.log(clocks);
 
-
-    const onSubmit = (event) => {
+    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         axios.post(`/order`, 
         {
-            name:userName, 
-            email:userEmail,
+            name: userName, 
+            email: userEmail,
             clocks_id: clocksId,
             city_id: cityId,
             master_id: masterId,
@@ -164,9 +167,9 @@ const OrderForm = () => {
         
                                     <select name='clocksize' onChange={(clocksIdEvent) => setClocksId(+clocksIdEvent.target.value)}>
                                         {
-                                            clockSizes.map(({size, id}) => (
-                                                <option value={id}>
-                                                    {`${size}`}
+                                            clocks.map(({clockSize, clockId}) => (
+                                                <option value={clockId}>
+                                                    {`${clockSize}`}
                                                 </option>
                                             ))    
                                         }
@@ -180,9 +183,9 @@ const OrderForm = () => {
                                     
                                     <select name='cities' onChange={(cityIdEvent) => setCityId(+cityIdEvent.target.value)}>
                                         {
-                                            cities.map(({name, id}) => (
-                                                <option value={id}>
-                                                    {`${name}`}
+                                            cities.map(({cityName, cityId}) => (
+                                                <option value={cityId}>
+                                                    {`${cityName}`}
                                                 </option>
                                             ))
                                         }
@@ -226,9 +229,9 @@ const OrderForm = () => {
                                     
                                     <select name='masterName' onChange={(masterIdEvent) => setMasterId(+masterIdEvent.target.value)}>
                                         {
-                                            masters.map(({name, id, rating}) => (
-                                                <option value={id}>
-                                                    {`${name} | Rating:${rating}`}
+                                            masters.map(({masterName, masterId, masterRating}) => (
+                                                <option value={masterId}>
+                                                    {`${masterName} | Rating:${masterRating}`}
                                                 </option>
                                             ))
                                         }

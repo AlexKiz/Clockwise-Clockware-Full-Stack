@@ -59,7 +59,7 @@ const getOrder = async (req, res) => {
 
     try {
         
-        const readOrder = await db.query('SELECT orders.id AS "orderId", orders.clocks_id AS "clocksId", orders.user_id AS "userId", orders.city_id AS "cityId", orders.master_id AS "masterId", (TO_CHAR(orders.start_work_on, \'YYYY-MM-DD,HH24:MI\')) AS "startWorkOn", (TO_CHAR(orders.end_work_on, \'YYYY-MM-DD HH24:MI\')) AS "endWorkOn", clocks.size AS "clockSize", users.name AS "userName", users.email AS "userEmail", cities.name AS "cityName", masters.name AS "masterName" FROM orders INNER JOIN clocks ON orders.clocks_id = clocks.id INNER JOIN users ON orders.user_id = users.id INNER JOIN cities ON orders.city_id = cities.id INNER JOIN masters ON orders.master_id = masters.id')
+        const readOrder = await db.query('SELECT orders.id AS "orderId", orders.clocks_id AS "clockId", orders.user_id AS "userId", orders.city_id AS "cityId", orders.master_id AS "masterId", (TO_CHAR(orders.start_work_on, \'YYYY-MM-DD,HH24:MI\')) AS "startWorkOn", (TO_CHAR(orders.end_work_on, \'YYYY-MM-DD HH24:MI\')) AS "endWorkOn", clocks.size AS "clockSize", users.name AS "userName", users.email AS "userEmail", cities.name AS "cityName", masters.name AS "masterName" FROM orders INNER JOIN clocks ON orders.clocks_id = clocks.id INNER JOIN users ON orders.user_id = users.id INNER JOIN cities ON orders.city_id = cities.id INNER JOIN masters ON orders.master_id = masters.id')
         
         res.status(200).json(readOrder.rows)
 
@@ -75,7 +75,17 @@ const getOrderForRate = async (req, res) => {
         
         const { ratingIdentificator } = req.query
         
-        const readOrderForRate = await db.query('SELECT orders.id AS "orderId", orders.clocks_id AS "clocksId", orders.user_id AS "userId", orders.city_id AS "cityId", orders.master_id AS "masterId", (TO_CHAR(orders.start_work_on, \'YYYY-MM-DD,HH24:MI\')) AS "startWorkOn", (TO_CHAR(orders.end_work_on, \'YYYY-MM-DD HH24:MI\')) AS "endWorkOn", clocks.size AS "clockSize", users.name AS "userName", users.email AS "userEmail", cities.name AS "cityName", masters.name AS "masterName" FROM orders INNER JOIN clocks ON orders.clocks_id = clocks.id INNER JOIN users ON orders.user_id = users.id INNER JOIN cities ON orders.city_id = cities.id INNER JOIN masters ON orders.master_id = masters.id WHERE uuid_id = $1', [ratingIdentificator])
+        const readOrderForRate = await db.query(`SELECT orders.id AS "orderId", orders.clocks_id AS "clocksId", orders.user_id AS "userId", 
+                                                        orders.city_id AS "cityId", orders.master_id AS "masterId", 
+                                                        (TO_CHAR(orders.start_work_on, \'YYYY-MM-DD,HH24:MI\')) AS "startWorkOn", 
+                                                        (TO_CHAR(orders.end_work_on, \'YYYY-MM-DD HH24:MI\')) AS "endWorkOn", 
+                                                        clocks.size AS "clockSize", users.name AS "userName", users.email AS "userEmail", 
+                                                        cities.name AS "cityName", masters.name AS "masterName" FROM orders 
+                                                        INNER JOIN clocks ON orders.clocks_id = clocks.id 
+                                                        INNER JOIN users ON orders.user_id = users.id 
+                                                        INNER JOIN cities ON orders.city_id = cities.id 
+                                                        INNER JOIN masters ON orders.master_id = masters.id 
+                                                        WHERE uuid_id = $1`, [ratingIdentificator])
 
         res.status(200).json(readOrderForRate.rows)
 
@@ -118,7 +128,7 @@ const getClocks = async (req, res) => {
 
     try {
         
-        const readClocks = await db.query('SELECT * FROM clocks')
+        const readClocks = await db.query('SELECT id as "clockId", size as "clockSize" FROM clocks')
         
         res.status(200).json(readClocks.rows)
         

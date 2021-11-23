@@ -8,9 +8,9 @@ const postCity = async (req, res) => {
     try {
         const {name} = req.body
 
-        const createCity = await db.query('INSERT INTO cities (name) VALUES ($1)', [name])
+        const createdCity = await db.query('INSERT INTO cities (name) VALUES ($1)', [name])
         
-        res.status(201).json(createCity.rows)
+        res.status(201).json(createdCity.rows)
 
     } catch(error) {
         
@@ -23,7 +23,7 @@ const postCity = async (req, res) => {
 const getCity = async (req, res) => {
 
     try {
-        const readCity = await db.query('SELECT * FROM cities')
+        const readCity = await db.query('SELECT id as "cityId", name as "cityName" FROM cities')
 
         res.status(200).json(readCity.rows)
 
@@ -36,7 +36,7 @@ const getCity = async (req, res) => {
 const getCityForOrder = async (req, res) => {
 
     try {
-        const readCityForOrder = await db.query('SELECT DISTINCT cities.* FROM cities, masters_cities WHERE cities.id = masters_cities.city_id')
+        const readCityForOrder = await db.query('SELECT DISTINCT cities.id as "cityId", cities.name as "cityName" FROM cities, masters_cities WHERE cities.id = masters_cities.city_id')
 
         res.status(200).json(readCityForOrder.rows)
 
@@ -50,7 +50,7 @@ const getCityForOrder = async (req, res) => {
 const putCity = async (req, res) => {
 
     try {
-        const {id,name} = req.body.data
+        const {id, name} = req.body.data
 
         const updateCity = await db.query('UPDATE cities SET name = $2 WHERE id = $1', [id, name])
 

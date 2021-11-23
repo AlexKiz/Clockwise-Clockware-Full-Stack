@@ -1,29 +1,33 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import { useParams, useHistory } from "react-router-dom"
 import '../user.controller/user-update-form.css'
+import { Params } from '../../../types/types'
 
-const UserController = () => {
+
+interface UserControllerProps {}
+
+const UserController: FC<UserControllerProps> = () => {
     
     const history = useHistory()
 
-    const [userName, setUserName] = useState('')
-    const [userId, setUserId] = useState(0)
-    const [userEmail, setUserEmail] = useState('')
+    const [userName, setUserName] = useState<string>('')
+    const [userId, setUserId] = useState<number>(0)
+    const [userEmail, setUserEmail] = useState<string>('')
 
-    const {propsUserId, propsUserName, propsUserEmail} = useParams()
+    const {propsUserId, propsUserName, propsUserEmail} = useParams<Params>()
     
 
     useEffect(() => {
         
-        setUserId( propsUserId )
+        setUserId( +propsUserId )
         setUserName( propsUserName )
         setUserEmail( propsUserEmail )
 
     },[])
 
 
-    const onSubmit = (event) => {
+    const onSubmit = (event: React.FormEvent) => {
         event.preventDefault()
         axios.put(`/user` , 
         { 

@@ -8,7 +8,7 @@ const postUser = async (req, res) => {
     try {
         const {name, email} = req.body
 
-        const createMaster = await db.query('INSERT INTO users (name, email) VALUES ($1, $2)', [name, email])
+        const createUser = await db.query('INSERT INTO users (name, email) VALUES ($1, $2)', [name, email])
 
         res.status(201).json(createMaster.rows)
 
@@ -22,7 +22,7 @@ const postUser = async (req, res) => {
 const getUser = async (req, res) => {
 
     try {
-        const readUser = await db.query('SELECT * FROM users')
+        const readUser = await db.query('SELECT id as "userId", name as "userName", email as "userEmail" FROM users')
 
         res.status(200).json(readUser.rows)
 

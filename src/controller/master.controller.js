@@ -28,7 +28,7 @@ const postMaster = async (req, res)  => {
 const getMaster = async (req, res) => {
 
     try {
-        const readMasters = await db.query('SELECT masters.id AS "masterId", masters.name AS "masterName", masters.rating AS "rating" FROM masters')
+        const readMasters = await db.query('SELECT masters.id AS "masterId", masters.name AS "masterName", masters.rating AS "masterRating" FROM masters')
 
         const readMasterCities = await db.query('SELECT masters_cities.master_id AS "masterId", masters_cities.city_id AS "cityId", cities.name AS "cityName" FROM masters_cities JOIN cities ON masters_cities.city_id = cities.id')
         
@@ -73,7 +73,7 @@ const getAvailableMasters = async (req, res) => {
 
             if(bookedMastersId.length != 0) {
 
-                const readAvailableMasters = await db.query(`SELECT * FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
+                const readAvailableMasters = await db.query(`SELECT master.id as "masterId", master.name as "masterName", master.rating as "masterRating" FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
                                                                                                         AND city_id = ${city_id} 
                                                                                                         AND id NOT IN (${bookedMastersId.join(',')})`)
 
@@ -81,7 +81,7 @@ const getAvailableMasters = async (req, res) => {
 
             } else {
 
-                const readAvailableMasters = await db.query(`SELECT * FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
+                const readAvailableMasters = await db.query(`SELECT master.id as "masterId", master.name as "masterName", master.rating as "masterRating" FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
                                                                                                         AND city_id = ${city_id}`)
 
                 res.status(200).json(readAvailableMasters.rows)
@@ -116,7 +116,7 @@ const getAvailableMastersForUpdate = async (req, res) => {
 
         if(bookedMastersId.length != 0) {
 
-            const readAvailableMasters = await db.query(`SELECT * FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
+            const readAvailableMasters = await db.query(`SELECT master.id as "masterId", master.name as "masterName", master.rating as "masterRating" FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
                                                                                                     AND city_id = ${city_id} 
                                                                                                     AND id NOT IN (${bookedMastersId.join(',')})`)
             
@@ -124,7 +124,7 @@ const getAvailableMastersForUpdate = async (req, res) => {
 
         } else {
 
-            const readAvailableMasters = await db.query(`SELECT * FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
+            const readAvailableMasters = await db.query(`SELECT master.id as "masterId", master.name as "masterName", master.rating as "masterRating" FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
                                                                                                     AND city_id = ${city_id}`)
             
             res.status(200).json(readAvailableMasters.rows)

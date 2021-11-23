@@ -1,38 +1,39 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import { useParams, useHistory} from "react-router-dom"
 import '../city.controller/city-update-form.css'
+import { City, Params } from '../../../types/types'
 
-const CityController = () => {
+interface CityControllerProps {}
+
+const CityController: FC<CityControllerProps> = () => {
 
     const history = useHistory()
 
-    const [cityName, setCityName] = useState('')
-    const [cityId, setCityId] = useState(0)
+    const [cityName, setCityName] = useState<string>('')
+    const [cityId, setCityId] = useState<number>(0)
 
-    const {propsCityId, propsCityName} = useParams()
+    const {propsCityId, propsCityName} = useParams<Params>()
 
 
     useEffect(() => {
 
         if(propsCityId) {
 
-            setCityId(propsCityId)
+            setCityId(+propsCityId)
             setCityName(propsCityName)
         }
     },[])
 
 
-    const onSubmit = (event) => {
+    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         if(!propsCityId) {
 
-            axios.post(`/city`, 
+            axios.post<City>(`/city`, 
             {
-
                 id: cityId,
                 name: cityName
-
             }).then(() => {
 
                 alert('City has been created')
@@ -50,12 +51,9 @@ const CityController = () => {
 
         } else {
 
-            axios.put(`/city`, {
-                
-                data: {
-                    id: cityId,
-                    name: cityName
-                }
+            axios.put<City>(`/city`, {
+                id: cityId,
+                name: cityName
             }).then(() => {
 
                 alert('City has been updated')

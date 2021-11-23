@@ -1,18 +1,20 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FC } from "react";
 import {Link} from 'react-router-dom'
 import '../user.list/user-list.css'
+import { User } from '../../../types/types'
 
-const UserList = () => {
+interface UserListProps {}
 
-    const [users, setUsers] = useState([])
+const UserList: FC<UserListProps> = () => {
 
+    const [users, setUsers] = useState<User[]>([])
 
     useEffect(() => {
 
         const readAllUsers = async () => {
 
-            const { data } = await axios.get(`/user`)
+            const { data } = await axios.get<User[]>(`/user`)
             
             setUsers(data)
         }
@@ -22,7 +24,7 @@ const UserList = () => {
     },[])
 
 
-    const onDelete = (id) => {
+    const onDelete = (id: number) => {
 
         if(window.confirm("Do you want to delete this user?")) {
             axios.delete(`/user`,
@@ -32,7 +34,7 @@ const UserList = () => {
                 }
             }).then(() => {
 
-                setUsers(users.filter((elem) => elem.id !== id))
+                setUsers(users.filter((elem) => elem.userId !== id))
                 
                 alert('User has been deleted')
             })
@@ -55,11 +57,11 @@ const UserList = () => {
                         { 
                             users.map((elem) => (
                                 <tr>
-                                    <td>{`${elem.id}`}</td>
-                                    <td>{`${elem.name}`}</td>
-                                    <td>{`${elem.email}`}</td>
-                                    <button className='button-update'><Link to={`/admin/user-controller/${elem.id}/${elem.name}/${elem.email}`}>Update</Link></button>
-                                    <button className='button-delete' onClick ={() => onDelete(elem.id)}>Delete</button>
+                                    <td>{`${elem.userId}`}</td>
+                                    <td>{`${elem.userName}`}</td>
+                                    <td>{`${elem.userEmail}`}</td>
+                                    <button className='button-update'><Link to={`/admin/user-controller/${elem.userId}/${elem.userName}/${elem.userEmail}`}>Update</Link></button>
+                                    <button className='button-delete' onClick ={() => onDelete(elem.userId)}>Delete</button>
                                     </tr>
                             ))
                         }

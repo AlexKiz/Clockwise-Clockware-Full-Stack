@@ -1,16 +1,17 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, FC } from "react";
 import { useHistory } from "react-router-dom"
 import PublicHeader from "../../Headers/PublicHeader";
 import '../login/login-form.css'
 
+interface LoginFormProps {}
 
-const LoginForm = () => {
+const LoginForm:FC<LoginFormProps> = () => {
 
     const history = useHistory()
     
-    const [adminLogin, setAdminLogin] = useState('')
-    const [adminPassword, setAdminPassword] = useState('')
+    const [adminLogin, setAdminLogin] = useState<string>('')
+    const [adminPassword, setAdminPassword] = useState<string>('')
 
     useEffect(() => {
         if(localStorage.getItem('accessToken')) {
@@ -19,7 +20,7 @@ const LoginForm = () => {
     },[])
     
 
-    const onSubmit = async (event) => {
+    const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const payload = {
             adminLogin,

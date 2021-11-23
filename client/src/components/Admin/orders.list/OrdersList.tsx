@@ -1,18 +1,21 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FC } from "react";
 import {Link} from 'react-router-dom'
 import '../orders.list/orders-list.css'
+import { Order } from '../../../types/types'
 
-const OrdersList = () => {
+interface OrderListProps {}
 
-    const [orders, setOrders] = useState([])
+const OrdersList: FC<OrderListProps> = () => {
+
+    const [orders, setOrders] = useState<Order[]>([])
 
 
     useEffect(() => {
 
         const readAllOrders = async() => {
         
-            const {data} = await axios.get(`/order`)
+            const {data} = await axios.get<Order[]>(`/order`)
             
         setOrders(data)
         } 
@@ -22,7 +25,7 @@ const OrdersList = () => {
     },[])
 
 
-    const onDelete = (id) => {
+    const onDelete = (id: number) => {
 
         if(window.confirm("Do you want to delete this order?")) {
             axios.delete(`/order`, 
@@ -67,7 +70,7 @@ const OrdersList = () => {
                             <td>{`${elem.masterName}`}</td>
                             <td>{`${elem.startWorkOn.split(',').join(' ')}`}</td>
                             <td>{`${elem.endWorkOn}`}</td>
-                            <button className='button-update'><Link to={`/admin/order-controller/${elem.orderId}/${elem.userId}/${elem.clocksId}/${elem.cityId}/${elem.startWorkOn.split(',')[0]}/${elem.startWorkOn.split(',')[1]}/${elem.masterId}`}>Update</Link></button>
+                            <button className='button-update'><Link to={`/admin/order-controller/${elem.orderId}/${elem.userId}/${elem.clockId}/${elem.cityId}/${elem.startWorkOn.split(',')[0]}/${elem.startWorkOn.split(',')[1]}/${elem.masterId}`}>Update</Link></button>
                             <button className='button-delete' onClick={() => onDelete(elem.orderId)}>Delete</button>
                         </tr>
                     ))

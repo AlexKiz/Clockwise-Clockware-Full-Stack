@@ -1,26 +1,29 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import { useParams, useHistory} from "react-router-dom"
 import '../master.controller/master-update-form.css'
+import { City, Master, Params } from '../../../types/types'
 
-const MasterController = () => {
+interface MasterControllerProps {}
+
+const MasterController: FC<MasterControllerProps> = () => {
 
     const history = useHistory()
 
-    const { propsMasterId, propsMasterName } = useParams()
+    const { propsMasterId, propsMasterName } = useParams<Params>()
 
-    const [masterName, setMasterName] = useState('')
-    const [masterId, setMasterId]= useState(0)
+    const [masterName, setMasterName] = useState<string>('')
+    const [masterId, setMasterId]= useState<number>(0)
 
-    const [citiesId, setCitiesId] = useState([])
-    const [cities, setCities] = useState([]) 
+    const [citiesId, setCitiesId] = useState<number[]>([])
+    const [cities, setCities] = useState<City[]>([]) 
     
     
     useEffect(() => {
         
-        const readMaster = async () => {
+        const readMasters = async () => {
             
-                const {data} = await axios.get(`/master`)
+                const {data} = await axios.get<Master[]>(`/master`)
 
                 if(propsMasterId && data.length) {
 
@@ -29,13 +32,13 @@ const MasterController = () => {
                     const currentMasterCities = currentMaster[0].cities.map((elem) => {return elem.cityId})
 
                     setMasterName( propsMasterName )
-                    setMasterId ( propsMasterId )
+                    setMasterId ( +propsMasterId )
                     setCitiesId ( currentMasterCities )
                 }
             
             }
 
-        readMaster()
+        readMasters()
         
     }, [])
 
@@ -43,7 +46,7 @@ const MasterController = () => {
 
         const readCities = async () => {
             
-            const {data} = await axios.get(`/city`) 
+            const {data} = await axios.get<City[]>(`/city`) 
 
             if(data.length){
 
@@ -57,7 +60,7 @@ const MasterController = () => {
     }, [])
 
 
-    const onSubmit = (event) => {
+    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
         if (!propsMasterId) {
@@ -120,13 +123,13 @@ const MasterController = () => {
 
                         <div className='form-section_checkbox'>
                             {
-                                cities.map(({name, id}) => (
+                                cities.map(({cityName, cityId}) => (
                                     <div className='form-section_checkbox'>
                                         <div className='form-input_checkbox'>
                                             <input 
                                             type="checkbox" 
-                                            value={id}
-                                            checked={citiesId.includes(id)}
+                                            value={cityId}
+                                            checked={citiesId.includes(cityId)}
                                             onChange = {
                                                 function (event) {
                                                     if (event.target.checked) {
@@ -143,7 +146,7 @@ const MasterController = () => {
                                             />
                                         </div>
                                         <div className='checkbox-label'>
-                                            <span className='form-input_checkbox-name'>{name}</span>
+                                            <span className='form-input_checkbox-name'>{cityName}</span>
                                         </div>    
                                     </div>
                                 ))

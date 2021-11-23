@@ -1,25 +1,29 @@
 import axios from 'axios'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, FC } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
+//@ts-ignore
 import ReactStars from "react-rating-stars-component";
 import classes from '../RateOrder/rate-order.module.css'
+import { Params, Order } from '../../types/types'
 
-const RateOrder = () => {
+interface RateOrderProps {}
+
+const RateOrder: FC<RateOrderProps> = () => {
 
     const history = useHistory()
 
-    const { ratingIdentificator } = useParams()
+    const { ratingIdentificator } = useParams<Params>()
     
-    const [rating, setRating] = useState(0)
+    const [rating, setRating] = useState<number>(0)
 
-    const [order, setOrder] = useState([])
+    const [order, setOrder] = useState<Order[]>([])
 
 
     useEffect(() => {
         
         const getOrderForRate = async () => {
 
-            const {data} = await axios.get('/OrderForRate',{
+            const {data} = await axios.get<Order[]>('/OrderForRate',{
 
                 params: {
 
@@ -46,7 +50,7 @@ const RateOrder = () => {
     },[])
 
 
-    const onSubmit = (event) => {
+    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
         axios.put('/RatedOrder', {
@@ -99,7 +103,7 @@ const RateOrder = () => {
                                 activeColor="#f6ff00"
                                 isHalf={true}
                                 value={rating}
-                                onChange={(newRating) => setRating(newRating)}
+                                onChange={(newRating: number) => setRating(newRating)}
                                 />
                             </div>
 

@@ -1,18 +1,21 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FC } from "react";
 import {Link} from 'react-router-dom'
 import '../cities.list/cities-list.css'
+import { City } from '../../../types/types'
 
-const CitiesList = () => {
+interface CitiesListProps {}
 
-    const [cities, setCities] = useState([])
+const CitiesList: FC<CitiesListProps> = () => {
+
+    const [cities, setCities] = useState<City[]>([])
 
 
     useEffect(()=> {
 
         const readAllCities = async () => {
 
-            const {data} = await axios.get(`/city`)
+            const {data} = await axios.get<City[]>(`/city`)
             
             setCities(data)
         }
@@ -22,10 +25,10 @@ const CitiesList = () => {
     },[])
 
 
-    const onDelete = (id) => {
+    const onDelete = (id: number) => {
         
         if(window.confirm('Do you want to delete this city?')) {
-            axios.delete(`/city`,
+            axios.delete<City>(`/city`,
             {
                 data: 
                 {
@@ -33,7 +36,7 @@ const CitiesList = () => {
                 }
             }).then(() => {
 
-                setCities(cities.filter((elem) => elem.id !== id))
+                setCities(cities.filter((elem) => elem.cityId !== id))
 
                 alert('City has been deleted') 
             })
@@ -56,10 +59,10 @@ const CitiesList = () => {
                     {
                         cities.map((elem) => (
                             <tr>
-                                <td>{`${elem.id}`}</td>
-                                <td>{`${elem.name}`}</td>
-                                <button className='button-update'><Link to = {`/admin/city-controller/${elem.id}/${elem.name}`}>Update</Link></button>
-                                <button className='button-delete' onClick = {() => {onDelete(elem.id)}}>Delete</button>
+                                <td>{`${elem.cityId}`}</td>
+                                <td>{`${elem.cityName}`}</td>
+                                <button className='button-update'><Link to = {`/admin/city-controller/${elem.cityId}/${elem.cityName}`}>Update</Link></button>
+                                <button className='button-delete' onClick = {() => {onDelete(elem.cityId)}}>Delete</button>
                             </tr>
                         ))
                     }
