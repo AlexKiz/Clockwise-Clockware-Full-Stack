@@ -31,11 +31,9 @@ const UserController: FC<UserControllerProps> = () => {
         event.preventDefault()
         axios.put(`/user` , 
         { 
-            data: {
-                id: userId,
-                name: userName,
-                email: userEmail
-            }
+            id: userId,
+            name: userName,
+            email: userEmail
         }).then(() => {
             alert('User has been updated')
             history.push('/admin/users-list')

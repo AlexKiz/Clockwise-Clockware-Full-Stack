@@ -78,13 +78,9 @@ const MasterController: FC<MasterControllerProps> = () => {
         } else {
 
             axios.put(`/master`, {
-
-                data: {
                     id: masterId,
                     name: masterName, 
                     cities_id: citiesId
-                }
-                
             }).then(() => {
                 alert('Master has been updated')
                 history.push('/admin/masters-list')

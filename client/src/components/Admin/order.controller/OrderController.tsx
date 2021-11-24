@@ -86,10 +86,10 @@ const OrderController: FC<OrderControllerProps> = () => {
 
             const {data} = await axios.get<Master[]>(`/availableMastersForUpdate`, {
                 params: {
-                currentOrderId: propsOrderId,
-                city_id: propsCityId,
-                start_work_on: `${orderDate} ${orderTime}`,
-                clocks_id: propsClockId,
+                    currentOrderId: propsOrderId,
+                    city_id: propsCityId,
+                    start_work_on: `${orderDate} ${orderTime}`,
+                    clocks_id: propsClockId,
                 }
             })
 
