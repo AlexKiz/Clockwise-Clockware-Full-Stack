@@ -3,13 +3,15 @@
         "target": "es2017",
         "module": "commonjs",
         "moduleResolution": "node",
-        "rootDir": "src",
-        "outDir": "dist",                              
+        "alwaysStrict": true,
+        "jsx": "react",                            
         "lib": [
             "dom",
             "dom.iterable",
-            "es6"
-        ],                                        
+            "es6",
+            "scripthost"
+        ],     
+        "outDir": "dist",                                    
         "typeRoots": [
             "node_modules/@types"
         ],                                      
@@ -22,10 +24,10 @@
         "forceConsistentCasingInFileNames": true,            
         "resolveJsonModule": true,
         "isolatedModules": true,
-        "noEmit": false,
         "strict": true,                                 
     }, 
     "include": [
-      "src/**/*"
+        "server/src/**/*",
+        "client/src/**/*"
     ]
 }
