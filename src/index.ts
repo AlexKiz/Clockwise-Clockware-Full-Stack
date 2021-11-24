@@ -1,15 +1,15 @@
-const express = require('express')
-const db = require('./db')
-const PORT = process.env.PORT || 5000
-const cityRouter = require('./routes/city.router')
-const masterRouter = require('./routes/master.router')
-const orderRouter = require('./routes/order.router')
-const userRouter = require('./routes/user.router')
-const login = require('./routes/auth.router')
-const adminRouter = require('./routes/admin.router')
-const cors = require('cors')
+import express from 'express'
+import cityRouter  from './routes/city.router'
+import masterRouter from './routes/master.router'
+import orderRouter from './routes/order.router'
+import userRouter from './routes/user.router'
+import login from './routes/auth.router'
+import adminRouter from './routes/admin.router'
+import cors from 'cors'
+import path from 'path'
+
 const app = express()
-const path = require('path')
+const PORT = process.env.PORT || 5000
 
 app.use(cors({exposedHeaders: 'Authorization',}),)
 app.use(express.static(`${__dirname}/../client/build`))

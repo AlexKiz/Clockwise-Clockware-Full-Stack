@@ -1,15 +1,14 @@
-const { fdatasync } = require('fs')
-const { queryResult } = require('pg-promise')
-const db = require('../db')
-const transporter = require('../services/nodemailer.js')
-const { v4: uuidv4 } = require('uuid');
+import { Response, Request } from "express" 
+import db from '../db'
+import { transporter } from '../services/nodemailer'
+import { v4 as uuidv4 } from 'uuid'
 
-const postOrder = async (req, res) => {
+export const postOrder = async (req: Request, res: Response) => {
         
     try {
-        const {clocks_id, city_id, master_id, start_work_on, name, email} = req.body
+        const {clock_id, city_id, master_id, start_work_on, name, email} = req.body
         
-        const durationTime = await db.query('SELECT installation_time FROM clocks WHERE id = $1',[clocks_id])
+        const durationTime = await db.query('SELECT installation_time FROM clocks WHERE id = $1',[clock_id])
 
         let user_id
         const userId = await db.query('SELECT id FROM users WHERE email = $1', [email])
@@ -34,7 +33,7 @@ const postOrder = async (req, res) => {
 
             const ratingIdentificator = uuidv4();
 
-            const createOrder = await db.query('INSERT INTO orders (clocks_id, user_id, city_id, master_id, start_work_on, end_work_on, uuid_id) VALUES ($1, $2, $3, $4, $5, $6, $7)', [clocks_id, user_id, city_id, master_id, start_work_on, end_work_on, ratingIdentificator])
+            const createOrder = await db.query('INSERT INTO orders (clocks_id, user_id, city_id, master_id, start_work_on, end_work_on, uuid_id) VALUES ($1, $2, $3, $4, $5, $6, $7)', [clock_id, user_id, city_id, master_id, start_work_on, end_work_on, ratingIdentificator])
 
             await transporter.sendMail({
                 from: '"Clockwise Clockware" <clockwiseclockwaremailbox@gmail.com>', 
@@ -55,11 +54,20 @@ const postOrder = async (req, res) => {
 }
 
 
-const getOrder = async (req, res) => {
+export const getOrder = async (req: Request, res: Response) => {
 
     try {
         
-        const readOrder = await db.query('SELECT orders.id AS "orderId", orders.clocks_id AS "clockId", orders.user_id AS "userId", orders.city_id AS "cityId", orders.master_id AS "masterId", (TO_CHAR(orders.start_work_on, \'YYYY-MM-DD,HH24:MI\')) AS "startWorkOn", (TO_CHAR(orders.end_work_on, \'YYYY-MM-DD HH24:MI\')) AS "endWorkOn", clocks.size AS "clockSize", users.name AS "userName", users.email AS "userEmail", cities.name AS "cityName", masters.name AS "masterName" FROM orders INNER JOIN clocks ON orders.clocks_id = clocks.id INNER JOIN users ON orders.user_id = users.id INNER JOIN cities ON orders.city_id = cities.id INNER JOIN masters ON orders.master_id = masters.id')
+        const readOrder = await db.query(`SELECT orders.id AS "orderId", orders.clocks_id AS "clockId", orders.user_id AS "userId",
+                                                orders.city_id AS "cityId", orders.master_id AS "masterId", 
+                                                (TO_CHAR(orders.start_work_on, \'YYYY-MM-DD,HH24:MI\')) AS "startWorkOn", 
+                                                (TO_CHAR(orders.end_work_on, \'YYYY-MM-DD HH24:MI\')) AS "endWorkOn", 
+                                                clocks.size AS "clockSize", users.name AS "userName", users.email AS "userEmail", 
+                                                cities.name AS "cityName", masters.name AS "masterName" FROM orders 
+                                                INNER JOIN clocks ON orders.clocks_id = clocks.id 
+                                                INNER JOIN users ON orders.user_id = users.id 
+                                                INNER JOIN cities ON orders.city_id = cities.id 
+                                                INNER JOIN masters ON orders.master_id = masters.id`)
         
         res.status(200).json(readOrder.rows)
 
@@ -69,13 +77,13 @@ const getOrder = async (req, res) => {
     }
 }
 
-const getOrderForRate = async (req, res) => { 
+export const getOrderForRate = async (req: Request, res: Response) => { 
     
     try {
         
         const { ratingIdentificator } = req.query
         
-        const readOrderForRate = await db.query(`SELECT orders.id AS "orderId", orders.clocks_id AS "clocksId", orders.user_id AS "userId", 
+        const readOrderForRate = await db.query(`SELECT orders.id AS "orderId", orders.clocks_id AS "clockId", orders.user_id AS "userId", 
                                                         orders.city_id AS "cityId", orders.master_id AS "masterId", 
                                                         (TO_CHAR(orders.start_work_on, \'YYYY-MM-DD,HH24:MI\')) AS "startWorkOn", 
                                                         (TO_CHAR(orders.end_work_on, \'YYYY-MM-DD HH24:MI\')) AS "endWorkOn", 
@@ -95,7 +103,7 @@ const getOrderForRate = async (req, res) => {
     }
 }
 
-const putRatedOrder = async (req, res) => {
+export const putRatedOrder = async (req: Request, res: Response) => {
 
     try {
 
@@ -124,7 +132,7 @@ const putRatedOrder = async (req, res) => {
 }
 
 
-const getClocks = async (req, res) => {
+export const getClocks = async (req: Request, res: Response) => {
 
     try {
         
@@ -139,12 +147,12 @@ const getClocks = async (req, res) => {
 }
 
 
-const putOrder = async (req, res) => {
+export const putOrder = async (req: Request, res: Response) => {
 
     try {
-        const {id, clocks_id, user_id, city_id, master_id, start_work_on} = req.body
+        const {id, clock_id, user_id, city_id, master_id, start_work_on} = req.body
 
-        const updateOrder = await db.query('UPDATE orders SET clocks_id = $2, user_id = $3, city_id = $4, master_id = $5, start_work_on = $6 WHERE id = $1', [id, clocks_id, user_id, city_id, master_id, start_work_on])
+        const updateOrder = await db.query('UPDATE orders SET clocks_id = $2, user_id = $3, city_id = $4, master_id = $5, start_work_on = $6 WHERE id = $1', [id, clock_id, user_id, city_id, master_id, start_work_on])
 
         res.status(200).json(updateOrder.rows)
 
@@ -155,7 +163,7 @@ const putOrder = async (req, res) => {
 }
 
 
-const deleteOrder = async (req, res) => {
+export const deleteOrder = async (req: Request, res: Response) => {
 
     try {
         const {id} = req.body
@@ -169,5 +177,3 @@ const deleteOrder = async (req, res) => {
         res.status(500).send()
     }
 }
-
-module.exports = {postOrder, getOrder, getOrderForRate, getClocks, putOrder, putRatedOrder, deleteOrder}

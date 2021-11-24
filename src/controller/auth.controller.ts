@@ -1,8 +1,10 @@
-const db = require('../db')
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+import { Response, Request, NextFunction } from "express" 
+import db from '../db'
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 
-const Auth = async (req, res) => {
+
+export const Auth = async (req: Request, res: Response) => {
 
     const {adminLogin, adminPassword} = req.body 
     
@@ -14,7 +16,7 @@ const Auth = async (req, res) => {
 
         if(await bcrypt.compare(adminPassword,hashPass)) {
             
-            const accessToken = jwt.sign({}, process.env.PRIVAT_KEY, {expiresIn: '2h'})
+            const accessToken = jwt.sign({}, `${process.env.PRIVAT_KEY}`, {expiresIn: '2h'})
             
             res.set({Authorization: `Bearer ${accessToken}`}).status(200).json({message: "Successfully authorizated!"})
 
@@ -31,7 +33,7 @@ const Auth = async (req, res) => {
 
 
 
-const isAuth = async (req, res, next) => {
+export const isAuth = async (req: Request, res: Response, next: NextFunction) => {
 
     if(req.method === 'OPTIONS') {
 
@@ -39,23 +41,22 @@ const isAuth = async (req, res, next) => {
     }
 
     try {
-        if(!req.headers.authorization) {
+        if(req.headers.authorization) {
 
+            const accessToken = req.headers.authorization.split(' ')[1]
+
+            jwt.verify(accessToken, `${process.env.PRIVAT_KEY}`)
+
+            next()
+            
+        } else {
+            
             res.status(401).send()
-
-        } 
-        const accessToken = req.headers.authorization.split(' ')[1]
-
-        jwt.verify(accessToken, process.env.PRIVAT_KEY)
-
-        next()
+        }
+        
         
     } catch(error) {
         
         res.status(404).send()
     }
 }
-
-
-
-module.exports = {Auth, isAuth}

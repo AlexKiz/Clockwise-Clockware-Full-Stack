@@ -1,15 +1,17 @@
-const db = require('../db')
+import { Response, Request, NextFunction } from "express"
+
+import db from '../db'
 const validDate = new RegExp(/(\d{4}[-](0[1-9]|1[0-2])[-]([0-2]{1}\d{1}|3[0-1]{1})|([0-2]{1}\d{1}|3[0-1]{1})[-](0[1-9]|1[0-2])[-]\d{4})\s([0-2]{1}\d{1}[:][0-5]{1}\d{1})/)
 const validName = new RegExp(/^([(A-Za-zА-Яа-я]{3,49})$|^([A-Za-zА-Яа-я]{3,49}[\s]{1}[A-Za-zА-Яа-я]{3,50})$/)
 const validEmail = new RegExp(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
 
-const postOrderValidate = async(req, res, next) => {
+export const postOrderValidate = async(req: Request, res: Response, next: NextFunction) => {
 
-    const {clocks_id, city_id, master_id, start_work_on, name, email} = req.body
+    const {clock_id, city_id, master_id, start_work_on, name, email} = req.body
 
     const validationErrors = []
 
-    const validClocksId = await db.query('SELECT * FROM clocks WHERE id = $1', [clocks_id])
+    const validClocksId = await db.query('SELECT * FROM clocks WHERE id = $1', [clock_id])
 
     if(!validClocksId.rows.length) {
 
@@ -62,9 +64,9 @@ const postOrderValidate = async(req, res, next) => {
 }
 
 
-const putOrderValidate = async(req, res, next) => {
+export const putOrderValidate = async(req: Request, res: Response, next: NextFunction) => {
 
-    const {id, clocks_id, user_id, city_id, master_id, start_work_on} = req.body
+    const {id, clock_id, user_id, city_id, master_id, start_work_on} = req.body
 
     const validationErrors = []
 
@@ -76,7 +78,7 @@ const putOrderValidate = async(req, res, next) => {
 
     }
 
-    const validClocksId = await db.query('SELECT * FROM clocks WHERE id = $1', [clocks_id])
+    const validClocksId = await db.query('SELECT * FROM clocks WHERE id = $1', [clock_id])
 
     if(!validClocksId.rows.length) {
 
@@ -124,7 +126,7 @@ const putOrderValidate = async(req, res, next) => {
 }
 
 
-const deleteOrderValidate = async(req, res, next) => {
+export const deleteOrderValidate = async(req: Request, res: Response, next: NextFunction) => {
 
     const { id } = req.body
 
@@ -147,7 +149,3 @@ const deleteOrderValidate = async(req, res, next) => {
         return next()
     }
 }
-
-
-
-module.exports = {postOrderValidate, putOrderValidate, deleteOrderValidate}

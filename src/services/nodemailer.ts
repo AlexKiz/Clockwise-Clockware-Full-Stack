@@ -1,6 +1,6 @@
-const nodemailer = require('nodemailer')
+import nodemailer from 'nodemailer'
 
-const transporter = nodemailer.createTransport({
+export const transporter = nodemailer.createTransport({
     service: 'gmail',
     host: 'smtp.gmail.com',
     secure: true,
@@ -11,5 +11,3 @@ const transporter = nodemailer.createTransport({
     },
     logger: true,
 })
-
-module.exports = transporter

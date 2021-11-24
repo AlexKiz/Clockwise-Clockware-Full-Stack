@@ -1,13 +1,14 @@
-require('dotenv').config()
+import * as dotenv from 'dotenv'
 
-const pg = require('pg')
+import pg from 'pg'
 
+dotenv.config()
 
 const devConfig = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     host: process.env.DB_HOST,
-    port: +process.env.DB_PORT,
+    port: Number(process.env.DB_PORT),
     database: process.env.DB_DATABASE,
 }
 
@@ -21,4 +22,4 @@ const prodConfig = {
 const configForUse = process.env.DATABASE_URL ? prodConfig : devConfig
 const pool = new pg.Pool(configForUse)
 
-module.exports = pool 
+export default pool

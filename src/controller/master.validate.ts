@@ -1,7 +1,10 @@
-const db = require('../db')
+import { Response, Request, NextFunction } from "express"
+import db from '../db'
+
 const validName = new RegExp(/^[A-Za-zА-Яа-я]{3,49}$|^[A-Za-zА-Яа-я]{3,49}[\s]{1}[A-Za-zА-Яа-я]{3,50}$/)
 
-const postMasterValidate = async(req, res, next) => {
+
+export const postMasterValidate = async(req: Request, res: Response, next: NextFunction) => {
 
     const {name, cities_id} = req.body
 
@@ -30,9 +33,9 @@ const postMasterValidate = async(req, res, next) => {
 }
 
 
-const putMasterValidate = async(req, res, next) => {
+export const putMasterValidate = async(req: Request, res: Response, next: NextFunction) => {
     
-    const {id, name, cities_id} = req.body.data 
+    const {id, name, cities_id} = req.body
 
     const validationErrors = []
 
@@ -68,7 +71,7 @@ const putMasterValidate = async(req, res, next) => {
 }
 
 
-const deleteMasterValidate = async(req, res, next) => {
+export const deleteMasterValidate = async(req: Request, res: Response, next: NextFunction) => {
 
     const { id } = req.body
 
@@ -90,7 +93,3 @@ const deleteMasterValidate = async(req, res, next) => {
         return next()
     }
 }
-
-
-
-module.exports = {postMasterValidate, putMasterValidate, deleteMasterValidate}

@@ -1,12 +1,11 @@
-const { fdatasync } = require('fs')
-const db = require('../db')
+import { Request, Response } from "express"
+import db from '../db'
 
 
-    
-const postCity = async (req, res) => {
+export const postCity = async (req: Request, res: Response) => {
 
     try {
-        const {name} = req.body
+        const { name } = req.body
 
         const createdCity = await db.query('INSERT INTO cities (name) VALUES ($1)', [name])
         
@@ -20,7 +19,7 @@ const postCity = async (req, res) => {
 }
 
 
-const getCity = async (req, res) => {
+export const getCity = async (req: Request, res: Response) => {
 
     try {
         const readCity = await db.query('SELECT id as "cityId", name as "cityName" FROM cities')
@@ -33,7 +32,7 @@ const getCity = async (req, res) => {
     }
 }
 
-const getCityForOrder = async (req, res) => {
+export const getCityForOrder = async (req: Request, res: Response) => {
 
     try {
         const readCityForOrder = await db.query('SELECT DISTINCT cities.id as "cityId", cities.name as "cityName" FROM cities, masters_cities WHERE cities.id = masters_cities.city_id')
@@ -47,10 +46,10 @@ const getCityForOrder = async (req, res) => {
 }
 
 
-const putCity = async (req, res) => {
+export const putCity = async (req: Request, res: Response) => {
 
     try {
-        const {id, name} = req.body.data
+        const {id, name} = req.body
 
         const updateCity = await db.query('UPDATE cities SET name = $2 WHERE id = $1', [id, name])
 
@@ -63,7 +62,7 @@ const putCity = async (req, res) => {
 }
 
 
-const deleteCity = async (req, res) => {
+export const deleteCity = async (req: Request, res: Response) => {
 
     try {
         const {id} = req.body
@@ -81,5 +80,3 @@ const deleteCity = async (req, res) => {
 } 
 
 
-
-module.exports = {postCity, getCity, getCityForOrder, putCity, deleteCity}

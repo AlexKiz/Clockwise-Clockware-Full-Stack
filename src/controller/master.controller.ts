@@ -1,9 +1,7 @@
-const { fdatasync } = require('fs')
-const db = require('../db')
+import { Response, Request} from "express"
+import db from '../db'
 
-
-
-const postMaster = async (req, res)  => {
+export const postMaster = async (req: Request, res: Response)  => {
 
     try {
         const {name, cities_id} = req.body
@@ -12,7 +10,7 @@ const postMaster = async (req, res)  => {
 
         const createdMasterId = createMaster.rows[0].id
 
-        const masterToCitiesValues = cities_id.map(function(elem) {return `(${createdMasterId},${elem})`}).join()
+        const masterToCitiesValues = cities_id.map(function(elem: number) {return `(${createdMasterId},${elem})`}).join()
 
         const citiesOfMaster = await db.query(`INSERT INTO masters_cities (master_id, city_id) VALUES ${masterToCitiesValues}`) 
         
@@ -25,7 +23,7 @@ const postMaster = async (req, res)  => {
 }
 
 
-const getMaster = async (req, res) => {
+export const getMaster = async (req: Request, res: Response) => {
 
     try {
         const readMasters = await db.query('SELECT masters.id AS "masterId", masters.name AS "masterName", masters.rating AS "masterRating" FROM masters')
@@ -51,17 +49,17 @@ const getMaster = async (req, res) => {
 }
 
 
-const getAvailableMasters = async (req, res) => {
+export const getAvailableMasters = async (req: Request, res: Response) => {
         
     try {
-        const {city_id, start_work_on, clocks_id} = req.query
+        const {city_id, start_work_on, clock_id} = req.query
         
-        const installDuration = await db.query('SELECT installation_time FROM clocks WHERE id = $1', [clocks_id])
+        
+        const installDuration = await db.query('SELECT installation_time FROM clocks WHERE id = $1', [clock_id])
 
         if(installDuration.rows.length) {
 
             const { installation_time } = installDuration.rows[0]
-            
             let date = new Date(`${start_work_on}`)
             date.setUTCHours(date.getHours() + installation_time)
             const end_work_on = date.toISOString()
@@ -72,17 +70,18 @@ const getAvailableMasters = async (req, res) => {
             
 
             if(bookedMastersId.length != 0) {
-
-                const readAvailableMasters = await db.query(`SELECT master.id as "masterId", master.name as "masterName", master.rating as "masterRating" FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
+                
+                const readAvailableMasters = await db.query(`SELECT masters.id as "masterId", masters.name as "masterName", masters.rating as "masterRating" FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
                                                                                                         AND city_id = ${city_id} 
                                                                                                         AND id NOT IN (${bookedMastersId.join(',')})`)
 
                 res.status(200).json(readAvailableMasters.rows)
 
             } else {
-
-                const readAvailableMasters = await db.query(`SELECT master.id as "masterId", master.name as "masterName", master.rating as "masterRating" FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
-                                                                                                        AND city_id = ${city_id}`)
+                
+                const readAvailableMasters = await db.query(`SELECT masters.id as "masterId", masters.name as "masterName", masters.rating as "masterRating" 
+                                                                    FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
+                                                                    AND city_id = ${city_id}`)
 
                 res.status(200).json(readAvailableMasters.rows)
             }
@@ -95,13 +94,13 @@ const getAvailableMasters = async (req, res) => {
 }
 
 
-const getAvailableMastersForUpdate = async (req, res) => {
+export const getAvailableMastersForUpdate = async (req: Request, res: Response) => {
         
     try {
-        const {currentOrderId, city_id, start_work_on, clocks_id} = req.query
+        const {currentOrderId, city_id, start_work_on, clock_id} = req.query
         
 
-        const installDuration = await db.query('SELECT installation_time FROM clocks WHERE id = $1', [clocks_id])
+        const installDuration = await db.query('SELECT installation_time FROM clocks WHERE id = $1', [clock_id])
         const { installation_time } = installDuration.rows[0]
         
         let date = new Date(`${start_work_on}`)
@@ -116,7 +115,7 @@ const getAvailableMastersForUpdate = async (req, res) => {
 
         if(bookedMastersId.length != 0) {
 
-            const readAvailableMasters = await db.query(`SELECT master.id as "masterId", master.name as "masterName", master.rating as "masterRating" FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
+            const readAvailableMasters = await db.query(`SELECT masters.id as "masterId", masters.name as "masterName", masters.rating as "masterRating" FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
                                                                                                     AND city_id = ${city_id} 
                                                                                                     AND id NOT IN (${bookedMastersId.join(',')})`)
             
@@ -124,7 +123,7 @@ const getAvailableMastersForUpdate = async (req, res) => {
 
         } else {
 
-            const readAvailableMasters = await db.query(`SELECT master.id as "masterId", master.name as "masterName", master.rating as "masterRating" FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
+            const readAvailableMasters = await db.query(`SELECT masters.id as "masterId", masters.name as "masterName", masters.rating as "masterRating" FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
                                                                                                     AND city_id = ${city_id}`)
             
             res.status(200).json(readAvailableMasters.rows)
@@ -137,14 +136,14 @@ const getAvailableMastersForUpdate = async (req, res) => {
 }
 
 
-const putMaster = async (req, res) => {
+export const putMaster = async (req: Request, res: Response) => {
         
     try {
-        const {id, name, cities_id} = req.body.data
+        const {id, name, cities_id} = req.body
         
         const updateMaster = await db.query('UPDATE masters SET name = $2 WHERE id = $1', [id, name])
 
-        const masterToCitiesValues = cities_id.map(function(elem) {return `(${id},${elem})`}).join()
+        const masterToCitiesValues = cities_id.map(function(elem: number) {return `(${id},${elem})`}).join()
 
         const deleteOldData = await db.query('DELETE FROM masters_cities WHERE master_id = $1', [id])
 
@@ -159,7 +158,7 @@ const putMaster = async (req, res) => {
 }
 
 
-const deleteMaster = async (req, res) => {
+export const deleteMaster = async (req: Request, res: Response) => {
 
     try {
         const {id} = req.body
@@ -178,4 +177,3 @@ const deleteMaster = async (req, res) => {
 
 
 
-module.exports = {postMaster, getMaster, getAvailableMasters, getAvailableMastersForUpdate, putMaster, deleteMaster}

@@ -1,8 +1,10 @@
-const db = require('../db')
+import { Response, Request, NextFunction } from "express"
+import db from '../db'
+
 const validName = new RegExp(/^([(A-Za-zА-Яа-я]{3,49})$|^([A-Za-zА-Яа-я]{3,49}[\s]{1}[A-Za-zА-Яа-я]{3,50})$/)
 const validEmail = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
 
-const postUserValidate = async(req, res, next) => {
+export const postUserValidate = async(req: Request, res: Response, next: NextFunction) => {
 
     const {name, email} = req.body
 
@@ -30,9 +32,9 @@ const postUserValidate = async(req, res, next) => {
 }
 
 
-const putUserValidate = async(req, res, next) => {
+export const putUserValidate = async(req: Request, res: Response, next: NextFunction) => {
     
-    const {id, name, email} = req.body.data
+    const {id, name, email} = req.body
 
     const validationErrors = []
 
@@ -68,7 +70,7 @@ const putUserValidate = async(req, res, next) => {
 }
 
 
-const deleteUserValidate = async(req, res, next) => {
+export const deleteUserValidate = async(req: Request, res: Response, next: NextFunction) => {
     
     const {id} = req.body
 
@@ -89,7 +91,3 @@ const deleteUserValidate = async(req, res, next) => {
         return next()
     }
 }
-
-
-
-module.exports = {postUserValidate, putUserValidate, deleteUserValidate}

@@ -1,11 +1,14 @@
-const db = require('../db')
+import { Response, Request, NextFunction } from "express"
+import db from '../db'
+
 const validName = new RegExp(/^[A-Za-zА-Яа-я]{3,100}$|^[A-Za-zА-Яа-я]{3,49}[-\s]{1}[A-Za-zА-Яа-я]{3,50}$/)
 
-const postCityValidate = async (req, res, next) => {
+
+export const postCityValidate = async (req: Request, res: Response, next: NextFunction) => {
 
     const { name } = req.body 
 
-    const validationErrors = []
+    const validationErrors: string[] = []
 
     const allCitiesName = await db.query('SELECT name FROM cities')
 
@@ -38,9 +41,9 @@ const postCityValidate = async (req, res, next) => {
 }
 
 
-const putCityValidate = async (req, res, next) => {
+export const putCityValidate = async (req: Request, res: Response, next: NextFunction) => {
     
-    const { id, name } = req.body.data
+    const { id, name } = req.body
 
     const validationErrors = []
 
@@ -67,7 +70,7 @@ const putCityValidate = async (req, res, next) => {
 }
 
 
-const deleteCityValidate = async (req, res, next) => {
+export const deleteCityValidate = async (req: Request, res: Response, next: NextFunction) => {
     
     const { id } = req.body 
 
@@ -91,5 +94,3 @@ const deleteCityValidate = async (req, res, next) => {
 }
 
 
-
-module.exports = {postCityValidate, putCityValidate, deleteCityValidate}

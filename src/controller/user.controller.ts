@@ -1,16 +1,15 @@
-const { fdatasync } = require('fs')
-const db = require('../db')
+import { Response, Request } from "express"
+import db from '../db'
 
 
-
-const postUser = async (req, res) => {
+export const postUser = async (req: Request, res: Response) => {
 
     try {
         const {name, email} = req.body
 
         const createUser = await db.query('INSERT INTO users (name, email) VALUES ($1, $2)', [name, email])
 
-        res.status(201).json(createMaster.rows)
+        res.status(201).json(createUser.rows)
 
     } catch(error) {
         
@@ -19,7 +18,7 @@ const postUser = async (req, res) => {
 }
 
 
-const getUser = async (req, res) => {
+export const getUser = async (req: Request, res: Response) => {
 
     try {
         const readUser = await db.query('SELECT id as "userId", name as "userName", email as "userEmail" FROM users')
@@ -33,10 +32,10 @@ const getUser = async (req, res) => {
 }
 
 
-const putUser = async (req, res) => {
+export const putUser = async (req: Request, res: Response) => {
 
     try {
-        const {id, name, email} = req.body.data
+        const {id, name, email} = req.body
 
         const userChecking = await db.query('SELECT id FROM users WHERE email = $1', [email])
 
@@ -58,7 +57,7 @@ const putUser = async (req, res) => {
 }
 
 
-const deleteUser = async (req, res) => {
+export const deleteUser = async (req: Request, res: Response) => {
 
     try {
         const {id} = req.body
@@ -72,7 +71,3 @@ const deleteUser = async (req, res) => {
         res.status(500).send()
     }
 }
-
-
-
-module.exports = {postUser, getUser, putUser, deleteUser}
