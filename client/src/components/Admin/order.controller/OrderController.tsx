@@ -89,7 +89,7 @@ const OrderController: FC<OrderControllerProps> = () => {
                     currentOrderId: propsOrderId,
                     city_id: propsCityId,
                     start_work_on: `${orderDate} ${orderTime}`,
-                    clocks_id: propsClockId,
+                    clock_id: propsClockId,
                 }
             })
 
@@ -114,7 +114,7 @@ const OrderController: FC<OrderControllerProps> = () => {
         axios.put(`/order`, 
         {
             id: propsOrderId,
-            clocks_id: clockId,
+            clock_id: clockId,
             user_id: userId,
             city_id: cityId,
             master_id: masterId,
