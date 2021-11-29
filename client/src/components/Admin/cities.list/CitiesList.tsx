@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState, useEffect, FC, useCallback } from "react";
+import React, { useState, useEffect, FC } from "react";
 import {Link} from 'react-router-dom'
 import '../cities.list/cities-list.css'
 import { City } from '../../../data/types/types'

@@ -1,7 +1,6 @@
 import React from 'react';
 import {Link, useHistory} from 'react-router-dom'
 import './header.css'
-import logo from "../../img/logo1.png"
 import { useLocation } from "react-router-dom";
 import { RESOURCE } from '../../data/constants/routeConstants';
 
