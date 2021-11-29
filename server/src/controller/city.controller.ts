@@ -19,12 +19,12 @@ export const postCity = async (req: Request, res: Response) => {
 }
 
 
-export const getCity = async (req: Request, res: Response) => {
+export const getCities = async (req: Request, res: Response) => {
 
     try {
-        const readCity = await db.query('SELECT id as "cityId", name as "cityName" FROM cities')
+        const readCities = await db.query('SELECT * FROM cities')
 
-        res.status(200).json(readCity.rows)
+        res.status(200).json(readCities.rows)
 
     } catch(error) {
 
@@ -32,10 +32,11 @@ export const getCity = async (req: Request, res: Response) => {
     }
 }
 
+
 export const getCityForOrder = async (req: Request, res: Response) => {
 
     try {
-        const readCityForOrder = await db.query('SELECT DISTINCT cities.id as "cityId", cities.name as "cityName" FROM cities, masters_cities WHERE cities.id = masters_cities.city_id')
+        const readCityForOrder = await db.query('SELECT DISTINCT cities.id, cities.name FROM cities, masters_cities WHERE cities.id = masters_cities.city_id')
 
         res.status(200).json(readCityForOrder.rows)
 
@@ -49,7 +50,7 @@ export const getCityForOrder = async (req: Request, res: Response) => {
 export const putCity = async (req: Request, res: Response) => {
 
     try {
-        const {id, name} = req.body
+        const { id, name } = req.body
 
         const updateCity = await db.query('UPDATE cities SET name = $2 WHERE id = $1', [id, name])
 
@@ -65,7 +66,7 @@ export const putCity = async (req: Request, res: Response) => {
 export const deleteCity = async (req: Request, res: Response) => {
 
     try {
-        const {id} = req.body
+        const { id } = req.body
 
         const deleteMasterCities = await db.query('DELETE FROM masters_cities WHERE city_id = $1', [id])
 

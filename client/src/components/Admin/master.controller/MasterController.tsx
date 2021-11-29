@@ -2,15 +2,16 @@ import axios from "axios";
 import React, { useState, useEffect, FC } from "react";
 import { useParams, useHistory} from "react-router-dom"
 import '../master.controller/master-update-form.css'
-import { City, Master, Params } from '../../../types/types'
+import { City, Master, Params } from '../../../data/types/types'
+import { MasterControllerProps } from "./componentsConstants";
+import { RESOURCE, URL } from "../../../data/constants/routeConstants";
 
-interface MasterControllerProps {}
 
 const MasterController: FC<MasterControllerProps> = () => {
 
     const history = useHistory()
 
-    const { propsMasterId, propsMasterName } = useParams<Params>()
+    const { masterIdParam, masterNameParam } = useParams<Params>()
 
     const [masterName, setMasterName] = useState<string>('')
     const [masterId, setMasterId]= useState<number>(0)
@@ -21,69 +22,72 @@ const MasterController: FC<MasterControllerProps> = () => {
     
     useEffect(() => {
         
-        const readMasters = async () => {
+        const readMastersData = async () => {
             
-                const {data} = await axios.get<Master[]>(`/master`)
+                const { data } = await axios.get<Master[]>(`/${URL.MASTER}`)
 
-                if(propsMasterId && data.length) {
+                if(masterIdParam && data.length) {
 
-                    const currentMaster = data.filter(item => item.masterId === +propsMasterId)
+                    const currentMaster = data.filter(master => master.id === Number(masterId))
+
+                    if(currentMaster.length) {
+                        const currentMasterCities = currentMaster[0].cities.map((city) => {return city.id})
+
+                        setMasterName( masterNameParam )
+                        setMasterId ( Number(masterIdParam) )
+                        setCitiesId ( currentMasterCities )
+                    }
                     
-                    const currentMasterCities = currentMaster[0].cities.map((elem) => {return elem.cityId})
-
-                    setMasterName( propsMasterName )
-                    setMasterId ( +propsMasterId )
-                    setCitiesId ( currentMasterCities )
                 }
             
             }
 
-        readMasters()
+        readMastersData()
         
     }, [])
 
+
     useEffect(() => {
 
-        const readCities = async () => {
+        const readCitiesData = async () => {
             
-            const {data} = await axios.get<City[]>(`/city`) 
+            const { data } = await axios.get<City[]>(`/${URL.CITY}`) 
 
             if(data.length){
 
                 setCities(data)
-                
             }
             
         }
 
-        readCities()
+        readCitiesData()
     }, [])
 
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
-        if (!propsMasterId) {
+        if (!masterIdParam) {
 
-                axios.post(`/master`,
+                axios.post(`/${URL.MASTER}`,
             {
                 name: masterName, 
                 cities_id: citiesId
             }).then(() =>{
                 setMasterName('')
                 alert('Master has been created')
-                history.push('/admin/masters-list')
+                history.push(`/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`)
             })
 
         } else {
 
-            axios.put(`/master`, {
+            axios.put(`/${URL.MASTER}`, {
                     id: masterId,
                     name: masterName, 
                     cities_id: citiesId
             }).then(() => {
                 alert('Master has been updated')
-                history.push('/admin/masters-list')
+                history.push(`/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`)
             })
         }
         
@@ -119,22 +123,22 @@ const MasterController: FC<MasterControllerProps> = () => {
 
                         <div className='form-section_checkbox'>
                             {
-                                cities.map(({cityName, cityId}) => (
+                                cities.map((city) => (
                                     <div className='form-section_checkbox'>
                                         <div className='form-input_checkbox'>
                                             <input 
                                             type="checkbox" 
-                                            value={cityId}
-                                            checked={citiesId.includes(cityId)}
+                                            value={city.id}
+                                            checked={citiesId.includes(city.id)}
                                             onChange = {
                                                 function (event) {
                                                     if (event.target.checked) {
 
-                                                        setCitiesId([...citiesId, +event.target.value])
+                                                        setCitiesId([...citiesId, Number(event.target.value)])
                                                     
                                                     } else {
                                                     
-                                                        setCitiesId([...citiesId].filter((elem) => elem !== +event.target.value))
+                                                        setCitiesId([...citiesId].filter((elem) => elem !== Number(event.target.value)))
                                                     
                                                     }
                                                 }
@@ -142,7 +146,7 @@ const MasterController: FC<MasterControllerProps> = () => {
                                             />
                                         </div>
                                         <div className='checkbox-label'>
-                                            <span className='form-input_checkbox-name'>{cityName}</span>
+                                            <span className='form-input_checkbox-name'>{city.name}</span>
                                         </div>    
                                     </div>
                                 ))

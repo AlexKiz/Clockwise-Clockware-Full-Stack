@@ -2,7 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import OrderForm from './components/Order/OrderForm';
+import OrderForm from './components/Order/order.form/OrderForm';
 import MastersList from './components/Admin/master.list/MastersList';
 import MasterController from './components/Admin/master.controller/MasterController';
 import UsersList from './components/Admin/user.list/UsersList';
@@ -12,8 +12,9 @@ import CityController from './components/Admin/city.controller/CityController';
 import OrdersList from './components/Admin/orders.list/OrdersList';
 import OrderController from './components/Admin/order.controller/OrderController';
 import LoginForm from './components/Admin/login/LoginForm';
-import PrivatRoute from './PrivatRoute';
-import RateOrder from './components/RateOrder/RateOrder'
+import PrivatRoute from './components/Route/PrivatRoute';
+import RateOrder from './components/Order/order.rate/RateOrder'
+import { PARAM, RESOURCE } from './data/constants/routeConstants';
 
 
 const ROUTES = {
@@ -23,43 +24,43 @@ const ROUTES = {
     component: OrderForm
   },
   ADMIN_MASTERS_LIST: {
-    path:"/admin/masters-list",
+    path:`/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`,
     component: MastersList
   },
   ADMIN_MASTER_CONTROLLER: {
-    path: "/admin/master-controller/:propsMasterId?/:propsMasterName?",
+    path: `/${RESOURCE.ADMIN}/${RESOURCE.MASTER_CONTROLLER}/:${PARAM.MASTER_ID}?/:${PARAM.MASTER_NAME}?`,
     component: MasterController
   },
   ADMIN_USERS_LIST: {
-    path: "/admin/users-list",
+    path: `/${RESOURCE.ADMIN}/${RESOURCE.USERS_LIST}`,
     component: UsersList
   }, 
   ADMIN_USER_CONTROLLER: {
-    path: "/admin/user-controller/:propsUserId?/:propsUserName?/:propsUserEmail?",
+    path: `/${RESOURCE.ADMIN}/${RESOURCE.USER_CONTROLLER}/:${PARAM.USER_ID}?/:${PARAM.USER_NAME}?/:${PARAM.USER_EMAIL}?`,
     component: UserController
   },
   ADMIN_CITIES_LIST: {
-    path: "/admin/cities-list",
+    path: `/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`,
     component: CitiesList
   },
   ADMIN_CITY_CONTROLLER: {
-    path: "/admin/city-controller/:propsCityId?/:propsCityName?",
+    path: `/${RESOURCE.ADMIN}/${RESOURCE.CITY_CONTROLER}/:${PARAM.CITY_ID}?/:${PARAM.CITY_NAME}?`,
     component: CityController
   },
   ADMIN_ORDERS_LIST: {
-    path:"/admin/orders-list",
+    path:`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`,
     component: OrdersList
   },
   ADMIN_ORDER_CONTROLLER: {
-    path: "/admin/order-controller/:propsOrderId?/:propsUserId?/:propsClockId?/:propsCityId?/:propsOrderDate?/:propsOrderTime?/:propsMasterId?",
+    path: `/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CONTROLLER}/:${PARAM.ORDER_ID}?/:${PARAM.USER_ID}?/:${PARAM.CLOCK_ID}?/:${PARAM.CITY_ID}?/:${PARAM.ORDER_DATE}?/:${PARAM.ORDER_TIME}?/:${PARAM.MASTER_ID}?`,
     component: OrderController
   },
   ADMIN_LOGIN: {
-    path:"/login",
+    path:`/${RESOURCE.LOGIN}`,
     component: LoginForm
   },
   RATE_ORDER: {
-    path:"/rate/:ratingIdentificator?",
+    path:`/${RESOURCE.RATE}/:${PARAM.RATING_ID}?`,
     component: RateOrder
   }
   

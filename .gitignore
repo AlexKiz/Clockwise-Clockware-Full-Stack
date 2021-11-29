@@ -1,10 +1,9 @@
 server/node_modules
-server/dist
 server/.env
 client/build
 client/node_modules
 client/package-lock.json
 client/.env
-
+server/dist
 
 

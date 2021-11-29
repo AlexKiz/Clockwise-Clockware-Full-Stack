@@ -1,13 +1,13 @@
 import { Router } from 'express'
-import { postOrder, getClocks, getOrderForRate, putRatedOrder } from '../controller/order.controller'
-import { postOrderValidate } from '../controller/order.validate'
+import { URL } from '../../data/constants/routeConstants'
+import { postOrder, putRatedOrder, getClocks, getOrderForRate } from '../controller/order.controller'
+import { postOrderValidate, putRatedOrderValidate } from '../controller/order.validate'
 
 const router = Router()
 
-router.post('/order', [postOrderValidate], postOrder)
-router.get('/OrderForRate', getOrderForRate)
-router.get('/clocks', getClocks)
-router.put('/RatedOrder', putRatedOrder)
-
+router.post(`/${URL.ORDER}`, [postOrderValidate], postOrder)
+router.get(`/${URL.ORDER_FOR_RATE}`, getOrderForRate)
+router.get(`/${URL.CLOCKS}`, getClocks)
+router.put(`/${URL.RATED_ORDER}`, [putRatedOrderValidate], putRatedOrder)
 
 export default router 

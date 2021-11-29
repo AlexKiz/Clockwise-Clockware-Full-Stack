@@ -1,26 +1,28 @@
 import axios from "axios";
-import { useState, useEffect, FC } from "react";
+import React, { useState, useEffect, FC, useCallback } from "react";
 import {Link} from 'react-router-dom'
 import '../cities.list/cities-list.css'
-import { City } from '../../../types/types'
+import { City } from '../../../data/types/types'
+import { CitiesListProps } from './componentConstants'
+import { URL, RESOURCE } from "../../../data/constants/routeConstants";
 
-interface CitiesListProps {}
 
 const CitiesList: FC<CitiesListProps> = () => {
+
 
     const [cities, setCities] = useState<City[]>([])
 
 
     useEffect(()=> {
+        
+        const readCitiesData = async () => {
 
-        const readAllCities = async () => {
-
-            const {data} = await axios.get<City[]>(`/city`)
+            const { data } = await axios.get<City[]>(`/${URL.CITY}`)
             
             setCities(data)
         }
 
-        readAllCities()
+        readCitiesData()
 
     },[])
 
@@ -28,7 +30,7 @@ const CitiesList: FC<CitiesListProps> = () => {
     const onDelete = (id: number) => {
         
         if(window.confirm('Do you want to delete this city?')) {
-            axios.delete<City>(`/city`,
+            axios.delete<City>(`/${URL.CITY}`,
             {
                 data: 
                 {
@@ -36,7 +38,7 @@ const CitiesList: FC<CitiesListProps> = () => {
                 }
             }).then(() => {
 
-                setCities(cities.filter((elem) => elem.cityId !== id))
+                setCities(cities.filter((city) => city.id !== id))
 
                 alert('City has been deleted') 
             })
@@ -54,15 +56,15 @@ const CitiesList: FC<CitiesListProps> = () => {
                     <tr>
                         <th className='th-city-id'>Id</th>
                         <th className='th-city-name'>City name</th>
-                        <button className='button-add'><Link to = '/admin/city-controller'>Create new city</Link></button>
+                        <button className='button-add'><Link to = {`/${RESOURCE.ADMIN}/${RESOURCE.CITY_CONTROLER}`}>Create new city</Link></button>
                     </tr>
                     {
-                        cities.map((elem) => (
+                        cities.map((city) => (
                             <tr>
-                                <td>{`${elem.cityId}`}</td>
-                                <td>{`${elem.cityName}`}</td>
-                                <button className='button-update'><Link to = {`/admin/city-controller/${elem.cityId}/${elem.cityName}`}>Update</Link></button>
-                                <button className='button-delete' onClick = {() => {onDelete(elem.cityId)}}>Delete</button>
+                                <td>{`${city.id}`}</td>
+                                <td>{`${city.name}`}</td>
+                                <button className='button-update'><Link to = {`/${RESOURCE.ADMIN}/${RESOURCE.CITY_CONTROLER}/${city.id}/${city.name}`}>Update</Link></button>
+                                <button className='button-delete' onClick = {() => {onDelete(city.id)}}>Delete</button>
                             </tr>
                         ))
                     }

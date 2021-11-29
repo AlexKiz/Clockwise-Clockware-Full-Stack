@@ -1,18 +1,11 @@
 import React, {useState, useEffect, FC} from 'react'
 import axios from 'axios'
-import PublicHeader from '../Headers/PublicHeader'
-import '../Order/order-form.css'
-import { Master, City, Clock } from '../../types/types'
-
-const currentDate = new Date() 
-const currentDay = (currentDate.getDate() < 10) ? `0${currentDate.getDate()}` : currentDate.getDate()
-const currentMonth = ((currentDate.getMonth() + 1) < 10) ? `0${(currentDate.getMonth() + 1)}` : (currentDate.getMonth() + 1)
-const currentYear = currentDate.getFullYear()
-const today = `${currentYear}-${currentMonth}-${currentDay}`
-
-const openingHours: string[] = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00']
-
-interface OrderFormProps {}
+import PublicHeader from '../../Headers/PublicHeader'
+import '../order.form/order-form.css'
+import { Master, City, Clock } from '../../../data/types/types'
+import { today, openingHours } from '../../../data/constants/systemConstants'
+import { OrderFormProps } from './componentConstants'
+import { URL } from '../../../data/constants/routeConstants'
 
 const OrderForm: FC<OrderFormProps> = () => {
 
@@ -33,27 +26,42 @@ const OrderForm: FC<OrderFormProps> = () => {
     const [clockId, setClockId] = useState<number>(0)
     const [clocks, setClocks] = useState<Clock[]>([])
 
-
+    
     useEffect(() => {
-        const cityName = async () => {
+        const readCitiesData = async () => {
 
-            const {data} = await axios.get<City[]>(`/cityForOrder`)
+            const { data } = await axios.get<City[]>(`/${URL.CITY_FOR_ORDER}`)
 
             if(data.length) {
                 setCities(data)
-                setCityId(data[0].cityId)
+                setCityId(data[0].id)
             }
         }
 
-        cityName()
+        readCitiesData()
     },[])
 
 
     useEffect(() => {
-        const masterName = async () => {
+        const readClocksData = async () => {
+
+            const { data } = await axios.get<Clock[]>(`/${URL.CLOCK}`) 
+            
+            if(data.length){
+                setClockId(data[0].id)
+                setClocks(data)
+            }
+        }
+
+        readClocksData()
+    },[])
+
+
+    useEffect(() => {
+        const readAvailableMastersData = async () => {
 
             if(cityId && orderDate && orderTime && clockId) {
-                const {data} = await axios.get<Master[]>(`/availableMasters`, {
+                const { data } = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
                     params: {
                     city_id: cityId,
                     start_work_on: `${orderDate} ${orderTime}`,
@@ -69,36 +77,22 @@ const OrderForm: FC<OrderFormProps> = () => {
                 }
 
                 if(data.length) {
-                    setMasterId(data[0].masterId)
+                    setMasterId(data[0].id)
                     setMasters(data)
                 }
                 
             }
             
         }
-        masterName()
-    },[cityId,clockId,orderDate,orderTime])
+        readAvailableMastersData()
+
+    }, [cityId, clockId, orderDate, orderTime])
     
-
-
-    useEffect(() => {
-        const clockSize = async () => {
-
-            const{data} = await axios.get<Clock[]>(`/clocks`)
-            if(data.length){
-                setClockId(data[0].clockId)
-                setClocks(data)
-            }
-            
-        }
-
-        clockSize()
-    },[])
 
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        axios.post(`/order`, 
+        axios.post(`/${URL.ORDER}`, 
         {
             name: userName, 
             email: userEmail,
@@ -165,11 +159,11 @@ const OrderForm: FC<OrderFormProps> = () => {
                                         <label>Choose clocksize:</label>
                                     </div>
         
-                                    <select name='clocksize' onChange={(clockIdEvent) => setClockId(+clockIdEvent.target.value)}>
+                                    <select name='clocksize' onChange={(clockIdEvent) => setClockId(Number(clockIdEvent.target.value))}>
                                         {
-                                            clocks.map(({clockSize, clockId}) => (
-                                                <option value={clockId}>
-                                                    {`${clockSize}`}
+                                            clocks.map((clock) => (
+                                                <option value={clock.id}>
+                                                    {`${clock.size}`}
                                                 </option>
                                             ))    
                                         }
@@ -181,11 +175,11 @@ const OrderForm: FC<OrderFormProps> = () => {
                                         <label>Choose your city:</label>
                                     </div>
                                     
-                                    <select name='cities' onChange={(cityIdEvent) => setCityId(+cityIdEvent.target.value)}>
+                                    <select name='cities' onChange={(cityIdEvent) => setCityId(Number(cityIdEvent.target.value))}>
                                         {
-                                            cities.map(({cityName, cityId}) => (
-                                                <option value={cityId}>
-                                                    {`${cityName}`}
+                                            cities.map((city) => (
+                                                <option value={city.id}>
+                                                    {`${city.name}`}
                                                 </option>
                                             ))
                                         }
@@ -227,11 +221,11 @@ const OrderForm: FC<OrderFormProps> = () => {
                                         <label>Available masters:</label>
                                     </div>
                                     
-                                    <select name='masterName' onChange={(masterIdEvent) => setMasterId(+masterIdEvent.target.value)}>
+                                    <select name='masterName' onChange={(masterIdEvent) => setMasterId(Number(masterIdEvent.target.value))}>
                                         {
-                                            masters.map(({masterName, masterId, masterRating}) => (
-                                                <option value={masterId}>
-                                                    {`${masterName} | Rating:${masterRating}`}
+                                            masters.map((master) => (
+                                                <option value={master.id}>
+                                                    {`${master.name} | Rating:${master.rating}`}
                                                 </option>
                                             ))
                                         }

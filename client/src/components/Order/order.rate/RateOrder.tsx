@@ -3,16 +3,17 @@ import React, { useState, useEffect, FC } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 //@ts-ignore
 import ReactStars from "react-rating-stars-component";
-import classes from '../RateOrder/rate-order.module.css'
-import { Params, Order } from '../../types/types'
+import classes from '../order.rate/rate-order.module.css'
+import { Params, Order } from '../../../data/types/types'
+import { RateOrderProps } from './componentConstants';
+import { URL } from '../../../data/constants/routeConstants';
 
-interface RateOrderProps {}
 
 const RateOrder: FC<RateOrderProps> = () => {
 
     const history = useHistory()
 
-    const { ratingIdentificator } = useParams<Params>()
+    const { ratingIdentificatorParam } = useParams<Params>()
     
     const [rating, setRating] = useState<number>(0)
 
@@ -21,14 +22,12 @@ const RateOrder: FC<RateOrderProps> = () => {
 
     useEffect(() => {
         
-        const getOrderForRate = async () => {
+        const readOrderForRate = async () => {
 
-            const {data} = await axios.get<Order[]>('/OrderForRate',{
+            const { data } = await axios.get<Order[]>(`/${URL.ORDER_FOR_RATE}`, {
 
                 params: {
-
-                    ratingIdentificator: ratingIdentificator
-                    
+                    ratingIdentificator: ratingIdentificatorParam
                 }
             })
             
@@ -46,15 +45,15 @@ const RateOrder: FC<RateOrderProps> = () => {
             
         }
 
-        getOrderForRate()
+        readOrderForRate()
     },[])
 
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
-        axios.put('/RatedOrder', {
-            id: order[0].orderId,
+        axios.put(`/${URL.RATED_ORDER}`, {
+            id: order[0].id,
             order_rated: rating,
             master_id: order[0].masterId
         }).then(() => {
@@ -79,7 +78,7 @@ const RateOrder: FC<RateOrderProps> = () => {
                                 <p>{order[0].masterName}</p>
                             </div>
                             <div className={classes.form_orderinfo}>
-                                <b>Order #{order[0].orderId}</b>
+                                <b>Order #{order[0].id}</b>
                                 <br />
                                 <b> User name:</b> <span>{order[0].userName}</span>
                                 <br />

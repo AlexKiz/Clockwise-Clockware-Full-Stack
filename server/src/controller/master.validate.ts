@@ -1,16 +1,15 @@
 import { Response, Request, NextFunction } from "express"
+import { VALID } from "../../data/constants/systemConstants"
 import db from '../db'
-
-const validName = new RegExp(/^[A-Za-zА-Яа-я]{3,49}$|^[A-Za-zА-Яа-я]{3,49}[\s]{1}[A-Za-zА-Яа-я]{3,50}$/)
 
 
 export const postMasterValidate = async(req: Request, res: Response, next: NextFunction) => {
 
-    const {name, cities_id} = req.body
+    const { name, cities_id } = req.body
 
-    const validationErrors = []
+    const validationErrors: string[] = []
 
-    if(!validName.test(name)) {
+    if(!VALID.MASTER_NAME.test(name)) {
 
         validationErrors.push('Invalid master name')
     }
@@ -37,7 +36,7 @@ export const putMasterValidate = async(req: Request, res: Response, next: NextFu
     
     const {id, name, cities_id} = req.body
 
-    const validationErrors = []
+    const validationErrors: string[] = []
 
     const validMaster = await db.query('SELECT * FROM masters WHERE id = $1', [id])
 
@@ -47,7 +46,7 @@ export const putMasterValidate = async(req: Request, res: Response, next: NextFu
 
     }
 
-    if(!validName.test(name)) {
+    if(!VALID.MASTER_NAME.test(name)) {
 
         validationErrors.push('Invalid master name')
 
@@ -75,13 +74,13 @@ export const deleteMasterValidate = async(req: Request, res: Response, next: Nex
 
     const { id } = req.body
 
-    const validationErrors = []
+    const validationErrors: string[] = []
 
     const validMaster = await db.query('SELECT * FROM masters WHERE id = $1', [id])
 
     if(!validMaster.rows.length) {
 
-        validationErrors.push('Master with current id does not exist', [id])
+        validationErrors.push('Master with current id does not exist')
     }
 
     if(validationErrors.length) {

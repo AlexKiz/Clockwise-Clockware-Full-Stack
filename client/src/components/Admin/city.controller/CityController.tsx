@@ -2,9 +2,11 @@ import axios from "axios";
 import React, { useState, useEffect, FC } from "react";
 import { useParams, useHistory} from "react-router-dom"
 import '../city.controller/city-update-form.css'
-import { City, Params } from '../../../types/types'
+import { City, Params } from '../../../data/types/types'
+import { CityControllerProps } from './componentConstants'
+import { RESOURCE, URL } from "../../../data/constants/routeConstants";
 
-interface CityControllerProps {}
+
 
 const CityController: FC<CityControllerProps> = () => {
 
@@ -13,35 +15,35 @@ const CityController: FC<CityControllerProps> = () => {
     const [cityName, setCityName] = useState<string>('')
     const [cityId, setCityId] = useState<number>(0)
 
-    const {propsCityId, propsCityName} = useParams<Params>()
+    const {cityIdParam, cityNameParam} = useParams<Params>()
 
 
     useEffect(() => {
 
-        if(propsCityId) {
+        if(cityIdParam) {
 
-            setCityId(+propsCityId)
-            setCityName(propsCityName)
+            setCityId(Number(cityIdParam))
+            setCityName(cityNameParam)
         }
-    },[])
+    }, [])
 
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        if(!propsCityId) {
+        if(!cityIdParam) {
 
-            axios.post<City>(`/city`, 
+            axios.post<City>(`/${URL.CITY}`, 
             {
                 id: cityId,
                 name: cityName
             }).then(() => {
 
                 alert('City has been created')
-                history.push('/admin/cities-list')
+                history.push(`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`)
 
             }).catch((error) => {
 
-                if(+error.response.status === 400) {
+                if(Number(error.response.status) === 400) {
                     alert(error.response.data[0])
                     setCityName('')
                 }
@@ -51,23 +53,22 @@ const CityController: FC<CityControllerProps> = () => {
 
         } else {
 
-            axios.put<City>(`/city`, {
+            axios.put<City>(`/${URL.CITY}`, {
                 id: cityId,
                 name: cityName
             }).then(() => {
 
                 alert('City has been updated')
-                history.push('/admin/cities-list')
+                history.push(`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`)
 
             }).catch((error) => {
 
                 alert(error.response.data)
-                setCityName(propsCityName)
+                setCityName(cityNameParam)
 
             })
         }
     }
-
     
     return (
 

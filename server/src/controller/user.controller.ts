@@ -5,7 +5,7 @@ import db from '../db'
 export const postUser = async (req: Request, res: Response) => {
 
     try {
-        const {name, email} = req.body
+        const { name, email } = req.body
 
         const createUser = await db.query('INSERT INTO users (name, email) VALUES ($1, $2)', [name, email])
 
@@ -18,12 +18,12 @@ export const postUser = async (req: Request, res: Response) => {
 }
 
 
-export const getUser = async (req: Request, res: Response) => {
+export const getUsers = async (req: Request, res: Response) => {
 
     try {
-        const readUser = await db.query('SELECT id as "userId", name as "userName", email as "userEmail" FROM users')
+        const readUsers = await db.query('SELECT * FROM users')
 
-        res.status(200).json(readUser.rows)
+        res.status(200).json(readUsers.rows)
 
     } catch(error) {
 
@@ -35,7 +35,7 @@ export const getUser = async (req: Request, res: Response) => {
 export const putUser = async (req: Request, res: Response) => {
 
     try {
-        const {id, name, email} = req.body
+        const { id, name, email } = req.body
 
         const userChecking = await db.query('SELECT id FROM users WHERE email = $1', [email])
 
@@ -60,7 +60,7 @@ export const putUser = async (req: Request, res: Response) => {
 export const deleteUser = async (req: Request, res: Response) => {
 
     try {
-        const {id} = req.body
+        const { id } = req.body
 
         const deleteUser = await db.query('DELETE FROM users WHERE id = $1', [id])
         

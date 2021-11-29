@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import { Route, Redirect, useHistory } from "react-router-dom"
 import jwt_decode from "jwt-decode";
-import PrivateHeader from './components/Headers/PrivateHeader';
+import PrivateHeader from '../Headers/PrivateHeader';
+import { RESOURCE } from '../../data/constants/routeConstants';
 
 const PrivatRoute = ({ component: Component, ...rest }) => {
 
@@ -11,10 +12,10 @@ const PrivatRoute = ({ component: Component, ...rest }) => {
 
         if(!localStorage.getItem('accessToken')) {
             alert('You must be authorizated')
-            history.push('/login')
-        } else if((jwt_decode(localStorage.getItem('accessToken'))).exp < +(Date.now()/1000).toFixed()){
+            history.push(`/${RESOURCE.LOGIN}`)
+        } else if((jwt_decode(localStorage.getItem('accessToken'))).exp < Number((Date.now()/1000).toFixed())){
             localStorage.removeItem('accessToken')
-            history.push('/login');
+            history.push(`/${RESOURCE.LOGIN}`);
         }
 
     })
@@ -28,7 +29,7 @@ const PrivatRoute = ({ component: Component, ...rest }) => {
             <Component {...props}/>
             </>
         ) : (
-            <Redirect to='/login'/>
+            <Redirect to={`/${RESOURCE.LOGIN}`}/>
         )}
         />
     )

@@ -1,21 +1,20 @@
 import { Response, Request, NextFunction } from "express"
+import { VALID } from "../../data/constants/systemConstants"
 import db from '../db'
 
-const validName = new RegExp(/^([(A-Za-zА-Яа-я]{3,49})$|^([A-Za-zА-Яа-я]{3,49}[\s]{1}[A-Za-zА-Яа-я]{3,50})$/)
-const validEmail = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
 
 export const postUserValidate = async(req: Request, res: Response, next: NextFunction) => {
 
     const {name, email} = req.body
 
-    const validationErrors = []
+    const validationErrors: string[] = []
 
-    if(!validName.test(name)) {
+    if(!VALID.USER_NAME.test(name)) {
 
         validationErrors.push('Invalid user name')
     }
 
-    if(!validEmail.test(email)) {
+    if(!VALID.USER_EMAIL.test(email)) {
 
         validationErrors.push('Invalid user email')
     }
@@ -36,7 +35,7 @@ export const putUserValidate = async(req: Request, res: Response, next: NextFunc
     
     const {id, name, email} = req.body
 
-    const validationErrors = []
+    const validationErrors: string[] = []
 
     const validUser = await db.query('SELECT * FROM users WHERE id = $1', [id])
 
@@ -46,13 +45,13 @@ export const putUserValidate = async(req: Request, res: Response, next: NextFunc
 
     }
 
-    if(!validName.test(name)) {
+    if(!VALID.USER_NAME.test(name)) {
 
         validationErrors.push('Invalid user name')
 
     }
 
-    if(!validEmail.test(email)) {
+    if(!VALID.USER_EMAIL.test(email)) {
 
         validationErrors.push('Invalid user email')
 
@@ -74,7 +73,7 @@ export const deleteUserValidate = async(req: Request, res: Response, next: NextF
     
     const {id} = req.body
 
-    const validationErrors = []
+    const validationErrors: string[] = []
 
     const validUser = await db.query('SELECT * FROM users WHERE id = $1', [id])
 

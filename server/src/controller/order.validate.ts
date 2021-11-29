@@ -1,9 +1,7 @@
 import { Response, Request, NextFunction } from "express"
-
+import { VALID } from "../../data/constants/systemConstants"
 import db from '../db'
-const validDate = new RegExp(/(\d{4}[-](0[1-9]|1[0-2])[-]([0-2]{1}\d{1}|3[0-1]{1})|([0-2]{1}\d{1}|3[0-1]{1})[-](0[1-9]|1[0-2])[-]\d{4})\s([0-2]{1}\d{1}[:][0-5]{1}\d{1})/)
-const validName = new RegExp(/^([(A-Za-zА-Яа-я]{3,49})$|^([A-Za-zА-Яа-я]{3,49}[\s]{1}[A-Za-zА-Яа-я]{3,50})$/)
-const validEmail = new RegExp(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+
 
 export const postOrderValidate = async(req: Request, res: Response, next: NextFunction) => {
 
@@ -35,19 +33,19 @@ export const postOrderValidate = async(req: Request, res: Response, next: NextFu
 
     }
 
-    if(!validDate.test(start_work_on)) {
+    if(!VALID.DATE.test(start_work_on)) {
 
         validationErrors.push('Invalid date')
 
     }
 
-    if(!validName.test(name)) {
+    if(!VALID.USER_NAME.test(name)) {
 
         validationErrors.push('Invalid user name')
 
     }
 
-    if(!validEmail.test(email)) {
+    if(!VALID.USER_EMAIL.test(email)) {
 
         validationErrors.push('Invalid user email')
 
@@ -110,7 +108,7 @@ export const putOrderValidate = async(req: Request, res: Response, next: NextFun
 
     }
     
-    if(!validDate.test(start_work_on)) {
+    if(!VALID.DATE.test(start_work_on)) {
 
         validationErrors.push('Invalid date')
     }
@@ -126,11 +124,47 @@ export const putOrderValidate = async(req: Request, res: Response, next: NextFun
 }
 
 
+export const putRatedOrderValidate = async(req: Request, res: Response, next:NextFunction) => {
+
+    const { id, order_rated, master_id } = req.body
+
+    const validationErrors: string[] = []
+
+    const validOrder = await db.query('SELECT * FROM orders WHERE id = $1', [id])
+
+    if(!validOrder.rows.length) {
+
+        validationErrors.push('Order with current id does not exist')
+    }
+
+    const validMasterId = await db.query('SELECT * FROM masters WHERE id = $1', [master_id])
+    
+    if(!validMasterId.rows.length) {
+
+        validationErrors.push('Master with current id does not exist')
+    }
+
+    if(order_rated < 0 || order_rated > 5) {
+
+        validationErrors.push('Order rating must be from 0 to 5 range')
+    }
+
+    if(validationErrors.length) {
+
+        res.status(400).json(validationErrors)
+    } else {
+
+        return next()
+    }
+
+}
+
+
 export const deleteOrderValidate = async(req: Request, res: Response, next: NextFunction) => {
 
     const { id } = req.body
 
-    const validationErrors = []
+    const validationErrors: string[] = []
 
     const validOrder = await db.query('SELECT * FROM orders WHERE id = $1', [id])
 

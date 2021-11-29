@@ -2,9 +2,10 @@ import axios from "axios";
 import React, { useState, useEffect, FC } from "react";
 import {Link} from 'react-router-dom'
 import '../master.list/masters-list.css'
-import { Master } from '../../../types/types'
+import { Master } from '../../../data/types/types'
+import { MasterListProps } from "./componentConstants";
+import { RESOURCE, URL } from "../../../data/constants/routeConstants";
 
-interface MasterListProps {}
 
 const MastersList: FC<MasterListProps> = () => {
 
@@ -13,14 +14,14 @@ const MastersList: FC<MasterListProps> = () => {
 
     useEffect(() => {
 
-        const readAllMasters = async () => {
+        const readMastersData = async () => {
             
-            const {data} = await axios.get<Master[]>(`/master`)
+            const { data } = await axios.get<Master[]>(`/${URL.MASTER}`)
             
             setMasters(data)
         }
         
-        readAllMasters()
+        readMastersData()
         
     }, []) 
 
@@ -28,14 +29,14 @@ const MastersList: FC<MasterListProps> = () => {
     const onDelete = (id: number) => {
 
         if(window.confirm("Do you want to delete this master?")) {
-            axios.delete(`/master`, 
+            axios.delete(`/${URL.MASTER}`, 
             {
                 data: {
                     id
                 }
             }).then(() => {
 
-                setMasters(masters.filter((elem) => elem.masterId !== id))
+                setMasters(masters.filter((master) => master.id !== id))
 
                 alert('Master has been deleted')
             })
@@ -54,17 +55,17 @@ const MastersList: FC<MasterListProps> = () => {
                         <th className='th-master-name'>Master name</th>
                         <th className='th-master-city'>Cities</th>
                         <th className='th-rating'>Rating</th>
-                        <button className='button-add'><Link to="/admin/master-controller">Create new master</Link></button>
+                        <button className='button-add'><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.MASTER_CONTROLLER}`}>Create new master</Link></button>
                     </tr>
                     {
-                        masters.map ((elem) => (
+                        masters.map ((master) => (
                             <tr>
-                                <td>{`${elem.masterId}`}</td>
-                                <td>{`${elem.masterName}`}</td>
-                                <td>{elem.cities.map((item) => {return `${item.cityName}`}).join(', ')}</td>
-                                <td>{`${elem.masterRating}`}</td>
-                                <button className='button-update'><Link to={`/admin/master-controller/${elem.masterId}/${elem.masterName}`}>Update</Link></button>
-                                <button className='button-delete' onClick = {() => onDelete(elem.masterId)}>Delete</button>
+                                <td>{`${master.id}`}</td>
+                                <td>{`${master.name}`}</td>
+                                <td>{master.cities.map((city) => {return `${city.name}`}).join(', ')}</td>
+                                <td>{`${master.rating}`}</td>
+                                <button className='button-update'><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.MASTER_CONTROLLER}/${master.id}/${master.name}`}>Update</Link></button>
+                                <button className='button-delete' onClick = {() => onDelete(master.id)}>Delete</button>
                             </tr>
 
                         ))

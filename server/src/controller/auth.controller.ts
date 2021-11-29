@@ -6,15 +6,16 @@ import bcrypt from 'bcrypt'
 
 export const Auth = async (req: Request, res: Response) => {
 
-    const {adminLogin, adminPassword} = req.body 
+    const { adminLogin, adminPassword } = req.body 
     
     const credentials = await db.query('SELECT * FROM admin WHERE email = $1', [adminLogin])
     
     if(credentials.rows.length) {
 
         const hashPass = credentials.rows[0].password
+        const isCompare = await bcrypt.compare(adminPassword,hashPass)
 
-        if(await bcrypt.compare(adminPassword,hashPass)) {
+        if(isCompare) {
             
             const accessToken = jwt.sign({}, `${process.env.PRIVAT_KEY}`, {expiresIn: '2h'})
             
@@ -32,7 +33,6 @@ export const Auth = async (req: Request, res: Response) => {
 }
 
 
-
 export const isAuth = async (req: Request, res: Response, next: NextFunction) => {
 
     if(req.method === 'OPTIONS') {
@@ -44,16 +44,13 @@ export const isAuth = async (req: Request, res: Response, next: NextFunction) =>
         if(req.headers.authorization) {
 
             const accessToken = req.headers.authorization.split(' ')[1]
-
             jwt.verify(accessToken, `${process.env.PRIVAT_KEY}`)
-
             next()
             
         } else {
             
             res.status(401).send()
         }
-        
         
     } catch(error) {
         

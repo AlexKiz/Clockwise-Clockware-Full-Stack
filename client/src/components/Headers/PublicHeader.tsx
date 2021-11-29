@@ -1,7 +1,9 @@
+import React from 'react';
 import {Link} from 'react-router-dom'
 import './header.css'
 import logo from "../../img/logo1.png"
 import { useLocation } from "react-router-dom";
+import { RESOURCE } from '../../data/constants/routeConstants';
 
 const PublicHeader = () => {
 
@@ -30,7 +32,7 @@ const PublicHeader = () => {
                 <nav>
                     <ul className='nav__links'>
                         <li className={splitLocation[splitLocation.length - 1] === "" ? "active" : ""}><Link to='/'>Make order</Link></li> 
-                        <li className={splitLocation[splitLocation.length - 1] === "login" ? "active" : ""}><Link to='/login'>Login</Link></li>
+                        <li className={splitLocation[splitLocation.length - 1] === `${RESOURCE.LOGIN}` ? "active" : ""}><Link to={`/${RESOURCE.LOGIN}`}>Login</Link></li>
                     </ul>
                 </nav>
             </div>

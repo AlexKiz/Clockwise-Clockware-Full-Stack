@@ -2,23 +2,17 @@ import axios from "axios";
 import React, { useState, useEffect, FC } from "react";
 import { useParams, useHistory} from "react-router-dom"
 import '../order.controller/order-update-form.css'
-import { Params, User, Clock, City, Master } from '../../../types/types'
+import { Params, User, Clock, City, Master } from '../../../data/types/types'
+import { today, openingHours } from '../../../data/constants/systemConstants'
+import { OrderControllerProps } from "./componentConstants"; 
+import { RESOURCE, URL } from "../../../data/constants/routeConstants";
 
-const currentDate = new Date() 
-const currentDay = (currentDate.getDate() < 10) ? `0${currentDate.getDate()}` : currentDate.getDate()
-const currentMonth = ((currentDate.getMonth() + 1) < 10) ? `0${(currentDate.getMonth() + 1)}` : (currentDate.getMonth() + 1)
-const currentYear = currentDate.getFullYear()
-const today = `${currentYear}-${currentMonth}-${currentDay}`
-
-const openingHours: string[] = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00']
-
-interface OrderControllerProps {}
 
 const OrderController: FC<OrderControllerProps> = () => {
 
     const history = useHistory()
 
-    const { propsOrderId, propsUserId, propsClockId, propsCityId, propsOrderDate, propsOrderTime, propsMasterId } = useParams<Params>()
+    const { orderIdParam, userIdParam, clockIdParam, cityIdParam, orderDateParam, orderTimeParam, masterIdParam } = useParams<Params>()
 
     const [userId, setUserId] = useState<number>(0)
     const [users, setUsers] = useState<User[]>([])
@@ -29,8 +23,8 @@ const OrderController: FC<OrderControllerProps> = () => {
     const [cityId, setCityId] = useState<number>(0)
     const [cities, setCities] = useState<City[]>([])
 
-    const [orderDate, setOrderDate] = useState<string>(propsOrderDate)
-    const [orderTime, setOrderTime] = useState<string>(propsOrderTime)
+    const [orderDate, setOrderDate] = useState<string>(orderDateParam)
+    const [orderTime, setOrderTime] = useState<string>(orderTimeParam)
 
     const [masterId, setMasterId] = useState<number>(0)
     const [masters, setMasters] = useState<Master[]>([])
@@ -38,58 +32,56 @@ const OrderController: FC<OrderControllerProps> = () => {
 
     useEffect(() => {
         
-        const readAllUsers = async () => {
+        const readUsersData = async () => {
 
-            const {data} = await axios.get<User[]>(`/user`)
+            const { data } = await axios.get<User[]>(`/${URL.USER}`)
 
             setUsers(data)
-            setUserId(+propsUserId)
+            setUserId(Number(userIdParam))
         }
 
-        readAllUsers()
+        readUsersData()
     },[])
 
 
     useEffect(() => {
 
-        const readAllClocks = async () => {
+        const readClocksData = async () => {
 
-            const {data} = await axios.get<Clock[]>(`/clocks`)
+            const { data } = await axios.get<Clock[]>(`/${URL.CLOCK}`)
 
             setClocks(data)
-            setClockId(+propsClockId)
-            
+            setClockId(Number(clockIdParam))
         }
 
-        readAllClocks()
+        readClocksData()
     }, [])
 
 
     useEffect(() => {
 
-        const readAllCities= async () => {
+        const readCitiesData = async () => {
 
-            const {data} = await axios.get<City[]>(`/city`)
+            const { data } = await axios.get<City[]>(`/${URL.CITY}`)
 
             setCities(data)
-            setCityId(+propsCityId)
-
+            setCityId(Number(cityIdParam))
         }
 
-        readAllCities()
+        readCitiesData()
     },[])
 
 
     useEffect(() => { 
         
-        const masterName = async () => {
+        const readAvailableMastersData = async () => {
 
-            const {data} = await axios.get<Master[]>(`/availableMastersForUpdate`, {
+            const { data } = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
                 params: {
-                    currentOrderId: propsOrderId,
-                    city_id: propsCityId,
+                    currentOrderId: orderIdParam,
+                    city_id: cityIdParam,
                     start_work_on: `${orderDate} ${orderTime}`,
-                    clock_id: propsClockId,
+                    clock_id: clockIdParam,
                 }
             })
 
@@ -99,21 +91,21 @@ const OrderController: FC<OrderControllerProps> = () => {
             }
 
             if(data.length) {
-                setMasterId(+propsMasterId)
+                setMasterId(Number(masterIdParam))
                 setMasters(data)
             }
 
         }
-        masterName()
+        readAvailableMastersData()
 
     }, [cityId, clockId, orderDate, orderTime])
 
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        axios.put(`/order`, 
+        axios.put(`/${URL.ORDER}`, 
         {
-            id: propsOrderId,
+            id: orderIdParam,
             clock_id: clockId,
             user_id: userId,
             city_id: cityId,
@@ -121,7 +113,7 @@ const OrderController: FC<OrderControllerProps> = () => {
             start_work_on: `${orderDate} ${orderTime}`
         }).then(() => {
             alert('Order has been updated')
-            history.push('/admin/orders-list')
+            history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`)
         })
 
     }
@@ -141,11 +133,11 @@ const OrderController: FC<OrderControllerProps> = () => {
                             </label>
                         </div>
 
-                        <select name='users' onChange={(userIdEvent) => setUserId(+userIdEvent.target.value)}>
+                        <select name='users' onChange={(userIdEvent) => setUserId(Number(userIdEvent.target.value))}>
                         {
-                            users.map(({userName, userId, userEmail}) => (
-                                <option selected = {userId === +propsUserId} value={userId}>
-                                    {` user: ${userName} | email: ${userEmail}`}
+                            users.map((user) => (
+                                <option selected = {user.id === Number(userIdParam)} value={user.id}>
+                                    {` user: ${user.name} | email: ${user.email}`}
                                 </option>
                             ))
                         }
@@ -160,11 +152,11 @@ const OrderController: FC<OrderControllerProps> = () => {
                             </label>
                         </div>
 
-                        <select name='clocks' onChange={(clockIdEvent) => setClockId(+clockIdEvent.target.value)}>
+                        <select name='clocks' onChange={(clockIdEvent) => setClockId(Number(clockIdEvent.target.value))}>
                             {
-                                clocks.map(({clockId,clockSize}) => (
-                                    <option selected = {clockId === +propsClockId} value={clockId}>
-                                        {`${clockSize}`}
+                                clocks.map((clock) => (
+                                    <option selected = {clock.id === Number(clockIdParam)} value={clock.id}>
+                                        {`${clock.size}`}
                                     </option>
                                 ))
                             }
@@ -179,11 +171,11 @@ const OrderController: FC<OrderControllerProps> = () => {
                             </label>
                         </div>
 
-                        <select name='cities' onChange={(cityIdEvent) => setCityId(+cityIdEvent.target.value)}>
+                        <select name='cities' onChange={(cityIdEvent) => setCityId(Number(cityIdEvent.target.value))}>
                             {
-                                cities.map(({cityId, cityName}) => (
-                                    <option selected = {cityId === +propsCityId} value={cityId}>
-                                        {`${cityName}`}
+                                cities.map((city) => (
+                                    <option selected = {city.id === Number(cityIdParam)} value={city.id}>
+                                        {`${city.name}`}
                                     </option>
                                 ))
                             }
@@ -231,11 +223,11 @@ const OrderController: FC<OrderControllerProps> = () => {
                             <label>Available masters:</label>
                         </div>
 
-                        <select name='masterName' onChange={(masterIdEvent) => setMasterId(+masterIdEvent.target.value)}>
+                        <select name='masterName' onChange={(masterIdEvent) => setMasterId(Number(masterIdEvent.target.value))}>
                             {
-                                masters.map(({masterName, masterId}) => (
-                                    <option selected = {masterId === +propsMasterId} value={masterId}>
-                                        {`${masterName}`}
+                                masters.map((master) => (
+                                    <option selected = {master.id === Number(masterIdParam)} value={master.id}>
+                                        {`${master.name}`}
                                     </option>
                                 ))
                             }

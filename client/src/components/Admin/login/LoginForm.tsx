@@ -1,10 +1,10 @@
 import axios from "axios";
+import { RESOURCE, URL} from "../../../data/constants/routeConstants";
 import React, { useEffect, useState, FC } from "react";
 import { useHistory } from "react-router-dom"
 import PublicHeader from "../../Headers/PublicHeader";
 import '../login/login-form.css'
-
-interface LoginFormProps {}
+import { LoginFormProps } from "./componentConstants";
 
 const LoginForm:FC<LoginFormProps> = () => {
 
@@ -15,7 +15,7 @@ const LoginForm:FC<LoginFormProps> = () => {
 
     useEffect(() => {
         if(localStorage.getItem('accessToken')) {
-            history.push('/admin/orders-list')
+            history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`)
         }
     },[])
     
@@ -29,9 +29,9 @@ const LoginForm:FC<LoginFormProps> = () => {
 
         try{
 
-            const { headers:{ authorization: accessToken } } = await axios.post('/login', payload)
+            const { headers:{ authorization: accessToken } } = await axios.post(`/${URL.LOGIN}`, payload)
             localStorage.setItem('accessToken', accessToken.split(' ')[1])
-            history.push('/admin/orders-list')
+            history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`)
 
         } catch(e) {
 

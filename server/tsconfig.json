@@ -11,10 +11,10 @@
             "es6",
             "scripthost"
         ],     
-        "outDir": "dist",                                    
+        "outDir": "dist",                                   
         "typeRoots": [
             "node_modules/@types"
-        ],                                      
+        ],                                     
         "baseUrl": ".",
         "allowSyntheticDefaultImports": true,
         "skipLibCheck": true,
@@ -27,7 +27,6 @@
         "strict": true,                                 
     }, 
     "include": [
-        "server/src/**/*",
-        "client/src/**/*"
+        "src/**/*"
     ]
 }

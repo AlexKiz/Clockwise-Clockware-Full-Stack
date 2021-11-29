@@ -1,7 +1,6 @@
+import { VALID } from '../../data/constants/systemConstants';
 import { Response, Request, NextFunction } from "express"
 import db from '../db'
-
-const validName = new RegExp(/^[A-Za-zА-Яа-я]{3,100}$|^[A-Za-zА-Яа-я]{3,49}[-\s]{1}[A-Za-zА-Яа-я]{3,50}$/)
 
 
 export const postCityValidate = async (req: Request, res: Response, next: NextFunction) => {
@@ -25,7 +24,7 @@ export const postCityValidate = async (req: Request, res: Response, next: NextFu
 
     }
 
-    if(!validName.test(name)) {
+    if(!VALID.CITY_NAME.test(name)) {
 
         validationErrors.push('Invalid city name')
     }
@@ -45,7 +44,7 @@ export const putCityValidate = async (req: Request, res: Response, next: NextFun
     
     const { id, name } = req.body
 
-    const validationErrors = []
+    const validationErrors: string[] = []
 
     const validCity = await db.query('SELECT * FROM cities WHERE id = $1', [id])
 
@@ -54,7 +53,7 @@ export const putCityValidate = async (req: Request, res: Response, next: NextFun
         validationErrors.push('City with current id does not exist')
     }
 
-    if(!validName.test(name)) {
+    if(!VALID.CITY_NAME.test(name)) {
 
         validationErrors.push('Invalid city name')
     }
@@ -74,7 +73,7 @@ export const deleteCityValidate = async (req: Request, res: Response, next: Next
     
     const { id } = req.body 
 
-    const validationErrors = []
+    const validationErrors :string[] = []
 
     const validCity = await db.query('SELECT * FROM cities WHERE id = $1', [id])
 

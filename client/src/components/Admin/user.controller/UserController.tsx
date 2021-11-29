@@ -2,10 +2,9 @@ import axios from "axios";
 import React, { useState, useEffect, FC } from "react";
 import { useParams, useHistory } from "react-router-dom"
 import '../user.controller/user-update-form.css'
-import { Params } from '../../../types/types'
-
-
-interface UserControllerProps {}
+import { Params } from '../../../data/types/types'
+import { UserControllerProps } from "./componentConstant";
+import { RESOURCE, URL } from "../../../data/constants/routeConstants";
 
 const UserController: FC<UserControllerProps> = () => {
     
@@ -15,31 +14,31 @@ const UserController: FC<UserControllerProps> = () => {
     const [userId, setUserId] = useState<number>(0)
     const [userEmail, setUserEmail] = useState<string>('')
 
-    const {propsUserId, propsUserName, propsUserEmail} = useParams<Params>()
+    const { userIdParam, userNameParam, userEmailParam } = useParams<Params>()
     
 
     useEffect(() => {
         
-        setUserId( +propsUserId )
-        setUserName( propsUserName )
-        setUserEmail( propsUserEmail )
+        setUserId( Number(userIdParam) )
+        setUserName( userNameParam )
+        setUserEmail( userEmailParam )
 
     },[])
 
 
     const onSubmit = (event: React.FormEvent) => {
         event.preventDefault()
-        axios.put(`/user` , 
+        axios.put(`/${URL.USER}` , 
         { 
             id: userId,
             name: userName,
             email: userEmail
         }).then(() => {
             alert('User has been updated')
-            history.push('/admin/users-list')
+            history.push(`/${RESOURCE.ADMIN}/${RESOURCE.USERS_LIST}`)
         }).catch(() => {
             alert('User with current email already exists')
-            setUserEmail( propsUserEmail )
+            setUserEmail( userEmailParam )
         })
         
     }
