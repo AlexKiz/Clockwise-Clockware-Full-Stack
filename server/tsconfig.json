@@ -1,0 +1,32 @@
+{
+    "compilerOptions": {
+        "target": "es2017",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "alwaysStrict": true,
+        "jsx": "react",                            
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "es6",
+            "scripthost"
+        ],     
+        "outDir": "dist",                                   
+        "typeRoots": [
+            "node_modules/@types"
+        ],                                     
+        "baseUrl": ".",
+        "allowSyntheticDefaultImports": true,
+        "skipLibCheck": true,
+        "allowJs": true,    
+        "noImplicitAny": true,            
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,            
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "strict": true,                                 
+    }, 
+    "include": [
+        "src/**/*"
+    ]
+}
