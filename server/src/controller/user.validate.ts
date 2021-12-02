@@ -1,11 +1,11 @@
 import { Response, Request, NextFunction } from "express"
 import { VALID } from "../../data/constants/systemConstants"
-import db from '../db'
+import { User } from '../models/Models'
 
 
 export const postUserValidate = async(req: Request, res: Response, next: NextFunction) => {
 
-    const {name, email} = req.body
+    const { name, email } = req.body
 
     const validationErrors: string[] = []
 
@@ -33,13 +33,17 @@ export const postUserValidate = async(req: Request, res: Response, next: NextFun
 
 export const putUserValidate = async(req: Request, res: Response, next: NextFunction) => {
     
-    const {id, name, email} = req.body
+    const { id, name, email } = req.body
 
     const validationErrors: string[] = []
 
-    const validUser = await db.query('SELECT * FROM users WHERE id = $1', [id])
+    const validUser = await User.findAll({
+        where: {
+            id: id
+        }
+    })
 
-    if(!validUser.rows.length) {
+    if(!validUser.length) {
 
         validationErrors.push('User with current id does not exist')
 
@@ -71,13 +75,17 @@ export const putUserValidate = async(req: Request, res: Response, next: NextFunc
 
 export const deleteUserValidate = async(req: Request, res: Response, next: NextFunction) => {
     
-    const {id} = req.body
+    const { id } = req.body
 
     const validationErrors: string[] = []
 
-    const validUser = await db.query('SELECT * FROM users WHERE id = $1', [id])
+    const validUser = await User.findAll({
+        where: {
+            id: id
+        }
+    })
 
-    if(!validUser.rows.length) {
+    if(!validUser.length) {
         
         validationErrors.push('User with current id does not exist')
     }
@@ -85,6 +93,7 @@ export const deleteUserValidate = async(req: Request, res: Response, next: NextF
     if(validationErrors.length) {
 
         res.status(400).json(validationErrors)
+
     } else {
 
         return next()

@@ -1,43 +1,35 @@
-import { Model } from 'sequelize';
-
-export interface AdminModel extends Model {
+export interface AdminAttributes {
     id: number,
     email: string,
     password: string
 }
 
-export interface CityModel extends Model {
+export interface CityAttributes {
     id: number,
     name: string
 }
 
-export interface ClockModel extends Model {
+export interface ClockAttributes {
     id: number,
     size: string,
     price: number,
     installation_time: number
 }
 
-export interface MasterModel extends Model {
+export interface MasterAttributes {
     id: number,
     name: string,
     rating: number, 
     rated_sum: number,
-    rated_quantity: number
+    rated_quantity: number,
 }
 
-export interface MasterCitiesModel extends Model {
+export interface MasterCitiesAttributes {
     master_id: number,
     city_id: number
 }
 
-export interface UserModel extends Model {
-    id: number,
-    name: string,
-    email: string
-}
-
-export interface OrderModel extends Model {
+export interface OrderAttributes {
     id: number,
     clock_id: number,
     user_id: number,
@@ -48,3 +40,10 @@ export interface OrderModel extends Model {
     rating_identificator: string,
     order_rating: number
 }
+
+export interface UserAttributes {
+    id: number,
+    name: string,
+    email: string
+}
+

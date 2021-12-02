@@ -1,6 +1,6 @@
 import { Response, Request, NextFunction } from "express"
 import { VALID } from "../../data/constants/systemConstants"
-import db from '../db'
+import { City, Master } from '../models/Models'
 
 
 export const postMasterValidate = async(req: Request, res: Response, next: NextFunction) => {
@@ -14,11 +14,15 @@ export const postMasterValidate = async(req: Request, res: Response, next: NextF
         validationErrors.push('Invalid master name')
     }
     
-    const validCityId = await db.query(`SELECT * FROM cities WHERE id IN (${cities_id})`)
+    const validCityId = await City.findAll({
+        where: {
+            id: cities_id
+        }
+    })
 
-    if(!validCityId.rows.length) {
+    if(!validCityId.length) {
 
-        validationErrors.push('City with current id does not exist')
+        validationErrors.push('Cities with current ids does not exist')
     }
 
     if(validationErrors.length) {
@@ -34,13 +38,17 @@ export const postMasterValidate = async(req: Request, res: Response, next: NextF
 
 export const putMasterValidate = async(req: Request, res: Response, next: NextFunction) => {
     
-    const {id, name, cities_id} = req.body
+    const { id, name, cities_id } = req.body
 
     const validationErrors: string[] = []
 
-    const validMaster = await db.query('SELECT * FROM masters WHERE id = $1', [id])
+    const validMaster = await Master.findAll({
+        where: {
+            id: id
+        }
+    })
 
-    if(!validMaster.rows.length) {
+    if(!validMaster.length) {
 
         validationErrors.push('Master with current id does not exist')
 
@@ -52,11 +60,15 @@ export const putMasterValidate = async(req: Request, res: Response, next: NextFu
 
     }
 
-    const validCityId = await db.query(`SELECT * FROM cities WHERE id IN (${cities_id})`)
+    const validCityId = await City.findAll({
+        where: {
+            id: cities_id
+        }
+    })
 
-    if(!validCityId.rows.length) {
+    if(!validCityId.length) {
 
-        validationErrors.push('City with current id does not exist')
+        validationErrors.push('Cities with current ids does not exist')
     }
     
     if(validationErrors.length) {
@@ -76,9 +88,13 @@ export const deleteMasterValidate = async(req: Request, res: Response, next: Nex
 
     const validationErrors: string[] = []
 
-    const validMaster = await db.query('SELECT * FROM masters WHERE id = $1', [id])
+    const validMaster = await Master.findAll({
+        where: {
+            id: id
+        }
+    })
 
-    if(!validMaster.rows.length) {
+    if(!validMaster.length) {
 
         validationErrors.push('Master with current id does not exist')
     }

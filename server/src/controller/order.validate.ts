@@ -1,33 +1,45 @@
 import { Response, Request, NextFunction } from "express"
 import { VALID } from "../../data/constants/systemConstants"
-import db from '../db'
+import { Clock, City, Master, Order, User } from "../models/Models"
 
 
 export const postOrderValidate = async(req: Request, res: Response, next: NextFunction) => {
 
     const {clock_id, city_id, master_id, start_work_on, name, email} = req.body
 
-    const validationErrors = []
+    const validationErrors: string[] = []
 
-    const validClocksId = await db.query('SELECT * FROM clocks WHERE id = $1', [clock_id])
+    const validClocksId = await Clock.findAll({
+        where: {
+            id: clock_id
+        }
+    })
 
-    if(!validClocksId.rows.length) {
+    if(!validClocksId.length) {
 
         validationErrors.push('Clocks with current id does not exist')
 
     }
 
-    const validCityId = await db.query('SELECT * FROM cities WHERE id = $1', [city_id])
+    const validCityId = await City.findAll({
+        where: {
+            id: city_id
+        }
+    })
 
-    if(!validCityId.rows.length) {
+    if(!validCityId.length) {
 
         validationErrors.push('City with current id does not exist')
 
     }
 
-    const validMasterId = await db.query('SELECT * FROM masters WHERE id = $1', [master_id])
+    const validMasterId = await Master.findAll({
+        where: {
+            id: master_id
+        }
+    })
 
-    if(!validMasterId.rows.length) {
+    if(!validMasterId.length) {
 
         validationErrors.push('Master with current id does not exist')
 
@@ -66,43 +78,63 @@ export const putOrderValidate = async(req: Request, res: Response, next: NextFun
 
     const {id, clock_id, user_id, city_id, master_id, start_work_on} = req.body
 
-    const validationErrors = []
+    const validationErrors: string[] = []
 
-    const validOrder = await db.query('SELECT * FROM orders WHERE id = $1', [id])
+    const validOrder = await Order.findAll({
+        where: {
+            id: id
+        }
+    })
 
-    if(!validOrder.rows.length) {
+    if(!validOrder.length) {
 
         validationErrors.push('Order with current id does not exist')
 
     }
 
-    const validClocksId = await db.query('SELECT * FROM clocks WHERE id = $1', [clock_id])
+    const validClocksId = await Clock.findAll({
+        where: {
+            id: clock_id
+        }
+    })
 
-    if(!validClocksId.rows.length) {
+    if(!validClocksId.length) {
 
         validationErrors.push('Clocks with current id does not exist')
 
     }
 
-    const validUserId = await db.query('SELECT * FROM users WHERE id = $1', [user_id])
+    const validUserId = await User.findAll({
+        where: {
+            id: user_id
+        }
+    })
 
-    if(!validUserId.rows.length) {
+    if(!validUserId.length) {
 
         validationErrors.push('User with current id does not exist')
 
     }
 
-    const validCityId = await db.query('SELECT * FROM cities WHERE id = $1', [city_id])
+    const validCityId = await City.findAll({
+        where: {
+            id: city_id
+        }
+    })
 
-    if(!validCityId.rows.length) {
+    if(!validCityId.length) {
 
         validationErrors.push('City with current id does not exist')
 
     }
 
-    const validMasterId = await db.query('SELECT * FROM masters WHERE id = $1', [master_id])
+    const validMasterId = await Master.findAll({
+        where: {
+            id: master_id
+        }
+    })
 
-    if(!validMasterId.rows.length) {
+    if(!validMasterId.length) {
 
         validationErrors.push('Master with current id does not exist')
 
@@ -130,16 +162,24 @@ export const putRatedOrderValidate = async(req: Request, res: Response, next:Nex
 
     const validationErrors: string[] = []
 
-    const validOrder = await db.query('SELECT * FROM orders WHERE id = $1', [id])
+    const validOrder = await Order.findAll({
+        where: {
+            id: id
+        }
+    })
 
-    if(!validOrder.rows.length) {
+    if(!validOrder.length) {
 
         validationErrors.push('Order with current id does not exist')
     }
 
-    const validMasterId = await db.query('SELECT * FROM masters WHERE id = $1', [master_id])
+    const validMasterId = await Master.findAll({
+        where: {
+            id: master_id
+        }
+    })
     
-    if(!validMasterId.rows.length) {
+    if(!validMasterId.length) {
 
         validationErrors.push('Master with current id does not exist')
     }
@@ -166,9 +206,13 @@ export const deleteOrderValidate = async(req: Request, res: Response, next: Next
 
     const validationErrors: string[] = []
 
-    const validOrder = await db.query('SELECT * FROM orders WHERE id = $1', [id])
+    const validOrder = await Order.findAll({
+        where: {
+            id: id
+        }
+    })
 
-    if(!validOrder.rows.length) {
+    if(!validOrder.length) {
 
         validationErrors.push('Order with current id does not exist')
 

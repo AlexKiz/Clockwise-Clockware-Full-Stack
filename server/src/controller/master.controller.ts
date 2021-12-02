@@ -1,23 +1,20 @@
 import { Response, Request} from "express"
-import db from '../db'
+import { Master, City, Clock, Order, MasterCities } from '../models/Models'
+import { Op } from 'sequelize'
+
 
 export const postMaster = async (req: Request, res: Response)  => {
 
     try {
         const { name, cities_id } = req.body
 
-        const createMaster = await db.query('INSERT INTO masters (name) VALUES ($1) RETURNING id', [name])
+            const createMaster = await Master.create({
+                name: name
+            })
 
-        if(createMaster.rows.length) {
+            const citiesOfMaster = await createMaster.setCities(cities_id)
 
-            const createdMasterId = createMaster.rows[0].id
-
-            const masterToCitiesValues = cities_id.map(function(elem: number) {return `(${createdMasterId},${elem})`}).join()
-            
-            const citiesOfMaster = await db.query(`INSERT INTO masters_cities (master_id, city_id) VALUES ${masterToCitiesValues}`) 
-        
-        res.status(201).json(createMaster.rows[0].id)
-        }
+        res.status(201).json(createMaster)
 
     } catch(error) {
 
@@ -29,23 +26,20 @@ export const postMaster = async (req: Request, res: Response)  => {
 export const getMasters = async (req: Request, res: Response) => {
 
     try {
-        const readMasters = await db.query('SELECT id, name, rating FROM masters')
 
-        const readMasterCities = await db.query(`SELECT masters_cities.master_id AS "masterId", masters_cities.city_id AS "id", cities.name AS "name" 
-                                                        FROM masters_cities JOIN cities 
-                                                        ON masters_cities.city_id = cities.id`)
-        
-        const fullMasterData = readMasters.rows.map((master) => {
+        const readMasters = await Master.findAll({
+            attributes: ['id', 'name', 'rating'],
+            include: {
+                model: City,
+                
+                attributes: ['id', 'name'],
+                through: {
+                    attributes: []
+                },   
+            }
+        })
 
-            const compareId = master.id;
-            
-            master.cities = readMasterCities.rows.filter(item => item.masterId === compareId)
-            
-            return master;
-            
-        });
-
-        res.status(200).json(fullMasterData)
+        res.status(200).json(readMasters)
         
     } catch(error) {
 
@@ -58,55 +52,92 @@ export const getAvailableMasters = async (req: Request, res: Response) => {
         
     try {
         const { currentOrderId, city_id, start_work_on, clock_id } = req.query
-        
 
-        const installDuration = await db.query('SELECT installation_time FROM clocks WHERE id = $1', [clock_id])
+                const installationDuration = await Clock.findOne({
+                    attributes: ['installation_time'],
+                    where: {
+                        id: clock_id
+                    }
+                })
 
-        if(installDuration.rows.length) {
+                if(installationDuration) {
 
-            const { installation_time } = installDuration.rows[0]
-            let date = new Date(`${start_work_on}`)
-            date.setUTCHours(date.getHours() + installation_time)
-            const end_work_on = date.toISOString()
+                    const { installation_time } = installationDuration
 
-            let readBookedMasters
+                    let endDate = new Date(`${start_work_on}`)
+                    let startDate = new Date(`${start_work_on}`)
+                    startDate.setUTCHours(startDate.getHours())
+                    endDate.setUTCHours(endDate.getHours() + installation_time)
+                    const endWorkOn = endDate.toISOString()
+                    const startWorkOn = startDate.toISOString()
+                
+                let readBookedMasters
 
-            if(currentOrderId){
+                if(currentOrderId) {
 
-                readBookedMasters = await db.query(`SELECT master_id FROM orders 
-                                                            WHERE ((start_work_on <= $1 AND end_work_on >= $1) 
-                                                            OR (start_work_on <= $2 AND end_work_on >= $2)) 
-                                                            AND id != $3`, [start_work_on, end_work_on, currentOrderId])
-            
-            } else {
+                    readBookedMasters = await Order.findAll({
+                        attributes: ['master_id'],
+                        where: {
+                            [Op.or]: [ 
+                                {
+                                    [Op.and]: [ 
+                                        { start_work_on: {[Op.lte]: startWorkOn} }, 
+                                        { end_work_on:   {[Op.gte]: startWorkOn} } 
+                                    ] 
+                                }, 
+                                {
+                                    [Op.and]: [
+                                        { start_work_on: { [Op.lte]: endWorkOn } }, 
+                                        { end_work_on:   { [Op.gte]: endWorkOn } } 
+                                    ] 
+                                } 
+                            ],
+                            id : currentOrderId 
+                        }
+                    })
 
-                readBookedMasters = await db.query(`SELECT master_id FROM orders 
-                                                            WHERE ((start_work_on <= $1 AND end_work_on >= $1) 
-                                                            OR (start_work_on <= $2 AND end_work_on >= $2))`, [start_work_on, end_work_on])
-            
+                } else {
+
+                    readBookedMasters = await Order.findAll({
+                        attributes: ['master_id'],
+                        where: {
+                            [Op.or]: [ 
+                                {
+                                    [Op.and]: [ 
+                                        { start_work_on: {[Op.lte]: startWorkOn} }, 
+                                        { end_work_on:   {[Op.gte]: startWorkOn} } 
+                                    ] 
+                                }, 
+                                {
+                                    [Op.and]: [
+                                        { start_work_on: { [Op.lte]: endWorkOn } }, 
+                                        { end_work_on:   { [Op.gte]: endWorkOn } } 
+                                    ] 
+                                } 
+                            ]
+                        }
+                    })
+
+                }
+
+                const bookedMastersId = readBookedMasters.map(master => master.master_id)
+
+                const readAvailableMasters = await Master.findAll({ 
+                    where: {
+                        id: { [Op.notIn]: bookedMastersId}
+                    },
+                    include: {
+                        model: City,
+                        attributes: [],
+                        where: {
+                            id: city_id
+                        }
+                    }
+                })
+
+                res.status(200).json(readAvailableMasters)
             }
-            
-            const bookedMastersId = readBookedMasters.rows.map((elem) => elem.master_id)
-            
 
-            if(bookedMastersId.length != 0) {
-
-                const readAvailableMasters = await db.query(`SELECT masters.id as "id", masters.name as "name", masters.rating as "rating" 
-                                                                        FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
-                                                                        AND city_id = ${city_id} 
-                                                                        AND id NOT IN (${bookedMastersId.join(',')})`)
-
-                res.status(200).json(readAvailableMasters.rows)
-
-            } else {
-
-                const readAvailableMasters = await db.query(`SELECT masters.id as "id", masters.name as "name", masters.rating as "rating" 
-                                                                        FROM masters JOIN masters_cities ON masters_cities.master_id = masters.id 
-                                                                        AND city_id = ${city_id}`)
-
-                res.status(200).json(readAvailableMasters.rows)
-            }
-        }
     } catch(error) {
 
         res.status(500).send()
@@ -118,16 +149,19 @@ export const putMaster = async (req: Request, res: Response) => {
         
     try {
         const { id, name, cities_id } = req.body
+
+        const [rows, updateMaster] = await Master.update({
+            name: name,
+        }, {
+            where: {
+                id: id
+            },
+            returning: true
+        })
         
-        const updateMaster = await db.query('UPDATE masters SET name = $2 WHERE id = $1', [id, name])
+        const updateCitiesOfMaster = await updateMaster[0].setCities(cities_id)
 
-        const masterToCitiesValues = cities_id.map(function(elem: number) {return `(${id},${elem})`}).join()
-
-        const deleteOldData = await db.query('DELETE FROM masters_cities WHERE master_id = $1', [id])
-
-        const updateCitiesOfMaster = await db.query(`INSERT INTO masters_cities (master_id, city_id) VALUES ${masterToCitiesValues}`)
-        
-        res.status(200).json(updateMaster.rows)
+        res.status(200).json(updateMaster)
 
     } catch(error) {
 
@@ -141,11 +175,13 @@ export const deleteMaster = async (req: Request, res: Response) => {
     try {
         const { id } = req.body
 
-        const deleteMasterToCities  = await db.query('DELETE FROM masters_cities WHERE master_id = $1', [id])
+        const deleteMaster = await Master.destroy({
+            where: {
+                id: id
+            }
+        })
 
-        const deleteMaster = await db.query('DELETE FROM masters WHERE id = $1', [id])
-
-        res.status(204).json(deleteMaster.rows)
+        res.status(204).json(deleteMaster)
 
     } catch(error) {
 

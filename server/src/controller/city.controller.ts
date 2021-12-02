@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import db from '../db'
+import { City, Master } from '../models/Models'
 
 
 export const postCity = async (req: Request, res: Response) => {
@@ -7,9 +7,11 @@ export const postCity = async (req: Request, res: Response) => {
     try {
         const { name } = req.body
 
-        const createdCity = await db.query('INSERT INTO cities (name) VALUES ($1)', [name])
+        const createdCity = await City.create({
+            name: name 
+        })
         
-        res.status(201).json(createdCity.rows)
+        res.status(201).json(createdCity)
 
     } catch(error) {
         
@@ -22,9 +24,10 @@ export const postCity = async (req: Request, res: Response) => {
 export const getCities = async (req: Request, res: Response) => {
 
     try {
-        const readCities = await db.query('SELECT * FROM cities')
 
-        res.status(200).json(readCities.rows)
+        const readCities = await City.findAll()
+
+        res.status(200).json(readCities)
 
     } catch(error) {
 
@@ -33,12 +36,19 @@ export const getCities = async (req: Request, res: Response) => {
 }
 
 
-export const getCityForOrder = async (req: Request, res: Response) => {
+export const getCitiesForOrder = async (req: Request, res: Response) => {
 
     try {
-        const readCityForOrder = await db.query('SELECT DISTINCT cities.id, cities.name FROM cities, masters_cities WHERE cities.id = masters_cities.city_id')
 
-        res.status(200).json(readCityForOrder.rows)
+        const readCitiesForOrder = await City.findAll({
+            include: {
+                model: Master,
+                attributes: [],
+                required: true
+            }
+        })
+
+        res.status(200).json(readCitiesForOrder)
 
     } catch(error) {
 
@@ -52,9 +62,17 @@ export const putCity = async (req: Request, res: Response) => {
     try {
         const { id, name } = req.body
 
-        const updateCity = await db.query('UPDATE cities SET name = $2 WHERE id = $1', [id, name])
+        //const updateCity = await db.query('UPDATE cities SET name = $2 WHERE id = $1', [id, name])
 
-        res.status(200).json(updateCity.rows)
+        const updateCity = await City.update({
+            name: name
+        }, {
+            where: {
+                id: id
+            }
+        })
+
+        res.status(200).json(updateCity)
 
     } catch(error) {
 
@@ -68,11 +86,19 @@ export const deleteCity = async (req: Request, res: Response) => {
     try {
         const { id } = req.body
 
-        const deleteMasterCities = await db.query('DELETE FROM masters_cities WHERE city_id = $1', [id])
+        //const deleteMasterCities = await db.query('DELETE FROM masters_cities WHERE city_id = $1', [id])
 
-        const deleteCity = await db.query('DELETE FROM cities WHERE id = $1', [id])
+        //const deleteCity = await db.query('DELETE FROM cities WHERE id = $1', [id])
 
-        res.status(204).json(deleteCity.rows)
+        const deleteCity = await City.destroy({
+            where: {
+                id: id
+            }
+        })
+
+        
+
+        res.status(204).json(deleteCity)
 
     } catch(error) {
 

@@ -1,6 +1,6 @@
 import { VALID } from '../../data/constants/systemConstants';
 import { Response, Request, NextFunction } from "express"
-import db from '../db'
+import { City } from '../models/Models'
 
 
 export const postCityValidate = async (req: Request, res: Response, next: NextFunction) => {
@@ -9,11 +9,13 @@ export const postCityValidate = async (req: Request, res: Response, next: NextFu
 
     const validationErrors: string[] = []
 
-    const allCitiesName = await db.query('SELECT name FROM cities')
+    const allCitiesName = await City.findAll({
+        attributes: ['name']
+    })
 
-    if (allCitiesName.rows.length) {
+    if (allCitiesName.length) {
 
-        allCitiesName.rows.map((elem) => {
+        allCitiesName.map((elem) => {
 
             if(name.toLowerCase().includes(elem.name.toLowerCase())) {
 
@@ -46,9 +48,13 @@ export const putCityValidate = async (req: Request, res: Response, next: NextFun
 
     const validationErrors: string[] = []
 
-    const validCity = await db.query('SELECT * FROM cities WHERE id = $1', [id])
+    const validCity = await City.findAll({
+        where: {
+            id: id
+        }
+    })
 
-    if(!validCity.rows.length) {
+    if(!validCity.length) {
 
         validationErrors.push('City with current id does not exist')
     }
@@ -75,9 +81,13 @@ export const deleteCityValidate = async (req: Request, res: Response, next: Next
 
     const validationErrors :string[] = []
 
-    const validCity = await db.query('SELECT * FROM cities WHERE id = $1', [id])
+    const validCity = await City.findAll({
+        where: {
+            id: id
+        }
+    })
 
-    if(!validCity.rows.length) {
+    if(!validCity.length) {
 
         validationErrors.push('City with current id does not exist')
     }

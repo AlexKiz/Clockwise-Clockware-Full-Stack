@@ -55,7 +55,7 @@ const RateOrder: FC<RateOrderProps> = () => {
         axios.put(`/${URL.RATED_ORDER}`, {
             id: order[0].id,
             order_rated: rating,
-            master_id: order[0].masterId
+            master_id: order[0].master.id
         }).then(() => {
 
             alert('Thanks for your feedback')
@@ -75,18 +75,18 @@ const RateOrder: FC<RateOrderProps> = () => {
                             <>
                             <div className={classes.form_master}>
                                 <label>Please, rate the following master:</label>
-                                <p>{order[0].masterName}</p>
+                                <p>{order[0].master.name}</p>
                             </div>
                             <div className={classes.form_orderinfo}>
                                 <b>Order #{order[0].id}</b>
                                 <br />
-                                <b> User name:</b> <span>{order[0].userName}</span>
+                                <b> User name:</b> <span>{order[0].user.name}</span>
                                 <br />
-                                <b> User email:</b> <span>{order[0].userEmail}</span>
+                                <b> User email:</b> <span>{order[0].user.email}</span>
                                 <br />
-                                <b> Clock size:</b>  <span>{order[0].clockSize}</span>
+                                <b> Clock size:</b>  <span>{order[0].clock.size}</span>
                                 <br />
-                                <b> City:</b>  <span>{order[0].cityName}</span>
+                                <b> City:</b>  <span>{order[0].city.name}</span>
                                 <br />
                                 <b> Start work on:</b>  <span>{order[0].startWorkOn.split(',').join(' ')}</span>
                                 <br />
