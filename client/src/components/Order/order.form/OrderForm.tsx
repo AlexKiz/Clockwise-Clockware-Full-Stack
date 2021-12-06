@@ -15,7 +15,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 
     const [orderDate, setOrderDate] = useState<string>('')
 
-    const [orderTime, setOrderTime] = useState<string>('')
+    const [orderTime, setOrderTime] = useState<string>(`${openingHours[0]}`)
 
     const [masterId, setMasterId] = useState<number>(0) 
     const [masters, setMasters] = useState<Master[]>([])
