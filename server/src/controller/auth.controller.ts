@@ -1,23 +1,18 @@
 import { Response, Request, NextFunction } from "express" 
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import { Admin } from '../models/Models'
+import db from '../models'
 
 
 export const Auth = async (req: Request, res: Response) => {
 
     const { adminLogin, adminPassword } = req.body 
     
-    const credentials = await Admin.findOne({
-        where: {
-            email: adminLogin
-        }
-    })
+    const credentials = await db.admin.findOne({where:{ email: adminLogin }})
     
     if(credentials) {
 
-        const hashPass = credentials.password
-        const isCompare = await bcrypt.compare(adminPassword,hashPass)
+        const isCompare = await bcrypt.compare(adminPassword, credentials.password)
 
         if(isCompare) {
             

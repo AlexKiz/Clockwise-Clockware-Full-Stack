@@ -1,11 +1,11 @@
 import { Response, Request, NextFunction } from "express"
 import { VALID } from "../../data/constants/systemConstants"
-import { City, Master } from '../models/Models'
+import db from '../models'
 
 
 export const postMasterValidate = async(req: Request, res: Response, next: NextFunction) => {
 
-    const { name, cities_id } = req.body
+    const { name, citiesId } = req.body
 
     const validationErrors: string[] = []
 
@@ -14,11 +14,7 @@ export const postMasterValidate = async(req: Request, res: Response, next: NextF
         validationErrors.push('Invalid master name')
     }
     
-    const validCityId = await City.findAll({
-        where: {
-            id: cities_id
-        }
-    })
+    const validCityId = await db.city.findById(citiesId)
 
     if(!validCityId.length) {
 
@@ -38,15 +34,11 @@ export const postMasterValidate = async(req: Request, res: Response, next: NextF
 
 export const putMasterValidate = async(req: Request, res: Response, next: NextFunction) => {
     
-    const { id, name, cities_id } = req.body
+    const { id, name, citiesId } = req.body
 
     const validationErrors: string[] = []
 
-    const validMaster = await Master.findAll({
-        where: {
-            id: id
-        }
-    })
+    const validMaster = await db.master.findById(id)
 
     if(!validMaster.length) {
 
@@ -60,11 +52,7 @@ export const putMasterValidate = async(req: Request, res: Response, next: NextFu
 
     }
 
-    const validCityId = await City.findAll({
-        where: {
-            id: cities_id
-        }
-    })
+    const validCityId = await db.city.findById(citiesId)
 
     if(!validCityId.length) {
 
@@ -88,11 +76,7 @@ export const deleteMasterValidate = async(req: Request, res: Response, next: Nex
 
     const validationErrors: string[] = []
 
-    const validMaster = await Master.findAll({
-        where: {
-            id: id
-        }
-    })
+    const validMaster = await db.master.findById(id)
 
     if(!validMaster.length) {
 

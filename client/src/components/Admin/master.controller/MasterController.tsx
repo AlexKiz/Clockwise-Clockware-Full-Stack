@@ -78,7 +78,7 @@ const MasterController: FC<MasterControllerProps> = () => {
                 axios.post(`/${URL.MASTER}`,
             {
                 name: masterName, 
-                cities_id: citiesId
+                citiesId
             }).then(() =>{
                 setMasterName('')
                 alert('Master has been created')
@@ -90,7 +90,7 @@ const MasterController: FC<MasterControllerProps> = () => {
             axios.put(`/${URL.MASTER}`, {
                     id: masterId,
                     name: masterName, 
-                    cities_id: citiesId
+                    citiesId
             }).then(() => {
                 alert('Master has been updated')
                 history.push(`/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`)

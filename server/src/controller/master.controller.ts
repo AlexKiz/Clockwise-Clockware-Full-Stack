@@ -1,18 +1,16 @@
 import { Response, Request} from "express"
-import { Master, City, Clock, Order, MasterCities } from '../models/Models'
+import db from '../models'
 import { Op } from 'sequelize'
 
 
 export const postMaster = async (req: Request, res: Response)  => {
 
     try {
-        const { name, cities_id } = req.body
+        const { name, citiesId } = req.body
 
-            const createMaster = await Master.create({
-                name: name
-            })
+            const createMaster = await db.master.create({ name })
 
-            const citiesOfMaster = await createMaster.setCities(cities_id)
+            const citiesOfMaster = await createMaster.setCities(citiesId)
 
         res.status(201).json(createMaster)
 
@@ -25,70 +23,46 @@ export const postMaster = async (req: Request, res: Response)  => {
 
 export const getMasters = async (req: Request, res: Response) => {
 
-    try {
-
-        const readMasters = await Master.findAll({
+        const readMasters = await db.master.findAll({
             attributes: ['id', 'name', 'rating'],
             include: {
-                model: City,
-                
+                model: db.city,
                 attributes: ['id', 'name'],
-                through: {
-                    attributes: []
-                },   
+                through: { attributes: [] }
             }
         })
 
         res.status(200).json(readMasters)
-        
-    } catch(error) {
-
-        res.status(500).send(error)
-    }
 }
 
 
 export const getAvailableMasters = async (req: Request, res: Response) => {
         
     try {
-        const { currentOrderId, city_id, start_work_on, clock_id } = req.query
+        const { currentOrderId, cityId, startWorkOn, endWorkOn } = req.query
 
-                const installationDuration = await Clock.findOne({
-                    attributes: ['installation_time'],
-                    where: {
-                        id: clock_id
-                    }
-                })
-
-                if(installationDuration) {
-
-                    const { installation_time } = installationDuration
-
-                    let endDate = new Date(`${start_work_on}`)
-                    let startDate = new Date(`${start_work_on}`)
-                    startDate.setUTCHours(startDate.getHours())
-                    endDate.setUTCHours(endDate.getHours() + installation_time)
-                    const endWorkOn = endDate.toISOString()
-                    const startWorkOn = startDate.toISOString()
+                const compareStartWorkOn = `${startWorkOn}`
+                const compareEndWorkOn = `${endWorkOn}`   
+                console.log(startWorkOn, endWorkOn);
                 
                 let readBookedMasters
 
                 if(currentOrderId) {
 
-                    readBookedMasters = await Order.findAll({
-                        attributes: ['master_id'],
+                    readBookedMasters = await db.order.findAll({
+                        attributes: ['masterId'],
                         where: {
                             [Op.or]: [ 
                                 {
                                     [Op.and]: [ 
-                                        { start_work_on: {[Op.lte]: startWorkOn} }, 
-                                        { end_work_on:   {[Op.gte]: startWorkOn} } 
+                                        { startWorkOn: {[Op.lte]: compareStartWorkOn} }, 
+                                        { endWorkOn:   {[Op.gte]: compareStartWorkOn} } 
                                     ] 
                                 }, 
                                 {
                                     [Op.and]: [
-                                        { start_work_on: { [Op.lte]: endWorkOn } }, 
-                                        { end_work_on:   { [Op.gte]: endWorkOn } } 
+                                        { startWorkOn: { [Op.lte]: compareEndWorkOn } }, 
+                                        { endWorkOn:   { [Op.gte]: compareEndWorkOn } } 
                                     ] 
                                 } 
                             ],
@@ -98,20 +72,20 @@ export const getAvailableMasters = async (req: Request, res: Response) => {
 
                 } else {
 
-                    readBookedMasters = await Order.findAll({
-                        attributes: ['master_id'],
+                    readBookedMasters = await db.order.findAll({
+                        attributes: ['masterId'],
                         where: {
                             [Op.or]: [ 
                                 {
                                     [Op.and]: [ 
-                                        { start_work_on: {[Op.lte]: startWorkOn} }, 
-                                        { end_work_on:   {[Op.gte]: startWorkOn} } 
+                                        { startWorkOn: {[Op.lte]: compareStartWorkOn} }, 
+                                        { endWorkOn:   {[Op.gte]: compareStartWorkOn} } 
                                     ] 
                                 }, 
                                 {
                                     [Op.and]: [
-                                        { start_work_on: { [Op.lte]: endWorkOn } }, 
-                                        { end_work_on:   { [Op.gte]: endWorkOn } } 
+                                        { startWorkOn: { [Op.lte]: compareEndWorkOn } }, 
+                                        { endWorkOn:   { [Op.gte]: compareEndWorkOn } } 
                                     ] 
                                 } 
                             ]
@@ -120,23 +94,20 @@ export const getAvailableMasters = async (req: Request, res: Response) => {
 
                 }
 
-                const bookedMastersId = readBookedMasters.map(master => master.master_id)
+                const bookedMastersId = readBookedMasters.map((master: any) => master.masterId)
 
-                const readAvailableMasters = await Master.findAll({ 
+                const readAvailableMasters = await db.master.findAll({ 
                     where: {
-                        id: { [Op.notIn]: bookedMastersId}
+                        id: { [Op.notIn]: bookedMastersId }
                     },
                     include: {
-                        model: City,
+                        model: db.city,
                         attributes: [],
-                        where: {
-                            id: city_id
-                        }
+                        where: { id: cityId }
                     }
                 })
 
                 res.status(200).json(readAvailableMasters)
-            }
 
     } catch(error) {
 
@@ -148,18 +119,11 @@ export const getAvailableMasters = async (req: Request, res: Response) => {
 export const putMaster = async (req: Request, res: Response) => {
         
     try {
-        const { id, name, cities_id } = req.body
+        const { id, name, citiesId } = req.body
 
-        const [rows, updateMaster] = await Master.update({
-            name: name,
-        }, {
-            where: {
-                id: id
-            },
-            returning: true
-        })
+        const [rows, updateMaster] = await db.master.update({ name }, {where:{ id }, returning: true})
         
-        const updateCitiesOfMaster = await updateMaster[0].setCities(cities_id)
+        const updateCitiesOfMaster = await updateMaster[0].setCities(citiesId)
 
         res.status(200).json(updateMaster)
 
@@ -175,11 +139,7 @@ export const deleteMaster = async (req: Request, res: Response) => {
     try {
         const { id } = req.body
 
-        const deleteMaster = await Master.destroy({
-            where: {
-                id: id
-            }
-        })
+        const deleteMaster = await db.master.deleteById(id)
 
         res.status(204).json(deleteMaster)
 

@@ -1,5 +1,5 @@
 import { Response, Request } from "express"
-import { User } from '../models/Models'
+import db from '../models'
 
 
 export const postUser = async (req: Request, res: Response) => {
@@ -7,10 +7,7 @@ export const postUser = async (req: Request, res: Response) => {
     try {
         const { name, email } = req.body
 
-        const createUser = await User.create({
-            name: name,
-            email: email
-        })
+        const createUser = await db.user.create({ name, email })
 
         res.status(201).json(createUser)
 
@@ -22,17 +19,10 @@ export const postUser = async (req: Request, res: Response) => {
 
 
 export const getUsers = async (req: Request, res: Response) => {
+    
+    const readUsers = await db.user.findAll()
 
-    try {
-
-        const readUsers = await User.findAll()
-
-        res.status(200).json(readUsers)
-
-    } catch(error) {
-
-        res.status(500).send()
-    }
+    res.status(200).json(readUsers)
 }
 
 
@@ -41,23 +31,14 @@ export const putUser = async (req: Request, res: Response) => {
     try {
         const { id, name, email } = req.body
 
-        const userChecking = await User.findOne({
+        const userChecking = await db.user.findOne({
             attributes: ['id'],
-            where: {
-                email: email
-            }
+            where: { email }
         })
 
         if ((!userChecking) || (userChecking.id === +id)) {
 
-            const updateUser = await User.update({
-                name: name,
-                email: email
-            },{
-                where: {
-                    id: id
-                }
-            })
+            const updateUser = await db.user.updateById(id, { name, email })
 
             res.status(200).json(updateUser)
 
@@ -78,11 +59,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     try {
         const { id } = req.body
 
-        const deleteUser = await User.destroy({
-            where: {
-                id: id
-            }
-        })
+        const deleteUser = await db.user.deleteById(id)
         
         res.status(204).json(deleteUser)
 

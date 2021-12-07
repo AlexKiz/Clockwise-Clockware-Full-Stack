@@ -1,66 +1,53 @@
 import { Response, Request, NextFunction } from "express"
 import { VALID } from "../../data/constants/systemConstants"
-import { Clock, City, Master, Order, User } from "../models/Models"
+import db from '../models'
 
 
 export const postOrderValidate = async(req: Request, res: Response, next: NextFunction) => {
 
-    const {clock_id, city_id, master_id, start_work_on, name, email} = req.body
+    const { name, email, clockId, cityId, masterId, startWorkOn, endWorkOn} = req.body
 
     const validationErrors: string[] = []
 
-    const validClocksId = await Clock.findAll({
-        where: {
-            id: clock_id
-        }
-    })
+    const validClocksId = await db.clock.findById(clockId)
 
     if(!validClocksId.length) {
 
         validationErrors.push('Clocks with current id does not exist')
-
     }
 
-    const validCityId = await City.findAll({
-        where: {
-            id: city_id
-        }
-    })
+    const validCityId = await db.city.findById(cityId)
 
     if(!validCityId.length) {
 
         validationErrors.push('City with current id does not exist')
-
     }
 
-    const validMasterId = await Master.findAll({
-        where: {
-            id: master_id
-        }
-    })
+    const validMasterId = await db.master.findById(masterId)
 
     if(!validMasterId.length) {
 
         validationErrors.push('Master with current id does not exist')
-
     }
 
-    if(!VALID.DATE.test(start_work_on)) {
+    if(!VALID.DATE.test(startWorkOn)) {
 
-        validationErrors.push('Invalid date')
+        validationErrors.push('Invalid starting date')
+    }
 
+    if(!VALID.DATE.test(endWorkOn)) {
+
+        validationErrors.push('Invalid ending date')
     }
 
     if(!VALID.USER_NAME.test(name)) {
 
         validationErrors.push('Invalid user name')
-
     }
 
     if(!VALID.USER_EMAIL.test(email)) {
 
         validationErrors.push('Invalid user email')
-
     }
 
     if(validationErrors.length) {
@@ -76,73 +63,53 @@ export const postOrderValidate = async(req: Request, res: Response, next: NextFu
 
 export const putOrderValidate = async(req: Request, res: Response, next: NextFunction) => {
 
-    const {id, clock_id, user_id, city_id, master_id, start_work_on} = req.body
+    const { id, clockId, userId, cityId, masterId, startWorkOn, endWorkOn } = req.body
 
     const validationErrors: string[] = []
 
-    const validOrder = await Order.findAll({
-        where: {
-            id: id
-        }
-    })
+    const validOrder = await db.order.findById(id)
 
     if(!validOrder.length) {
 
         validationErrors.push('Order with current id does not exist')
-
     }
 
-    const validClocksId = await Clock.findAll({
-        where: {
-            id: clock_id
-        }
-    })
+    const validClocksId = await db.clock.findById(clockId)
 
     if(!validClocksId.length) {
 
         validationErrors.push('Clocks with current id does not exist')
-
     }
 
-    const validUserId = await User.findAll({
-        where: {
-            id: user_id
-        }
-    })
+    const validUserId = await db.user.findById(userId)
 
     if(!validUserId.length) {
 
         validationErrors.push('User with current id does not exist')
-
     }
 
-    const validCityId = await City.findAll({
-        where: {
-            id: city_id
-        }
-    })
+    const validCityId = await db.city.findById(cityId)
 
     if(!validCityId.length) {
 
         validationErrors.push('City with current id does not exist')
-
     }
 
-    const validMasterId = await Master.findAll({
-        where: {
-            id: master_id
-        }
-    })
+    const validMasterId = await db.master.findById(masterId)
 
     if(!validMasterId.length) {
 
         validationErrors.push('Master with current id does not exist')
-
     }
     
-    if(!VALID.DATE.test(start_work_on)) {
+    if(!VALID.DATE.test(startWorkOn)) {
 
-        validationErrors.push('Invalid date')
+        validationErrors.push('Invalid starting date')
+    }
+
+    if(!VALID.DATE.test(endWorkOn)) {
+
+        validationErrors.push('Invalid ending date')
     }
 
     if(validationErrors.length) {
@@ -158,33 +125,25 @@ export const putOrderValidate = async(req: Request, res: Response, next: NextFun
 
 export const putRatedOrderValidate = async(req: Request, res: Response, next:NextFunction) => {
 
-    const { id, order_rated, master_id } = req.body
+    const { id, orderRated, masterId} = req.body
 
     const validationErrors: string[] = []
 
-    const validOrder = await Order.findAll({
-        where: {
-            id: id
-        }
-    })
+    const validOrder = await db.order.findById(id)
 
     if(!validOrder.length) {
 
         validationErrors.push('Order with current id does not exist')
     }
 
-    const validMasterId = await Master.findAll({
-        where: {
-            id: master_id
-        }
-    })
+    const validMasterId = await db.master.findById(masterId)
     
     if(!validMasterId.length) {
 
         validationErrors.push('Master with current id does not exist')
     }
 
-    if(order_rated < 0 || order_rated > 5) {
+    if(orderRated < 0 || orderRated > 5) {
 
         validationErrors.push('Order rating must be from 0 to 5 range')
     }
@@ -192,6 +151,7 @@ export const putRatedOrderValidate = async(req: Request, res: Response, next:Nex
     if(validationErrors.length) {
 
         res.status(400).json(validationErrors)
+
     } else {
 
         return next()
@@ -206,16 +166,11 @@ export const deleteOrderValidate = async(req: Request, res: Response, next: Next
 
     const validationErrors: string[] = []
 
-    const validOrder = await Order.findAll({
-        where: {
-            id: id
-        }
-    })
+    const validOrder = await db.order.findById(id)
 
     if(!validOrder.length) {
 
         validationErrors.push('Order with current id does not exist')
-
     }
 
     if(validationErrors.length) {

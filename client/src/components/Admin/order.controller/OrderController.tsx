@@ -29,6 +29,9 @@ const OrderController: FC<OrderControllerProps> = () => {
     const [masterId, setMasterId] = useState<number>(0)
     const [masters, setMasters] = useState<Master[]>([])
 
+    const [startWorkOn, setStartWorkOn] = useState('')
+    const [endWorkOn, setEndWorkOn] = useState('')
+
 
     useEffect(() => {
         
@@ -72,16 +75,32 @@ const OrderController: FC<OrderControllerProps> = () => {
     },[])
 
 
+    useEffect(() => {
+
+        if(clockId && orderDate && orderTime) {
+            const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
+            let endDate = new Date(`${orderDate} ${orderTime}`)
+            let startDate = new Date(`${orderDate} ${orderTime}`)
+            startDate.setUTCHours(startDate.getHours())
+            endDate.setUTCHours(endDate.getHours() + installationTime)
+    
+            setStartWorkOn(startDate.toISOString())
+            setEndWorkOn(endDate.toISOString())
+        }
+
+    },[clockId, orderDate, orderTime])
+
+
     useEffect(() => { 
-        
+
         const readAvailableMastersData = async () => {
 
             const { data } = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
                 params: {
                     currentOrderId: orderIdParam,
-                    city_id: cityIdParam,
-                    start_work_on: `${orderDate} ${orderTime}`,
-                    clock_id: clockIdParam,
+                    cityId: cityIdParam,
+                    startWorkOn: startWorkOn ,
+                    endWorkOn: endWorkOn
                 }
             })
 
@@ -106,11 +125,12 @@ const OrderController: FC<OrderControllerProps> = () => {
         axios.put(`/${URL.ORDER}`, 
         {
             id: orderIdParam,
-            clock_id: clockId,
-            user_id: userId,
-            city_id: cityId,
-            master_id: masterId,
-            start_work_on: `${orderDate} ${orderTime}`
+            clockId,
+            userId,
+            cityId,
+            masterId,
+            startWorkOn,
+            endWorkOn
         }).then(() => {
             alert('Order has been updated')
             history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`)

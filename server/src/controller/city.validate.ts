@@ -1,6 +1,6 @@
 import { VALID } from '../../data/constants/systemConstants';
 import { Response, Request, NextFunction } from "express"
-import { City } from '../models/Models'
+import db from '../models'
 
 
 export const postCityValidate = async (req: Request, res: Response, next: NextFunction) => {
@@ -9,21 +9,17 @@ export const postCityValidate = async (req: Request, res: Response, next: NextFu
 
     const validationErrors: string[] = []
 
-    const allCitiesName = await City.findAll({
-        attributes: ['name']
-    })
+    const allCitiesName = await db.city.findAll({ attributes: ['name'] })
 
     if (allCitiesName.length) {
 
-        allCitiesName.map((elem) => {
+        allCitiesName.map((elem: any) => {
 
             if(name.toLowerCase().includes(elem.name.toLowerCase())) {
 
                 validationErrors.push('City with similar name already exists')
             }
-
         })
-
     }
 
     if(!VALID.CITY_NAME.test(name)) {
@@ -48,11 +44,7 @@ export const putCityValidate = async (req: Request, res: Response, next: NextFun
 
     const validationErrors: string[] = []
 
-    const validCity = await City.findAll({
-        where: {
-            id: id
-        }
-    })
+    const validCity = await db.city.findById(id)
 
     if(!validCity.length) {
 
@@ -81,11 +73,7 @@ export const deleteCityValidate = async (req: Request, res: Response, next: Next
 
     const validationErrors :string[] = []
 
-    const validCity = await City.findAll({
-        where: {
-            id: id
-        }
-    })
+    const validCity = await db.city.findById(id)
 
     if(!validCity.length) {
 

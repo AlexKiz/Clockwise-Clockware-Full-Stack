@@ -35,16 +35,13 @@ const RateOrder: FC<RateOrderProps> = () => {
 
                 setOrder(data)
 
-            } 
-            
-            if(!data.length) {
+            } else {
 
                 alert('Current order has been already rated')
                 history.push('/')
-            }
-            
-        }
 
+            }
+        }
         readOrderForRate()
     },[])
 
@@ -52,10 +49,18 @@ const RateOrder: FC<RateOrderProps> = () => {
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
+        const { ratedSum, ratedQuantity } = order[0].master
+        const newRatedSum = ratedSum + rating
+        const newRatedQuantity = ratedQuantity + 1
+        const newRating = Number((newRatedSum / newRatedQuantity).toFixed(2))
+
         axios.put(`/${URL.RATED_ORDER}`, {
             id: order[0].id,
-            order_rated: rating,
-            master_id: order[0].master.id
+            orderRated: rating,
+            masterId: order[0].master.id,
+            newRatedSum,
+            newRatedQuantity,
+            newRating
         }).then(() => {
 
             alert('Thanks for your feedback')
@@ -71,7 +76,7 @@ const RateOrder: FC<RateOrderProps> = () => {
                     <form className={classes.form} onSubmit={onSubmit} name='orderForm'>
 
                         <div>
-                        { order[0] &&
+                        { order &&
                             <>
                             <div className={classes.form_master}>
                                 <label>Please, rate the following master:</label>
