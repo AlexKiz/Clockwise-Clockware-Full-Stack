@@ -1,260 +1,252 @@
-import axios from "axios";
-import React, { useState, useEffect, FC } from "react";
-import { useParams, useHistory} from "react-router-dom"
-import '../order.controller/order-update-form.css'
-import { Params, User, Clock, City, Master } from '../../../data/types/types'
-import { today, openingHours } from '../../../data/constants/systemConstants'
-import { OrderControllerProps } from "./componentConstants"; 
-import { RESOURCE, URL } from "../../../data/constants/routeConstants";
+/* eslint-disable react/jsx-key */
+import axios from 'axios';
+import React, {useState, useEffect, FC} from 'react';
+import {useParams, useHistory} from 'react-router-dom';
+import '../order.controller/order-update-form.css';
+import {Params, User, Clock, City, Master} from '../../../data/types/types';
+import {today, openingHours} from '../../../data/constants/systemConstants';
+import {OrderControllerProps} from './componentConstants';
+import {RESOURCE, URL} from '../../../data/constants/routeConstants';
 
 
 const OrderController: FC<OrderControllerProps> = () => {
+	const history = useHistory();
 
-    const history = useHistory()
+	const {orderIdParam, userIdParam, clockIdParam, cityIdParam, orderDateParam, orderTimeParam, masterIdParam} = useParams<Params>();
 
-    const { orderIdParam, userIdParam, clockIdParam, cityIdParam, orderDateParam, orderTimeParam, masterIdParam } = useParams<Params>()
+	const [userId, setUserId] = useState<number>(0);
+	const [users, setUsers] = useState<User[]>([]);
 
-    const [userId, setUserId] = useState<number>(0)
-    const [users, setUsers] = useState<User[]>([])
+	const [clockId, setClockId] = useState<number>(0);
+	const [clocks, setClocks] = useState<Clock[]>([]);
 
-    const [clockId, setClockId] = useState<number>(0)
-    const [clocks, setClocks] = useState<Clock[]>([])
+	const [cityId, setCityId] = useState<number>(0);
+	const [cities, setCities] = useState<City[]>([]);
 
-    const [cityId, setCityId] = useState<number>(0)
-    const [cities, setCities] = useState<City[]>([])
+	const [orderDate, setOrderDate] = useState<string>(orderDateParam);
+	const [orderTime, setOrderTime] = useState<string>(orderTimeParam);
 
-    const [orderDate, setOrderDate] = useState<string>(orderDateParam)
-    const [orderTime, setOrderTime] = useState<string>(orderTimeParam)
-
-    const [masterId, setMasterId] = useState<number>(0)
-    const [masters, setMasters] = useState<Master[]>([])
-
-
-    useEffect(() => {
-        
-        const readUsersData = async () => {
-
-            const { data } = await axios.get<User[]>(`/${URL.USER}`)
-
-            setUsers(data)
-            setUserId(Number(userIdParam))
-        }
-
-        readUsersData()
-    },[])
+	const [masterId, setMasterId] = useState<number>(0);
+	const [masters, setMasters] = useState<Master[]>([]);
 
 
-    useEffect(() => {
+	useEffect(() => {
+		const readUsersData = async () => {
+			const {data} = await axios.get<User[]>(`/${URL.USER}`);
 
-        const readClocksData = async () => {
+			setUsers(data);
+			setUserId(Number(userIdParam));
+		};
 
-            const { data } = await axios.get<Clock[]>(`/${URL.CLOCK}`)
-
-            setClocks(data)
-            setClockId(Number(clockIdParam))
-        }
-
-        readClocksData()
-    }, [])
+		readUsersData();
+	}, []);
 
 
-    useEffect(() => {
+	useEffect(() => {
+		const readClocksData = async () => {
+			const {data} = await axios.get<Clock[]>(`/${URL.CLOCK}`);
 
-        const readCitiesData = async () => {
+			setClocks(data);
+			setClockId(Number(clockIdParam));
+		};
 
-            const { data } = await axios.get<City[]>(`/${URL.CITY}`)
-
-            setCities(data)
-            setCityId(Number(cityIdParam))
-        }
-
-        readCitiesData()
-    },[])
+		readClocksData();
+	}, []);
 
 
-    useEffect(() => { 
+	useEffect(() => {
+		const readCitiesData = async () => {
+			const {data} = await axios.get<City[]>(`/${URL.CITY}`);
 
-        const readAvailableMastersData = async () => {
-            if(clocks.length) {
-                const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
-                let endDate = new Date(`${orderDate} ${orderTime}`)
-                let startDate = new Date(`${orderDate} ${orderTime}`)
-                startDate.setUTCHours(startDate.getHours())
-                endDate.setUTCHours(endDate.getHours() + installationTime)
-            
-                const { data } = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
-                    params: {
-                        currentOrderId: orderIdParam,
-                        cityId: cityIdParam,
-                        startWorkOn: startDate.toISOString(),
-                        endWorkOn: endDate.toISOString()
-                    }
-                })
+			setCities(data);
+			setCityId(Number(cityIdParam));
+		};
 
-                if(!data.length) {
-                    alert('All masters has been booked at that time. Please choose another time or date')
-                    setOrderTime('')
-                } else {
-                    setMasterId(Number(masterIdParam))
-                    setMasters(data)
-                }
-            }
-        }
-        readAvailableMastersData()
-
-    }, [cityId, clockId, orderDate, orderTime])
+		readCitiesData();
+	}, []);
 
 
-    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        if(clocks.length) {
-            const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
-            let endDate = new Date(`${orderDate} ${orderTime}`)
-            let startDate = new Date(`${orderDate} ${orderTime}`)
-            startDate.setUTCHours(startDate.getHours())
-            endDate.setUTCHours(endDate.getHours() + installationTime)
+	useEffect(() => {
+		const readAvailableMastersData = async () => {
+			if (clocks.length) {
+				const {installationTime} = clocks.filter((clock) => clock.id === clockId)[0];
+				const endDate = new Date(`${orderDate} ${orderTime}`);
+				const startDate = new Date(`${orderDate} ${orderTime}`);
+				startDate.setUTCHours(startDate.getHours());
+				endDate.setUTCHours(endDate.getHours() + installationTime);
 
-            axios.put(`/${URL.ORDER}`, 
-            {
-                id: orderIdParam,
-                clockId,
-                userId,
-                cityId,
-                masterId,
-                startWorkOn: startDate.toISOString(),
-                endWorkOn: endDate.toISOString()
-            }).then(() => {
-                alert('Order has been updated')
-                history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`)
-            })
-        }
-    }
+				const {data} = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
+					params: {
+						currentOrderId: orderIdParam,
+						cityId: cityIdParam,
+						startWorkOn: startDate.toISOString(),
+						endWorkOn: endDate.toISOString(),
+					},
+				});
+
+				if (!data.length) {
+					alert('All masters has been booked at that time. Please choose another time or date');
+					setOrderTime('');
+				} else {
+					setMasterId(Number(masterIdParam));
+					setMasters(data);
+				}
+			}
+		};
+		readAvailableMastersData();
+	}, [cityId, clockId, orderDate, orderTime]);
 
 
-    return(
-        <div className='container-form'>
+	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (clocks.length) {
+			const {installationTime} = clocks.filter((clock) => clock.id === clockId)[0];
+			const endDate = new Date(`${orderDate} ${orderTime}`);
+			const startDate = new Date(`${orderDate} ${orderTime}`);
+			startDate.setUTCHours(startDate.getHours());
+			endDate.setUTCHours(endDate.getHours() + installationTime);
 
-            <form className='form' onSubmit={onSubmit}>
+			axios.put(`/${URL.ORDER}`,
+				{
+					id: orderIdParam,
+					clockId,
+					userId,
+					cityId,
+					masterId,
+					startWorkOn: startDate.toISOString(),
+					endWorkOn: endDate.toISOString(),
+				}).then(() => {
+				alert('Order has been updated');
+				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
+			});
+		}
+	};
 
-                <div>
 
-                    <div className='form-section'>
-                        <div className='form-input__label'>
-                            <label>
+	return (
+		<div className='container-form'>
+
+			<form className='form' onSubmit={onSubmit}>
+
+				<div>
+
+					<div className='form-section'>
+						<div className='form-input__label'>
+							<label>
                                 Choose user:
-                            </label>
-                        </div>
+							</label>
+						</div>
 
-                        <select name='users' onChange={(userIdEvent) => setUserId(Number(userIdEvent.target.value))}>
-                        {
-                            users.map((user) => (
-                                <option selected = {user.id === Number(userIdParam)} value={user.id}>
-                                    {` user: ${user.name} | email: ${user.email}`}
-                                </option>
-                            ))
-                        }
-                        </select>
-                    </div>
+						<select name='users' onChange={(userIdEvent) => setUserId(Number(userIdEvent.target.value))}>
+							{
+								users.map((user) => (
+									<option selected = {user.id === Number(userIdParam)} value={user.id}>
+										{` user: ${user.name} | email: ${user.email}`}
+									</option>
+								))
+							}
+						</select>
+					</div>
 
 
-                    <div className='form-section'>
-                        <div className='form-input__label'>
-                            <label>
+					<div className='form-section'>
+						<div className='form-input__label'>
+							<label>
                                 Choose clock size:
-                            </label>
-                        </div>
+							</label>
+						</div>
 
-                        <select name='clocks' onChange={(clockIdEvent) => setClockId(Number(clockIdEvent.target.value))}>
-                            {
-                                clocks.map((clock) => (
-                                    <option selected = {clock.id === Number(clockIdParam)} value={clock.id}>
-                                        {`${clock.size}`}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
+						<select name='clocks' onChange={(clockIdEvent) => setClockId(Number(clockIdEvent.target.value))}>
+							{
+								clocks.map((clock) => (
+									<option selected = {clock.id === Number(clockIdParam)} value={clock.id}>
+										{`${clock.size}`}
+									</option>
+								))
+							}
+						</select>
+					</div>
 
 
-                    <div className='form-section'>
-                        <div className='form-input__label'>
-                            <label>
+					<div className='form-section'>
+						<div className='form-input__label'>
+							<label>
                                 Choose city:
-                            </label>
-                        </div>
+							</label>
+						</div>
 
-                        <select name='cities' onChange={(cityIdEvent) => setCityId(Number(cityIdEvent.target.value))}>
-                            {
-                                cities.map((city) => (
-                                    <option selected = {city.id === Number(cityIdParam)} value={city.id}>
-                                        {`${city.name}`}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
+						<select name='cities' onChange={(cityIdEvent) => setCityId(Number(cityIdEvent.target.value))}>
+							{
+								cities.map((city) => (
+									<option selected = {city.id === Number(cityIdParam)} value={city.id}>
+										{`${city.name}`}
+									</option>
+								))
+							}
+						</select>
+					</div>
 
 
-                    <div className='form-section'>
-                        <div className='form-input__label'>
-                            <label>
+					<div className='form-section'>
+						<div className='form-input__label'>
+							<label>
                                 Choose date:
-                            </label>
-                        </div>
-                        <input 
-                        type='date' 
-                        name='orderDate'
-                        min= {today}
-                        value={orderDate}
-                        onChange={(orderDateEvent) => setOrderDate(orderDateEvent.target.value)}
-                        ></input>
-                    </div>
+							</label>
+						</div>
+						<input
+							type='date'
+							name='orderDate'
+							min= {today}
+							value={orderDate}
+							onChange={(orderDateEvent) => setOrderDate(orderDateEvent.target.value)}
+						></input>
+					</div>
 
 
-                    <div className='form-section'>
-                        <div className='form-input__label'>
-                            <label>
+					<div className='form-section'>
+						<div className='form-input__label'>
+							<label>
                                 Choose order time:
-                            </label>
-                        </div>
+							</label>
+						</div>
 
-                        <select name='orderTime' onChange={(orderTimeEvent) => setOrderTime(orderTimeEvent.target.value)}>
-                            {
-                                openingHours.map((elem) => (
-                                    <option selected = {elem === orderTime} value={elem}>
-                                        {`${elem}`}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
-
-
-                    <div className='form-section'>   
-                        <div className='form-input__label'>
-                            <label>Available masters:</label>
-                        </div>
-
-                        <select name='masterName' onChange={(masterIdEvent) => setMasterId(Number(masterIdEvent.target.value))}>
-                            {
-                                masters.map((master) => (
-                                    <option selected = {master.id === Number(masterIdParam)} value={master.id}>
-                                        {`${master.name}`}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
+						<select name='orderTime' onChange={(orderTimeEvent) => setOrderTime(orderTimeEvent.target.value)}>
+							{
+								openingHours.map((elem) => (
+									<option selected = {elem === orderTime} value={elem}>
+										{`${elem}`}
+									</option>
+								))
+							}
+						</select>
+					</div>
 
 
-                    <div className='form-button'>   
-                        <button type="submit"> Confirm </button>
-                    </div>
+					<div className='form-section'>
+						<div className='form-input__label'>
+							<label>Available masters:</label>
+						</div>
 
-                </div>
-            </form>
-        </div>
-    )
-}
+						<select name='masterName' onChange={(masterIdEvent) => setMasterId(Number(masterIdEvent.target.value))}>
+							{
+								masters.map((master) => (
+									<option selected = {master.id === Number(masterIdParam)} value={master.id}>
+										{`${master.name}`}
+									</option>
+								))
+							}
+						</select>
+					</div>
 
-export default OrderController
+
+					<div className='form-button'>
+						<button type="submit"> Confirm </button>
+					</div>
+
+				</div>
+			</form>
+		</div>
+	);
+};
+
+export default OrderController;
