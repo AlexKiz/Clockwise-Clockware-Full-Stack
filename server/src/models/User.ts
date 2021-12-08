@@ -12,7 +12,8 @@ interface UserAttributes {
     email: string
 }
 
-export = (sequelize: any, DataTypes: any) => {
+export default (sequelize: any, DataTypes: any) => {
+
     class User extends Model<UserAttributes, UserCreationAttributes>
         implements UserAttributes {
         public id!: number;
@@ -32,7 +33,7 @@ export = (sequelize: any, DataTypes: any) => {
         }
 
         static associate(models: any) {
-            User.hasMany(models.order, {
+            User.hasMany(models.Order, {
                 foreignKey: 'userId',
                 onDelete: 'CASCADE',
                 onUpdate: 'CASCADE'

@@ -18,7 +18,7 @@ const OrdersList: FC<OrderListProps> = () => {
         
             const { data } = await axios.get<Order[]>(`/${URL.ORDER}`)
             
-        setOrders(data)
+            setOrders(data)
         } 
 
         readOrdersData()

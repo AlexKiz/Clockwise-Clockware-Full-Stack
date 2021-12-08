@@ -9,7 +9,7 @@ export const postCityValidate = async (req: Request, res: Response, next: NextFu
 
     const validationErrors: string[] = []
 
-    const allCitiesName = await db.city.findAll({ attributes: ['name'] })
+    const allCitiesName = await db.City.findAll({ attributes: ['name'] })
 
     if (allCitiesName.length) {
 
@@ -44,7 +44,7 @@ export const putCityValidate = async (req: Request, res: Response, next: NextFun
 
     const validationErrors: string[] = []
 
-    const validCity = await db.city.findById(id)
+    const validCity = await db.City.findById(id)
 
     if(!validCity.length) {
 
@@ -73,7 +73,7 @@ export const deleteCityValidate = async (req: Request, res: Response, next: Next
 
     const validationErrors :string[] = []
 
-    const validCity = await db.city.findById(id)
+    const validCity = await db.City.findById(id)
 
     if(!validCity.length) {
 

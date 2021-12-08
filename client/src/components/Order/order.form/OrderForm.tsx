@@ -26,9 +26,6 @@ const OrderForm: FC<OrderFormProps> = () => {
     const [clockId, setClockId] = useState<number>(0)
     const [clocks, setClocks] = useState<Clock[]>([])
 
-    const [startWorkOn, setStartWorkOn] = useState<string>('')
-    const [endWorkOn, setEndWorkOn] = useState<string>('')
-
 
     useEffect(() => {
         const readCitiesData = async () => {
@@ -60,36 +57,23 @@ const OrderForm: FC<OrderFormProps> = () => {
     },[])
 
 
-    /*useEffect(() => {
+    useEffect(() => {
+        const readAvailableMastersData = async () => {
 
-        if(clockId && orderDate && orderTime) {
             const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
             let endDate = new Date(`${orderDate} ${orderTime}`)
             let startDate = new Date(`${orderDate} ${orderTime}`)
             startDate.setUTCHours(startDate.getHours())
             endDate.setUTCHours(endDate.getHours() + installationTime)
-            setStartWorkOn(startDate.toISOString())
-            setEndWorkOn(endDate.toISOString())
-            console.log(startWorkOn, endWorkOn);
-        }
-
-    },[clockId, orderDate, orderTime])*/
-
-
-    useEffect(() => {
-        const readAvailableMastersData = async () => {
 
             if(cityId && orderDate && orderTime && clockId) {
-                const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
-                let endDate = new Date(`${orderDate} ${orderTime}`)
-                let startDate = new Date(`${orderDate} ${orderTime}`)
-                startDate.setUTCHours(startDate.getHours())
-                endDate.setUTCHours(endDate.getHours() + installationTime)
-                const startWorkOn = startDate.toISOString()
-                const endWorkOn = endDate.toISOString()
 
                 const { data } = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
-                    params: { cityId, startWorkOn, endWorkOn }
+                    params: { 
+                        cityId, 
+                        startWorkOn: startDate.toISOString(), 
+                        endWorkOn: endDate.toISOString() 
+                    }
                 })
 
                 if(data.length === 0) {
@@ -115,13 +99,13 @@ const OrderForm: FC<OrderFormProps> = () => {
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+
         const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
         let endDate = new Date(`${orderDate} ${orderTime}`)
         let startDate = new Date(`${orderDate} ${orderTime}`)
         startDate.setUTCHours(startDate.getHours())
         endDate.setUTCHours(endDate.getHours() + installationTime)
-        const startWorkOn = startDate.toISOString()
-        const endWorkOn = endDate.toISOString()
+
         axios.post(`/${URL.ORDER}`, 
         {
             name: userName, 
@@ -129,8 +113,8 @@ const OrderForm: FC<OrderFormProps> = () => {
             clockId,
             cityId,
             masterId,
-            startWorkOn,
-            endWorkOn
+            startWorkOn: startDate.toISOString(), 
+            endWorkOn: endDate.toISOString() 
         })
 
         setUserName('')

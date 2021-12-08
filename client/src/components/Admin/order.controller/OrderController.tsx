@@ -29,9 +29,6 @@ const OrderController: FC<OrderControllerProps> = () => {
     const [masterId, setMasterId] = useState<number>(0)
     const [masters, setMasters] = useState<Master[]>([])
 
-    const [startWorkOn, setStartWorkOn] = useState('')
-    const [endWorkOn, setEndWorkOn] = useState('')
-
 
     useEffect(() => {
         
@@ -75,32 +72,20 @@ const OrderController: FC<OrderControllerProps> = () => {
     },[])
 
 
-    useEffect(() => {
+    useEffect(() => { 
 
-        if(clockId && orderDate && orderTime) {
+        const readAvailableMastersData = async () => {
             const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
             let endDate = new Date(`${orderDate} ${orderTime}`)
             let startDate = new Date(`${orderDate} ${orderTime}`)
             startDate.setUTCHours(startDate.getHours())
             endDate.setUTCHours(endDate.getHours() + installationTime)
-    
-            setStartWorkOn(startDate.toISOString())
-            setEndWorkOn(endDate.toISOString())
-        }
-
-    },[clockId, orderDate, orderTime])
-
-
-    useEffect(() => { 
-
-        const readAvailableMastersData = async () => {
-
             const { data } = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
                 params: {
                     currentOrderId: orderIdParam,
                     cityId: cityIdParam,
-                    startWorkOn: startWorkOn ,
-                    endWorkOn: endWorkOn
+                    startWorkOn: startDate.toISOString() ,
+                    endWorkOn: endDate.toISOString()
                 }
             })
 
@@ -122,6 +107,13 @@ const OrderController: FC<OrderControllerProps> = () => {
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+
+        const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
+        let endDate = new Date(`${orderDate} ${orderTime}`)
+        let startDate = new Date(`${orderDate} ${orderTime}`)
+        startDate.setUTCHours(startDate.getHours())
+        endDate.setUTCHours(endDate.getHours() + installationTime)
+
         axios.put(`/${URL.ORDER}`, 
         {
             id: orderIdParam,
@@ -129,8 +121,8 @@ const OrderController: FC<OrderControllerProps> = () => {
             userId,
             cityId,
             masterId,
-            startWorkOn,
-            endWorkOn
+            startWorkOn: startDate.toISOString(),
+            endWorkOn: endDate.toISOString()
         }).then(() => {
             alert('Order has been updated')
             history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`)

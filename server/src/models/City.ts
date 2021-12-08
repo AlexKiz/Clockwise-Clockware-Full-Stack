@@ -12,7 +12,7 @@ interface CityAttributes {
 
 interface CityCreationAttributes extends Optional<CityAttributes, "id"> {}
 
-export = (sequelize: any, DataTypes:any) => {
+export default (sequelize: any, DataTypes:any) => {
     class City extends Model<CityAttributes, CityCreationAttributes>
         implements CityAttributes {
         public id!: number 
@@ -31,19 +31,20 @@ export = (sequelize: any, DataTypes:any) => {
         }
 
         static associate(models: any) {
-            City.belongsToMany(models.master, { 
-                through: models.master_cities,
+            City.belongsToMany(models.Master, { 
+                through: models.MasterCities,
                 foreignKey: 'cityId',
                 onDelete: 'CASCADE',
                 onUpdate: 'CASCADE'
             })
-            City.hasMany(models.order, {
+            City.hasMany(models.Order, {
                 foreignKey: 'cityId',
                 onDelete: 'CASCADE',
                 onUpdate: 'CASCADE'
             })
         }
     };
+
     City.init(
         {
             id: {

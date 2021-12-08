@@ -9,21 +9,21 @@ export const postOrderValidate = async(req: Request, res: Response, next: NextFu
 
     const validationErrors: string[] = []
 
-    const validClocksId = await db.clock.findById(clockId)
+    const validClocksId = await db.Clock.findById(clockId)
 
     if(!validClocksId.length) {
 
         validationErrors.push('Clocks with current id does not exist')
     }
 
-    const validCityId = await db.city.findById(cityId)
+    const validCityId = await db.City.findById(cityId)
 
     if(!validCityId.length) {
 
         validationErrors.push('City with current id does not exist')
     }
 
-    const validMasterId = await db.master.findById(masterId)
+    const validMasterId = await db.Master.findById(masterId)
 
     if(!validMasterId.length) {
 
@@ -67,35 +67,35 @@ export const putOrderValidate = async(req: Request, res: Response, next: NextFun
 
     const validationErrors: string[] = []
 
-    const validOrder = await db.order.findById(id)
+    const validOrder = await db.Order.findById(id)
 
     if(!validOrder.length) {
 
         validationErrors.push('Order with current id does not exist')
     }
 
-    const validClocksId = await db.clock.findById(clockId)
+    const validClocksId = await db.Clock.findById(clockId)
 
     if(!validClocksId.length) {
 
         validationErrors.push('Clocks with current id does not exist')
     }
 
-    const validUserId = await db.user.findById(userId)
+    const validUserId = await db.User.findById(userId)
 
     if(!validUserId.length) {
 
         validationErrors.push('User with current id does not exist')
     }
 
-    const validCityId = await db.city.findById(cityId)
+    const validCityId = await db.City.findById(cityId)
 
     if(!validCityId.length) {
 
         validationErrors.push('City with current id does not exist')
     }
 
-    const validMasterId = await db.master.findById(masterId)
+    const validMasterId = await db.Master.findById(masterId)
 
     if(!validMasterId.length) {
 
@@ -129,14 +129,14 @@ export const putRatedOrderValidate = async(req: Request, res: Response, next:Nex
 
     const validationErrors: string[] = []
 
-    const validOrder = await db.order.findById(id)
+    const validOrder = await db.Order.findById(id)
 
     if(!validOrder.length) {
 
         validationErrors.push('Order with current id does not exist')
     }
 
-    const validMasterId = await db.master.findById(masterId)
+    const validMasterId = await db.Master.findById(masterId)
     
     if(!validMasterId.length) {
 
@@ -166,7 +166,7 @@ export const deleteOrderValidate = async(req: Request, res: Response, next: Next
 
     const validationErrors: string[] = []
 
-    const validOrder = await db.order.findById(id)
+    const validOrder = await db.Order.findById(id)
 
     if(!validOrder.length) {
 

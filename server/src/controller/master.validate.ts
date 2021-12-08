@@ -14,7 +14,7 @@ export const postMasterValidate = async(req: Request, res: Response, next: NextF
         validationErrors.push('Invalid master name')
     }
     
-    const validCityId = await db.city.findById(citiesId)
+    const validCityId = await db.City.findById(citiesId)
 
     if(!validCityId.length) {
 
@@ -38,7 +38,7 @@ export const putMasterValidate = async(req: Request, res: Response, next: NextFu
 
     const validationErrors: string[] = []
 
-    const validMaster = await db.master.findById(id)
+    const validMaster = await db.Master.findById(id)
 
     if(!validMaster.length) {
 
@@ -52,7 +52,7 @@ export const putMasterValidate = async(req: Request, res: Response, next: NextFu
 
     }
 
-    const validCityId = await db.city.findById(citiesId)
+    const validCityId = await db.City.findById(citiesId)
 
     if(!validCityId.length) {
 
@@ -76,7 +76,7 @@ export const deleteMasterValidate = async(req: Request, res: Response, next: Nex
 
     const validationErrors: string[] = []
 
-    const validMaster = await db.master.findById(id)
+    const validMaster = await db.Master.findById(id)
 
     if(!validMaster.length) {
 

@@ -10,13 +10,13 @@ export const postOrder = async (req: Request, res: Response) => {
     try {
         const { name, email, clockId, cityId, masterId, startWorkOn, endWorkOn } = req.body
 
-        const [createdUser, isUserCreated] = await db.user.findOrCreate({where:{ email }, defaults:{ email, name }})
+        const [createdUser, isUserCreated] = await db.User.findOrCreate({where:{ email }, defaults:{ email, name }})
 
         const userId = createdUser.id
         
         const ratingIdentificator = uuidv4();
         
-        const createOrder = await db.order.create({
+        const createOrder = await db.Order.create({
             clockId, 
             userId, 
             cityId, 
@@ -46,26 +46,26 @@ export const postOrder = async (req: Request, res: Response) => {
 
 export const getOrders = async (req: Request, res: Response) => {
 
-        const readOrders = await db.order.findAll({
+        const readOrders = await db.Order.findAll({
             attributes: ['id', 'startWorkOn', 'endWorkOn'],
             include: [
                 {
-                    model: db.clock,
+                    model: db.Clock,
                     attributes: ['id', 'size'],
                     required:true
                 },
                 {
-                    model: db.user,
+                    model: db.User,
                     attributes: ['id', 'name', 'email'],
                     required:true
                 },
                 {
-                    model: db.city,
+                    model: db.City,
                     attributes: ['id', 'name'],
                     required: true
                 },
                 {
-                    model: db.master,
+                    model: db.Master,
                     attributes: ['id', 'name'],
                     required: true
                 }
@@ -82,29 +82,29 @@ export const getOrderForRate = async (req: Request, res: Response) => {
         
         const { ratingIdentificator } = req.query
         
-        const readOrderForRate = await db.order.findAll({
+        const readOrderForRate = await db.Order.findAll({
             attributes: ['id','startWorkOn','endWorkOn'],
             where: { 
                 ratingIdentificator: ratingIdentificator 
             },
             include: [
                 {
-                    model: db.clock,
+                    model: db.Clock,
                     attributes: ['id', 'size'],
                     required:true
                 },
                 {
-                    model: db.user,
+                    model: db.User,
                     attributes: ['id', 'name', 'email'],
                     required:true
                 },
                 {
-                    model: db.city,
+                    model: db.City,
                     attributes: ['id', 'name'],
                     required: true
                 },
                 {
-                    model: db.master,
+                    model: db.Master,
                     attributes: ['id', 'name', 'ratedSum', 'ratedQuantity'],
                     required: true
                 }
@@ -127,13 +127,13 @@ export const putRatedOrder = async (req: Request, res: Response) => {
 
         const { id, orderRated, masterId, newRating, newRatedSum, newRatedQuantity } = req.body 
         
-        const updateMasterRating = await db.master.updateById(masterId ,{
+        const updateMasterRating = await db.Master.updateById(masterId ,{
             rating: newRating,
             ratedSum: newRatedSum,
             ratedQuantity: newRatedQuantity
         })
 
-        const updateRatedOrder = await db.order.updateById(id, {
+        const updateRatedOrder = await db.Order.updateById(id, {
             orderRating: orderRated,
             ratingIdentificator: ''
         })
@@ -150,7 +150,7 @@ export const putRatedOrder = async (req: Request, res: Response) => {
 
 export const getClocks = async (req: Request, res: Response) => {
 
-    const readClocks = await db.clock.findAll()
+    const readClocks = await db.Clock.findAll()
 
     res.status(200).json(readClocks)
 }
@@ -161,7 +161,7 @@ export const putOrder = async (req: Request, res: Response) => {
     try {
         const { id, clockId, userId, cityId, masterId, startWorkOn, endWorkOn } = req.body
 
-        const updateOrder = await db.order.updateById(id, {
+        const updateOrder = await db.Order.updateById(id, {
             clockId, 
             userId, 
             cityId,
@@ -184,7 +184,7 @@ export const deleteOrder = async (req: Request, res: Response) => {
     try {
         const { id } = req.body
 
-        const deleteOrder = await db.order.deleteById(id)
+        const deleteOrder = await db.Order.deleteById(id)
 
         res.status(204).json(deleteOrder)
 

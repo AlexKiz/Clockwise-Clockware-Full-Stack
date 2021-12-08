@@ -14,7 +14,7 @@ interface MasterAttributes {
 
 interface MasterCreationAttributes extends Optional<MasterAttributes, "id" | "rating" | "ratedSum" | "ratedQuantity"> {}
 
-export = (sequelize: any, DataTypes: any) => {
+export default (sequelize: any, DataTypes: any) => {
     class Master extends Model<MasterAttributes, MasterCreationAttributes>
         implements MasterAttributes {
         public id!: number 
@@ -35,19 +35,20 @@ export = (sequelize: any, DataTypes: any) => {
             return this.destroy({where:{id: entityId}})
         }
         static associate(models: any) {
-            Master.belongsToMany(models.city, { 
-                through: models.master_cities,
+            Master.belongsToMany(models.City, { 
+                through: models.MasterCities,
                 foreignKey: 'masterId',
                 onDelete: 'CASCADE',
                 onUpdate: 'CASCADE'
             })
-            Master.hasMany(models.order, {
+            Master.hasMany(models.Order, {
                 foreignKey: 'masterId',
                 onDelete: 'CASCADE',
                 onUpdate: 'CASCADE'
             })
         }
     };
+    
     Master.init(
         {
             id: {

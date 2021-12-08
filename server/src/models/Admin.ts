@@ -10,7 +10,9 @@ interface AdminAttributes {
     password: string
 }
 
-export = (sequelize: any, DataTypes: any) => {
+
+export default (sequelize: any, DataTypes: any) => {
+
     class Admin extends Model<AdminAttributes>
         implements AdminAttributes {
         public id!: number;
@@ -18,7 +20,8 @@ export = (sequelize: any, DataTypes: any) => {
         public password!: string;
 
         static associate(models:any) {}
-    };
+        }
+        
     Admin.init(
         {
             id: {

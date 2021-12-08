@@ -8,7 +8,7 @@ export const Auth = async (req: Request, res: Response) => {
 
     const { adminLogin, adminPassword } = req.body 
     
-    const credentials = await db.admin.findOne({where:{ email: adminLogin }})
+    const credentials = await db.Admin.findOne({where:{ email: adminLogin }})
     
     if(credentials) {
 

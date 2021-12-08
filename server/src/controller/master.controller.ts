@@ -8,7 +8,7 @@ export const postMaster = async (req: Request, res: Response)  => {
     try {
         const { name, citiesId } = req.body
 
-            const createMaster = await db.master.create({ name })
+            const createMaster = await db.Master.create({ name })
 
             const citiesOfMaster = await createMaster.setCities(citiesId)
 
@@ -23,10 +23,10 @@ export const postMaster = async (req: Request, res: Response)  => {
 
 export const getMasters = async (req: Request, res: Response) => {
 
-        const readMasters = await db.master.findAll({
+        const readMasters = await db.Master.findAll({
             attributes: ['id', 'name', 'rating'],
             include: {
-                model: db.city,
+                model: db.City,
                 attributes: ['id', 'name'],
                 through: { attributes: [] }
             }
@@ -43,20 +43,19 @@ export const getAvailableMasters = async (req: Request, res: Response) => {
 
                 const compareStartWorkOn = `${startWorkOn}`
                 const compareEndWorkOn = `${endWorkOn}`   
-                console.log(startWorkOn, endWorkOn);
                 
                 let readBookedMasters
 
                 if(currentOrderId) {
 
-                    readBookedMasters = await db.order.findAll({
+                    readBookedMasters = await db.Order.findAll({
                         attributes: ['masterId'],
                         where: {
                             [Op.or]: [ 
                                 {
                                     [Op.and]: [ 
-                                        { startWorkOn: {[Op.lte]: compareStartWorkOn} }, 
-                                        { endWorkOn:   {[Op.gte]: compareStartWorkOn} } 
+                                        { startWorkOn: { [Op.lte]: compareStartWorkOn } }, 
+                                        { endWorkOn:   { [Op.gte]: compareStartWorkOn } } 
                                     ] 
                                 }, 
                                 {
@@ -66,20 +65,22 @@ export const getAvailableMasters = async (req: Request, res: Response) => {
                                     ] 
                                 } 
                             ],
-                            id : currentOrderId 
+                            id : {
+                                [Op.not]: currentOrderId
+                            } 
                         }
                     })
 
                 } else {
 
-                    readBookedMasters = await db.order.findAll({
+                    readBookedMasters = await db.Order.findAll({
                         attributes: ['masterId'],
                         where: {
                             [Op.or]: [ 
                                 {
                                     [Op.and]: [ 
-                                        { startWorkOn: {[Op.lte]: compareStartWorkOn} }, 
-                                        { endWorkOn:   {[Op.gte]: compareStartWorkOn} } 
+                                        { startWorkOn: { [Op.lte]: compareStartWorkOn } }, 
+                                        { endWorkOn:   { [Op.gte]: compareStartWorkOn } } 
                                     ] 
                                 }, 
                                 {
@@ -96,12 +97,12 @@ export const getAvailableMasters = async (req: Request, res: Response) => {
 
                 const bookedMastersId = readBookedMasters.map((master: any) => master.masterId)
 
-                const readAvailableMasters = await db.master.findAll({ 
+                const readAvailableMasters = await db.Master.findAll({ 
                     where: {
                         id: { [Op.notIn]: bookedMastersId }
                     },
                     include: {
-                        model: db.city,
+                        model: db.City,
                         attributes: [],
                         where: { id: cityId }
                     }
@@ -121,7 +122,7 @@ export const putMaster = async (req: Request, res: Response) => {
     try {
         const { id, name, citiesId } = req.body
 
-        const [rows, updateMaster] = await db.master.update({ name }, {where:{ id }, returning: true})
+        const [rows, updateMaster] = await db.Master.update({ name }, {where:{ id }, returning: true})
         
         const updateCitiesOfMaster = await updateMaster[0].setCities(citiesId)
 
@@ -139,7 +140,7 @@ export const deleteMaster = async (req: Request, res: Response) => {
     try {
         const { id } = req.body
 
-        const deleteMaster = await db.master.deleteById(id)
+        const deleteMaster = await db.Master.deleteById(id)
 
         res.status(204).json(deleteMaster)
 

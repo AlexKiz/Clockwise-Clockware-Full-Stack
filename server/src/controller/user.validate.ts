@@ -37,7 +37,7 @@ export const putUserValidate = async(req: Request, res: Response, next: NextFunc
 
     const validationErrors: string[] = []
 
-    const validUser = await db.user.findById(id)
+    const validUser = await db.User.findById(id)
 
     if(!validUser.length) {
 
@@ -72,7 +72,7 @@ export const deleteUserValidate = async(req: Request, res: Response, next: NextF
 
     const validationErrors: string[] = []
 
-    const validUser = await db.user.findById(id)
+    const validUser = await db.User.findById(id)
 
     if(!validUser.length) {
         

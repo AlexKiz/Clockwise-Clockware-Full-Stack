@@ -14,7 +14,7 @@ interface ClockAttributes {
 
 interface ClockCreationAttributes extends Optional<ClockAttributes, "id"| "installationTime" > {}
 
-export = (sequelize: any, DataTypes: any) => {
+export default (sequelize: any, DataTypes: any) => {
     class Clock extends Model<ClockAttributes, ClockCreationAttributes>
         implements ClockAttributes {
         public id!: number
@@ -27,14 +27,13 @@ export = (sequelize: any, DataTypes: any) => {
         }
 
         static associate(models: any) {
-                Clock.hasMany(models.order, {
+                Clock.hasMany(models.Order, {
                 foreignKey: 'clockId',
                 onDelete: 'CASCADE',
                 onUpdate: 'CASCADE'
             })
         }
 };
-
     Clock.init(
         {
             id: {

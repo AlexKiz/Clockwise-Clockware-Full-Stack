@@ -20,6 +20,7 @@ interface OrderAttributes {
 interface OrderCreationAttributes extends Optional<OrderAttributes, "id" | "orderRating"> {}
 
 export = (sequelize: any, DataTypes: any) => {
+
     class Order extends Model<OrderAttributes, OrderCreationAttributes>
         implements OrderAttributes {
             public id!: number
@@ -44,22 +45,22 @@ export = (sequelize: any, DataTypes: any) => {
                 return this.destroy({where:{id: entityId}})
             }
         static associate(models: any) {
-            Order.belongsTo(models.city, {
+            Order.belongsTo(models.City, {
                 foreignKey: 'cityId',
                 onDelete: 'CASCADE',
                 onUpdate: 'CASCADE'
             })
-            Order.belongsTo(models.clock, {
+            Order.belongsTo(models.Clock, {
                 foreignKey: 'clockId',
                 onDelete: 'CASCADE',
                 onUpdate: 'CASCADE'
             })
-            Order.belongsTo(models.master, {
+            Order.belongsTo(models.Master, {
                 foreignKey: 'masterId',
                 onDelete: 'CASCADE',
                 onUpdate: 'CASCADE'
             })
-            Order.belongsTo(models.user, {
+            Order.belongsTo(models.User, {
                 foreignKey: 'userId',
                 onDelete: 'CASCADE',
                 onUpdate: 'CASCADE'

@@ -9,8 +9,11 @@ interface MasterCitiesAttributes {
   cityId: number
 }
 
-export = (sequelize: any, DataTypes: any) => {
-    class MasterCities extends Model<MasterCitiesAttributes>
+
+
+export default (sequelize: any, DataTypes: any) => {
+
+  class MasterCities extends Model<MasterCitiesAttributes>
       implements MasterCitiesAttributes {
       public masterId!: number
       public cityId!: number
