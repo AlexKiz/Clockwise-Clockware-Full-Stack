@@ -3,14 +3,7 @@
 import {
 	Model,
 } from 'sequelize';
-
-
-interface AdminAttributes {
-    id: number,
-    email: string,
-    password: string
-}
-
+import {AdminAttributes} from './modelsConstants';
 
 export default (sequelize: any, DataTypes: any) => {
 	class Admin extends Model<AdminAttributes>

@@ -4,12 +4,7 @@ import {
 	Model,
 	Optional,
 } from 'sequelize';
-
-
-interface CityAttributes {
-    id: number,
-    name: string
-}
+import {CityAttributes} from './modelsConstants';
 
 interface CityCreationAttributes extends Optional<CityAttributes, 'id'> {}
 
