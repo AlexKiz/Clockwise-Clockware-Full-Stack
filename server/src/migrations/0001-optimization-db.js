@@ -6,7 +6,30 @@ module.exports = {
 		try {
 			await queryInterface.removeColumn('masters', 'ratedSum', {transaction});
 			await queryInterface.removeColumn('masters', 'ratedQuantity', {transaction});
-
+			await queryInterface.changeColumn('masters', 'id', {
+				type: Sequelize.DataTypes.UUID,
+				allowNull: false,
+				primaryKey: true,
+				defaultValue: UUID4,
+				onDelete: 'CASCADE',
+				onUpdate: 'CASCADE',
+			}, {transaction});
+			await queryInterface.changeColumn('users', 'id', {
+				type: Sequelize.DataTypes.UUID,
+				allowNull: false,
+				primaryKey: true,
+				defaultValue: UUID4,
+				onDelete: 'CASCADE',
+				onUpdate: 'CASCADE',
+			}, {transaction});
+			await queryInterface.changeColumn('orders', 'id', {
+				type: Sequelize.DataTypes.UUID,
+				allowNull: false,
+				primaryKey: true,
+				defaultValue: UUID4,
+				onDelete: 'CASCADE',
+				onUpdate: 'CASCADE',
+			});
 			await transaction.commit();
 		} catch (err) {
 			await transaction.rollback();
