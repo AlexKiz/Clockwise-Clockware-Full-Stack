@@ -247,7 +247,6 @@ module.exports = {
 					defaultValue: 0,
 				},
 				{transaction});
-
 			await transaction.commit();
 		} catch (err) {
 			await transaction.rollback();
