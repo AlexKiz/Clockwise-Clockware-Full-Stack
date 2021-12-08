@@ -9,7 +9,8 @@ export enum URL {
     AVAILABLE_MASTER = 'availableMasters',
     CITY_FOR_ORDER = 'cityForOrder',
     ORDER_FOR_RATE = 'orderForRate',
-    RATED_ORDER = 'ratedOrder'
+    RATED_ORDER = 'ratedOrder',
+    ORDERS_RATING = 'ordersRating'
 }
 
 export enum RESOURCE {

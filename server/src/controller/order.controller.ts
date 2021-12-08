@@ -5,6 +5,7 @@ import {transporter, sendMail} from '../services/nodemailer';
 import {v4 as uuidv4} from 'uuid';
 import {RESOURCE} from '../../data/constants/routeConstants';
 import db from '../models';
+import {Op} from 'sequelize';
 
 
 export const postOrder = async (req: Request, res: Response) => {
@@ -66,6 +67,29 @@ export const getOrders = async (req: Request, res: Response) => {
 	res.status(200).json(orders);
 };
 
+export const getOrdersRating = async (req: Request, res: Response) => {
+	try {
+		const {masterId} = req.query;
+
+		const readOrdersRating = await db.Order.findAll({
+			attributes: [
+				[db.sequelize.fn('count', db.sequelize.col('*')), 'ratingQuantity'],
+				[db.sequelize.fn('sum', db.sequelize.col('orderRating')), 'ratingSum'],
+			],
+			where: {
+				orderRating: {
+					[Op.gt]: 0,
+				},
+				masterId: masterId,
+			},
+		});
+
+		res.status(200).json(readOrdersRating);
+	} catch (error) {
+		res.status(500).send('nope');
+	}
+};
+
 
 export const getOrderForRate = async (req: Request, res: Response) => {
 	try {
@@ -94,7 +118,7 @@ export const getOrderForRate = async (req: Request, res: Response) => {
 				},
 				{
 					model: db.Master,
-					attributes: ['id', 'name', 'ratedSum', 'ratedQuantity'],
+					attributes: ['id', 'name'],
 					required: true,
 				},
 			],
@@ -108,12 +132,10 @@ export const getOrderForRate = async (req: Request, res: Response) => {
 
 export const putRatedOrder = async (req: Request, res: Response) => {
 	try {
-		const {id, orderRated, masterId, newRating, newRatedSum, newRatedQuantity} = req.body;
+		const {id, orderRated, masterId, newRating} = req.body;
 
 		const masterRating = await db.Master.updateById(masterId, {
 			rating: newRating,
-			ratedSum: newRatedSum,
-			ratedQuantity: newRatedQuantity,
 		});
 
 		const ratedOrder = await db.Order.updateById(id, {
