@@ -68,7 +68,7 @@ module.exports = {
 				type: Sequelize.DataTypes.INTEGER,
 			},
 
-			installation_time: {
+			installationTime: {
 				type: Sequelize.DataTypes.INTEGER,
 
 			},
@@ -95,13 +95,13 @@ module.exports = {
 				defaultValue: 0,
 			},
 
-			rated_sum: {
+			ratedSum: {
 				type: Sequelize.DataTypes.REAL,
 				allowNull: false,
 				defaultValue: 0,
 			},
 
-			rated_quantity: {
+			ratedQuantity: {
 				type: Sequelize.DataTypes.INTEGER,
 				allowNull: false,
 				defaultValue: 0,
@@ -109,7 +109,7 @@ module.exports = {
 		});
 
 		await queryInterface.createTable('master_cities', {
-			master_id: {
+			masterId: {
 				type: Sequelize.DataTypes.INTEGER,
 				allowNull: false,
 				references: {
@@ -122,7 +122,7 @@ module.exports = {
 				onUpdate: 'CASCADE',
 			},
 
-			city_id: {
+			cityId: {
 				type: Sequelize.DataTypes.INTEGER,
 				allowNull: false,
 				references: {
@@ -146,7 +146,7 @@ module.exports = {
 				onUpdate: 'CASCADE',
 			},
 
-			clock_id: {
+			clockId: {
 				type: Sequelize.DataTypes.INTEGER,
 				allowNull: false,
 				references: {
@@ -157,7 +157,7 @@ module.exports = {
 				},
 			},
 
-			user_id: {
+			userId: {
 				type: Sequelize.DataTypes.INTEGER,
 				allowNull: false,
 				references: {
@@ -168,7 +168,7 @@ module.exports = {
 				},
 			},
 
-			city_id: {
+			cityId: {
 				type: Sequelize.DataTypes.INTEGER,
 				allowNull: false,
 				references: {
@@ -179,7 +179,7 @@ module.exports = {
 				},
 			},
 
-			master_id: {
+			masterId: {
 				type: Sequelize.DataTypes.INTEGER,
 				allowNull: false,
 				references: {
@@ -190,22 +190,22 @@ module.exports = {
 				},
 			},
 
-			start_work_on: {
+			startWorkOn: {
 				type: Sequelize.DataTypes.DATE,
 				allowNull: false,
 			},
 
-			end_work_on: {
+			endWorkOn: {
 				type: Sequelize.DataTypes.DATE,
 				allowNull: false,
 			},
 
-			rating_identificator: {
+			ratingIdentificator: {
 				type: Sequelize.DataTypes.STRING,
 				allowNull: false,
 			},
 
-			order_rating: {
+			orderRating: {
 				type: Sequelize.DataTypes.REAL,
 				defaultValue: 0,
 			},
