@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export enum URL {
     CITY = 'city',
     LOGIN = 'login',
@@ -39,6 +40,3 @@ export enum PARAM {
     CLOCK_ID = 'clockIdParam',
     RATING_ID = 'ratingIdentificatorParam'
 }
-
-
-

@@ -1,11 +1,11 @@
-import { Router } from 'express'
-import { URL } from '../../data/constants/routeConstants'
-import { postUser } from '../controller/user.controller'
-import { postUserValidate } from '../controller/user.validate'
+import {Router} from 'express';
+import {URL} from '../../data/constants/routeConstants';
+import {postUser} from '../controller/user.controller';
+import {postUserValidate} from '../controller/user.validate';
 
-const router = Router()
+const router = Router();
 
-router.post(`/${URL.USER}`, [postUserValidate], postUser)
+router.post(`/${URL.USER}`, [postUserValidate], postUser);
 
 
-export default router 
+export default router;
