@@ -1,9 +1,12 @@
+'use strict';
+
 module.exports = {
 	async up(queryInterface, Sequelize) {
 		const transaction = await queryInterface.sequelize.transaction();
 		try {
 			await queryInterface.removeColumn('masters', 'ratedSum', {transaction});
 			await queryInterface.removeColumn('masters', 'ratedQuantity', {transaction});
+
 			await transaction.commit();
 		} catch (err) {
 			await transaction.rollback();

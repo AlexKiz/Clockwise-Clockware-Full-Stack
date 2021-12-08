@@ -48,3 +48,8 @@ export type Order = {
     startWorkOn: string
     endWorkOn: string
 }
+
+export type Rating = {
+    ratingSum: number,
+    ratingQuantity: number
+}

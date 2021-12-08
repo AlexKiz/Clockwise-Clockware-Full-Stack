@@ -10,7 +10,8 @@ export enum URL {
     CITY_FOR_ORDER = 'cityForOrder',
     ORDER_FOR_RATE = 'orderForRate',
     RATED_ORDER = 'ratedOrder',
-    API = 'api'
+    API = 'api',
+    ORDERS_RATING = 'ordersRating'
 }
 
 export enum RESOURCE {
