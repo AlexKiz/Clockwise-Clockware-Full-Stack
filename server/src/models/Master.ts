@@ -1,17 +1,11 @@
+
 /* eslint-disable require-jsdoc */
 'use strict';
 import {
 	Model,
 	Optional,
 } from 'sequelize';
-
-interface MasterAttributes {
-    id: number,
-    name: string,
-    rating: number,
-    ratedSum: number,
-    ratedQuantity: number,
-}
+import {MasterAttributes} from './modelsConstants';
 
 interface MasterCreationAttributes extends Optional<MasterAttributes, 'id' | 'rating' | 'ratedSum' | 'ratedQuantity'> {}
 

@@ -4,14 +4,9 @@ import {
 	Model,
 	Optional,
 } from 'sequelize';
+import {UserAttributes} from './modelsConstants';
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
-
-interface UserAttributes {
-    id: number,
-    name: string,
-    email: string
-}
 
 export default (sequelize: any, DataTypes: any) => {
 	class User extends Model<UserAttributes, UserCreationAttributes>

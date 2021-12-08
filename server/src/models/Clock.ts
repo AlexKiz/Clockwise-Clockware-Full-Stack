@@ -5,13 +5,7 @@ import {
 	Model,
 	Optional,
 } from 'sequelize';
-
-interface ClockAttributes {
-    id: number,
-    size: string,
-    price: number,
-    installationTime: number
-}
+import {ClockAttributes} from './modelsConstants';
 
 interface ClockCreationAttributes extends Optional<ClockAttributes, 'id'| 'installationTime' > {}
 

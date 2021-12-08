@@ -4,18 +4,7 @@ import {
 	Model,
 	Optional,
 } from 'sequelize';
-
-interface OrderAttributes {
-    id: number,
-    clockId: number,
-    userId: number,
-    cityId: number,
-    masterId: number,
-    startWorkOn: string,
-    endWorkOn: string,
-    ratingIdentificator: string,
-    orderRating: number
-}
+import {OrderAttributes} from './modelsConstants';
 
 interface OrderCreationAttributes extends Optional<OrderAttributes, 'id' | 'orderRating'> {}
 
