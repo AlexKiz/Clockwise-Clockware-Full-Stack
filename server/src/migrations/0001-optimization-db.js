@@ -12,7 +12,7 @@ module.exports = {
 				type: Sequelize.DataTypes.UUID,
 				allowNull: false,
 				primaryKey: true,
-				defaultValue: UUID4,
+				defaultValue: UUIDV4,
 				onDelete: 'CASCADE',
 				onUpdate: 'CASCADE',
 			}, {transaction});
@@ -21,7 +21,7 @@ module.exports = {
 				type: Sequelize.DataTypes.UUID,
 				allowNull: false,
 				primaryKey: true,
-				defaultValue: UUID4,
+				defaultValue: UUIDV4,
 				onDelete: 'CASCADE',
 				onUpdate: 'CASCADE',
 			}, {transaction});
@@ -30,7 +30,7 @@ module.exports = {
 				type: Sequelize.DataTypes.UUID,
 				allowNull: false,
 				primaryKey: true,
-				defaultValue: UUID4,
+				defaultValue: UUIDV4,
 				onDelete: 'CASCADE',
 				onUpdate: 'CASCADE',
 			}, {transaction});

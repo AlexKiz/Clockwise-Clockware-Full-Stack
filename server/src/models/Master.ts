@@ -3,19 +3,18 @@
 import {
 	Model,
 	Optional,
+	UUIDV4,
 } from 'sequelize';
 import {MasterAttributes} from './modelsConstants';
 
-interface MasterCreationAttributes extends Optional<MasterAttributes, 'id' | 'rating' | 'ratedSum' | 'ratedQuantity'> {}
+interface MasterCreationAttributes extends Optional<MasterAttributes, 'id' | 'rating'> {}
 
 export default (sequelize: any, DataTypes: any) => {
 	class Master extends Model<MasterAttributes, MasterCreationAttributes>
 		implements MasterAttributes {
-		public id!: number;
+		public id!: string;
 		public name!: string;
 		public rating!: number;
-		public ratedSum!: number;
-		public ratedQuantity!: number;
 
 		static findById(entityId: number) {
 			return this.findAll({where: {id: entityId}});
@@ -46,10 +45,10 @@ export default (sequelize: any, DataTypes: any) => {
 	Master.init(
 		{
 			id: {
-				type: DataTypes.INTEGER,
+				type: DataTypes.UUID,
 				allowNull: false,
 				primaryKey: true,
-				autoIncrement: true,
+				defaultValue: UUIDV4,
 				onDelete: 'CASCADE',
 				onUpdate: 'CASCADE',
 			},
@@ -61,18 +60,6 @@ export default (sequelize: any, DataTypes: any) => {
 
 			rating: {
 				type: DataTypes.REAL,
-				allowNull: false,
-				defaultValue: 0,
-			},
-
-			ratedSum: {
-				type: DataTypes.REAL,
-				allowNull: false,
-				defaultValue: 0,
-			},
-
-			ratedQuantity: {
-				type: DataTypes.INTEGER,
 				allowNull: false,
 				defaultValue: 0,
 			},

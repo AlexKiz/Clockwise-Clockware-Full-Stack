@@ -3,6 +3,7 @@
 import {
 	Model,
 	Optional,
+	UUIDV4,
 } from 'sequelize';
 import {OrderAttributes} from './modelsConstants';
 
@@ -11,7 +12,7 @@ interface OrderCreationAttributes extends Optional<OrderAttributes, 'id' | 'orde
 export = (sequelize: any, DataTypes: any) => {
 	class Order extends Model<OrderAttributes, OrderCreationAttributes>
 		implements OrderAttributes {
-		public id!: number;
+		public id!: string;
 		public clockId!: number;
 		public userId!: number;
 		public cityId!: number;
@@ -59,10 +60,10 @@ export = (sequelize: any, DataTypes: any) => {
 	Order.init(
 		{
 			id: {
-				type: DataTypes.INTEGER,
+				type: DataTypes.UUID,
 				allowNull: false,
 				primaryKey: true,
-				autoIncrement: true,
+				defaultValue: UUIDV4,
 				onDelete: 'CASCADE',
 				onUpdate: 'CASCADE',
 			},

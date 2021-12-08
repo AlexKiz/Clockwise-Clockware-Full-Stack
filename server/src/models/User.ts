@@ -3,6 +3,7 @@
 import {
 	Model,
 	Optional,
+	UUIDV4,
 } from 'sequelize';
 import {UserAttributes} from './modelsConstants';
 
@@ -11,9 +12,11 @@ interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
 export default (sequelize: any, DataTypes: any) => {
 	class User extends Model<UserAttributes, UserCreationAttributes>
 		implements UserAttributes {
-		public id!: number;
+		public id!: string;
 		public name!: string;
+		public password!: string;
 		public email!: string;
+		public role!: string;
 
 		static findById(entityId: number) {
 			return this.findAll({where: {id: entityId}});
@@ -39,10 +42,10 @@ export default (sequelize: any, DataTypes: any) => {
 	User.init(
 		{
 			id: {
-				type: DataTypes.INTEGER,
+				type: DataTypes.UUID,
 				allowNull: false,
 				primaryKey: true,
-				autoIncrement: true,
+				defaultValue: UUIDV4,
 				onDelete: 'CASCADE',
 				onUpdate: 'CASCADE',
 			},
@@ -52,10 +55,20 @@ export default (sequelize: any, DataTypes: any) => {
 				allowNull: false,
 			},
 
+			password: {
+				type: DataTypes.STRING(100),
+				allowNull: false,
+			},
+
 			email: {
 				type: DataTypes.STRING(100),
 				allowNull: false,
 				unique: true,
+			},
+
+			role: {
+				type: DataTypes.STRING(30),
+				allowNull: false,
 			},
 		}, {
 			sequelize,
