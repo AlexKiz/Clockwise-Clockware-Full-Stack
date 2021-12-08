@@ -84,11 +84,14 @@ const OrderController: FC<OrderControllerProps> = () => {
 					},
 				});
 
-				if (data.length) {
+				if (!data.length) {
+					alert('All masters has been booked at that time. Please choose another time or date');
+					setOrderTime('');
+				} else {
 					setMasterId(masterIdParam);
 					setMasters(data);
 				}
-			};
+			}
 		};
 		readAvailableMastersData();
 	}, [cityId, clockId, orderDate, orderTime]);
