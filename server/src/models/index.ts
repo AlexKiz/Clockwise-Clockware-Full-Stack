@@ -3,7 +3,6 @@
 
 require('dotenv').config();
 const Sequelize = require('sequelize');
-import Admin from './Admin'
 import City from './City'
 import Clock from './Clock'
 import Master from './Master'
@@ -18,7 +17,6 @@ const sequelize = new Sequelize(`${config.database}`, `${config.username}`, `${c
 const db: any = {
 	sequelize,
 	Sequelize,
-	Admin: Admin(sequelize, Sequelize.DataTypes),
 	City: City(sequelize, Sequelize.DataTypes),
 	Clock: Clock(sequelize, Sequelize.DataTypes),
 	Master: Master(sequelize, Sequelize.DataTypes),
