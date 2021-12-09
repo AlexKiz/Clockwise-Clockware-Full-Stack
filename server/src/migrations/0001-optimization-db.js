@@ -1,4 +1,3 @@
-/* eslint-disable quotes */
 /* eslint-disable max-len */
 'use strict';
 
@@ -96,7 +95,26 @@ module.exports = {
 				allowNull: true,
 			}, {transaction});
 
-			await queryInterface.dropTable('admin', {transaction});
+			await queryInterface.sequelize.query(`ALTER TABLE IF EXISTS public.orders
+												ADD CONSTRAINT "orders_masterId_fkey" FOREIGN KEY ("masterId")
+												REFERENCES public.masters (id) MATCH SIMPLE
+												ON UPDATE CASCADE
+												ON DELETE CASCADE;`, {transaction});
+
+			await queryInterface.sequelize.query(`ALTER TABLE IF EXISTS public.master_cities
+												ADD CONSTRAINT "orders_masterId_fkey" FOREIGN KEY ("masterId")
+												REFERENCES public.masters (id) MATCH SIMPLE
+												ON UPDATE CASCADE
+												ON DELETE CASCADE;`, {transaction});
+
+			await queryInterface.sequelize.query(`ALTER TABLE IF EXISTS public.master_cities
+												ADD CONSTRAINT "master_cities_masterId_fkey" FOREIGN KEY ("masterId")
+												REFERENCES public.masters (id) MATCH SIMPLE
+												ON UPDATE CASCADE
+												ON DELETE CASCADE;`, {transaction});
+
+			await queryInterface.sequelize.query(`ALTER TABLE IF EXISTS public.master_cities
+												ADD CONSTRAINT master_cities_pkey PRIMARY KEY ("masterId", "cityId");`, {transaction});
 
 			await queryInterface.removeColumn('masters', 'ratedSum', {transaction});
 
