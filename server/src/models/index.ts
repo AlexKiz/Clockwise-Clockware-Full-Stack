@@ -9,11 +9,10 @@ import Master from './Master'
 import MasterCities from './MasterCities'
 import Order from './Order'
 import User from './User'
+const env = process.env.NODE_ENV || 'development';
+const config = require('../config/config')[env];
 
-let sequelize = new Sequelize(`${process.env.DB_DATABASE}`, `${process.env.DB_USER}`, `${process.env.DB_PASSWORD}`, {
-  host: `${process.env.DB_HOST}`,
-  dialect: 'postgres',
-});
+let sequelize = new Sequelize(`${config.database}`, `${config.username}`, `${config.password}`, {...config});
 
   const db: any = {
     sequelize,

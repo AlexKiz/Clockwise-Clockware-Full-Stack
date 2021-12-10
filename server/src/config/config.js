@@ -7,7 +7,8 @@ module.exports = {
     "password": process.env.DB_PASSWORD_DEV,
     "database": process.env.DB_DATABASE_DEV,
     "host": process.env.DB_HOST_DEV,
-    "dialect": "postgres"
+    "dialect": "postgres",
+    
   },
   "test": {
     "username": process.env.DB_USER_DEV,
@@ -21,6 +22,11 @@ module.exports = {
     "password": process.env.DB_PASSWORD_DEV,
     "database": process.env.DB_DATABASE_DEV,
     "host": process.env.DB_HOST_DEV,
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "dialectOptions": {
+      ssl: {
+        rejectUnauthorized: false
+      }
+    }
   }
 }
