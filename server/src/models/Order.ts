@@ -22,15 +22,15 @@ export = (sequelize: any, DataTypes: any) => {
 		public ratingIdentificator!: string;
 		public orderRating!: number;
 
-		static findById(entityId: number | number[]) {
+		static findById(entityId: string | string[]) {
 			return this.findAll({where: {id: entityId}});
 		}
 
-		static updateById(entityId: number, {...options}) {
+		static updateById(entityId: string, {...options}) {
 			return this.update({...options}, {where: {id: entityId}});
 		}
 
-		static deleteById(entityId: number) {
+		static deleteById(entityId: string) {
 			return this.destroy({where: {id: entityId}});
 		}
 		static associate(models: any) {

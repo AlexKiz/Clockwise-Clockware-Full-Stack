@@ -16,15 +16,15 @@ export default (sequelize: any, DataTypes: any) => {
 		public name!: string;
 		public rating!: number;
 
-		static findById(entityId: number) {
+		static findById(entityId: string) {
 			return this.findAll({where: {id: entityId}});
 		}
 
-		static updateById(entityId: number, {...values}, {...options}) {
+		static updateById(entityId: string, {...values}, {...options}) {
 			return this.update({...values}, {where: {id: entityId}, ...options});
 		}
 
-		static deleteById(entityId: number) {
+		static deleteById(entityId: string) {
 			return this.destroy({where: {id: entityId}});
 		}
 		static associate(models: any) {

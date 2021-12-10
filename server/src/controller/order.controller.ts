@@ -86,7 +86,7 @@ export const getOrdersRating = async (req: Request, res: Response) => {
 
 		res.status(200).json(readOrdersRating);
 	} catch (error) {
-		res.status(500).send('nope');
+		res.status(500).send();
 	}
 };
 

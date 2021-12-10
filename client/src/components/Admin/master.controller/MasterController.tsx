@@ -15,7 +15,7 @@ const MasterController: FC<MasterControllerProps> = () => {
 	const {masterIdParam, masterNameParam} = useParams<Params>();
 
 	const [masterName, setMasterName] = useState<string>('');
-	const [masterId, setMasterId]= useState<number>(0);
+	const [masterId, setMasterId]= useState<string>('');
 
 	const [citiesId, setCitiesId] = useState<number[]>([]);
 	const [cities, setCities] = useState<City[]>([]);
@@ -26,7 +26,7 @@ const MasterController: FC<MasterControllerProps> = () => {
 			const {data} = await axios.get<Master[]>(`/${URL.MASTER}`);
 
 			if (masterIdParam && data.length) {
-				const currentMaster = data.filter((master) => master.id === Number(masterIdParam));
+				const currentMaster = data.filter((master) => master.id === masterIdParam);
 
 				if (currentMaster.length) {
 					if (currentMaster[0].cities.length) {
@@ -34,11 +34,11 @@ const MasterController: FC<MasterControllerProps> = () => {
 							return city.id;
 						});
 						setMasterName( masterNameParam );
-						setMasterId( Number(masterIdParam) );
+						setMasterId( masterIdParam );
 						setCitiesId( currentMasterCities );
 					} else {
 						setMasterName( masterNameParam );
-						setMasterId( Number(masterIdParam) );
+						setMasterId( masterIdParam );
 					}
 				}
 			}

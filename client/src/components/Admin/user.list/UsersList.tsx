@@ -23,7 +23,7 @@ const UserList: FC<UserListProps> = () => {
 	}, []);
 
 
-	const onDelete = (id: number) => {
+	const onDelete = (id: string) => {
 		if (window.confirm('Do you want to delete this user?')) {
 			axios.delete(`/${URL.USER}`,
 				{

@@ -7,7 +7,7 @@ import {
 } from 'sequelize';
 import {UserAttributes} from './modelsConstants';
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'id'| 'password'> {}
 
 export default (sequelize: any, DataTypes: any) => {
 	class User extends Model<UserAttributes, UserCreationAttributes>
@@ -18,15 +18,15 @@ export default (sequelize: any, DataTypes: any) => {
 		public email!: string;
 		public role!: string;
 
-		static findById(entityId: number) {
+		static findById(entityId: string) {
 			return this.findAll({where: {id: entityId}});
 		}
 
-		static updateById(entityId: number, {...options}) {
+		static updateById(entityId: string, {...options}) {
 			return this.update({...options}, {where: {id: entityId}});
 		}
 
-		static deleteById(entityId: number) {
+		static deleteById(entityId: string) {
 			return this.destroy({where: {id: entityId}});
 		}
 
@@ -57,7 +57,7 @@ export default (sequelize: any, DataTypes: any) => {
 
 			password: {
 				type: DataTypes.STRING(100),
-				allowNull: false,
+				allowNull: true,
 			},
 
 			email: {
