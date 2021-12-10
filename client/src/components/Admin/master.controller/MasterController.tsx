@@ -75,7 +75,7 @@ const MasterController: FC<MasterControllerProps> = () => {
 
         if (!masterIdParam) {
 
-                axios.post(`/${URL.MASTER}`,
+            axios.post(`/${URL.MASTER}`,
             {
                 name: masterName, 
                 citiesId

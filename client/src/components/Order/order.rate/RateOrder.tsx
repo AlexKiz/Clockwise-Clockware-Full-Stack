@@ -76,7 +76,7 @@ const RateOrder: FC<RateOrderProps> = () => {
                     <form className={classes.form} onSubmit={onSubmit} name='orderForm'>
 
                         <div>
-                        { order &&
+                        { order[0] &&
                             <>
                             <div className={classes.form_master}>
                                 <label>Please, rate the following master:</label>

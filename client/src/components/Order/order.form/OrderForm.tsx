@@ -99,30 +99,30 @@ const OrderForm: FC<OrderFormProps> = () => {
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+        if(clocks.length) {
+            const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
+            let endDate = new Date(`${orderDate} ${orderTime}`)
+            let startDate = new Date(`${orderDate} ${orderTime}`)
+            startDate.setUTCHours(startDate.getHours())
+            endDate.setUTCHours(endDate.getHours() + installationTime)
 
-        const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
-        let endDate = new Date(`${orderDate} ${orderTime}`)
-        let startDate = new Date(`${orderDate} ${orderTime}`)
-        startDate.setUTCHours(startDate.getHours())
-        endDate.setUTCHours(endDate.getHours() + installationTime)
+            axios.post(`/${URL.ORDER}`, 
+            {
+                name: userName, 
+                email: userEmail,
+                clockId,
+                cityId,
+                masterId,
+                startWorkOn: startDate.toISOString(), 
+                endWorkOn: endDate.toISOString() 
+            })
 
-        axios.post(`/${URL.ORDER}`, 
-        {
-            name: userName, 
-            email: userEmail,
-            clockId,
-            cityId,
-            masterId,
-            startWorkOn: startDate.toISOString(), 
-            endWorkOn: endDate.toISOString() 
-        })
-
-        setUserName('')
-        setUserEmail('')
-        setOrderTime('')
-        setOrderDate('')
-        alert('Your order has been created! Please confirm it on your Emailbox. Have a good day!')
-
+            setUserName('')
+            setUserEmail('')
+            setOrderTime('')
+            setOrderDate('')
+            alert('Your order has been created! Please confirm it on your Emailbox. Have a good day!')
+        }
     }
 
     return (

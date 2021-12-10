@@ -75,30 +75,32 @@ const OrderController: FC<OrderControllerProps> = () => {
     useEffect(() => { 
 
         const readAvailableMastersData = async () => {
-            const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
-            let endDate = new Date(`${orderDate} ${orderTime}`)
-            let startDate = new Date(`${orderDate} ${orderTime}`)
-            startDate.setUTCHours(startDate.getHours())
-            endDate.setUTCHours(endDate.getHours() + installationTime)
-            const { data } = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
-                params: {
-                    currentOrderId: orderIdParam,
-                    cityId: cityIdParam,
-                    startWorkOn: startDate.toISOString() ,
-                    endWorkOn: endDate.toISOString()
+            if(clocks.length) {
+                const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
+                let endDate = new Date(`${orderDate} ${orderTime}`)
+                let startDate = new Date(`${orderDate} ${orderTime}`)
+                startDate.setUTCHours(startDate.getHours())
+                endDate.setUTCHours(endDate.getHours() + installationTime)
+            
+                const { data } = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
+                    params: {
+                        currentOrderId: orderIdParam,
+                        cityId: cityIdParam,
+                        startWorkOn: startDate.toISOString(),
+                        endWorkOn: endDate.toISOString()
+                    }
+                })
+
+                if(data.length === 0) {
+                    alert('All masters has been booked at that time. Please choose another time or date')
+                    setOrderTime('')
                 }
-            })
 
-            if(data.length === 0) {
-                alert('All masters has been booked at that time. Please choose another time or date')
-                setOrderTime('')
+                if(data.length) {
+                    setMasterId(Number(masterIdParam))
+                    setMasters(data)
+                }
             }
-
-            if(data.length) {
-                setMasterId(Number(masterIdParam))
-                setMasters(data)
-            }
-
         }
         readAvailableMastersData()
 

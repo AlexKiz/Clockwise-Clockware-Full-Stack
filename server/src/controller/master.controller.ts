@@ -8,11 +8,11 @@ export const postMaster = async (req: Request, res: Response)  => {
     try {
         const { name, citiesId } = req.body
 
-            const createMaster = await db.Master.create({ name })
+            const createdMaster = await db.Master.create({ name })
 
-            const citiesOfMaster = await createMaster.setCities(citiesId)
+            const citiesOfMaster = await createdMaster.setCities(citiesId)
 
-        res.status(201).json(createMaster)
+        res.status(201).json(createdMaster)
 
     } catch(error) {
 
@@ -41,9 +41,6 @@ export const getAvailableMasters = async (req: Request, res: Response) => {
     try {
         const { currentOrderId, cityId, startWorkOn, endWorkOn } = req.query
 
-                const compareStartWorkOn = `${startWorkOn}`
-                const compareEndWorkOn = `${endWorkOn}`   
-                
                 let readBookedMasters
 
                 if(currentOrderId) {
@@ -54,14 +51,14 @@ export const getAvailableMasters = async (req: Request, res: Response) => {
                             [Op.or]: [ 
                                 {
                                     [Op.and]: [ 
-                                        { startWorkOn: { [Op.lte]: compareStartWorkOn } }, 
-                                        { endWorkOn:   { [Op.gte]: compareStartWorkOn } } 
+                                        { startWorkOn: { [Op.lte]: startWorkOn } }, 
+                                        { endWorkOn:   { [Op.gte]: startWorkOn } } 
                                     ] 
                                 }, 
                                 {
                                     [Op.and]: [
-                                        { startWorkOn: { [Op.lte]: compareEndWorkOn } }, 
-                                        { endWorkOn:   { [Op.gte]: compareEndWorkOn } } 
+                                        { startWorkOn: { [Op.lte]: endWorkOn } }, 
+                                        { endWorkOn:   { [Op.gte]: endWorkOn } } 
                                     ] 
                                 } 
                             ],
@@ -79,14 +76,14 @@ export const getAvailableMasters = async (req: Request, res: Response) => {
                             [Op.or]: [ 
                                 {
                                     [Op.and]: [ 
-                                        { startWorkOn: { [Op.lte]: compareStartWorkOn } }, 
-                                        { endWorkOn:   { [Op.gte]: compareStartWorkOn } } 
+                                        { startWorkOn: { [Op.lte]: startWorkOn } }, 
+                                        { endWorkOn:   { [Op.gte]: startWorkOn } } 
                                     ] 
                                 }, 
                                 {
                                     [Op.and]: [
-                                        { startWorkOn: { [Op.lte]: compareEndWorkOn } }, 
-                                        { endWorkOn:   { [Op.gte]: compareEndWorkOn } } 
+                                        { startWorkOn: { [Op.lte]: endWorkOn } }, 
+                                        { endWorkOn:   { [Op.gte]: endWorkOn } } 
                                     ] 
                                 } 
                             ]
@@ -122,11 +119,13 @@ export const putMaster = async (req: Request, res: Response) => {
     try {
         const { id, name, citiesId } = req.body
 
-        const [rows, updateMaster] = await db.Master.update({ name }, {where:{ id }, returning: true})
+        const [rows, updatedMaster] = await db.Master.update({ name }, {where:{ id }, returning: true})
         
-        const updateCitiesOfMaster = await updateMaster[0].setCities(citiesId)
+        if (updatedMaster.length) {
+            const updateCitiesOfMaster = await updatedMaster[0].setCities(citiesId)
 
-        res.status(200).json(updateMaster)
+        res.status(200).json(updatedMaster)
+        }
 
     } catch(error) {
 
