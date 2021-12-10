@@ -29,16 +29,16 @@ export interface MasterAttributes {
 }
 
 export interface MasterCitiesAttributes {
-    masterId: number,
+    masterId: string,
     cityId: number
 }
 
 export interface OrderAttributes {
     id: string,
     clockId: number,
-    userId: number,
+    userId: string,
     cityId: number,
-    masterId: number,
+    masterId: string,
     startWorkOn: string,
     endWorkOn: string,
     ratingIdentificator: string,
