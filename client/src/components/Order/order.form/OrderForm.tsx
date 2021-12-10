@@ -2,12 +2,12 @@
 /* eslint-disable react/jsx-key */
 import React, {useState, useEffect, FC} from 'react';
 import axios from 'axios';
-import PublicHeader from '../../Headers/PublicHeader';
 import '../order.form/order-form.css';
 import {Master, City, Clock} from '../../../data/types/types';
 import {today, openingHours} from '../../../data/constants/systemConstants';
 import {OrderFormProps} from './componentConstants';
 import {URL} from '../../../data/constants/routeConstants';
+import PublicHeader from 'src/components/Headers/PublicHeader';
 
 const OrderForm: FC<OrderFormProps> = () => {
 	const [userName, setUserName] = useState<string>('');
