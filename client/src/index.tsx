@@ -3,37 +3,31 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import axios from 'axios'
+import axios from 'axios';
 
 
-axios.defaults.baseURL = process.env.REACT_APP_API_URL
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 axios.interceptors.request.use(
-  config => {
-    
-    const accessToken = localStorage.getItem('accessToken')
+	(config) => {
+		const accessToken = localStorage.getItem('accessToken');
 
-    if(accessToken) { 
+		if (accessToken) {
+			config.headers.Authorization = `Bearer ${accessToken}`;
+		}
 
-      config.headers.Authorization = `Bearer ${accessToken}`
-
-    }
-
-    return config
-
-  }, error => {
-
-    Promise.reject(error);
-
-    }
-  );
+		return config;
+	}, (error) => {
+		Promise.reject(error);
+	},
+);
 
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+	<React.StrictMode>
+		<App />
+	</React.StrictMode>,
+	document.getElementById('root'),
 );
 
 

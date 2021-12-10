@@ -61,14 +61,14 @@ const RateOrder: FC<RateOrderProps> = () => {
 		});
 	};
 
-    return (
-        <div>
-            <div className={classes.container}>
-                <div className={classes.container_form}>
-                    <form className={classes.form} onSubmit={onSubmit} name='orderForm'>
+	return (
+		<div>
+			<div className={classes.container}>
+				<div className={classes.container_form}>
+					<form className={classes.form} onSubmit={onSubmit} name='orderForm'>
 
-                        <div>
-                        { order[0] &&
+						<div>
+							{ order[0] &&
                             <>
                             	<div className={classes.form_master}>
                             		<label>Please, rate the following master:</label>
