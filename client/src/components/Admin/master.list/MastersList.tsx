@@ -24,7 +24,7 @@ const MastersList: FC<MasterListProps> = () => {
 	}, []);
 
 
-	const onDelete = (id: number) => {
+	const onDelete = (id: string) => {
 		if (window.confirm('Do you want to delete this master?')) {
 			axios.delete(`/${URL.MASTER}`,
 				{

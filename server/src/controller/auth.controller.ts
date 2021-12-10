@@ -7,10 +7,12 @@ import db from '../models';
 export const Auth = async (req: Request, res: Response) => {
 	const {adminLogin, adminPassword} = req.body;
 
-	const credentials = await db.Admin.findOne({where: {email: adminLogin}});
+	const credentials = await db.User.findOne({where: {email: adminLogin, role: 'admin'}});
+
+	const {password: hashPass} = credentials;
 
 	if (credentials) {
-		const isCompare = await bcrypt.compare(adminPassword, credentials.password);
+		const isCompare = await bcrypt.compare(adminPassword, hashPass);
 
 		if (isCompare) {
 			const accessToken = jwt.sign({}, `${process.env.PRIVAT_KEY}`, {expiresIn: '2h'});

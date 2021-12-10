@@ -84,23 +84,24 @@ const RateOrder: FC<RateOrderProps> = () => {
 						<div>
 							{ order[0] &&
                             <>
+
                             	<div className={classes.form_master}>
                             		<label>Please, rate the following master:</label>
                             		<p>{order[0].master.name}</p>
                             	</div>
                             	<div className={classes.form_orderinfo}>
                             		<b>Order #{order[0].id}</b>
-                            		<br />
+                            		<br/>
                             		<b> User name:</b> <span>{order[0].user.name}</span>
-                            		<br />
+                            		<br/>
                             		<b> User email:</b> <span>{order[0].user.email}</span>
-                            		<br />
+                            		<br/>
                             		<b> Clock size:</b>  <span>{order[0].clock.size}</span>
-                            		<br />
+                            		<br/>
                             		<b> City:</b>  <span>{order[0].city.name}</span>
-                            		<br />
+                            		<br/>
                             		<b> Start work on:</b>  <span>{order[0].startWorkOn.split(',').join(' ')}</span>
-                            		<br />
+                            		<br/>
                             		<b> End work on:</b>  <span>{order[0].endWorkOn} </span>
                             	</div>
                             </>

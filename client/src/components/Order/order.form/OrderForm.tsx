@@ -18,7 +18,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 	const [orderTime, setOrderTime] = useState<string>(`${openingHours[0]}`);
 
-	const [masterId, setMasterId] = useState<number>(0);
+	const [masterId, setMasterId] = useState<string>('');
 	const [masters, setMasters] = useState<Master[]>([]);
 
 	const [cityId, setCityId] = useState<number>(0);
@@ -77,14 +77,14 @@ const OrderForm: FC<OrderFormProps> = () => {
 					if (!data.length) {
 						alert('All masters has been booked at that time. Please choose another time or date');
 						setOrderTime('');
-						setMasterId(0);
+						setMasterId('');
 						setMasters([]);
 					} else {
 						setMasterId(data[0].id);
 						setMasters(data);
 					}
 				}
-			}
+			};
 		};
 		readAvailableMastersData();
 	}, [cityId, clockId, orderDate, orderTime]);
@@ -228,7 +228,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 									<label>Available masters:</label>
 								</div>
 
-								<select name='masterName' onChange={(masterIdEvent) => setMasterId(Number(masterIdEvent.target.value))}>
+								<select name='masterName' onChange={(masterIdEvent) => setMasterId(masterIdEvent.target.value)}>
 									{
 										masters.map((master) => (
 											<option value={master.id}>

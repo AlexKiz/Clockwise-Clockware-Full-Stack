@@ -12,14 +12,14 @@ const UserController: FC<UserControllerProps> = () => {
 	const history = useHistory();
 
 	const [userName, setUserName] = useState<string>('');
-	const [userId, setUserId] = useState<number>(0);
+	const [userId, setUserId] = useState<string>('');
 	const [userEmail, setUserEmail] = useState<string>('');
 
 	const {userIdParam, userNameParam, userEmailParam} = useParams<Params>();
 
 
 	useEffect(() => {
-		setUserId( Number(userIdParam) );
+		setUserId( userIdParam );
 		setUserName( userNameParam );
 		setUserEmail( userEmailParam );
 	}, []);

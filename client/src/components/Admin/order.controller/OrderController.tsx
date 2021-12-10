@@ -14,7 +14,7 @@ const OrderController: FC<OrderControllerProps> = () => {
 
 	const {orderIdParam, userIdParam, clockIdParam, cityIdParam, orderDateParam, orderTimeParam, masterIdParam} = useParams<Params>();
 
-	const [userId, setUserId] = useState<number>(0);
+	const [userId, setUserId] = useState<string>('');
 	const [users, setUsers] = useState<User[]>([]);
 
 	const [clockId, setClockId] = useState<number>(0);
@@ -26,7 +26,7 @@ const OrderController: FC<OrderControllerProps> = () => {
 	const [orderDate, setOrderDate] = useState<string>(orderDateParam);
 	const [orderTime, setOrderTime] = useState<string>(orderTimeParam);
 
-	const [masterId, setMasterId] = useState<number>(0);
+	const [masterId, setMasterId] = useState<string>('');
 	const [masters, setMasters] = useState<Master[]>([]);
 
 
@@ -35,7 +35,7 @@ const OrderController: FC<OrderControllerProps> = () => {
 			const {data} = await axios.get<User[]>(`/${URL.USER}`);
 
 			setUsers(data);
-			setUserId(Number(userIdParam));
+			setUserId(userIdParam);
 		};
 
 		readUsersData();
@@ -84,14 +84,11 @@ const OrderController: FC<OrderControllerProps> = () => {
 					},
 				});
 
-				if (!data.length) {
-					alert('All masters has been booked at that time. Please choose another time or date');
-					setOrderTime('');
-				} else {
-					setMasterId(Number(masterIdParam));
+				if (data.length) {
+					setMasterId(masterIdParam);
 					setMasters(data);
 				}
-			}
+			};
 		};
 		readAvailableMastersData();
 	}, [cityId, clockId, orderDate, orderTime]);
@@ -137,10 +134,10 @@ const OrderController: FC<OrderControllerProps> = () => {
 							</label>
 						</div>
 
-						<select name='users' onChange={(userIdEvent) => setUserId(Number(userIdEvent.target.value))}>
+						<select name='users' onChange={(userIdEvent) => setUserId(userIdEvent.target.value)}>
 							{
 								users.map((user) => (
-									<option selected = {user.id === Number(userIdParam)} value={user.id}>
+									<option selected = {user.id === userIdParam} value={user.id}>
 										{` user: ${user.name} | email: ${user.email}`}
 									</option>
 								))
@@ -227,10 +224,10 @@ const OrderController: FC<OrderControllerProps> = () => {
 							<label>Available masters:</label>
 						</div>
 
-						<select name='masterName' onChange={(masterIdEvent) => setMasterId(Number(masterIdEvent.target.value))}>
+						<select name='masterName' onChange={(masterIdEvent) => setMasterId(masterIdEvent.target.value)}>
 							{
 								masters.map((master) => (
-									<option selected = {master.id === Number(masterIdParam)} value={master.id}>
+									<option selected = {master.id === masterIdParam} value={master.id}>
 										{`${master.name}`}
 									</option>
 								))
