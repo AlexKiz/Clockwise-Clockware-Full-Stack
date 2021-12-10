@@ -91,7 +91,7 @@ const OrderController: FC<OrderControllerProps> = () => {
 					setMasterId(masterIdParam);
 					setMasters(data);
 				}
-			}
+			};
 		};
 		readAvailableMastersData();
 	}, [cityId, clockId, orderDate, orderTime]);
