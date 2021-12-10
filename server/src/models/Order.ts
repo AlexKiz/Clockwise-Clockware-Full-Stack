@@ -14,9 +14,9 @@ export = (sequelize: any, DataTypes: any) => {
 		implements OrderAttributes {
 		public id!: string;
 		public clockId!: number;
-		public userId!: number;
+		public userId!: string;
 		public cityId!: number;
-		public masterId!: number;
+		public masterId!: string;
 		public startWorkOn!: string;
 		public endWorkOn!: string;
 		public ratingIdentificator!: string;
@@ -74,7 +74,7 @@ export = (sequelize: any, DataTypes: any) => {
 			},
 
 			userId: {
-				type: DataTypes.INTEGER,
+				type: DataTypes.UUID,
 				allowNull: false,
 			},
 
@@ -84,7 +84,7 @@ export = (sequelize: any, DataTypes: any) => {
 			},
 
 			masterId: {
-				type: DataTypes.INTEGER,
+				type: DataTypes.UUID,
 				allowNull: false,
 			},
 
