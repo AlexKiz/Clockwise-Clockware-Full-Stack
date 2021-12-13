@@ -16,7 +16,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 	const [orderDate, setOrderDate] = useState<string>('');
 
-	const [orderTime, setOrderTime] = useState<string>(`${openingHours[0]}`);
+	const [orderTime, setOrderTime] = useState<string>(openingHours[0]);
 
 	const [masterId, setMasterId] = useState<string>('');
 	const [masters, setMasters] = useState<Master[]>([]);
@@ -30,7 +30,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 	useEffect(() => {
 		const readCitiesData = async () => {
-			const {data} = await axios.get<City[]>(`/${URL.CITY_FOR_ORDER}`);
+			const {data} = await axios.get<City[]>(URL.CITY_FOR_ORDER);
 
 			if (data.length) {
 				setCities(data);
@@ -44,7 +44,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 	useEffect(() => {
 		const readClocksData = async () => {
-			const {data} = await axios.get<Clock[]>(`/${URL.CLOCK}`);
+			const {data} = await axios.get<Clock[]>(URL.CLOCK);
 
 			if (data.length) {
 				setClockId(data[0].id);
@@ -66,7 +66,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 				endDate.setUTCHours(endDate.getHours() + installationTime);
 
 				if (cityId && orderDate && orderTime && clockId) {
-					const {data} = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
+					const {data} = await axios.get<Master[]>(URL.AVAILABLE_MASTER, {
 						params: {
 							cityId,
 							startWorkOn: startDate.toISOString(),
@@ -84,7 +84,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 						setMasters(data);
 					}
 				}
-			};
+			}
 		};
 		readAvailableMastersData();
 	}, [cityId, clockId, orderDate, orderTime]);
@@ -99,7 +99,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 			startDate.setUTCHours(startDate.getHours());
 			endDate.setUTCHours(endDate.getHours() + installationTime);
 
-			axios.post(`/${URL.ORDER}`,
+			axios.post(URL.ORDER,
 				{
 					name: userName,
 					email: userEmail,

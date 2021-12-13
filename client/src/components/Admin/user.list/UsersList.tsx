@@ -14,7 +14,7 @@ const UserList: FC<UserListProps> = () => {
 
 	useEffect(() => {
 		const readUsersData = async () => {
-			const {data} = await axios.get<User[]>(`/${URL.USER}`);
+			const {data} = await axios.get<User[]>(URL.USER);
 
 			setUsers(data);
 		};
@@ -25,7 +25,7 @@ const UserList: FC<UserListProps> = () => {
 
 	const onDelete = (id: string) => {
 		if (window.confirm('Do you want to delete this user?')) {
-			axios.delete(`/${URL.USER}`,
+			axios.delete(URL.USER,
 				{
 					data: {
 						id,

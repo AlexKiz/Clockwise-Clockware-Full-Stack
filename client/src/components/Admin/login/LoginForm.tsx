@@ -5,6 +5,7 @@ import {useHistory} from 'react-router-dom';
 import PublicHeader from '../../Headers/PublicHeader';
 import '../login/login-form.css';
 import {LoginFormProps} from './componentConstants';
+import {ACCESSTOKEN} from 'src/data/constants/systemConstants';
 
 const LoginForm:FC<LoginFormProps> = () => {
 	const history = useHistory();
@@ -13,7 +14,7 @@ const LoginForm:FC<LoginFormProps> = () => {
 	const [adminPassword, setAdminPassword] = useState<string>('');
 
 	useEffect(() => {
-		if (localStorage.getItem('accessToken')) {
+		if (localStorage.getItem(ACCESSTOKEN)) {
 			history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
 		}
 	}, []);
@@ -27,8 +28,8 @@ const LoginForm:FC<LoginFormProps> = () => {
 		};
 
 		try {
-			const {headers: {authorization: accessToken}} = await axios.post(`/${URL.LOGIN}`, payload);
-			localStorage.setItem('accessToken', accessToken.split(' ')[1]);
+			const {headers: {authorization: accessToken}} = await axios.post(URL.LOGIN, payload);
+			localStorage.setItem(ACCESSTOKEN, accessToken.split(' ')[1]);
 			history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
 		} catch (e) {
 			alert('Incorrect logging data');

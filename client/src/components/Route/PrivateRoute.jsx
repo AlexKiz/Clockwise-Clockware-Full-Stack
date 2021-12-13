@@ -6,16 +6,17 @@ import {Route, Redirect, useHistory} from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import PrivateHeader from '../Headers/PrivateHeader';
 import {RESOURCE} from '../../data/constants/routeConstants';
+import {ACCESSTOKEN} from 'src/data/constants/systemConstants';
 
-const PrivatRoute = ({component: Component, ...rest}) => {
+const PrivateRoute = ({component: Component, ...rest}) => {
 	const history = useHistory();
 
 	useEffect(() => {
-		if (!localStorage.getItem('accessToken')) {
-			alert('You must be authorizated');
+		if (!localStorage.getItem(ACCESSTOKEN)) {
+			alert('You must be authorizated'); // alert -
 			history.push(`/${RESOURCE.LOGIN}`);
-		} else if ((jwt_decode(localStorage.getItem('accessToken'))).exp < Number((Date.now()/1000).toFixed())) {
-			localStorage.removeItem('accessToken');
+		} else if ((jwt_decode(localStorage.getItem(ACCESSTOKEN))).exp < Number((Date.now()/1000).toFixed())) {
+			localStorage.removeItem(ACCESSTOKEN);
 			history.push(`/${RESOURCE.LOGIN}`);
 		}
 	});
@@ -23,7 +24,7 @@ const PrivatRoute = ({component: Component, ...rest}) => {
 
 	return (
 		<Route {...rest}
-			render = {(props) => localStorage.getItem('accessToken') ? (
+			render = {(props) => localStorage.getItem(ACCESSTOKEN) ? (
 				<>
 					<PrivateHeader/>
 					<Component {...props}/>
@@ -35,4 +36,4 @@ const PrivatRoute = ({component: Component, ...rest}) => {
 	);
 };
 
-export default PrivatRoute;
+export default PrivateRoute;

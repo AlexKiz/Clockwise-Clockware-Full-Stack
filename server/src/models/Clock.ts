@@ -17,7 +17,7 @@ export default (sequelize: any, DataTypes: any) => {
 		public price!: number;
 		public installationTime!: number;
 
-		static findById(entityId: number | number[]) {
+		static findById(entityId: number) {
 			return this.findAll({where: {id: entityId}});
 		}
 

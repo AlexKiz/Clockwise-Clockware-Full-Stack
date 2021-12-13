@@ -15,7 +15,7 @@ const OrdersList: FC<OrderListProps> = () => {
 
 	useEffect(() => {
 		const readOrdersData = async () => {
-			const {data} = await axios.get<Order[]>(`/${URL.ORDER}`);
+			const {data} = await axios.get<Order[]>(URL.ORDER);
 
 			setOrders(data);
 		};
@@ -26,7 +26,7 @@ const OrdersList: FC<OrderListProps> = () => {
 
 	const onDelete = (id: string) => {
 		if (window.confirm('Do you want to delete this order?')) {
-			axios.delete(`/${URL.ORDER}`,
+			axios.delete(URL.ORDER,
 				{
 					data: {
 						id,

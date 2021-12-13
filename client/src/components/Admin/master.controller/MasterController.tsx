@@ -23,7 +23,7 @@ const MasterController: FC<MasterControllerProps> = () => {
 
 	useEffect(() => {
 		const readMastersData = async () => {
-			const {data} = await axios.get<Master[]>(`/${URL.MASTER}`);
+			const {data} = await axios.get<Master[]>(URL.MASTER);
 
 			if (masterIdParam && data.length) {
 				const currentMaster = data.filter((master) => master.id === masterIdParam);
@@ -50,14 +50,14 @@ const MasterController: FC<MasterControllerProps> = () => {
 
 	useEffect(() => {
 		const readCitiesData = async () => {
-			const {data} = await axios.get<City[]>(`/${URL.CITY}`);
+			const {data} = await axios.get<City[]>(URL.CITY);
 
 			if (data.length) {
 				setCities(data);
 			}
 		};
 
-		axios.post(`/${URL.MASTER}`,
+		axios.post(URL.MASTER,
 			{
 				name: masterName,
 				citiesId,
@@ -74,7 +74,7 @@ const MasterController: FC<MasterControllerProps> = () => {
 		event.preventDefault();
 
 		if (!masterIdParam) {
-			axios.post(`/${URL.MASTER}`,
+			axios.post(URL.MASTER,
 				{
 					name: masterName,
 					citiesId,
@@ -84,7 +84,7 @@ const MasterController: FC<MasterControllerProps> = () => {
 				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`);
 			});
 		} else {
-			axios.put(`/${URL.MASTER}`, {
+			axios.put(URL.MASTER, {
 				id: masterId,
 				name: masterName,
 				citiesId,

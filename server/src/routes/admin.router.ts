@@ -16,23 +16,23 @@ import {putUserValidate, deleteUserValidate} from '../controller/user.validate';
 
 const router = Router();
 
-router.get(`/${URL.CITY}`, [isAuth], getCities);
-router.post(`/${URL.CITY}`, [isAuth, postCityValidate], postCity);
-router.put(`/${URL.CITY}`, [isAuth, putCityValidate], putCity);
-router.delete(`/${URL.CITY}`, [isAuth, deleteCityValidate], deleteCity);
+router.get(URL.CITY, [isAuth], getCities);
+router.post(URL.CITY, [isAuth, postCityValidate], postCity);
+router.put(URL.CITY, [isAuth, putCityValidate], putCity);
+router.delete(URL.CITY, [isAuth, deleteCityValidate], deleteCity);
 
-router.post(`/${URL.MASTER}`, [isAuth, postMasterValidate], postMaster);
-router.get(`/${URL.MASTER}`, [isAuth], getMasters);
-router.put(`/${URL.MASTER}`, [isAuth, putMasterValidate], putMaster);
-router.delete(`/${URL.MASTER}`, [isAuth, deleteMasterValidate], deleteMaster);
+router.post(URL.MASTER, [isAuth, postMasterValidate], postMaster);
+router.get(URL.MASTER, [isAuth], getMasters);
+router.put(URL.MASTER, [isAuth, putMasterValidate], putMaster);
+router.delete(URL.MASTER, [isAuth, deleteMasterValidate], deleteMaster);
 
-router.get(`/${URL.ORDER}`, [isAuth], getOrders);
-router.put(`/${URL.ORDER}`, [isAuth, putOrderValidate], putOrder);
-router.delete(`/${URL.ORDER}`, [isAuth, deleteOrderValidate], deleteOrder);
+router.get(URL.ORDER, [isAuth], getOrders);
+router.put(URL.ORDER, [isAuth, putOrderValidate], putOrder);
+router.delete(URL.ORDER, [isAuth, deleteOrderValidate], deleteOrder);
 
-router.get(`/${URL.USER}`, [isAuth], getUsers);
-router.put(`/${URL.USER}`, [isAuth, putUserValidate], putUser);
-router.delete(`/${URL.USER}`, [isAuth, deleteUserValidate], deleteUser);
+router.get(URL.USER, [isAuth], getUsers);
+router.put(URL.USER, [isAuth, putUserValidate], putUser);
+router.delete(URL.USER, [isAuth, deleteUserValidate], deleteUser);
 
 
 export default router;

@@ -32,7 +32,7 @@ const OrderController: FC<OrderControllerProps> = () => {
 
 	useEffect(() => {
 		const readUsersData = async () => {
-			const {data} = await axios.get<User[]>(`/${URL.USER}`);
+			const {data} = await axios.get<User[]>(URL.USER);
 
 			setUsers(data);
 			setUserId(userIdParam);
@@ -44,7 +44,7 @@ const OrderController: FC<OrderControllerProps> = () => {
 
 	useEffect(() => {
 		const readClocksData = async () => {
-			const {data} = await axios.get<Clock[]>(`/${URL.CLOCK}`);
+			const {data} = await axios.get<Clock[]>(URL.CLOCK);
 
 			setClocks(data);
 			setClockId(Number(clockIdParam));
@@ -56,7 +56,7 @@ const OrderController: FC<OrderControllerProps> = () => {
 
 	useEffect(() => {
 		const readCitiesData = async () => {
-			const {data} = await axios.get<City[]>(`/${URL.CITY}`);
+			const {data} = await axios.get<City[]>(URL.CITY);
 
 			setCities(data);
 			setCityId(Number(cityIdParam));
@@ -75,7 +75,7 @@ const OrderController: FC<OrderControllerProps> = () => {
 				startDate.setUTCHours(startDate.getHours());
 				endDate.setUTCHours(endDate.getHours() + installationTime);
 
-				const {data} = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
+				const {data} = await axios.get<Master[]>(URL.AVAILABLE_MASTER, {
 					params: {
 						currentOrderId: orderIdParam,
 						cityId: cityIdParam,
@@ -106,7 +106,7 @@ const OrderController: FC<OrderControllerProps> = () => {
 			startDate.setUTCHours(startDate.getHours());
 			endDate.setUTCHours(endDate.getHours() + installationTime);
 
-			axios.put(`/${URL.ORDER}`,
+			axios.put(URL.ORDER,
 				{
 					id: orderIdParam,
 					clockId,
