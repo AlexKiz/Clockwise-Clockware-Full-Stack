@@ -8,7 +8,7 @@ import {MasterCitiesAttributes} from './modelsConstants';
 export default (sequelize: any, DataTypes: any) => {
 	class MasterCities extends Model<MasterCitiesAttributes>
 		implements MasterCitiesAttributes {
-		public masterId!: number;
+		public masterId!: string;
 		public cityId!: number;
 
 		static associate(models: any) {}
