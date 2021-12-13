@@ -27,7 +27,7 @@ const UserController: FC<UserControllerProps> = () => {
 
 	const onSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
-		axios.put(`/${URL.USER}`,
+		axios.put(URL.USER,
 			{
 				id: userId,
 				name: userName,

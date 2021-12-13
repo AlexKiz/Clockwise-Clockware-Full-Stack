@@ -11,9 +11,9 @@ export const postCityValidate = async (req: Request, res: Response, next: NextFu
 	const allCitiesName = await db.City.findAll({attributes: ['name']});
 
 	if (allCitiesName.length) {
-		allCitiesName.map((elem: any) => {
-			if (name.toLowerCase().includes(elem.name.toLowerCase())) {
-				validationErrors.push('City with similar name already exists');
+		allCitiesName.map((elem: {name : string}) => {
+			if (name.toLowerCase() === elem.name.toLowerCase()) {
+				validationErrors.push('City with same name already exists');
 			}
 		});
 	}
@@ -36,6 +36,16 @@ export const putCityValidate = async (req: Request, res: Response, next: NextFun
 	const validationErrors: string[] = [];
 
 	const validCity = await db.City.findById(id);
+
+	const allCitiesName = await db.City.findAll({attributes: ['name']});
+
+	if (allCitiesName.length) {
+		allCitiesName.map((elem: {name : string}) => {
+			if (name.toLowerCase() === elem.name.toLowerCase()) {
+				validationErrors.push('City with same name already exists');
+			}
+		});
+	}
 
 	if (!validCity.length) {
 		validationErrors.push('City with current id does not exist');

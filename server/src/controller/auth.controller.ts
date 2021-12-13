@@ -1,3 +1,4 @@
+import {METHOD} from './../../data/constants/systemConstants';
 import {Response, Request, NextFunction} from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -15,7 +16,7 @@ export const Auth = async (req: Request, res: Response) => {
 		const isCompare = await bcrypt.compare(adminPassword, hashPass);
 
 		if (isCompare) {
-			const accessToken = jwt.sign({}, `${process.env.PRIVAT_KEY}`, {expiresIn: '2h'});
+			const accessToken = jwt.sign({}, `${process.env.PRIVATE_KEY}`, {expiresIn: '2h'});
 
 			res.set({Authorization: `Bearer ${accessToken}`}).status(200).json({message: 'Successfully authorizated!'});
 		} else {
@@ -28,14 +29,14 @@ export const Auth = async (req: Request, res: Response) => {
 
 
 export const isAuth = async (req: Request, res: Response, next: NextFunction) => {
-	if (req.method === 'OPTIONS') {
+	if (req.method === METHOD) {
 		return next();
 	}
 
 	try {
 		if (req.headers.authorization) {
-			const accessToken = req.headers.authorization.split(' ')[1];
-			jwt.verify(accessToken, `${process.env.PRIVAT_KEY}`);
+			const accessToken = req.headers.authorization.split(' ')[1]; // libra
+			jwt.verify(accessToken, `${process.env.PRIVATE_KEY}`);
 			next();
 		} else {
 			res.status(401).send();

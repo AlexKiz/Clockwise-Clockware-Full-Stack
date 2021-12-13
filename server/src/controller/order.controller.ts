@@ -10,7 +10,7 @@ export const postOrder = async (req: Request, res: Response) => {
 	try {
 		const {name, email, clockId, cityId, masterId, startWorkOn, endWorkOn} = req.body;
 
-		const [user, isUserCreated] = await db.User.findOrCreate({where: {email}, defaults: {email, name}});
+		const [user, isUserCreated] = await db.User.findOrCreate({where: {email}, defaults: {email, name, role: 'client'}});
 
 		const {id: userId} = user;
 
@@ -147,15 +147,6 @@ export const getClocks = async (req: Request, res: Response) => {
 export const putOrder = async (req: Request, res: Response) => {
 	try {
 		const {id, clockId, userId, cityId, masterId, startWorkOn, endWorkOn} = req.body;
-
-		const updateOrder = await db.Order.updateById(id, {
-			clockId,
-			userId,
-			cityId,
-			masterId,
-			startWorkOn,
-			endWorkOn,
-		});
 
 		const order = await db.Order.updateById(id, {
 			clockId,

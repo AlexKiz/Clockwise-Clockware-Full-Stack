@@ -5,7 +5,7 @@ import {postUserValidate} from '../controller/user.validate';
 
 const router = Router();
 
-router.post(`/${URL.USER}`, [postUserValidate], postUser);
+router.post(URL.USER, [postUserValidate], postUser);
 
 
 export default router;

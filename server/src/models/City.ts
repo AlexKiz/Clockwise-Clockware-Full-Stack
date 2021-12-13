@@ -14,7 +14,7 @@ export default (sequelize: any, DataTypes:any) => {
 		public id!: number;
 		public name!: string;
 
-		static findById(entityId: number | number[]) {
+		static findById(entityId: number) {
 			return this.findAll({where: {id: entityId}});
 		}
 
@@ -22,7 +22,7 @@ export default (sequelize: any, DataTypes:any) => {
 			return this.update({...options}, {where: {id: entityId}});
 		}
 
-		static deleteById(entityId: number | number[]) {
+		static deleteById(entityId: number) {
 			return this.destroy({where: {id: entityId}});
 		}
 

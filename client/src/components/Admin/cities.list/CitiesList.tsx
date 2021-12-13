@@ -15,7 +15,7 @@ const CitiesList: FC<CitiesListProps> = () => {
 
 	useEffect(()=> {
 		const readCitiesData = async () => {
-			const {data} = await axios.get<City[]>(`/${URL.CITY}`);
+			const {data} = await axios.get<City[]>(URL.CITY);
 
 			setCities(data);
 		};
@@ -26,7 +26,7 @@ const CitiesList: FC<CitiesListProps> = () => {
 
 	const onDelete = (id: number) => {
 		if (window.confirm('Do you want to delete this city?')) {
-			axios.delete<City>(`/${URL.CITY}`,
+			axios.delete<City>(URL.CITY,
 				{
 					data: {id},
 				}).then(() => {

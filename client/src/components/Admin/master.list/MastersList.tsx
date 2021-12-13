@@ -15,7 +15,7 @@ const MastersList: FC<MasterListProps> = () => {
 
 	useEffect(() => {
 		const readMastersData = async () => {
-			const {data} = await axios.get<Master[]>(`/${URL.MASTER}`);
+			const {data} = await axios.get<Master[]>(URL.MASTER);
 
 			setMasters(data);
 		};
@@ -26,7 +26,7 @@ const MastersList: FC<MasterListProps> = () => {
 
 	const onDelete = (id: string) => {
 		if (window.confirm('Do you want to delete this master?')) {
-			axios.delete(`/${URL.MASTER}`,
+			axios.delete(URL.MASTER,
 				{
 					data: {
 						id,

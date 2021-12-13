@@ -8,7 +8,7 @@ export const postMaster = async (req: Request, res: Response) => {
 	try {
 		const {name, citiesId} = req.body;
 
-		const master = await db.Master.create({name});
+		const master = await db.Master.create({name}); // const name
 
 		const cities = await master.setCities(citiesId);
 
@@ -83,7 +83,7 @@ export const getAvailableMasters = async (req: Request, res: Response) => {
 			});
 		}
 
-		const bookedMastersId = bookedMasters.map((master: any) => master.masterId);
+		const bookedMastersId = bookedMasters.map((master: { masterId: number; }) => master.masterId);
 
 		const availableMasters = await db.Master.findAll({
 			where: {
@@ -107,10 +107,11 @@ export const putMaster = async (req: Request, res: Response) => {
 	try {
 		const {id, name, citiesId} = req.body;
 
-		const [rows, master] = await db.Master.updateById(id, {name}, {returning: true});
+		const [rows, master] = await db.Master.update({name}, {where: {id}, returning: true});
+		// updateById, instance
 
 		if (master.length) {
-			const cities = await master[0].setCities(citiesId);
+			const updateCitiesOfMaster = await master[0].setCities(citiesId);
 
 			res.status(200).json(master);
 		}
@@ -126,7 +127,7 @@ export const deleteMaster = async (req: Request, res: Response) => {
 
 		const master = await db.Master.deleteById(id);
 
-		res.status(204).json(deleteMaster);
+		res.status(204).json(master);
 	} catch (error) {
 		res.status(500).send();
 	}

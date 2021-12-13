@@ -27,7 +27,7 @@ const CityController: FC<CityControllerProps> = () => {
 	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		if (!cityIdParam) {
-			axios.post<City>(`/${URL.CITY}`,
+			axios.post<City>(URL.CITY,
 				{
 					id: cityId,
 					name: cityName,
@@ -41,7 +41,7 @@ const CityController: FC<CityControllerProps> = () => {
 				}
 			});
 		} else {
-			axios.put<City>(`/${URL.CITY}`, {
+			axios.put<City>(URL.CITY, {
 				id: cityId,
 				name: cityName,
 			}).then(() => {
