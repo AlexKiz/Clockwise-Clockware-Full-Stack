@@ -7,9 +7,9 @@ export const postCity = async (req: Request, res: Response) => {
     try {
         const { name } = req.body
 
-        const createdCity = await db.City.create({ name })
+        const city = await db.City.create({ name })
         
-        res.status(201).json(createdCity)
+        res.status(201).json(city)
 
     } catch(error) {
         
@@ -21,15 +21,15 @@ export const postCity = async (req: Request, res: Response) => {
 
 export const getCities = async (req: Request, res: Response) => {
 
-    const readCities = await db.City.findAll()
+    const cities = await db.City.findAll()
 
-    res.status(200).json(readCities)
+    res.status(200).json(cities)
 }
 
 
 export const getCitiesForOrder = async (req: Request, res: Response) => {
 
-    const readCitiesForOrder = await db.City.findAll({
+    const citiesForOrder = await db.City.findAll({
         include: {
             model: db.Master,
             attributes: [],
@@ -37,7 +37,7 @@ export const getCitiesForOrder = async (req: Request, res: Response) => {
         }
     })
 
-    res.status(200).json(readCitiesForOrder)
+    res.status(200).json(citiesForOrder)
 
 }
 
@@ -47,9 +47,9 @@ export const putCity = async (req: Request, res: Response) => {
     try {
         const { id, name } = req.body
 
-        const updateCity = await db.City.updateById(id, { name })
+        const city = await db.City.updateById(id, { name })
 
-        res.status(200).json(updateCity)
+        res.status(200).json(city)
 
     } catch(error) {
 
@@ -63,9 +63,9 @@ export const deleteCity = async (req: Request, res: Response) => {
     try {
         const { id } = req.body
 
-        const deleteCity = await db.City.deleteById(id)
+        const city = await db.City.deleteById(id)
 
-        res.status(204).json(deleteCity)
+        res.status(204).json(city)
 
     } catch(error) {
 

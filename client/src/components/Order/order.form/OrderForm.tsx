@@ -59,35 +59,33 @@ const OrderForm: FC<OrderFormProps> = () => {
 
     useEffect(() => {
         const readAvailableMastersData = async () => {
+            if(clocks.length){
+                const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
+                let endDate = new Date(`${orderDate} ${orderTime}`)
+                let startDate = new Date(`${orderDate} ${orderTime}`)
+                startDate.setUTCHours(startDate.getHours())
+                endDate.setUTCHours(endDate.getHours() + installationTime)
 
-            const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
-            let endDate = new Date(`${orderDate} ${orderTime}`)
-            let startDate = new Date(`${orderDate} ${orderTime}`)
-            startDate.setUTCHours(startDate.getHours())
-            endDate.setUTCHours(endDate.getHours() + installationTime)
+                if(cityId && orderDate && orderTime && clockId) {
 
-            if(cityId && orderDate && orderTime && clockId) {
+                    const { data } = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
+                        params: { 
+                            cityId, 
+                            startWorkOn: startDate.toISOString(), 
+                            endWorkOn: endDate.toISOString() 
+                        }
+                    })
 
-                const { data } = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
-                    params: { 
-                        cityId, 
-                        startWorkOn: startDate.toISOString(), 
-                        endWorkOn: endDate.toISOString() 
+                    if(!data.length) {
+                        alert('All masters has been booked at that time. Please choose another time or date')
+                        setOrderTime('')
+                        setMasterId(0)
+                        setMasters([])
+                    } else {
+                        setMasterId(data[0].id)
+                        setMasters(data)
                     }
-                })
-
-                if(data.length === 0) {
-                    alert('All masters has been booked at that time. Please choose another time or date')
-                    setOrderTime('')
-                    setMasterId(0)
-                    setMasters([])
                 }
-
-                if(data.length) {
-                    setMasterId(data[0].id)
-                    setMasters(data)
-                }
-                
             }
             
         }
@@ -184,7 +182,7 @@ const OrderForm: FC<OrderFormProps> = () => {
                                         }
                                     </select>
                                 </div>
-                                    
+                                
                                 <div className='form-section'>   
                                     <div className='form-input__label'>
                                         <label>Choose your city:</label>
@@ -200,7 +198,7 @@ const OrderForm: FC<OrderFormProps> = () => {
                                         }
                                     </select>
                                 </div>
-                                    
+                                
                                 <div className='form-section'>   
                                     <div className='form-input__label'>
                                         <label>Choose the date:</label>
@@ -214,7 +212,7 @@ const OrderForm: FC<OrderFormProps> = () => {
                                     onChange={(orderDateEvent) => setOrderDate(orderDateEvent.target.value)}
                                     ></input>
                                 </div>
-                                    
+                                
                                 <div className='form-section'>   
                                     <div className='form-input__label'>
                                         <label>Choose the time:</label>
@@ -230,7 +228,7 @@ const OrderForm: FC<OrderFormProps> = () => {
                                         }
                                     </select>
                                 </div>
-                                    
+                                
                                 <div className='form-section'>   
                                     <div className='form-input__label'>
                                         <label>Available masters:</label>
@@ -247,15 +245,15 @@ const OrderForm: FC<OrderFormProps> = () => {
                                         <option value="" disabled selected hidden>Choose the master</option>
                                     </select>
                                 </div>
-                                    
+                                
                                 <div className='form-button'>   
                                     <button type="submit"> Create order </button>
                                 </div>
-                                    
+                                
                             </div>
-                                    
+                            
                         </form>
-                                    
+                        
                     </div>
 
                 </div>

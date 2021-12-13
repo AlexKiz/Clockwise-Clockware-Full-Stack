@@ -7,9 +7,9 @@ export const postUser = async (req: Request, res: Response) => {
     try {
         const { name, email } = req.body
 
-        const createUser = await db.User.create({ name, email })
+        const user = await db.User.create({ name, email })
 
-        res.status(201).json(createUser)
+        res.status(201).json(user)
 
     } catch(error) {
         
@@ -20,9 +20,9 @@ export const postUser = async (req: Request, res: Response) => {
 
 export const getUsers = async (req: Request, res: Response) => {
     
-    const readUsers = await db.User.findAll()
+    const users = await db.User.findAll()
 
-    res.status(200).json(readUsers)
+    res.status(200).json(users)
 }
 
 
@@ -38,9 +38,9 @@ export const putUser = async (req: Request, res: Response) => {
 
         if ((!userChecking) || (userChecking.id === +id)) {
 
-            const updateUser = await db.User.updateById(id, { name, email })
+            const user = await db.User.updateById(id, { name, email })
 
-            res.status(200).json(updateUser)
+            res.status(200).json(user)
 
         } else {
 
@@ -59,9 +59,9 @@ export const deleteUser = async (req: Request, res: Response) => {
     try {
         const { id } = req.body
 
-        const deleteUser = await db.User.deleteById(id)
+        const user = await db.User.deleteById(id)
         
-        res.status(204).json(deleteUser)
+        res.status(204).json(user)
 
     } catch(error) {
 

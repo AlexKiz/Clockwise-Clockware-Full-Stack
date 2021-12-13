@@ -8,11 +8,11 @@ export const postMaster = async (req: Request, res: Response)  => {
     try {
         const { name, citiesId } = req.body
 
-            const createdMaster = await db.Master.create({ name })
+            const master = await db.Master.create({ name })
 
-            const citiesOfMaster = await createdMaster.setCities(citiesId)
+            const cities = await master.setCities(citiesId)
 
-        res.status(201).json(createdMaster)
+        res.status(201).json(master)
 
     } catch(error) {
 
@@ -23,7 +23,7 @@ export const postMaster = async (req: Request, res: Response)  => {
 
 export const getMasters = async (req: Request, res: Response) => {
 
-        const readMasters = await db.Master.findAll({
+        const masters = await db.Master.findAll({
             attributes: ['id', 'name', 'rating'],
             include: {
                 model: db.City,
@@ -32,7 +32,7 @@ export const getMasters = async (req: Request, res: Response) => {
             }
         })
 
-        res.status(200).json(readMasters)
+        res.status(200).json(masters)
 }
 
 
@@ -41,11 +41,11 @@ export const getAvailableMasters = async (req: Request, res: Response) => {
     try {
         const { currentOrderId, cityId, startWorkOn, endWorkOn } = req.query
 
-                let readBookedMasters
+                let bookedMasters
 
                 if(currentOrderId) {
 
-                    readBookedMasters = await db.Order.findAll({
+                    bookedMasters = await db.Order.findAll({
                         attributes: ['masterId'],
                         where: {
                             [Op.or]: [ 
@@ -70,7 +70,7 @@ export const getAvailableMasters = async (req: Request, res: Response) => {
 
                 } else {
 
-                    readBookedMasters = await db.Order.findAll({
+                    bookedMasters = await db.Order.findAll({
                         attributes: ['masterId'],
                         where: {
                             [Op.or]: [ 
@@ -92,9 +92,9 @@ export const getAvailableMasters = async (req: Request, res: Response) => {
 
                 }
 
-                const bookedMastersId = readBookedMasters.map((master: any) => master.masterId)
+                const bookedMastersId = bookedMasters.map((master: {masterId: number}) => master.masterId)
 
-                const readAvailableMasters = await db.Master.findAll({ 
+                const availableMasters = await db.Master.findAll({ 
                     where: {
                         id: { [Op.notIn]: bookedMastersId }
                     },
@@ -105,7 +105,7 @@ export const getAvailableMasters = async (req: Request, res: Response) => {
                     }
                 })
 
-                res.status(200).json(readAvailableMasters)
+                res.status(200).json(availableMasters)
 
     } catch(error) {
 
@@ -119,12 +119,12 @@ export const putMaster = async (req: Request, res: Response) => {
     try {
         const { id, name, citiesId } = req.body
 
-        const [rows, updatedMaster] = await db.Master.update({ name }, {where:{ id }, returning: true})
+        const [rows, master] = await db.Master.updateById(id, {name}, {returning: true})
         
-        if (updatedMaster.length) {
-            const updateCitiesOfMaster = await updatedMaster[0].setCities(citiesId)
+        if (master.length) {
+            const cities = await master[0].setCities(citiesId)
 
-        res.status(200).json(updatedMaster)
+        res.status(200).json(master)
         }
 
     } catch(error) {
@@ -139,9 +139,9 @@ export const deleteMaster = async (req: Request, res: Response) => {
     try {
         const { id } = req.body
 
-        const deleteMaster = await db.Master.deleteById(id)
+        const master = await db.Master.deleteById(id)
 
-        res.status(204).json(deleteMaster)
+        res.status(204).json(master)
 
     } catch(error) {
 

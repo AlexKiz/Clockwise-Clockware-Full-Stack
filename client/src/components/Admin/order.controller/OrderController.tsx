@@ -91,12 +91,10 @@ const OrderController: FC<OrderControllerProps> = () => {
                     }
                 })
 
-                if(data.length === 0) {
+                if(!data.length) {
                     alert('All masters has been booked at that time. Please choose another time or date')
                     setOrderTime('')
-                }
-
-                if(data.length) {
+                } else {
                     setMasterId(Number(masterIdParam))
                     setMasters(data)
                 }
@@ -109,27 +107,27 @@ const OrderController: FC<OrderControllerProps> = () => {
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+        if(clocks.length) {
+            const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
+            let endDate = new Date(`${orderDate} ${orderTime}`)
+            let startDate = new Date(`${orderDate} ${orderTime}`)
+            startDate.setUTCHours(startDate.getHours())
+            endDate.setUTCHours(endDate.getHours() + installationTime)
 
-        const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
-        let endDate = new Date(`${orderDate} ${orderTime}`)
-        let startDate = new Date(`${orderDate} ${orderTime}`)
-        startDate.setUTCHours(startDate.getHours())
-        endDate.setUTCHours(endDate.getHours() + installationTime)
-
-        axios.put(`/${URL.ORDER}`, 
-        {
-            id: orderIdParam,
-            clockId,
-            userId,
-            cityId,
-            masterId,
-            startWorkOn: startDate.toISOString(),
-            endWorkOn: endDate.toISOString()
-        }).then(() => {
-            alert('Order has been updated')
-            history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`)
-        })
-
+            axios.put(`/${URL.ORDER}`, 
+            {
+                id: orderIdParam,
+                clockId,
+                userId,
+                cityId,
+                masterId,
+                startWorkOn: startDate.toISOString(),
+                endWorkOn: endDate.toISOString()
+            }).then(() => {
+                alert('Order has been updated')
+                history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`)
+            })
+        }
     }
 
 
