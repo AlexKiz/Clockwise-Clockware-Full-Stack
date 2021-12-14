@@ -1,17 +1,12 @@
-label, button {
-    font-family: 'Bitter', serif;
-    font-size: 22px;
-    font-weight: 400;
-}
-
-.conteiner {
+.container {
     max-width: 1700px;
     margin: 0 auto;
+    display: flex;
+    justify-content: center;
 }
 
 .container_form {
-    margin: 0 auto;
-    width: 23%;
+    width: 27%;
     background: linear-gradient(to right, rgb(255, 183, 77),rgb(255, 167, 38));
     padding: 30px;
     box-shadow: 0 0 20px 1px rgba(48, 3, 3, 0.596);
@@ -25,36 +20,68 @@ label, button {
 }
 
 .form {
-    width: 90%;
-    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.form input, select {
-    height: 32px;
-    border-radius: 7px;
-    font-size: 16px;
-    padding-left: 10px;
-    box-shadow: 0 0 15px 4px transparent;
+.form_master {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.form_master label{
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.form_master p{
+    font-family: 'Bitter', serif;
+    font-size: 20px;
+    font-style: italic;
+}
+
+.form_orderinfo {
+    margin-bottom: 20px;
+}
+
+.form_orderinfo b{
+    font-size: 18px;
+}
+
+.form_orderinfo span{
+    font-size: 18px;
+}
+
+.form_stars {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.form_button {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.form_button button {
+    height: 60px;
+    width: 220px;
+    border-radius: 10px;
+    background-color: rgba(207, 250, 15, 0.897);
+    cursor: pointer;
     transition: all 1s ease;
 }
 
-.form input:focus, select:focus {
-    box-shadow: 0 0 10px 3px rgba(48, 3, 3, 0.596);
+.form_button button:hover {
+    border: 2px solid rgb(0, 0, 0);
+    border-radius: 25px;
+    background: rgb(81, 255, 0);
+    
 }
 
-.form_input__label {
-    text-align: center;
-}
-
-.form_section{
-    width: 100%;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.form_btn {
+.form_btn{
     height: 65px;
     width: 70%;
 }
