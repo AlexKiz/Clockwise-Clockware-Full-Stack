@@ -1,14 +1,15 @@
+/* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
 import React from 'react';
 import {Link} from 'react-router-dom';
 import './header.css';
 import {useLocation} from 'react-router-dom';
-import {RESOURCE} from '../../data/constants/routeConstants';
+import {MENULINKS} from './componentConstants';
 
 const PublicHeader = () => {
 	const location = useLocation();
 	const {pathname} = location;
-	const splitLocation = pathname.split('/');
+	const splitLocation = pathname.split('/').reverse();
 
 
 	return (
@@ -30,8 +31,11 @@ const PublicHeader = () => {
 				</div>
 				<nav>
 					<ul className='nav__links'>
-						<li className={splitLocation[splitLocation.length - 1] === '' ? 'active' : ''}><Link to='/'>Make order</Link></li>
-						<li className={splitLocation[splitLocation.length - 1] === `${RESOURCE.LOGIN}` ? 'active' : ''}><Link to={`/${RESOURCE.LOGIN}`}>Login</Link></li>
+						{
+							MENULINKS.map((link) => (
+								<li className={splitLocation[0] === link.resourceName ? 'active' : ''}><Link to={link.resourcePath}>{`${link.name}`}</Link></li>
+							))
+						}
 					</ul>
 				</nav>
 			</div>

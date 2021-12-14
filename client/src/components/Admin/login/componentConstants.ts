@@ -1,1 +1,1 @@
-export interface LoginFormProps {}
+export interface LoginFormProps {};

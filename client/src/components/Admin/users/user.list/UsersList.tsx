@@ -4,9 +4,9 @@ import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
 import '../user.list/user-list.css';
-import {User} from '../../../data/types/types';
+import {User} from '../../../../data/types/types';
 import {UserListProps} from './componentConstants';
-import {RESOURCE, URL} from '../../../data/constants/routeConstants';
+import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 
 
 const UserList: FC<UserListProps> = () => {
@@ -57,7 +57,7 @@ const UserList: FC<UserListProps> = () => {
 								<td>{`${user.id}`}</td>
 								<td>{`${user.name}`}</td>
 								<td>{`${user.email}`}</td>
-								<button className='button-update'><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.USER_CONTROLLER}/${user.id}/${user.name}/${user.email}`}>Update</Link></button>
+								<button className='button-update'><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.USER_CREATE}/${user.id}/${user.name}/${user.email}`}>Update</Link></button>
 								<button className='button-delete' onClick ={() => onDelete(user.id)}>Delete</button>
 							</tr>
 						))

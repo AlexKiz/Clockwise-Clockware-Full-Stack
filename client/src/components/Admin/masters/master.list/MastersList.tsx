@@ -4,9 +4,9 @@ import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
 import '../master.list/masters-list.css';
-import {Master} from '../../../data/types/types';
+import {Master} from '../../../../data/types/types';
 import {MasterListProps} from './componentConstants';
-import {RESOURCE, URL} from '../../../data/constants/routeConstants';
+import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 
 
 const MastersList: FC<MasterListProps> = () => {
@@ -51,7 +51,7 @@ const MastersList: FC<MasterListProps> = () => {
 						<th className='th-master-name'>Master name</th>
 						<th className='th-master-city'>Cities</th>
 						<th className='th-rating'>Rating</th>
-						<button className='button-add'><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.MASTER_CONTROLLER}`}>Create new master</Link></button>
+						<button className='button-add'><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.MASTER_CREATE}`}>Create new master</Link></button>
 					</tr>
 					{
 						masters.map((master) => (
@@ -62,7 +62,7 @@ const MastersList: FC<MasterListProps> = () => {
 									return `${city.name}`;
 								}).join(', ')}</td>
 								<td>{`${master.rating}`}</td>
-								<button className='button-update'><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.MASTER_CONTROLLER}/${master.id}/${master.name}`}>Update</Link></button>
+								<button className='button-update'><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.MASTER_CREATE}/${master.id}/${master.name}`}>Update</Link></button>
 								<button className='button-delete' onClick = {() => onDelete(master.id)}>Delete</button>
 							</tr>
 

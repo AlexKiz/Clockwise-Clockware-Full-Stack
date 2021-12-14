@@ -22,8 +22,8 @@ export default (sequelize: any, DataTypes: any) => {
 			return this.findAll({where: {id: entityId}});
 		}
 
-		static updateById(entityId: string, {...options}) {
-			return this.update({...options}, {where: {id: entityId}});
+		static updateById(entityId: string, {...values}) {
+			return this.update({...values}, {where: {id: entityId}});
 		}
 
 		static deleteById(entityId: string) {

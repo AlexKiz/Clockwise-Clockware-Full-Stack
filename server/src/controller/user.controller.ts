@@ -6,7 +6,7 @@ export const postUser = async (req: Request, res: Response) => {
 	try {
 		const {name, email} = req.body;
 
-		const user = await db.User.create({name, email});
+		const user = await db.User.create({name, email, role: 'client'});
 
 		res.status(201).json(user);
 	} catch (error) {

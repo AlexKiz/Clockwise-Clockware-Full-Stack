@@ -1,13 +1,13 @@
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
-import '../city.controller/city-update-form.css';
-import {City, Params} from '../../../data/types/types';
-import {CityControllerProps} from './componentConstants';
-import {RESOURCE, URL} from '../../../data/constants/routeConstants';
+import './city-create-form.css';
+import {City, Params} from '../../../../data/types/types';
+import {CityCreateProps} from './componentConstants';
+import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 
 
-const CityController: FC<CityControllerProps> = () => {
+const CityCreate: FC<CityCreateProps> = () => {
 	const history = useHistory();
 
 	const [cityName, setCityName] = useState<string>('');
@@ -87,4 +87,4 @@ const CityController: FC<CityControllerProps> = () => {
 	);
 };
 
-export default CityController;
+export default CityCreate;

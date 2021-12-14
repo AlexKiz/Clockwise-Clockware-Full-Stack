@@ -27,6 +27,7 @@ export default (sequelize: any, DataTypes: any) => {
 		static deleteById(entityId: string) {
 			return this.destroy({where: {id: entityId}});
 		}
+
 		static associate(models: any) {
 			Master.belongsToMany(models.City, {
 				through: models.MasterCities,
