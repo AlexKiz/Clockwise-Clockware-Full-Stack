@@ -8,7 +8,7 @@ export const postMaster = async (req: Request, res: Response) => {
 	try {
 		const {name, citiesId} = req.body;
 
-		const master = await db.Master.create({name}); // const name
+		const master = await db.Master.create({name});
 
 		const cities = await master.setCities(citiesId);
 
@@ -107,8 +107,7 @@ export const putMaster = async (req: Request, res: Response) => {
 	try {
 		const {id, name, citiesId} = req.body;
 
-		const [rows, master] = await db.Master.update({name}, {where: {id}, returning: true});
-		// updateById, instance
+		const [, master] = await db.Master.updateById(id, {name}, {returning: true});
 
 		if (master.length) {
 			const updateCitiesOfMaster = await master[0].setCities(citiesId);

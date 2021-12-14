@@ -10,6 +10,7 @@
     "@types/react": "^17.0.13",
     "@types/react-dom": "^17.0.8",
     "axios": "^0.21.1",
+    "date-fns": "^2.27.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
@@ -26,7 +27,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint" : "eslint ./"
+    "lint": "eslint ./"
   },
   "eslintConfig": {
     "extends": [

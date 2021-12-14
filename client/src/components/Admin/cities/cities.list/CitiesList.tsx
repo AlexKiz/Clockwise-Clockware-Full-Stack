@@ -4,9 +4,9 @@ import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
 import '../cities.list/cities-list.css';
-import {City} from '../../../data/types/types';
+import {City} from '../../../../data/types/types';
 import {CitiesListProps} from './componentConstants';
-import {URL, RESOURCE} from '../../../data/constants/routeConstants';
+import {URL, RESOURCE} from '../../../../data/constants/routeConstants';
 
 
 const CitiesList: FC<CitiesListProps> = () => {
@@ -48,14 +48,14 @@ const CitiesList: FC<CitiesListProps> = () => {
 					<tr>
 						<th className='th-city-id'>Id</th>
 						<th className='th-city-name'>City name</th>
-						<button className='button-add'><Link to = {`/${RESOURCE.ADMIN}/${RESOURCE.CITY_CONTROLER}`}>Create new city</Link></button>
+						<button className='button-add'><Link to = {`/${RESOURCE.ADMIN}/${RESOURCE.CITY_CREATE}`}>Create new city</Link></button>
 					</tr>
 					{
 						cities.map((city) => (
 							<tr>
 								<td>{`${city.id}`}</td>
 								<td>{`${city.name}`}</td>
-								<button className='button-update'><Link to = {`/${RESOURCE.ADMIN}/${RESOURCE.CITY_CONTROLER}/${city.id}/${city.name}`}>Update</Link></button>
+								<button className='button-update'><Link to = {`/${RESOURCE.ADMIN}/${RESOURCE.CITY_CREATE}/${city.id}/${city.name}`}>Update</Link></button>
 								<button className='button-delete' onClick = {() => {
 									onDelete(city.id);
 								}}>Delete</button>

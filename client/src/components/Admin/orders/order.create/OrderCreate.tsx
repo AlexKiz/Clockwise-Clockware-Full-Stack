@@ -2,14 +2,15 @@
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
-import '../order.controller/order-update-form.css';
-import {Params, User, Clock, City, Master} from '../../../data/types/types';
-import {today, openingHours} from '../../../data/constants/systemConstants';
-import {OrderControllerProps} from './componentConstants';
-import {RESOURCE, URL} from '../../../data/constants/routeConstants';
+import '../order.create/order-create-form.css';
+import {Params, User, Clock, City, Master} from '../../../../data/types/types';
+import {openingHours} from '../../../../data/constants/systemConstants';
+import {OrderCreateProps} from './componentConstants';
+import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
+import {format} from 'date-fns';
 
 
-const OrderController: FC<OrderControllerProps> = () => {
+const OrderCreate: FC<OrderCreateProps> = () => {
 	const history = useHistory();
 
 	const {orderIdParam, userIdParam, clockIdParam, cityIdParam, orderDateParam, orderTimeParam, masterIdParam} = useParams<Params>();
@@ -196,7 +197,7 @@ const OrderController: FC<OrderControllerProps> = () => {
 						<input
 							type='date'
 							name='orderDate'
-							min= {today}
+							min= {format(new Date(), 'YYYY-MM-DD')}
 							value={orderDate}
 							onChange={(orderDateEvent) => setOrderDate(orderDateEvent.target.value)}
 						></input>
@@ -249,4 +250,4 @@ const OrderController: FC<OrderControllerProps> = () => {
 	);
 };
 
-export default OrderController;
+export default OrderCreate;

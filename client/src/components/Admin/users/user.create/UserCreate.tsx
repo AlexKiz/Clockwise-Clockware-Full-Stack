@@ -3,12 +3,12 @@
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
-import '../user.controller/user-update-form.css';
-import {Params} from '../../../data/types/types';
-import {UserControllerProps} from './componentConstant';
-import {RESOURCE, URL} from '../../../data/constants/routeConstants';
+import '../user.create/user-create-form.css';
+import {Params} from '../../../../data/types/types';
+import {UserCreateProps} from './componentConstant';
+import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 
-const UserController: FC<UserControllerProps> = () => {
+const UserCreate: FC<UserCreateProps> = () => {
 	const history = useHistory();
 
 	const [userName, setUserName] = useState<string>('');
@@ -89,4 +89,4 @@ const UserController: FC<UserControllerProps> = () => {
 	);
 };
 
-export default UserController;
+export default UserCreate;

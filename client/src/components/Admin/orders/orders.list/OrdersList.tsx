@@ -4,9 +4,9 @@ import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
 import '../orders.list/orders-list.css';
-import {Order} from '../../../data/types/types';
+import {Order} from '../../../../data/types/types';
 import {OrderListProps} from './componentConstants';
-import {RESOURCE, URL} from '../../../data/constants/routeConstants';
+import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 
 
 const OrdersList: FC<OrderListProps> = () => {
@@ -67,7 +67,7 @@ const OrdersList: FC<OrderListProps> = () => {
 								<td>{`${order.master.name}`}</td>
 								<td>{`${order.startWorkOn.split('T').join(' ')}`}</td>
 								<td>{`${order.endWorkOn.split('T').join(' ')}`}</td>
-								<button className='button-update'><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CONTROLLER}/${order.id}/${order.user.id}/${order.clock.id}/${order.city.id}/${order.startWorkOn.split('T')[0]}/${order.startWorkOn.split('T')[1]}/${order.master.id}`}>Update</Link></button>
+								<button className='button-update'><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CREATE}/${order.id}/${order.user.id}/${order.clock.id}/${order.city.id}/${order.startWorkOn.split('T')[0]}/${order.startWorkOn.split('T')[1]}/${order.master.id}`}>Update</Link></button>
 								<button className='button-delete' onClick={() => onDelete(order.id)}>Delete</button>
 							</tr>
 						))

@@ -5,9 +5,11 @@ import axios from 'axios';
 import PublicHeader from '../../Headers/PublicHeader';
 import '../order.form/order-form.css';
 import {Master, City, Clock} from '../../../data/types/types';
-import {today, openingHours} from '../../../data/constants/systemConstants';
+import {openingHours} from '../../../data/constants/systemConstants';
 import {OrderFormProps} from './componentConstants';
 import {URL} from '../../../data/constants/routeConstants';
+import {format} from 'date-fns';
+
 
 const OrderForm: FC<OrderFormProps> = () => {
 	const [userName, setUserName] = useState<string>('');
@@ -201,7 +203,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 								<input
 									type='date'
 									name='orderDate'
-									min= {today}
+									min= {format(new Date(), 'YYYY-MM-DD')}
 									value={orderDate}
 									onChange={(orderDateEvent) => setOrderDate(orderDateEvent.target.value)}
 								></input>

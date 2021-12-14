@@ -32,10 +32,10 @@ export const isAuth = async (req: Request, res: Response, next: NextFunction) =>
 	if (req.method === METHOD) {
 		return next();
 	}
-
+	const authorization = req.headers.authorization;
 	try {
-		if (req.headers.authorization) {
-			const accessToken = req.headers.authorization.split(' ')[1]; // libra
+		if (authorization) {
+			const accessToken = authorization.split(' ')[1];
 			jwt.verify(accessToken, `${process.env.PRIVATE_KEY}`);
 			next();
 		} else {

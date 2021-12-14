@@ -3,13 +3,13 @@
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
-import '../master.controller/master-update-form.css';
-import {City, Master, Params} from '../../../data/types/types';
-import {MasterControllerProps} from './componentsConstants';
-import {RESOURCE, URL} from '../../../data/constants/routeConstants';
+import './master-create-form.css';
+import {City, Master, Params} from '../../../../data/types/types';
+import {MasterCreateProps} from './componentsConstants';
+import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 
 
-const MasterController: FC<MasterControllerProps> = () => {
+const MasterCreate: FC<MasterCreateProps> = () => {
 	const history = useHistory();
 
 	const {masterIdParam, masterNameParam} = useParams<Params>();
@@ -165,4 +165,4 @@ const MasterController: FC<MasterControllerProps> = () => {
 	);
 };
 
-export default MasterController;
+export default MasterCreate;
