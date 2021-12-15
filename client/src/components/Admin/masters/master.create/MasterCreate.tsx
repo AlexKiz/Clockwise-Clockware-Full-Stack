@@ -57,15 +57,6 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 			}
 		};
 
-		axios.post(URL.MASTER,
-			{
-				name: masterName,
-				citiesId,
-			}).then(() =>{
-			setMasterName('');
-			alert('Master has been created');
-			history.push(`/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`);
-		});
 		readCitiesData();
 	}, []);
 

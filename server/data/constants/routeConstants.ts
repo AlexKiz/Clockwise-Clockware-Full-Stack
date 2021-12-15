@@ -11,7 +11,6 @@ export enum URL {
     ORDER_FOR_RATE = '/orderForRate',
     RATED_ORDER = '/ratedOrder',
     API = '/api',
-    ORDERS_RATING = '/ordersRating'
 }
 
 export enum RESOURCE {
