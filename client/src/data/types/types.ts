@@ -22,8 +22,6 @@ export type Master = {
     id: string
     name: string
     rating: number
-    ratedSum: number
-    ratedQuantity: number
     cities: City[]
 }
 
@@ -48,9 +46,4 @@ export type Order = {
     master: Master
     startWorkOn: string
     endWorkOn: string
-}
-
-export type Rating = {
-    ratingSum: number,
-    ratingQuantity: number
 }
