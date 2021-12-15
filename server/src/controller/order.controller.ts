@@ -65,7 +65,6 @@ export const getOrders = async (req: Request, res: Response) => {
 	res.status(200).json(orders);
 };
 
-
 export const getOrderForRate = async (req: Request, res: Response) => {
 	try {
 		const {ratingIdentificator} = req.query;
@@ -175,3 +174,5 @@ export const deleteOrder = async (req: Request, res: Response) => {
 		res.status(500).send();
 	}
 };
+
+

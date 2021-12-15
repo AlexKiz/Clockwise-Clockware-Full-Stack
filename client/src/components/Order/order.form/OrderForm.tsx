@@ -33,7 +33,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 	useEffect(() => {
 		const readCitiesData = async () => {
 			const {data} = await axios.get<City[]>(URL.CITY_FOR_ORDER);
-
 			if (data.length) {
 				setCities(data);
 				setCityId(data[0].id);
@@ -203,7 +202,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 								<input
 									type='date'
 									name='orderDate'
-									min= {format(new Date(), 'YYYY-MM-DD')}
+									min= {format(new Date(), 'yyyy-MM-dd')}
 									value={orderDate}
 									onChange={(orderDateEvent) => setOrderDate(orderDateEvent.target.value)}
 								></input>

@@ -197,7 +197,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 						<input
 							type='date'
 							name='orderDate'
-							min= {format(new Date(), 'YYYY-MM-DD')}
+							min= {format(new Date(), 'yyyy-MM-dd')}
 							value={orderDate}
 							onChange={(orderDateEvent) => setOrderDate(orderDateEvent.target.value)}
 						></input>
