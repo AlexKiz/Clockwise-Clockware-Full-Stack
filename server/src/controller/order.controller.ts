@@ -1,11 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 import {Response, Request} from 'express';
-import {transporter, sendMail} from '../services/nodemailer';
+import {sendMail} from '../services/nodemailer';
 import {v4 as uuidv4} from 'uuid';
-import {RESOURCE} from '../../data/constants/routeConstants';
 import db from '../models';
-import {Op} from 'sequelize';
 
 
 export const postOrder = async (req: Request, res: Response) => {
@@ -67,29 +65,6 @@ export const getOrders = async (req: Request, res: Response) => {
 	res.status(200).json(orders);
 };
 
-export const getOrdersRating = async (req: Request, res: Response) => {
-	try {
-		const {masterId} = req.query;
-
-		const readOrdersRating = await db.Order.findAll({
-			attributes: [
-				[db.sequelize.fn('count', db.sequelize.col('*')), 'ratingQuantity'],
-				[db.sequelize.fn('sum', db.sequelize.col('orderRating')), 'ratingSum'],
-			],
-			where: {
-				orderRating: {
-					[Op.gt]: 0,
-				},
-				masterId: masterId,
-			},
-		});
-
-		res.status(200).json(readOrdersRating);
-	} catch (error) {
-		res.status(500).send();
-	}
-};
-
 
 export const getOrderForRate = async (req: Request, res: Response) => {
 	try {
@@ -132,16 +107,28 @@ export const getOrderForRate = async (req: Request, res: Response) => {
 
 export const putRatedOrder = async (req: Request, res: Response) => {
 	try {
-		const {id, orderRated, masterId, newRating} = req.body;
-
-		const masterRating = await db.Master.updateById(masterId, {
-			rating: newRating,
-		});
+		const {id, orderRated, masterId} = req.body;
 
 		const ratedOrder = await db.Order.updateById(id, {
 			orderRating: orderRated,
 			ratingIdentificator: '',
 		});
+
+		const averageRating = await db.Order.findAll({
+			attributes: [[db.sequelize.fn('AVG', db.sequelize.col('orderRating')), 'newRating']],
+			group: 'masterId',
+			where: {
+				masterId,
+				ratingIdentificator: '',
+			},
+			raw: true,
+		});
+
+		if (averageRating.length) {
+			const {newRating: rating} = averageRating[0];
+
+			const masterRating = await db.Master.updateById(masterId, {rating});
+		}
 
 		res.status(200).json(ratedOrder);
 	} catch (error) {

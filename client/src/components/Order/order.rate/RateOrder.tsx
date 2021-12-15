@@ -5,7 +5,7 @@ import {useHistory, useParams} from 'react-router-dom';
 // @ts-ignore
 import ReactStars from 'react-rating-stars-component';
 import classes from '../order.rate/rate-order.module.css';
-import {Params, Order, Rating} from '../../../data/types/types';
+import {Params, Order} from '../../../data/types/types';
 import {RateOrderProps} from './componentConstants';
 import {URL} from '../../../data/constants/routeConstants';
 
@@ -19,12 +19,10 @@ const RateOrder: FC<RateOrderProps> = () => {
 
 	const [order, setOrder] = useState<Order[]>([]);
 
-	const [totalMasterRating, setTotalMasterRating] = useState<Rating[]>([]);
-
 
 	useEffect(() => {
 		const readOrderForRate = async () => {
-			const {data} = await axios.get<Order[]>(`/${URL.ORDER_FOR_RATE}`, {
+			const {data} = await axios.get<Order[]>(URL.ORDER_FOR_RATE, {
 
 				params: {
 					ratingIdentificator: ratingIdentificatorParam,
@@ -42,33 +40,13 @@ const RateOrder: FC<RateOrderProps> = () => {
 	}, []);
 
 
-	useEffect(() => {
-		const readMasterTotalRating = async () => {
-			const {data} = await axios.get<Rating[]>(`/${URL.ORDERS_RATING}`, {
-
-				params: {
-					masterId: order[0].master.id,
-				},
-			});
-
-			if (data) {
-				setTotalMasterRating(data);
-			}
-		};
-		readMasterTotalRating();
-	}, []);
-
-
 	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		const {ratingSum, ratingQuantity} = totalMasterRating[0];
-
-		axios.put(`/${URL.RATED_ORDER}`, {
+		axios.put(URL.RATED_ORDER, {
 			id: order[0].id,
 			orderRated: rating,
 			masterId: order[0].master.id,
-			newRating: (ratingSum + rating) / ratingQuantity,
 		}).then(() => {
 			alert('Thanks for your feedback');
 			history.push('/');

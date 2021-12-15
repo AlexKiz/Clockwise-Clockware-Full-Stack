@@ -232,7 +232,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 									{
 										masters.map((master) => (
 											<option value={master.id}>
-												{`${master.name} | Rating:${master.rating}`}
+												{`${master.name} | Rating:${master.rating.toFixed(2)}`}
 											</option>
 										))
 									}
