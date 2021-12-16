@@ -35,16 +35,13 @@ const RateOrder: FC<RateOrderProps> = () => {
 
                 setOrder(data)
 
-            } 
-            
-            if(!data.length) {
+            } else {
 
                 alert('Current order has been already rated')
                 history.push('/')
-            }
-            
-        }
 
+            }
+        }
         readOrderForRate()
     },[])
 
@@ -52,10 +49,18 @@ const RateOrder: FC<RateOrderProps> = () => {
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
+        const { ratedSum, ratedQuantity } = order[0].master
+        const newRatedSum = ratedSum + rating
+        const newRatedQuantity = ratedQuantity + 1
+        const newRating = Number((newRatedSum / newRatedQuantity).toFixed(2))
+
         axios.put(`/${URL.RATED_ORDER}`, {
             id: order[0].id,
-            order_rated: rating,
-            master_id: order[0].masterId
+            orderRated: rating,
+            masterId: order[0].master.id,
+            newRatedSum,
+            newRatedQuantity,
+            newRating
         }).then(() => {
 
             alert('Thanks for your feedback')
@@ -75,18 +80,18 @@ const RateOrder: FC<RateOrderProps> = () => {
                             <>
                             <div className={classes.form_master}>
                                 <label>Please, rate the following master:</label>
-                                <p>{order[0].masterName}</p>
+                                <p>{order[0].master.name}</p>
                             </div>
                             <div className={classes.form_orderinfo}>
                                 <b>Order #{order[0].id}</b>
                                 <br />
-                                <b> User name:</b> <span>{order[0].userName}</span>
+                                <b> User name:</b> <span>{order[0].user.name}</span>
                                 <br />
-                                <b> User email:</b> <span>{order[0].userEmail}</span>
+                                <b> User email:</b> <span>{order[0].user.email}</span>
                                 <br />
-                                <b> Clock size:</b>  <span>{order[0].clockSize}</span>
+                                <b> Clock size:</b>  <span>{order[0].clock.size}</span>
                                 <br />
-                                <b> City:</b>  <span>{order[0].cityName}</span>
+                                <b> City:</b>  <span>{order[0].city.name}</span>
                                 <br />
                                 <b> Start work on:</b>  <span>{order[0].startWorkOn.split(',').join(' ')}</span>
                                 <br />

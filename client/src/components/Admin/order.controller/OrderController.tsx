@@ -73,28 +73,32 @@ const OrderController: FC<OrderControllerProps> = () => {
 
 
     useEffect(() => { 
-        
+
         const readAvailableMastersData = async () => {
+            if(clocks.length) {
+                const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
+                let endDate = new Date(`${orderDate} ${orderTime}`)
+                let startDate = new Date(`${orderDate} ${orderTime}`)
+                startDate.setUTCHours(startDate.getHours())
+                endDate.setUTCHours(endDate.getHours() + installationTime)
+            
+                const { data } = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
+                    params: {
+                        currentOrderId: orderIdParam,
+                        cityId: cityIdParam,
+                        startWorkOn: startDate.toISOString(),
+                        endWorkOn: endDate.toISOString()
+                    }
+                })
 
-            const { data } = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
-                params: {
-                    currentOrderId: orderIdParam,
-                    city_id: cityIdParam,
-                    start_work_on: `${orderDate} ${orderTime}`,
-                    clock_id: clockIdParam,
+                if(!data.length) {
+                    alert('All masters has been booked at that time. Please choose another time or date')
+                    setOrderTime('')
+                } else {
+                    setMasterId(Number(masterIdParam))
+                    setMasters(data)
                 }
-            })
-
-            if(data.length === 0) {
-                alert('All masters has been booked at that time. Please choose another time or date')
-                setOrderTime('')
             }
-
-            if(data.length) {
-                setMasterId(Number(masterIdParam))
-                setMasters(data)
-            }
-
         }
         readAvailableMastersData()
 
@@ -103,19 +107,27 @@ const OrderController: FC<OrderControllerProps> = () => {
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        axios.put(`/${URL.ORDER}`, 
-        {
-            id: orderIdParam,
-            clock_id: clockId,
-            user_id: userId,
-            city_id: cityId,
-            master_id: masterId,
-            start_work_on: `${orderDate} ${orderTime}`
-        }).then(() => {
-            alert('Order has been updated')
-            history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`)
-        })
+        if(clocks.length) {
+            const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
+            let endDate = new Date(`${orderDate} ${orderTime}`)
+            let startDate = new Date(`${orderDate} ${orderTime}`)
+            startDate.setUTCHours(startDate.getHours())
+            endDate.setUTCHours(endDate.getHours() + installationTime)
 
+            axios.put(`/${URL.ORDER}`, 
+            {
+                id: orderIdParam,
+                clockId,
+                userId,
+                cityId,
+                masterId,
+                startWorkOn: startDate.toISOString(),
+                endWorkOn: endDate.toISOString()
+            }).then(() => {
+                alert('Order has been updated')
+                history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`)
+            })
+        }
     }
 
 

@@ -22,6 +22,8 @@ export type Master = {
     id: number
     name: string
     rating: number
+    ratedSum: number
+    ratedQuantity: number
     cities: City[]
 }
 
@@ -34,19 +36,15 @@ export type User = {
 export type Clock = {
     id: number
     size: string
+    installationTime: number
 }
 
 export type Order = {
     id: number
-    clockId: number
-    clockSize: string
-    userId: number
-    userName: string
-    userEmail: string
-    cityId: number
-    cityName: string
-    masterId: number
-    masterName: string
+    user: User
+    clock: Clock
+    city: City
+    master: Master
     startWorkOn: string
     endWorkOn: string
 }

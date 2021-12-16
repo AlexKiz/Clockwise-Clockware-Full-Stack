@@ -26,7 +26,7 @@ const OrderForm: FC<OrderFormProps> = () => {
     const [clockId, setClockId] = useState<number>(0)
     const [clocks, setClocks] = useState<Clock[]>([])
 
-    
+
     useEffect(() => {
         const readCitiesData = async () => {
 
@@ -59,28 +59,33 @@ const OrderForm: FC<OrderFormProps> = () => {
 
     useEffect(() => {
         const readAvailableMastersData = async () => {
+            if(clocks.length){
+                const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
+                let endDate = new Date(`${orderDate} ${orderTime}`)
+                let startDate = new Date(`${orderDate} ${orderTime}`)
+                startDate.setUTCHours(startDate.getHours())
+                endDate.setUTCHours(endDate.getHours() + installationTime)
 
-            if(cityId && orderDate && orderTime && clockId) {
-                const { data } = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
-                    params: {
-                    city_id: cityId,
-                    start_work_on: `${orderDate} ${orderTime}`,
-                    clock_id: clockId,
+                if(cityId && orderDate && orderTime && clockId) {
+
+                    const { data } = await axios.get<Master[]>(`/${URL.AVAILABLE_MASTER}`, {
+                        params: { 
+                            cityId, 
+                            startWorkOn: startDate.toISOString(), 
+                            endWorkOn: endDate.toISOString() 
+                        }
+                    })
+
+                    if(!data.length) {
+                        alert('All masters has been booked at that time. Please choose another time or date')
+                        setOrderTime('')
+                        setMasterId(0)
+                        setMasters([])
+                    } else {
+                        setMasterId(data[0].id)
+                        setMasters(data)
                     }
-                })
-
-                if(data.length === 0) {
-                    alert('All masters has been booked at that time. Please choose another time or date')
-                    setOrderTime('')
-                    setMasterId(0)
-                    setMasters([])
                 }
-
-                if(data.length) {
-                    setMasterId(data[0].id)
-                    setMasters(data)
-                }
-                
             }
             
         }
@@ -92,22 +97,30 @@ const OrderForm: FC<OrderFormProps> = () => {
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        axios.post(`/${URL.ORDER}`, 
-        {
-            name: userName, 
-            email: userEmail,
-            clock_id: clockId,
-            city_id: cityId,
-            master_id: masterId,
-            start_work_on: `${orderDate} ${orderTime}`
-        })
+        if(clocks.length) {
+            const { installationTime } = clocks.filter(clock => clock.id === clockId)[0]
+            let endDate = new Date(`${orderDate} ${orderTime}`)
+            let startDate = new Date(`${orderDate} ${orderTime}`)
+            startDate.setUTCHours(startDate.getHours())
+            endDate.setUTCHours(endDate.getHours() + installationTime)
 
-        setUserName('')
-        setUserEmail('')
-        setOrderTime('')
-        setOrderDate('')
-        alert('Your order has been created! Please confirm it on your Emailbox. Have a good day!')
+            axios.post(`/${URL.ORDER}`, 
+            {
+                name: userName, 
+                email: userEmail,
+                clockId,
+                cityId,
+                masterId,
+                startWorkOn: startDate.toISOString(), 
+                endWorkOn: endDate.toISOString() 
+            })
 
+            setUserName('')
+            setUserEmail('')
+            setOrderTime('')
+            setOrderDate('')
+            alert('Your order has been created! Please confirm it on your Emailbox. Have a good day!')
+        }
     }
 
     return (
@@ -169,7 +182,7 @@ const OrderForm: FC<OrderFormProps> = () => {
                                         }
                                     </select>
                                 </div>
-                                    
+                                
                                 <div className='form-section'>   
                                     <div className='form-input__label'>
                                         <label>Choose your city:</label>
@@ -185,7 +198,7 @@ const OrderForm: FC<OrderFormProps> = () => {
                                         }
                                     </select>
                                 </div>
-                                    
+                                
                                 <div className='form-section'>   
                                     <div className='form-input__label'>
                                         <label>Choose the date:</label>
@@ -199,7 +212,7 @@ const OrderForm: FC<OrderFormProps> = () => {
                                     onChange={(orderDateEvent) => setOrderDate(orderDateEvent.target.value)}
                                     ></input>
                                 </div>
-                                    
+                                
                                 <div className='form-section'>   
                                     <div className='form-input__label'>
                                         <label>Choose the time:</label>
@@ -215,7 +228,7 @@ const OrderForm: FC<OrderFormProps> = () => {
                                         }
                                     </select>
                                 </div>
-                                    
+                                
                                 <div className='form-section'>   
                                     <div className='form-input__label'>
                                         <label>Available masters:</label>
@@ -232,15 +245,15 @@ const OrderForm: FC<OrderFormProps> = () => {
                                         <option value="" disabled selected hidden>Choose the master</option>
                                     </select>
                                 </div>
-                                    
+                                
                                 <div className='form-button'>   
                                     <button type="submit"> Create order </button>
                                 </div>
-                                    
+                                
                             </div>
-                                    
+                            
                         </form>
-                                    
+                        
                     </div>
 
                 </div>

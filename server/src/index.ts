@@ -9,6 +9,7 @@ import adminRouter from './routes/admin.router'
 import cors from 'cors'
 import path from 'path'
 import { URL } from '../data/constants/routeConstants'
+import db from './models'
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -25,11 +26,24 @@ app.use(`/${URL.API}`, userRouter)
 app.use(`/${URL.API}`, adminRouter)
 app.use(`/${URL.API}`, login)
 
+
 app.get('/*', function(req: Request, res: Response) {
     res.sendFile(path.resolve('../', 'client', 'build', 'index.html'))
 })
 
-app.listen(PORT, () => {
-    console.log(`Server has been started on port ${PORT} `)
-})
+const start = async() => {
+    try {
+        await db.sequelize.authenticate()
+        await db.sequelize.sync()
+        app.listen(PORT, () => {
+            console.log(`Server has been started on port ${PORT} `)
+        })
 
+    } catch(e) {
+
+        console.log(e);
+
+    }
+}
+
+start()

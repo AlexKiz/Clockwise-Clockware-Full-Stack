@@ -18,7 +18,7 @@ const OrdersList: FC<OrderListProps> = () => {
         
             const { data } = await axios.get<Order[]>(`/${URL.ORDER}`)
             
-        setOrders(data)
+            setOrders(data)
         } 
 
         readOrdersData()
@@ -64,14 +64,14 @@ const OrdersList: FC<OrderListProps> = () => {
                     orders.map((order) => (
                         <tr>
                             <td>{`${order.id}`}</td>
-                            <td>{`${order.clockSize}`}</td>
-                            <td>{`${order.userName}`}</td>
-                            <td>{`${order.userEmail}`}</td>
-                            <td>{`${order.cityName}`}</td>
-                            <td>{`${order.masterName}`}</td>
-                            <td>{`${order.startWorkOn.split(',').join(' ')}`}</td>
-                            <td>{`${order.endWorkOn}`}</td>
-                            <button className='button-update'><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CONTROLLER}/${order.id}/${order.userId}/${order.clockId}/${order.cityId}/${order.startWorkOn.split(',')[0]}/${order.startWorkOn.split(',')[1]}/${order.masterId}`}>Update</Link></button>
+                            <td>{`${order.clock.size}`}</td>
+                            <td>{`${order.user.name}`}</td>
+                            <td>{`${order.user.email}`}</td>
+                            <td>{`${order.city.name}`}</td>
+                            <td>{`${order.master.name}`}</td>
+                            <td>{`${order.startWorkOn.split('T').join(' ')}`}</td>
+                            <td>{`${order.endWorkOn.split('T').join(' ')}`}</td>
+                            <button className='button-update'><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CONTROLLER}/${order.id}/${order.user.id}/${order.clock.id}/${order.city.id}/${order.startWorkOn.split('T')[0]}/${order.startWorkOn.split('T')[1]}/${order.master.id}`}>Update</Link></button>
                             <button className='button-delete' onClick={() => onDelete(order.id)}>Delete</button>
                         </tr>
                     ))

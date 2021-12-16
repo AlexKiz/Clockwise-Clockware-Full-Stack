@@ -23,19 +23,25 @@ const MasterController: FC<MasterControllerProps> = () => {
     useEffect(() => {
         
         const readMastersData = async () => {
-            
+                
                 const { data } = await axios.get<Master[]>(`/${URL.MASTER}`)
 
                 if(masterIdParam && data.length) {
 
-                    const currentMaster = data.filter(master => master.id === Number(masterId))
-
+                    const currentMaster = data.filter(master => master.id === Number(masterIdParam))
+                    
                     if(currentMaster.length) {
-                        const currentMasterCities = currentMaster[0].cities.map((city) => {return city.id})
-
-                        setMasterName( masterNameParam )
-                        setMasterId ( Number(masterIdParam) )
-                        setCitiesId ( currentMasterCities )
+                        if(currentMaster[0].cities.length) {
+                            const currentMasterCities = currentMaster[0].cities.map((city) => {return city.id})
+                            setMasterName( masterNameParam )
+                            setMasterId ( Number(masterIdParam) )
+                            setCitiesId ( currentMasterCities )
+                        } else {
+                            setMasterName( masterNameParam )
+                            setMasterId ( Number(masterIdParam) )
+                        }
+                        
+        
                     }
                     
                 }
@@ -69,10 +75,10 @@ const MasterController: FC<MasterControllerProps> = () => {
 
         if (!masterIdParam) {
 
-                axios.post(`/${URL.MASTER}`,
+            axios.post(`/${URL.MASTER}`,
             {
                 name: masterName, 
-                cities_id: citiesId
+                citiesId
             }).then(() =>{
                 setMasterName('')
                 alert('Master has been created')
@@ -84,7 +90,7 @@ const MasterController: FC<MasterControllerProps> = () => {
             axios.put(`/${URL.MASTER}`, {
                     id: masterId,
                     name: masterName, 
-                    cities_id: citiesId
+                    citiesId
             }).then(() => {
                 alert('Master has been updated')
                 history.push(`/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`)
@@ -92,7 +98,7 @@ const MasterController: FC<MasterControllerProps> = () => {
         }
         
     }
-
+    
 
     return (
         <div className='container-form'>
