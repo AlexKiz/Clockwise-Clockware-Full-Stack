@@ -7,9 +7,10 @@
     "node": "<= 14.x"
   },
   "scripts": {
-    "postinstall": "cd ../client && npm i && npm run build",
+    "postinstall": "npm run tsc && cd ../client && npm i && npm run build",
     "start": "tsc && node dist/src/index.js",
-    "dev": "ts-node src/index.ts"
+    "dev": "ts-node src/index.ts",
+    "tsc":"tsc"
   },
   "keywords": [],
   "author": "Alex Kiz",
