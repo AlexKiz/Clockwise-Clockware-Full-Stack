@@ -1,4 +1,4 @@
-import { RESOURCE } from 'data/constants/routeConstants';
+import { RESOURCE } from '../../data/constants/routeConstants';
 import nodemailer from 'nodemailer'
 
 export const transporter = nodemailer.createTransport({
