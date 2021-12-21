@@ -8,8 +8,8 @@
   },
   "scripts": {
     "postinstall": "cd ../client && npm i && npm run build",
-    "start": "set NODE_ENV='production' && npm i && tsc && node dist/src/index.js",
-    "dev": "ts-node src/index.ts",
+    "start": "npm i && tsc && node dist/src/index.js",
+    "dev": "ts-node src/index.ts"
     "lint": "eslint ../"
   },
   "keywords": [],
