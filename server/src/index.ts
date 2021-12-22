@@ -15,7 +15,6 @@ const app = express()
 const PORT = process.env.PORT || 5000
 
 app.use(cors({exposedHeaders: 'Authorization',}),)
-app.use(express.static(`../client/build`))
 app.use(express.json())
 
 
@@ -26,10 +25,6 @@ app.use(`/${URL.API}`, userRouter)
 app.use(`/${URL.API}`, adminRouter)
 app.use(`/${URL.API}`, login)
 
-
-app.get('/*', function(req: Request, res: Response) {
-    res.sendFile(path.resolve('../', 'client', 'build', 'index.html'))
-})
 
 const start = async() => {
     try {
