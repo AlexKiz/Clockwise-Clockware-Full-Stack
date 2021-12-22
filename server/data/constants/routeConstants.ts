@@ -11,8 +11,11 @@ export enum URL {
     ORDER_FOR_RATE = '/orderForRate',
     RATED_ORDER = '/ratedOrder',
     API = '/api',
+    REGISTRATION = '/user/registration',
+    VERIFY = '/user/verify'
 }
 
 export enum RESOURCE {
-    RATE = 'rate'
+    RATE = 'rate',
+    VERIFICATION = 'email-verification'
 }

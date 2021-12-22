@@ -11,7 +11,9 @@ export enum URL {
     CITY_FOR_ORDER = '/cityForOrder',
     ORDER_FOR_RATE = '/orderForRate',
     RATED_ORDER = '/ratedOrder',
-    ORDERS_RATING = '/ordersRating'
+    ORDERS_RATING = '/ordersRating',
+	REGISTRATION = '/user/registration',
+	VERIFY = '/user/verify'
 }
 
 export enum RESOURCE {
@@ -25,7 +27,9 @@ export enum RESOURCE {
     USER_CREATE = 'user-create',
     USERS_LIST = 'users-list',
     LOGIN = 'login',
-    RATE = 'rate'
+    RATE = 'rate',
+    REGISTRATION = 'registration-form',
+	VERIFICATION = 'email-verification'
 }
 
 export enum PARAM {
@@ -40,13 +44,17 @@ export enum PARAM {
     ORDER_DATE = 'orderDateParam',
     ORDER_TIME = 'orderTimeParam',
     CLOCK_ID = 'clockIdParam',
-    RATING_ID = 'ratingIdentificatorParam'
+    RATING_ID = 'ratingIdentificatorParam',
+	HASH_VERIFY = 'hashVerify'
 }
 
 export const ROUTES = {
 	ORDER_FORM: {
 		path: '/',
 		exact: true,
+	},
+	REGISTRATION_FORM: {
+		path: `/${RESOURCE.REGISTRATION}`,
 	},
 	ADMIN_MASTERS_LIST: {
 		path: `/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`,
@@ -77,5 +85,8 @@ export const ROUTES = {
 	},
 	RATE_ORDER: {
 		path: `/${RESOURCE.RATE}/:${PARAM.RATING_ID}?`,
+	},
+	USER_VERIFY: {
+		path: `/${RESOURCE.VERIFICATION}/:${PARAM.HASH_VERIFY}?`,
 	},
 };

@@ -17,6 +17,9 @@ export default (sequelize: any, DataTypes: any) => {
 		public password!: string;
 		public email!: string;
 		public role!: string;
+		public hashVerify!: string;
+		public isVerified!: boolean;
+
 
 		static findById(entityId: string) {
 			return this.findAll({where: {id: entityId}});
@@ -69,6 +72,16 @@ export default (sequelize: any, DataTypes: any) => {
 			role: {
 				type: DataTypes.STRING(30),
 				allowNull: false,
+			},
+
+			hashVerify: {
+				type: DataTypes.STRING(150),
+				allowNull: true,
+			},
+
+			isVerified: {
+				type: DataTypes.BOOLEAN,
+				defaultValue: false
 			},
 		}, {
 			sequelize,

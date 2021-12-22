@@ -2,7 +2,7 @@ import {URL} from '../../data/constants/routeConstants';
 import {Router} from 'express';
 import {isAuth} from '../controller/auth.controller';
 
-import {postCity, getCities, putCity, deleteCity} from '../controller/city.controller';
+import {postCity, putCity, deleteCity} from '../controller/city.controller';
 import {postCityValidate, putCityValidate, deleteCityValidate} from '../controller/city.validate';
 
 import {postMaster, getMasters, putMaster, deleteMaster} from '../controller/master.controller';
@@ -16,7 +16,6 @@ import {putUserValidate, deleteUserValidate} from '../controller/user.validate';
 
 const router = Router();
 
-router.get(URL.CITY, [isAuth], getCities);
 router.post(URL.CITY, [isAuth, postCityValidate], postCity);
 router.put(URL.CITY, [isAuth, putCityValidate], putCity);
 router.delete(URL.CITY, [isAuth, deleteCityValidate], deleteCity);

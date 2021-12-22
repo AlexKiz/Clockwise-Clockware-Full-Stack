@@ -1,13 +1,27 @@
 import {Response, Request} from 'express';
 import db from '../models';
+import bcrypt from 'bcrypt';
+import {sendVerificationMail} from '../services/nodemailer';
 
 
-export const postUser = async (req: Request, res: Response) => {
+export const userRegistration = async (req: Request, res: Response) => {
 	try {
-		const {name, email} = req.body;
+		const {name, email, password, citiesId, role} = req.body;
 
-		const user = await db.User.create({name, email, role: 'client'});
+		const salt = bcrypt.genSaltSync(10);
+		const hashPassword = bcrypt.hashSync(password, salt);
+		const hashForVerification = bcrypt.hashSync(`${name}${email}`, salt);
+		const hashVerify = hashForVerification.replace(/\//g, "i")
+		console.log(hashVerify);
+		
+		const user = await db.User.create({name, email, password: hashPassword, role, hashVerify});
+		await sendVerificationMail(email, hashVerify);
 
+		if (role === 'master') {
+			const master = await db.Master.create({name});
+			master.setCities(citiesId);
+		}
+		
 		res.status(201).json(user);
 	} catch (error) {
 		res.status(500).send();
@@ -40,6 +54,19 @@ export const putUser = async (req: Request, res: Response) => {
 		}
 	} catch (error) {
 		res.status(500).send();
+	}
+};
+
+
+export const userVerification = async (req: Request, res: Response) => {
+	try {
+		const { hashVerify } = req.body;
+		
+		const userVerify = await db.User.update({hashVerify: '', isVerified: true}, {where: {hashVerify}})
+		
+		res.status(200).json(userVerify)
+	} catch (error) {
+		res.status(500).send()
 	}
 };
 
