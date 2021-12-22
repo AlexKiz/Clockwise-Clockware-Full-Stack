@@ -15,6 +15,11 @@ export const userRegistration = async (req: Request, res: Response) => {
 
 		const user = await rolesMappingCreate[role](name, email, hashPassword, hashVerify, citiesId);
 
+		if (role === 'master') {
+			const master = await db.Master.create({name});
+			master.setCities(citiesId);
+		}
+
 		res.status(201).json(user);
 	} catch (error) {
 		res.status(500).send();
