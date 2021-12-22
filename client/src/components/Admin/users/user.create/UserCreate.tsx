@@ -1,94 +1,128 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable max-len */
 import axios from 'axios';
-import React, {useState, useEffect, FC} from 'react';
+import React, {useState, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
-<<<<<<<< HEAD:client/src/components/Admin/users/create/UserCreate.tsx
-import './user-create-form.css';
-========
-import '../user.create/user-create-form.css';
->>>>>>>> d3f3e75 (fixed according comments):client/src/components/Admin/users/user.create/UserCreate.tsx
+import classes from './user-create-form.module.css';
 import {Params} from '../../../../data/types/types';
-import {UserCreateProps} from './componentConstant';
+import {UserCreateProps, validate} from './componentConstant';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
+import {useFormik} from 'formik';
+import {Button, Stack, TextField, AlertColor} from '@mui/material';
+import AlertMessage from 'src/components/Notification/AlertMessage';
+
 
 const UserCreate: FC<UserCreateProps> = () => {
 	const history = useHistory();
 
-	const [userName, setUserName] = useState<string>('');
-	const [userId, setUserId] = useState<string>('');
-	const [userEmail, setUserEmail] = useState<string>('');
-
 	const {userIdParam, userNameParam, userEmailParam} = useParams<Params>();
 
+	const [notify, setNotify] = useState<boolean>(false);
+	const [alertType, setAlertType] = useState<AlertColor>('success');
+	const [message, setMessage] = useState<string>('');
 
-	useEffect(() => {
-		setUserId( userIdParam );
-		setUserName( userNameParam );
-		setUserEmail( userEmailParam );
-	}, []);
-
-
-	const onSubmit = (event: React.FormEvent) => {
-		event.preventDefault();
-		axios.put(URL.USER,
-			{
-				id: userId,
-				name: userName,
-				email: userEmail,
-			}).then(() => {
-			alert('User has been updated');
-			history.push(`/${RESOURCE.ADMIN}/${RESOURCE.USERS_LIST}`);
-		}).catch(() => {
-			alert('User with current email already exists');
-			setUserEmail( userEmailParam );
-		});
+	const isOpen = (value:boolean) => {
+		setNotify(value);
 	};
 
+	const formik = useFormik({
+		initialValues: {
+			userName: userNameParam,
+			userId: userIdParam,
+			userEmail: userEmailParam,
+		},
+		validate,
+		onSubmit: async (values) => {
+			await axios.put(URL.USER,
+				{
+					id: values.userId,
+					name: values.userName,
+					email: values.userEmail,
+				}).then(() => {
+				setMessage('User has been updated');
+				setAlertType('success');
+				setNotify(true);
+				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.USERS_LIST}`);
+			}).catch(() => {
+				setMessage('User with current email already exists');
+				setAlertType('error');
+				setNotify(true);
+				values.userEmail = userEmailParam;
+			});
+		},
+	});
+
+
 	return (
-		<div className='container-form'>
+		<div>
 
-			<form className='form' onSubmit={onSubmit}>
+			<div className={classes.container_form}>
 
-				<div>
+				<form className={classes.form} onSubmit = {formik.handleSubmit}>
 
-					<div className='form-section'>
-						<div className='form-input__label'>
-							<label>Enter User name:</label>
+					<Stack direction="column" justifyContent="center" spacing={1.5}>
+						<div className={classes.form_section}>
+							<div className={classes.form_input__label}>
+								<label>Enter User name:</label>
+							</div>
+							<TextField
+								id="userName"
+								name="userName"
+								label="User name"
+								placeholder="Name"
+								variant="filled"
+								size="small"
+								margin="dense"
+								fullWidth
+								value={formik.values.userName}
+								onChange={formik.handleChange}
+								onBlur={formik.handleBlur}
+								error={formik.touched.userName && Boolean(formik.errors.userName)}
+								helperText={formik.touched.userName && formik.errors.userName}
+								required
+							/>
 						</div>
-						<input
-							type='text'
-							pattern='^([(A-Za-zА-Яа-я]{3,49})$|^([A-Za-zА-Яа-я]{3,49}[\s]{1}[A-Za-zА-Яа-я]{3,50})$'
-							title='User name must be at least 3 letter and alphabetical characters only'
-							value={userName}
-							onChange={(userNameEvent) => setUserName(userNameEvent.target.value)}
-						>
-						</input>
-					</div>
 
-					<div className='form-section'>
-						<div className='form-input__label'>
-							<label>Enter User's email:</label>
+						<div className={classes.form_section}>
+							<div className={classes.form_input__label}>
+								<label>Enter User's email:</label>
+							</div>
+							<TextField
+								id="userEmail"
+								name="userEmail"
+								label="Email"
+								placeholder="Email"
+								variant="filled"
+								size="small"
+								margin="dense"
+								fullWidth
+								value={formik.values.userEmail}
+								onChange={formik.handleChange}
+								onBlur={formik.handleBlur}
+								error={formik.touched.userEmail && Boolean(formik.errors.userEmail)}
+								helperText={formik.touched.userEmail && formik.errors.userEmail}
+								required
+							/>
 						</div>
-						<input
-							type='email'
-							pattern='^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'
-							title='Email must be according the example: myemail@mail.com'
-							value={userEmail}
-							onChange={(userEmailEvent) => setUserEmail(userEmailEvent.target.value)}
-						>
-						</input>
-					</div>
 
-					<div className='form-button'>
-						<button type='submit'>
-                            Submit
-						</button>
-					</div>
+						<div className={classes.form_section}>
+							<Button
+								variant="contained"
+								type="submit"
+								className={classes.form_btn}
+								style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
+							>
+								Submit
+							</Button>
+						</div>
+					</Stack>
 
-				</div>
+				</form>
+				{
+					notify ? <AlertMessage alertType={alertType} message={message} isOpen={isOpen} notify={notify}/> : ''
+				}
+			</div>
 
-			</form>
 		</div>
 	);
 };

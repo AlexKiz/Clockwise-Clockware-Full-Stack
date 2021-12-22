@@ -8,7 +8,7 @@ import classes from './rate-order.module.css';
 import {Params, Order} from '../../../data/types/types';
 import {RateOrderProps} from './componentConstants';
 import {URL} from '../../../data/constants/routeConstants';
-
+import {Button} from '@mui/material';
 
 const RateOrder: FC<RateOrderProps> = () => {
 	const history = useHistory();
@@ -96,7 +96,14 @@ const RateOrder: FC<RateOrderProps> = () => {
 							</div>
 
 							<div className={classes.form_button}>
-								<button type="submit"> Rate order </button>
+								<Button
+									variant="contained"
+									type="submit"
+									className={classes.form_btn}
+									style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
+								>
+										Create order
+								</Button>
 							</div>
 
 						</div>

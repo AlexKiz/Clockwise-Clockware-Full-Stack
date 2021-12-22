@@ -1,3 +1,4 @@
+
 label, button {
     font-family: 'Bitter', serif;
     font-size: 22px;
@@ -11,11 +12,11 @@ label, button {
 
 .container_form {
     margin: 0 auto;
-    width: 23%;
+    width: 30%;
     background: linear-gradient(to right, rgb(255, 183, 77),rgb(255, 167, 38));
     padding: 30px;
     box-shadow: 0 0 20px 1px rgba(48, 3, 3, 0.596);
-    border-radius: 20px;
+    border-radius: 30px;
     border: 1px solid transparent;
     transition: 1s ease;
 }
@@ -54,7 +55,7 @@ label, button {
     flex-wrap: wrap;
 }
 
-.form_btn {
+.form_btn{
     height: 65px;
     width: 70%;
 }
