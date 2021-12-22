@@ -11,7 +11,15 @@ label, button {
 
 .container_form {
     margin: 0 auto;
+<<<<<<< HEAD:client/src/components/Order/form/order-form.module.css
     width: 30%;
+=======
+<<<<<<<< HEAD:client/src/components/Admin/cities/city.create/city-create-form.css
+    width: 23%;
+========
+    width: 30%;
+>>>>>>>> 3bbbb7b (Completed MUI task):client/src/components/Order/form/order-form.module.css
+>>>>>>> 3bbbb7b (Completed MUI task):client/src/components/Order/order.form/order-form.module.css
     background: linear-gradient(to right, rgb(255, 183, 77),rgb(255, 167, 38));
     padding: 30px;
     box-shadow: 0 0 20px 1px rgba(48, 3, 3, 0.596);
@@ -54,9 +62,22 @@ label, button {
     flex-wrap: wrap;
 }
 
+<<<<<<< HEAD:client/src/components/Order/form/order-form.module.css
+=======
+<<<<<<<< HEAD:client/src/components/Admin/cities/city.create/city-create-form.css
+.form_btn {
+    height: 65px;
+    width: 70%;
+}
+========
+>>>>>>> 3bbbb7b (Completed MUI task):client/src/components/Order/order.form/order-form.module.css
 
 .form_btn{
     height: 65px;
     width: 70%;
 }
 
+<<<<<<< HEAD:client/src/components/Order/form/order-form.module.css
+=======
+>>>>>>>> 3bbbb7b (Completed MUI task):client/src/components/Order/form/order-form.module.css
+>>>>>>> 3bbbb7b (Completed MUI task):client/src/components/Order/order.form/order-form.module.css

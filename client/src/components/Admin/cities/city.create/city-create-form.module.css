@@ -1,6 +1,5 @@
-
 label, button {
-    font-family: 'Bitter', serif;
+    font-family: "Bitter", serif;
     font-size: 22px;
     font-weight: 400;
 }
@@ -12,15 +11,11 @@ label, button {
 
 .container_form {
     margin: 0 auto;
-<<<<<<<< HEAD:client/src/components/Admin/users/create/user-create-form.module.css
     width: 23%;
-========
-    width: 30%;
->>>>>>>> 3bbbb7b (Completed MUI task):client/src/components/Admin/orders/order.create/order-create-form.module.css
-    background: linear-gradient(to right, rgb(255, 183, 77),rgb(255, 167, 38));
+    background: linear-gradient(to right, rgb(255, 183, 77), rgb(255, 167, 38));
     padding: 30px;
     box-shadow: 0 0 20px 1px rgba(48, 3, 3, 0.596);
-    border-radius: 30px;
+    border-radius: 20px;
     border: 1px solid transparent;
     transition: 1s ease;
 }
@@ -51,7 +46,7 @@ label, button {
     text-align: center;
 }
 
-.form_section{
+.form_section {
     width: 100%;
     margin-bottom: 10px;
     display: flex;
@@ -59,11 +54,8 @@ label, button {
     flex-wrap: wrap;
 }
 
-<<<<<<<< HEAD:client/src/components/Admin/users/create/user-create-form.module.css
 .form_btn {
-========
-.form_btn{
->>>>>>>> 3bbbb7b (Completed MUI task):client/src/components/Admin/orders/order.create/order-create-form.module.css
     height: 65px;
     width: 70%;
 }
+
