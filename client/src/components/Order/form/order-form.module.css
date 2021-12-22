@@ -54,7 +54,8 @@ label, button {
     flex-wrap: wrap;
 }
 
-.form_btn{
+.form_btn {
     height: 65px;
     width: 70%;
 }
+
