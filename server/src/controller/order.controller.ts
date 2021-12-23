@@ -36,33 +36,79 @@ export const postOrder = async (req: Request, res: Response) => {
 
 
 export const getOrders = async (req: Request, res: Response) => {
-	const orders = await db.Order.findAll({
-		attributes: ['id', 'startWorkOn', 'endWorkOn'],
-		include: [
-			{
-				model: db.Clock,
-				attributes: ['id', 'size'],
-				required: true,
-			},
-			{
-				model: db.User,
-				attributes: ['id', 'name', 'email'],
-				required: true,
-			},
-			{
-				model: db.City,
-				attributes: ['id', 'name'],
-				required: true,
-			},
-			{
-				model: db.Master,
-				attributes: ['id', 'name'],
-				required: true,
-			},
-		],
-	});
 
-	res.status(200).json(orders);
+	try {
+
+	const token = (<string>req.headers.authorization).split(' ')[1];
+
+	const {id: userId, role: userRole, masterId: masterId} = await db.User.findOne({where: {token}})
+
+	if (userRole === 'admin') {
+		const orders = await db.Order.findAll({
+			attributes: ['id', 'startWorkOn', 'endWorkOn'],
+			include: [
+				{
+					model: db.Clock,
+					attributes: ['id', 'size'],
+					required: true,
+				},
+				{
+					model: db.User,
+					attributes: ['id', 'name', 'email'],
+					required: true,
+				},
+				{
+					model: db.City,
+					attributes: ['id', 'name'],
+					required: true,
+				},
+				{
+					model: db.Master,
+					attributes: ['id', 'name'],
+					required: true,
+				},
+			],
+		});
+
+		return res.status(200).json(orders)
+
+	} else if (userRole === 'master') {
+		const orders = await db.Order.findAll({
+			attributes: ['id', 'startWorkOn', 'endWorkOn'],
+			include: [
+				{
+					model: db.Clock,
+					attributes: ['id', 'size'],
+					required: true,
+				},
+				{
+					model: db.User,
+					attributes: ['id', 'name', 'email'],
+					required: true,
+				},
+				{
+					model: db.City,
+					attributes: ['id', 'name'],
+					required: true,
+				},
+				{
+					model: db.Master,
+					attributes: ['id', 'name'],
+					required: true,
+				},
+			],
+			where: {
+				masterId
+			}
+		});
+		
+		return res.status(200).json(orders)
+	}
+
+	} catch(e) {
+	res.status(500).send()
+}
+
 };
 
 export const getOrderForRate = async (req: Request, res: Response) => {
