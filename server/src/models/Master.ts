@@ -40,6 +40,11 @@ export default (sequelize: any, DataTypes: any) => {
 				onDelete: 'CASCADE',
 				onUpdate: 'CASCADE',
 			});
+			Master.hasMany(models.User, {
+				foreignKey: 'masterId',
+				onDelete: 'CASCADE',
+				onUpdate: 'CASCADE',
+			});
 		}
 	};
 

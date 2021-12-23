@@ -13,13 +13,17 @@ export const userRegistration = async (req: Request, res: Response) => {
 		const hashForVerification = bcrypt.hashSync(`${name}${email}`, salt);
 		const hashVerify = hashForVerification.replace(/\//g, "i")
 		
-		const user = await db.User.create({name, email, password: hashPassword, role, hashVerify});
-		await sendVerificationMail(email, hashVerify);
-
 		if (role === 'master') {
 			const master = await db.Master.create({name});
 			master.setCities(citiesId);
+
+			const user = await db.User.create({name, email, password: hashPassword, role, hashVerify, masterId: master.id});
+			await sendVerificationMail(email, hashVerify);
+			return res.status(201).json(user);
 		}
+
+		const user = await db.User.create({name, email, password: hashPassword, role, hashVerify});
+		await sendVerificationMail(email, hashVerify);
 		
 		res.status(201).json(user);
 	} catch (error) {
