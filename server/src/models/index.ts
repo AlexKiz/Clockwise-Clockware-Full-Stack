@@ -9,8 +9,9 @@ import Master from './Master'
 import MasterCities from './MasterCities'
 import Order from './Order'
 import User from './User'
-const env = process.env.NODE_ENV || 'development';
+const env = process.env.MODE || 'development';
 const config = require('../config/config')[env];
+
 
 let sequelize = new Sequelize(`${config.database}`, `${config.username}`, `${config.password}`, {...config});
 
