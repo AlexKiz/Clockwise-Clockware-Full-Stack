@@ -12,7 +12,6 @@ export const userRegistration = async (req: Request, res: Response) => {
 		const hashPassword = bcrypt.hashSync(password, salt);
 		const hashForVerification = bcrypt.hashSync(`${name}${email}`, salt);
 		const hashVerify = hashForVerification.replace(/\//g, "i")
-		console.log(hashVerify);
 		
 		const user = await db.User.create({name, email, password: hashPassword, role, hashVerify});
 		await sendVerificationMail(email, hashVerify);
