@@ -16,8 +16,8 @@ import {Table,
 	Button,
 	Paper,
 	tableCellClasses} from '@mui/material';
-import AlertMessage from 'src/components/Notification/AlertMessage';
-import MasterHeader from 'src/components/Headers/AdminHeader';
+import AlertMessage from '../../../Notification/AlertMessage';
+import MasterHeader from '../../../Headers/MasterHeader';
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
 	[`&.${tableCellClasses.head}`]: {

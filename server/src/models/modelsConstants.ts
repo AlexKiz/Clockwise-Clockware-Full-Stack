@@ -43,6 +43,7 @@ export interface OrderAttributes {
     endWorkOn: string,
     ratingIdentificator: string,
     orderRating: number
+    isCompleted: boolean
 }
 
 export interface UserAttributes {
