@@ -116,7 +116,7 @@ const CitiesList: FC<CitiesListProps> = () => {
 												onDelete(city.id);
 											}}
 										>
-										Delete
+											Delete
 										</Button>
 									</StyledTableCell>
 								</StyledTableRow>
