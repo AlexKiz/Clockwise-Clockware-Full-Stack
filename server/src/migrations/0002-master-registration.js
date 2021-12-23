@@ -8,7 +8,6 @@ module.exports = {
 				type: Sequelize.DataTypes.UUID,
 				allowNull: true,
 			}, {transaction});
-            await transaction.commit();
 
             await queryInterface.sequelize.query(`ALTER TABLE IF EXISTS public.users
                                                 ADD CONSTRAINT "users_masterId_fkey" FOREIGN KEY ("masterId")
