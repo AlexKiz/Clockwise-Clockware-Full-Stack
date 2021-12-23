@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 export const OPENING_HOURS: string[] = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 export const ACCESS_TOKEN = 'accessToken';
@@ -8,3 +9,9 @@ export const VALID = {
 	CITY: new RegExp(/^[A-Za-zА-Яа-я]{3,100}$|^[A-Za-zА-Яа-я]{3,49}[-\s]{1}[A-Za-zА-Яа-я]{3,50}$/),
 	PASSWORD: new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{0,}$/),
 };
+
+export enum ROLE {
+	ADMIN = 'admin',
+    MASTER = 'master',
+}
+

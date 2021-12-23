@@ -18,6 +18,7 @@ export enum URL {
 
 export enum RESOURCE {
     ADMIN = 'admin',
+	MASTER = 'master',
     CITY_CREATE = 'city-create',
     CITIES_LIST = 'cities-list',
     ORDER_CREATE = 'order-create',

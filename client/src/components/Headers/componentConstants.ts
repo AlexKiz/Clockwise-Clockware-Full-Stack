@@ -12,7 +12,7 @@ export const MENU_LINKS = [{
 	name: 'registration-form',
 }];
 
-export const PRIVATE_MENU_LINKS = [{
+export const ADMIN_MENU_LINKS = [{
 	title: 'Users List',
 	path: '/admin/users-list',
 	name: 'users-list',
@@ -27,5 +27,11 @@ export const PRIVATE_MENU_LINKS = [{
 }, {
 	title: 'Orders List',
 	path: '/admin/orders-list',
+	name: 'orders-list',
+}];
+
+export const MASTER_MENU_LINKS = [{
+	title: 'Orders',
+	path: '/master/orders-list',
 	name: 'orders-list',
 }];

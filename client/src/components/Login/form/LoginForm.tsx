@@ -4,8 +4,8 @@ import React, {useState, useEffect, FC} from 'react';
 import {useHistory} from 'react-router-dom';
 import PublicHeader from '../../Headers/PublicHeader';
 import classes from '../login/login-form.module.css';
-import {LoginFormProps, validate} from './componentConstants';
-import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
+import {LoginFormProps, RoleChecking, validate} from './componentConstants';
+import {ACCESS_TOKEN, ROLE} from 'src/data/constants/systemConstants';
 import {useFormik} from 'formik';
 import {
 	Button,
@@ -45,9 +45,14 @@ const LoginForm:FC<LoginFormProps> = () => {
 			};
 
 			try {
-				const {headers: {authorization: accessToken}} = await axios.post(URL.LOGIN, payload);
-				localStorage.setItem(ACCESS_TOKEN, accessToken.split(' ')[1]);
-				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
+				const login = await axios.post(URL.LOGIN, payload);
+				localStorage.setItem(ACCESS_TOKEN, login.headers.authorization.split(' ')[1]);
+
+				if (login.data.role === ROLE.ADMIN) {
+					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
+				} else if (login.data.role === ROLE.MASTER) {
+					history.push(`/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`);
+				}
 			} catch (e) {
 				setNotify(true);
 			}
@@ -58,7 +63,20 @@ const LoginForm:FC<LoginFormProps> = () => {
 
 	useEffect(() => {
 		if (localStorage.getItem(ACCESS_TOKEN)) {
-			history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
+			const checkRole = async () => {
+				const {data} = await axios.get<RoleChecking>(URL.LOGIN, {
+					params: {
+						token: localStorage.getItem(ACCESS_TOKEN),
+					},
+				});
+
+				if (data && data.role === ROLE.ADMIN) {
+					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
+				} else if (data && data.role === ROLE.MASTER) {
+					history.push(`/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`);
+				}
+			};
+			checkRole();
 		}
 	}, []);
 

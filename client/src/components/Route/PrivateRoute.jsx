@@ -4,7 +4,6 @@
 import {useEffect} from 'react';
 import {Route, Redirect, useHistory} from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
-import PrivateHeader from '../Headers/PrivateHeader';
 import {RESOURCE} from '../../data/constants/routeConstants';
 import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
 
@@ -26,7 +25,6 @@ const PrivateRoute = ({component: Component, ...rest}) => {
 		<Route {...rest}
 			render = {(props) => localStorage.getItem(ACCESS_TOKEN) ? (
 				<>
-					<PrivateHeader/>
 					<Component {...props}/>
 				</>
 			) : (

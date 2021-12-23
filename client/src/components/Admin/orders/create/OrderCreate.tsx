@@ -23,6 +23,7 @@ import {
 	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
+import AdminHeader from 'src/components/Headers/AdminHeader';
 
 
 const OrderCreate: FC<OrderCreateProps> = () => {
@@ -148,7 +149,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 
 	return (
 		<div>
-
+			<AdminHeader/>
 			<div className={classes.conteiner}>
 
 				<div className={classes.container_form}>

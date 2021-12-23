@@ -12,7 +12,7 @@ import CitiesList from './components/Admin/cities/list/CitiesList';
 import CityCreate from './components/Admin/cities/create/CityCreate';
 import OrdersList from './components/Admin/orders/list/OrdersList';
 import OrderCreate from './components/Admin/orders/create/OrderCreate';
-import LoginForm from './components/Admin/login/LoginForm';
+import LoginForm from './components/Login/form/LoginForm';
 import PrivateRoute from './components/Route/PrivateRoute';
 import RateOrder from './components/Order/rate/RateOrder';
 import Registration from './components/Admin/users/registration/Registration';

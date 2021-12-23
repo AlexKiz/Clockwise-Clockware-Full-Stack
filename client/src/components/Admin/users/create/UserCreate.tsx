@@ -15,6 +15,7 @@ import {
 	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
+import AdminHeader from 'src/components/Headers/AdminHeader';
 
 
 const UserCreate: FC<UserCreateProps> = () => {
@@ -58,7 +59,7 @@ const UserCreate: FC<UserCreateProps> = () => {
 
 	return (
 		<div>
-
+			<AdminHeader/>
 			<div className={classes.container_form}>
 
 				<form className={classes.form} onSubmit = {formik.handleSubmit}>

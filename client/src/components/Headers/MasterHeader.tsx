@@ -5,7 +5,7 @@ import {Link, useHistory} from 'react-router-dom';
 import classes from './header.module.css';
 import {useLocation} from 'react-router-dom';
 import {RESOURCE} from '../../data/constants/routeConstants';
-import {PRIVATE_MENU_LINKS} from './componentConstants';
+import {MASTER_MENU_LINKS} from './componentConstants';
 import {Button} from '@mui/material';
 
 const PrivateHeader = () => {
@@ -24,7 +24,7 @@ const PrivateHeader = () => {
 		<header>
 			<div className={classes.wrapper_header}>
 				<div className={classes.wrapper_logo}>
-					<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`}>
+					<Link to={`/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`}>
 						<div className={classes.inner_logo}>
 							<div className={classes.inner_logo_img}>
 								<div className={classes.logo_img1a}>
@@ -40,7 +40,7 @@ const PrivateHeader = () => {
 				<nav>
 					<ul className={classes.nav__links}>
 						{
-							PRIVATE_MENU_LINKS.map((link) => (
+							MASTER_MENU_LINKS.map((link) => (
 								<li className={splitLocation[0] === link.name ? classes.active : ''}><Link to={link.path}>{`${link.title}`}</Link></li>
 							))
 						}

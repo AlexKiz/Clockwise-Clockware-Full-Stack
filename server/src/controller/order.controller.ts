@@ -26,8 +26,6 @@ export const postOrder = async (req: Request, res: Response) => {
 			ratingIdentificator,
 		});
 
-		await sendMail(email, ratingIdentificator);
-
 		res.status(201).json(order);
 	} catch (error) {
 		res.status(500).send();
@@ -45,7 +43,7 @@ export const getOrders = async (req: Request, res: Response) => {
 
 	if (userRole === 'admin') {
 		const orders = await db.Order.findAll({
-			attributes: ['id', 'startWorkOn', 'endWorkOn'],
+			attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator'],
 			include: [
 				{
 					model: db.Clock,
@@ -78,21 +76,16 @@ export const getOrders = async (req: Request, res: Response) => {
 			include: [
 				{
 					model: db.Clock,
-					attributes: ['id', 'size'],
+					attributes: ['id', 'size', 'price'],
 					required: true,
 				},
 				{
 					model: db.User,
-					attributes: ['id', 'name', 'email'],
-					required: true,
-				},
-				{
-					model: db.City,
 					attributes: ['id', 'name'],
 					required: true,
 				},
 				{
-					model: db.Master,
+					model: db.City,
 					attributes: ['id', 'name'],
 					required: true,
 				},
@@ -207,6 +200,20 @@ export const putOrder = async (req: Request, res: Response) => {
 		res.status(500).send();
 	}
 };
+
+export const completeOrder = async (req: Request, res: Response) => {
+	try {
+		const {id, clientEmail, ratingIdentificator} = req.body 
+
+		const order = await db.Order.updateById(id, {isCompleted: true})
+
+		await sendMail(clientEmail, ratingIdentificator);
+
+		res.status(200).json(order)
+	} catch(e) {
+		res.status(500).send()
+	}
+}
 
 
 export const deleteOrder = async (req: Request, res: Response) => {

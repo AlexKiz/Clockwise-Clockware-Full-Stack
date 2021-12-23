@@ -3,7 +3,7 @@
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import PublicHeader from '../../../Headers/PublicHeader';
-import classes from '../registration/registration-form.module.css';
+import classes from './registration-form.module.css';
 import {RegistrationProps, validate} from './componentConstants';
 import {useFormik} from 'formik';
 import {URL} from '../../../../data/constants/routeConstants';

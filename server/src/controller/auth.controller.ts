@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import db from '../models';
 
 
-export const Auth = async (req: Request, res: Response) => {
+export const auth = async (req: Request, res: Response) => {
 	try {
 		
 	const {userLogin, userPassword} = req.body;
@@ -16,7 +16,7 @@ export const Auth = async (req: Request, res: Response) => {
 		return res.status(400).json({message: 'Wrong data'})
 	} 
 
-	const {password: hashPass, role: userRole, id: userId, isVerified: verify} = user;
+	const {password: hashPass, role: userRole, id: userId, isVerified: verify, name: userName} = user;
 
 	if(!verify) {
 		res.status(400).json({message: 'You need to verify your email first!'})
@@ -32,7 +32,7 @@ export const Auth = async (req: Request, res: Response) => {
 
 	await db.User.updateById(userId, {token: accessToken})
 
-	res.set({Authorization: `Bearer ${accessToken}`}).status(200).json({message: 'Successfully authorizated!'});
+	res.set({Authorization: `Bearer ${accessToken}`}).status(200).json({message: 'Successfully authorizated!', data:{ role: userRole, userName}});
 
 	} catch(e) {
 		res.status(400).json({message: 'Login error'})
@@ -98,5 +98,20 @@ export const checkRole = (roles: string[]) => {
 		} catch (error) {
 			res.status(404).send();
 		}
+	}
+}
+
+export const authorizationRole = async (req: Request, res: Response) => {
+	try {
+		const { token } = req.query
+
+		const userRole = await db.User.findOne({
+			attributes: ['role'],
+			where: token
+		})
+
+		res.status(200).json(userRole)
+	} catch(e) {
+		res.status(500).send()
 	}
 }

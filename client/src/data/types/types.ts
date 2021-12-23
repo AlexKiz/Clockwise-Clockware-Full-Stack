@@ -40,6 +40,7 @@ export type Clock = {
     id: number
     size: string
     installationTime: number
+    price: number
 }
 
 export type Order = {
@@ -50,6 +51,7 @@ export type Order = {
     master: Master
     startWorkOn: string
     endWorkOn: string
+    ratingIdentificator: string
 }
 
 export type AlertNotification = {

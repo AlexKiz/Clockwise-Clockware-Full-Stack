@@ -15,7 +15,7 @@ label, button {
     background: linear-gradient(to right, rgb(255, 183, 77),rgb(255, 167, 38));
     padding: 30px;
     box-shadow: 0 0 20px 1px rgba(48, 3, 3, 0.596);
-    border-radius: 30px;
+    border-radius: 20px;
     border: 1px solid transparent;
     transition: 1s ease;
 }
