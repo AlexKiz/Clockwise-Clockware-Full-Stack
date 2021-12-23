@@ -34,14 +34,14 @@ const LoginForm:FC<LoginFormProps> = () => {
 
 	const formik = useFormik({
 		initialValues: {
-			adminLogin: '',
-			adminPassword: '',
+			userLogin: '',
+			userPassword: '',
 		},
 		validate,
 		onSubmit: async (values) => {
 			const payload = {
-				adminLogin: values.adminLogin,
-				adminPassword: values.adminPassword,
+				userLogin: values.userLogin,
+				userPassword: values.userPassword,
 			};
 
 			try {
@@ -91,11 +91,11 @@ const LoginForm:FC<LoginFormProps> = () => {
 									size="small"
 									margin="dense"
 									fullWidth
-									value={formik.values.adminLogin}
+									value={formik.values.userLogin}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
-									error={formik.touched.adminLogin && Boolean(formik.errors.adminLogin)}
-									helperText={formik.touched.adminLogin && formik.errors.adminLogin}
+									error={formik.touched.userLogin && Boolean(formik.errors.userLogin)}
+									helperText={formik.touched.userLogin && formik.errors.userLogin}
 									required
 								/>
 							</div>
@@ -114,7 +114,7 @@ const LoginForm:FC<LoginFormProps> = () => {
 									<FilledInput
 										id="filled-adornment-password"
 										type={showPassword ? 'text' : 'password'}
-										value={formik.values.adminPassword}
+										value={formik.values.userPassword}
 										onChange={formik.handleChange('adminPassword')}
 										endAdornment={
 											<InputAdornment position="end">

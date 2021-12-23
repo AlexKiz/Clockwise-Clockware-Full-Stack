@@ -6,24 +6,29 @@ import db from '../models';
 
 
 export const Auth = async (req: Request, res: Response) => {
-	const {adminLogin, adminPassword} = req.body;
+	try {
+		
+	const {userLogin, userPassword} = req.body;
 
-	const credentials = await db.User.findOne({where: {email: adminLogin, role: 'admin'}});
+	const user = await db.User.findOne({where: {email: userLogin}});
 
-	const {password: hashPass} = credentials;
+	if (!user) {
+		return res.status(400).json({message: 'Wrong data'})
+	} 
 
-	if (credentials) {
-		const isCompare = await bcrypt.compare(adminPassword, hashPass);
+	const {password: hashPass, role: userRole, id: userId} = user;
+	const isCompare = await bcrypt.compare(userPassword, hashPass);
 
-		if (isCompare) {
-			const accessToken = jwt.sign({}, `${process.env.PRIVATE_KEY}`, {expiresIn: '2h'});
+	if (!isCompare) {
+		res.status(400).send('Wrong login or password');
+	}
 
-			res.set({Authorization: `Bearer ${accessToken}`}).status(200).json({message: 'Successfully authorizated!'});
-		} else {
-			res.status(400).send('Wrong login or password');
-		}
-	} else {
-		res.status(400).send('Wrong data');
+	const accessToken = jwt.sign({userId, userRole}, `${process.env.PRIVATE_KEY}`, {expiresIn: '4h'});
+
+	res.set({Authorization: `Bearer ${accessToken}`}).status(200).json({message: 'Successfully authorizated!'});
+
+	} catch(e) {
+		res.status(400).json({message: 'Login error'})
 	}
 };
 
