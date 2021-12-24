@@ -4,7 +4,16 @@ import {useHistory, useParams} from 'react-router-dom';
 import classes from './verification.module.css';
 import {URL} from '../../../../data/constants/routeConstants';
 import {Params} from 'src/data/types/types';
-import {Button, FilledInput, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, Stack} from '@mui/material';
+import {
+	Button, 
+	FilledInput, 
+	FormControl, 
+	FormHelperText, 
+	IconButton, 
+	InputAdornment, 
+	InputLabel, 
+	Stack
+} from '@mui/material';
 import {VerificationProps, validate} from './componentConstants';
 import {useFormik} from 'formik';
 import {Visibility, VisibilityOff} from '@mui/icons-material';
