@@ -48,11 +48,16 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 	};
 
 	const completeOrder = async (order: Order) => {
-		await axios.put(URL.ORDER, {
-			id: order.id,
-			clientEmail: order.user.email,
-			ratingIdentificator: order.ratingIdentificator,
-		});
+		if (window.confirm(`Do you want to complete this order?`)) {
+			await axios.put(URL.COMPLETE_ORDER, {
+				id: order.id,
+				clientEmail: order.user.email,
+				ratingIdentificator: order.ratingIdentificator,
+			}).then(async () => {
+				const {data} = await axios.get<Order[]>(URL.ORDER);
+				setOrders(data);
+			});
+		}
 		setNotify(true);
 	};
 
@@ -100,11 +105,12 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 
 									<StyledTableCell align="center">
 										<Button
+											disabled={order.isCompleted}
 											variant="contained"
 											sx={{width: 1/1, fontSize: 14, borderRadius: 15}}
 											onClick={() => completeOrder(order)}
 										>
-											Update
+											{order.isCompleted ? 'Done!' : 'Complete Order'}
 										</Button>
 									</StyledTableCell>
 								</StyledTableRow>
@@ -114,7 +120,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 
 				</TableContainer>
 				{
-					notify ? <AlertMessage alertType='success' message='Order has been completed' isOpen={isOpen} notify={notify}/> : ''
+					notify ? <AlertMessage alertType='success' message='Order has been completed!' isOpen={isOpen} notify={notify}/> : ''
 				}
 			</div>
 		</div>

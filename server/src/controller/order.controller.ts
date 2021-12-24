@@ -40,10 +40,11 @@ export const getOrders = async (req: Request, res: Response) => {
 	const token = (<string>req.headers.authorization).split(' ')[1];
 
 	const {id: userId, role: userRole, masterId: masterId} = await db.User.findOne({where: {token}})
-
+		console.log(userRole);
+		
 	if (userRole === 'admin') {
 		const orders = await db.Order.findAll({
-			attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator'],
+			attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
 			include: [
 				{
 					model: db.Clock,
@@ -72,7 +73,8 @@ export const getOrders = async (req: Request, res: Response) => {
 
 	} else if (userRole === 'master') {
 		const orders = await db.Order.findAll({
-			attributes: ['id', 'startWorkOn', 'endWorkOn'],
+			order: [['startWorkOn', 'DESC']],
+			attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
 			include: [
 				{
 					model: db.Clock,
@@ -81,7 +83,7 @@ export const getOrders = async (req: Request, res: Response) => {
 				},
 				{
 					model: db.User,
-					attributes: ['id', 'name'],
+					attributes: ['id', 'name', 'email'],
 					required: true,
 				},
 				{
@@ -206,6 +208,7 @@ export const completeOrder = async (req: Request, res: Response) => {
 		const {id, clientEmail, ratingIdentificator} = req.body 
 
 		const order = await db.Order.updateById(id, {isCompleted: true})
+console.log(1);
 
 		await sendMail(clientEmail, ratingIdentificator);
 

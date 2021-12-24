@@ -19,20 +19,22 @@ export const auth = async (req: Request, res: Response) => {
 	const {password: hashPass, role: userRole, id: userId, isVerified: verify, name: userName} = user;
 
 	if(!verify) {
-		res.status(400).json({message: 'You need to verify your email first!'})
+		return res.status(400).json({message: 'You need to verify your email first!'})
 	}
 
 	const isCompare = await bcrypt.compare(userPassword, hashPass);
 
 	if (!isCompare) {
-		res.status(400).json({message: 'Wrong login or password'});
+		return res.status(400).json({message: 'Wrong login or password'});
 	}
-
+	
 	const accessToken = jwt.sign({userRole}, `${process.env.PRIVATE_KEY}`, {expiresIn: '4h'});
-
+	
+	console.log(accessToken);
+	
 	await db.User.updateById(userId, {token: accessToken})
 
-	res.set({Authorization: `Bearer ${accessToken}`}).status(200).json({message: 'Successfully authorizated!', data:{ role: userRole, userName}});
+	res.set({Authorization: `Bearer ${accessToken}`}).status(200).json({message: 'Successfully authorizated!', role: userRole, userName});
 
 	} catch(e) {
 		res.status(400).json({message: 'Login error'})
@@ -70,13 +72,8 @@ export const checkRole = (roles: string[]) => {
 		}
 	
 		try {
-			const authorization = req.headers.authorization;
 	
-			if (!authorization) {
-				return res.status(401).send();
-			}
-	
-			const accessToken = authorization.split(' ')[1];
+			const accessToken = (<string>req.headers.authorization).split(' ')[1];
 			const decoded = jwt.verify(accessToken, `${process.env.PRIVATE_KEY}`);
 
 			const checkingRole:string = (<any>decoded).userRole; 
@@ -104,12 +101,12 @@ export const checkRole = (roles: string[]) => {
 export const authorizationRole = async (req: Request, res: Response) => {
 	try {
 		const { token } = req.query
-
+		
 		const userRole = await db.User.findOne({
 			attributes: ['role'],
-			where: token
+			where: {token}
 		})
-
+		
 		res.status(200).json(userRole)
 	} catch(e) {
 		res.status(500).send()

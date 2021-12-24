@@ -12,7 +12,8 @@ export enum URL {
     RATED_ORDER = '/ratedOrder',
     API = '/api',
     REGISTRATION = '/user/registration',
-    VERIFY = '/user/verify'
+    VERIFY = '/user/verify',
+    COMPLETE_ORDER = '/completeOrder'
 }
 
 export enum RESOURCE {

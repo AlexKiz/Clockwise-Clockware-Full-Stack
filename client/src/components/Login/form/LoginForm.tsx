@@ -3,7 +3,7 @@ import {RESOURCE, URL} from '../../../data/constants/routeConstants';
 import React, {useState, useEffect, FC} from 'react';
 import {useHistory} from 'react-router-dom';
 import PublicHeader from '../../Headers/PublicHeader';
-import classes from '../login/login-form.module.css';
+import classes from './login-form.module.css';
 import {LoginFormProps, RoleChecking, validate} from './componentConstants';
 import {ACCESS_TOKEN, ROLE} from 'src/data/constants/systemConstants';
 import {useFormik} from 'formik';
@@ -101,8 +101,8 @@ const LoginForm:FC<LoginFormProps> = () => {
 								</div>
 
 								<TextField
-									id="adminLogin"
-									name='adminLogin'
+									id="userLogin"
+									name='userLogin'
 									label="Email"
 									placeholder="example@mail.com"
 									variant="filled"
@@ -133,7 +133,7 @@ const LoginForm:FC<LoginFormProps> = () => {
 										id="filled-adornment-password"
 										type={showPassword ? 'text' : 'password'}
 										value={formik.values.userPassword}
-										onChange={formik.handleChange('adminPassword')}
+										onChange={formik.handleChange('userPassword')}
 										endAdornment={
 											<InputAdornment position="end">
 												<IconButton

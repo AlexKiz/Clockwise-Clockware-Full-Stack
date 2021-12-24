@@ -112,14 +112,23 @@ const OrdersList: FC<OrdersListProps> = () => {
 									<StyledTableCell align="center"> {order.endWorkOn.split('T').join(' ')} </StyledTableCell>
 
 									<StyledTableCell align="center">
-										<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CREATE}/${order.id}/${order.user.id}/${order.clock.id}/${order.city.id}/${order.startWorkOn.split('T')[0]}/${order.startWorkOn.split('T')[1]}/${order.master.id}`}>
+										{ !order.isCompleted ?
+											<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CREATE}/${order.id}/${order.user.id}/${order.clock.id}/${order.city.id}/${order.startWorkOn.split('T')[0]}/${order.startWorkOn.split('T')[1]}/${order.master.id}`}>
+												<Button
+													variant="contained"
+													sx={{width: 1/2, fontSize: 14, borderRadius: 15}}
+												>
+													Update
+												</Button>
+											</Link> :
 											<Button
+												disabled={true}
 												variant="contained"
 												sx={{width: '50%', fontSize: 14, borderRadius: 15}}
 											>
-											Update
+												Done!
 											</Button>
-										</Link>
+										}
 										<Button
 											variant="contained"
 											color='error'

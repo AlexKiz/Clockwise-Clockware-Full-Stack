@@ -52,6 +52,7 @@ export type Order = {
     startWorkOn: string
     endWorkOn: string
     ratingIdentificator: string
+    isCompleted: boolean
 }
 
 export type AlertNotification = {

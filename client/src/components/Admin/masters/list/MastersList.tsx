@@ -3,7 +3,7 @@
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
-import classes from '../masters-list.module.css';
+import classes from './masters-list.module.css';
 import {Master} from '../../../../data/types/types';
 import {MasterListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';

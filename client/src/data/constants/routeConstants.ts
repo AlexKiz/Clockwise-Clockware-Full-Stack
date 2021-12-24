@@ -13,7 +13,8 @@ export enum URL {
     RATED_ORDER = '/ratedOrder',
     ORDERS_RATING = '/ordersRating',
 	REGISTRATION = '/user/registration',
-	VERIFY = '/user/verify'
+	VERIFY = '/user/verify',
+	COMPLETE_ORDER = '/completeOrder'
 }
 
 export enum RESOURCE {
@@ -30,7 +31,7 @@ export enum RESOURCE {
     LOGIN = 'login',
     RATE = 'rate',
     REGISTRATION = 'registration-form',
-	VERIFICATION = 'email-verification'
+	VERIFICATION = 'email-verification',
 }
 
 export enum PARAM {
@@ -78,10 +79,13 @@ export const ROUTES = {
 	ADMIN_ORDERS_LIST: {
 		path: `/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`,
 	},
+	MASTER_ORDERS_LIST: {
+		path: `/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`,
+	},
 	ADMIN_ORDER_CREATE: {
 		path: `/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CREATE}/:${PARAM.ORDER_ID}?/:${PARAM.USER_ID}?/:${PARAM.CLOCK_ID}?/:${PARAM.CITY_ID}?/:${PARAM.ORDER_DATE}?/:${PARAM.ORDER_TIME}?/:${PARAM.MASTER_ID}?`,
 	},
-	ADMIN_LOGIN: {
+	LOGIN: {
 		path: `/${RESOURCE.LOGIN}`,
 	},
 	RATE_ORDER: {

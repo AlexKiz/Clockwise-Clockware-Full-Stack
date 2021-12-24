@@ -10,6 +10,11 @@ module.exports = {
                 defaultValue: false
 			}, {transaction});
 
+            await queryInterface.addColumn('users', 'token', {
+				type: Sequelize.DataTypes.STRING(250),
+				allowNull: true,
+			}, {transaction});
+
             await transaction.commit();
         } catch (err) {
 			await transaction.rollback();
@@ -21,6 +26,7 @@ module.exports = {
         const transaction = await queryInterface.sequelize.transaction();
         try {
             await queryInterface.removeColumn('orders', 'isCompleted', {transaction});
+            await queryInterface.removeColumn('users', 'token', {transaction});
             await transaction.commit();
         } catch (err) {
             await transaction.rollback();

@@ -18,6 +18,7 @@ import RateOrder from './components/Order/rate/RateOrder';
 import Registration from './components/Admin/users/registration/Registration';
 import {ROUTES} from './data/constants/routeConstants';
 import Verification from './components/Admin/users/verification/Verification';
+import MasterOrdersList from './components/Master/orders/list/MasterOrdersList';
 
 
 function App() {
@@ -25,7 +26,7 @@ function App() {
 		<BrowserRouter>
 			<Switch>
 				<Route component={OrderForm} {...ROUTES.ORDER_FORM}/>
-				<Route component={LoginForm} {...ROUTES.ADMIN_LOGIN}/>
+				<Route component={LoginForm} {...ROUTES.LOGIN}/>
 				<Route component={RateOrder} {...ROUTES.RATE_ORDER}/>
 				<Route component={Registration} {...ROUTES.REGISTRATION}/>
 				<Route component={Verification} {...ROUTES.USER_VERIFY}/>
@@ -37,6 +38,7 @@ function App() {
 				<PrivateRoute component={CityCreate} {...ROUTES.ADMIN_CITY_CREATE}/>
 				<PrivateRoute component={OrdersList} {...ROUTES.ADMIN_ORDERS_LIST}/>
 				<PrivateRoute component={OrderCreate} {...ROUTES.ADMIN_ORDER_CREATE}/>
+				<PrivateRoute component={MasterOrdersList} {...ROUTES.MASTER_ORDERS_LIST}/>
 			</Switch>
 		</BrowserRouter>
 

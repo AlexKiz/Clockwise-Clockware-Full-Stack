@@ -20,6 +20,7 @@ export default (sequelize: any, DataTypes: any) => {
 		public masterId!: string;
 		public hashVerify!: string;
 		public isVerified!: boolean;
+		public token!: string;
 
 
 		static findById(entityId: string) {
@@ -92,6 +93,11 @@ export default (sequelize: any, DataTypes: any) => {
 
 			masterId: {
 				type: DataTypes.UUID,
+				allowNull: true,
+			},
+
+			token: {
+				type: DataTypes.STRING(250),
 				allowNull: true,
 			},
 		}, {
