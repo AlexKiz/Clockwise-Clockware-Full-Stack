@@ -51,6 +51,7 @@ export type Order = {
     master: Master
     startWorkOn: string
     endWorkOn: string
+    orderRating: number
     ratingIdentificator: string
     isCompleted: boolean
 }

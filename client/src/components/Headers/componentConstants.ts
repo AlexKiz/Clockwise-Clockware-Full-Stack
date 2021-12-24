@@ -38,12 +38,21 @@ export const MASTER_MENU_LINKS = [{
 	name: 'orders-list',
 }];
 
+export const CLIENT_MENU_LINKS = [{
+	title: 'Orders',
+	path: '/client/orders-list',
+	name: 'orders-list',
+}];
+
 export const roleMappingHeaderLink = {
 	'admin': ADMIN_MENU_LINKS,
 	'master': MASTER_MENU_LINKS,
+	'client': CLIENT_MENU_LINKS,
 };
 
 export const roleMappingHeaderLogo = {
 	'admin': `/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`,
 	'master': `/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`,
+	'client': `/${RESOURCE.CLIENT}/${RESOURCE.ORDERS_LIST}`,
 };
+

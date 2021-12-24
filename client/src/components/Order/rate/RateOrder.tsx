@@ -43,7 +43,7 @@ const RateOrder: FC<RateOrderProps> = () => {
 					type: 'warning',
 					notify: true,
 				});
-				history.push('/');
+				history.push(URL.LOGIN);
 			}
 		};
 		readOrderForRate();

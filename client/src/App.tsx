@@ -16,6 +16,7 @@ import Registration from './components/Admin/users/registration/Registration';
 import {ROUTES} from './data/constants/routeConstants';
 import Verification from './components/Admin/users/verification/Verification';
 import MasterOrdersList from './components/Master/orders/list/MasterOrdersList';
+import ClientOrdersList from './components/Client/order/list/ClientOrdersList';
 
 
 const App = () => (

@@ -1,19 +1,27 @@
 import {rolesMappingGetOrders} from './../../data/utilities/systemUtilities';
 import {Response, Request} from 'express';
-import {sendMail} from '../services/nodemailer';
+import {sendMail, sendVerificationMail} from '../services/nodemailer';
 import {v4 as uuidv4} from 'uuid';
 import db from '../models';
 import {BearerParser} from 'bearer-token-parser';
+import bcrypt from 'bcrypt';
 
 
 export const postOrder = async (req: Request, res: Response) => {
 	try {
 		const {name, email, clockId, cityId, masterId, startWorkOn, endWorkOn} = req.body;
 
+		const generatedPassword = uuidv4();
+		const salt = bcrypt.genSaltSync(10);
+		const hashForVerification = bcrypt.hashSync(`${name}${email}`, salt);
+		const hashVerify = hashForVerification.replace(/\//g, 'i');
+
 		const [user, isUserCreated] = await db.User.findOrCreate({
 			where: {email},
-			defaults: {email, name, role: 'client'},
+			defaults: {name, email, password: generatedPassword, role: 'client', hashVerify},
 		});
+
+		await sendVerificationMail(email, hashVerify, generatedPassword);
 
 		const {id: userId} = user;
 

@@ -53,6 +53,8 @@ const LoginForm:FC<LoginFormProps> = () => {
 					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
 				} else if (login.data.role === ROLE.MASTER) {
 					history.push(`/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`);
+				} else if (login.data.role === ROLE.CLIENT) {
+					history.push(`/${RESOURCE.CLIENT}/${RESOURCE.ORDERS_LIST}`);
 				}
 			} catch (e) {
 				setNotify(true);

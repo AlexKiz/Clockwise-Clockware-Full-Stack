@@ -12,5 +12,6 @@ export const VALID = {
 export enum ROLE {
 	ADMIN = 'admin',
     MASTER = 'master',
+	CLIENT = 'client',
 }
 

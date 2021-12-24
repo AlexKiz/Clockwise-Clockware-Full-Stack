@@ -26,10 +26,11 @@ export const sendMail = (email: string, ratingIdentificator: string) => transpor
 			</p>`,
 });
 
-export const sendVerificationMail = (email: string, hash: string) => transporter.sendMail({
+export const sendVerificationMail = (email: string, hash: string, password?: string) => transporter.sendMail({
 	from: `"Clockwise Clockware" <${process.env.CONFIRMATION_EMAIL}>`,
 	to: email,
 	subject: 'Email Verification',
 	text: 'Please verify your email on link below',
-	html: `<p>Click <a href="${process.env.FRONT_URL}/${RESOURCE.VERIFICATION}/${hash}">here</a> to confirm</p>`,
+	html: password ? `<p>Click <a href="${process.env.FRONT_URL}/${RESOURCE.VERIFICATION}/${hash}">here</a> to confirm</p>` :
+					`<p>Click <a href="${process.env.FRONT_URL}/${RESOURCE.VERIFICATION}/${hash}/${password}">here</a> to confirm</p>`,
 });
