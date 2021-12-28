@@ -1,47 +1,40 @@
+/* eslint-disable require-jsdoc */
 'use strict';
 import {
-  Model
+	Model,
 } from 'sequelize';
-import db from './index'
-
-interface MasterCitiesAttributes {
-  masterId: number,
-  cityId: number
-}
-
-
+import {MasterCitiesAttributes} from './modelsConstants';
 
 export default (sequelize: any, DataTypes: any) => {
+	class MasterCities extends Model<MasterCitiesAttributes>
+		implements MasterCitiesAttributes {
+		public masterId!: number;
+		public cityId!: number;
 
-  class MasterCities extends Model<MasterCitiesAttributes>
-      implements MasterCitiesAttributes {
-      public masterId!: number
-      public cityId!: number
+		static associate(models: any) {}
+	};
 
-      static associate(models: any) {}
-    };
+	MasterCities.init(
+		{
+			masterId: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				onDelete: 'CASCADE',
+				onUpdate: 'CASCADE',
+			},
 
-    MasterCities.init(
-      {
-          masterId: {
-              type: DataTypes.INTEGER,
-              allowNull: false,
-              onDelete: 'CASCADE',
-              onUpdate: 'CASCADE' 
-          },
-        
-          cityId: {
-              type: DataTypes.INTEGER,
-              allowNull: false,
-              onDelete: 'CASCADE',
-              onUpdate: 'CASCADE'
-          }
-      }, {
-          sequelize,
-          modelName: 'master_cities',
-          tableName: 'master_cities',
-          timestamps: false,
-  });
+			cityId: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				onDelete: 'CASCADE',
+				onUpdate: 'CASCADE',
+			},
+		}, {
+			sequelize,
+			modelName: 'master_cities',
+			tableName: 'master_cities',
+			timestamps: false,
+		});
 
-    return MasterCities;
+	return MasterCities;
 };

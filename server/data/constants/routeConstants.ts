@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export enum URL {
     CITY = 'city',
     LOGIN = 'login',
@@ -13,5 +14,5 @@ export enum URL {
 }
 
 export enum RESOURCE {
-    RATE = 'rate' 
+    RATE = 'rate'
 }

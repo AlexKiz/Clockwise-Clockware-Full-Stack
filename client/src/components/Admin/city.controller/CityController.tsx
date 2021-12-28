@@ -1,106 +1,90 @@
-import axios from "axios";
-import React, { useState, useEffect, FC } from "react";
-import { useParams, useHistory} from "react-router-dom"
-import '../city.controller/city-update-form.css'
-import { City, Params } from '../../../data/types/types'
-import { CityControllerProps } from './componentConstants'
-import { RESOURCE, URL } from "../../../data/constants/routeConstants";
-
+import axios from 'axios';
+import React, {useState, useEffect, FC} from 'react';
+import {useParams, useHistory} from 'react-router-dom';
+import '../city.controller/city-update-form.css';
+import {City, Params} from '../../../data/types/types';
+import {CityControllerProps} from './componentConstants';
+import {RESOURCE, URL} from '../../../data/constants/routeConstants';
 
 
 const CityController: FC<CityControllerProps> = () => {
+	const history = useHistory();
 
-    const history = useHistory()
+	const [cityName, setCityName] = useState<string>('');
+	const [cityId, setCityId] = useState<number>(0);
 
-    const [cityName, setCityName] = useState<string>('')
-    const [cityId, setCityId] = useState<number>(0)
-
-    const {cityIdParam, cityNameParam} = useParams<Params>()
-
-
-    useEffect(() => {
-
-        if(cityIdParam) {
-
-            setCityId(Number(cityIdParam))
-            setCityName(cityNameParam)
-        }
-    }, [])
+	const {cityIdParam, cityNameParam} = useParams<Params>();
 
 
-    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        if(!cityIdParam) {
-
-            axios.post<City>(`/${URL.CITY}`, 
-            {
-                id: cityId,
-                name: cityName
-            }).then(() => {
-
-                alert('City has been created')
-                history.push(`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`)
-
-            }).catch((error) => {
-
-                if(Number(error.response.status) === 400) {
-                    alert(error.response.data[0])
-                    setCityName('')
-                }
-                
-            })
+	useEffect(() => {
+		if (cityIdParam) {
+			setCityId(Number(cityIdParam));
+			setCityName(cityNameParam);
+		}
+	}, []);
 
 
-        } else {
+	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (!cityIdParam) {
+			axios.post<City>(`/${URL.CITY}`,
+				{
+					id: cityId,
+					name: cityName,
+				}).then(() => {
+				alert('City has been created');
+				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`);
+			}).catch((error) => {
+				if (Number(error.response.status) === 400) {
+					alert(error.response.data[0]);
+					setCityName('');
+				}
+			});
+		} else {
+			axios.put<City>(`/${URL.CITY}`, {
+				id: cityId,
+				name: cityName,
+			}).then(() => {
+				alert('City has been updated');
+				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`);
+			}).catch((error) => {
+				alert(error.response.data);
+				setCityName(cityNameParam);
+			});
+		}
+	};
 
-            axios.put<City>(`/${URL.CITY}`, {
-                id: cityId,
-                name: cityName
-            }).then(() => {
+	return (
 
-                alert('City has been updated')
-                history.push(`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`)
+		<div className='container-form'>
 
-            }).catch((error) => {
+			<form className='form' onSubmit = {onSubmit}>
 
-                alert(error.response.data)
-                setCityName(cityNameParam)
+				<div>
 
-            })
-        }
-    }
-    
-    return (
+					<div className='form-section'>
+						<div className='form-input__label'>
+							<label>Enter city name:</label>
+						</div>
+						<input
+							type = "text"
+							placeholder = "Name"
+							pattern='^[A-Za-zА-Яа-я]{3,100}$|^[A-Za-zА-Яа-я]{3,49}[-\s]{1}[A-Za-zА-Яа-я]{3,50}$'
+							title='City name must be at least 3 letter and alphabetical only'
+							value = {cityName}
+							onChange = {(cityNameEvent) =>setCityName(cityNameEvent.target.value)}
+						></input>
+					</div>
 
-        <div className='container-form'> 
+					<div className='form-button'>
+						<button type = 'submit'>Submit</button>
+					</div>
 
-            <form className='form' onSubmit = {onSubmit}>
+				</div>
 
-                <div>
+			</form>
+		</div>
+	);
+};
 
-                    <div className='form-section'>
-                        <div className='form-input__label'>
-                            <label>Enter city name:</label>
-                        </div>
-                        <input
-                        type = "text"
-                        placeholder = "Name"
-                        pattern='^[A-Za-zА-Яа-я]{3,100}$|^[A-Za-zА-Яа-я]{3,49}[-\s]{1}[A-Za-zА-Яа-я]{3,50}$'
-                        title='City name must be at least 3 letter and alphabetical only'
-                        value = {cityName}
-                        onChange = {(cityNameEvent) =>setCityName(cityNameEvent.target.value)}
-                        ></input>
-                    </div>
-
-                    <div className='form-button'>
-                        <button type = 'submit'>Submit</button>
-                    </div>
-
-                </div>
-                
-            </form>
-        </div>
-    )
-}
-
-export default CityController
+export default CityController;

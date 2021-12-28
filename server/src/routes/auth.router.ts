@@ -1,10 +1,10 @@
-import { Router } from 'express'
-import { URL } from '../../data/constants/routeConstants'
-import { Auth } from '../controller/auth.controller'
+import {Router} from 'express';
+import {URL} from '../../data/constants/routeConstants';
+import {Auth} from '../controller/auth.controller';
 
-const router = Router()
+const router = Router();
 
-router.post(`/${URL.LOGIN}`, Auth)
+router.post(`/${URL.LOGIN}`, Auth);
 
 
-export default router 
+export default router;
