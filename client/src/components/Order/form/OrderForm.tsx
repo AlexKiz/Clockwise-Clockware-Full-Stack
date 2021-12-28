@@ -4,11 +4,12 @@ import React, {useState, useEffect, FC} from 'react';
 import axios from 'axios';
 import './order-form.css';
 import {Master, City, Clock} from '../../../data/types/types';
-import {openingHours} from '../../../data/constants/systemConstants';
+import {OPENING_HOURS} from '../../../data/constants/systemConstants';
 import {OrderFormProps} from './componentConstants';
 import {URL} from '../../../data/constants/routeConstants';
 import {format} from 'date-fns';
-import PublicHeader from '../../Headers/PublicHeader';
+import PublicHeader from 'src/components/Headers/PublicHeader';
+import {getOrderDates} from '../../../data/utilities/systemUtilities';
 
 
 const OrderForm: FC<OrderFormProps> = () => {
@@ -18,7 +19,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 	const [orderDate, setOrderDate] = useState<string>('');
 
-	const [orderTime, setOrderTime] = useState<string>(openingHours[0]);
+	const [orderTime, setOrderTime] = useState<string>(OPENING_HOURS[0]);
 
 	const [masterId, setMasterId] = useState<string>('');
 	const [masters, setMasters] = useState<Master[]>([]);
@@ -60,18 +61,14 @@ const OrderForm: FC<OrderFormProps> = () => {
 	useEffect(() => {
 		const readAvailableMastersData = async () => {
 			if (clocks.length) {
-				const {installationTime} = clocks.filter((clock) => clock.id === clockId)[0];
-				const endDate = new Date(`${orderDate} ${orderTime}`);
-				const startDate = new Date(`${orderDate} ${orderTime}`);
-				startDate.setUTCHours(startDate.getHours());
-				endDate.setUTCHours(endDate.getHours() + installationTime);
+				const [startDate, endDate] = getOrderDates(clocks, orderDate, orderTime, clockId);
 
 				if (cityId && orderDate && orderTime && clockId) {
 					const {data} = await axios.get<Master[]>(URL.AVAILABLE_MASTER, {
 						params: {
 							cityId,
-							startWorkOn: startDate.toISOString(),
-							endWorkOn: endDate.toISOString(),
+							startWorkOn: startDate,
+							endWorkOn: endDate,
 						},
 					});
 
@@ -94,11 +91,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		if (clocks.length) {
-			const {installationTime} = clocks.filter((clock) => clock.id === clockId)[0];
-			const endDate = new Date(`${orderDate} ${orderTime}`);
-			const startDate = new Date(`${orderDate} ${orderTime}`);
-			startDate.setUTCHours(startDate.getHours());
-			endDate.setUTCHours(endDate.getHours() + installationTime);
+			const [startDate, endDate] = getOrderDates(clocks, orderDate, orderTime, clockId);
 
 			axios.post(URL.ORDER,
 				{
@@ -107,8 +100,8 @@ const OrderForm: FC<OrderFormProps> = () => {
 					clockId,
 					cityId,
 					masterId,
-					startWorkOn: startDate.toISOString(),
-					endWorkOn: endDate.toISOString(),
+					startWorkOn: startDate,
+					endWorkOn: endDate,
 				});
 
 			setUserName('');
@@ -215,7 +208,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 								<select name='orderTime' onChange={(orderTimeEvent) => setOrderTime(orderTimeEvent.target.value)}>
 									{
-										openingHours.map((elem) => (
+										OPENING_HOURS.map((elem) => (
 											<option value={elem}>
 												{`${elem}`}
 											</option>

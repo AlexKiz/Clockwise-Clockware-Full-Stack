@@ -4,11 +4,11 @@ import React, {useState, useEffect, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
 import './order-create-form.css';
 import {Params, User, Clock, City, Master} from '../../../../data/types/types';
-import {openingHours} from '../../../../data/constants/systemConstants';
+import {OPENING_HOURS} from '../../../../data/constants/systemConstants';
 import {OrderCreateProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {format} from 'date-fns';
-import { getOrderDates } from 'src/data/utilities/systemUtilities';
+import {getOrderDates} from 'src/data/utilities/systemUtilities';
 
 
 const OrderCreate: FC<OrderCreateProps> = () => {
@@ -98,6 +98,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		if (clocks.length) {
+			const [startDate, endDate] = getOrderDates(clocks, orderDate, orderTime, clockId);
 
 			axios.put(URL.ORDER,
 				{
@@ -106,8 +107,8 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 					userId,
 					cityId,
 					masterId,
-					startWorkOn: startDate.toISOString(),
-					endWorkOn: endDate.toISOString(),
+					startWorkOn: startDate,
+					endWorkOn: endDate,
 				}).then(() => {
 				alert('Order has been updated');
 				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
@@ -205,7 +206,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 
 						<select name='orderTime' onChange={(orderTimeEvent) => setOrderTime(orderTimeEvent.target.value)}>
 							{
-								openingHours.map((elem) => (
+								OPENING_HOURS.map((elem) => (
 									<option selected = {elem === orderTime} value={elem}>
 										{`${elem}`}
 									</option>
