@@ -3,7 +3,7 @@
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
-import '../user.list/user-list.css';
+import './user-list.css';
 import {User} from '../../../../data/types/types';
 import {UserListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';

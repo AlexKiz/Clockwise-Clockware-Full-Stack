@@ -2,13 +2,13 @@
 /* eslint-disable react/jsx-key */
 import React, {useState, useEffect, FC} from 'react';
 import axios from 'axios';
-import PublicHeader from '../../Headers/PublicHeader';
-import '../order.form/order-form.css';
+import './order-form.css';
 import {Master, City, Clock} from '../../../data/types/types';
 import {openingHours} from '../../../data/constants/systemConstants';
 import {OrderFormProps} from './componentConstants';
 import {URL} from '../../../data/constants/routeConstants';
 import {format} from 'date-fns';
+import PublicHeader from '../../Headers/PublicHeader';
 
 
 const OrderForm: FC<OrderFormProps> = () => {
