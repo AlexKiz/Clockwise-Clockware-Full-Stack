@@ -3,14 +3,41 @@
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
-import './masters-list.css';
+import classes from '../list/masters-list.module.css';
 import {Master} from '../../../../data/types/types';
 import {MasterListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
+import {styled} from '@mui/material/styles';
+import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, tableCellClasses} from '@mui/material';
+import AlertMessage from 'src/components/Notification/AlertMessage';
 
+const StyledTableCell = styled(TableCell)(({theme}) => ({
+	[`&.${tableCellClasses.head}`]: {
+		backgroundColor: theme.palette.warning.main,
+		color: theme.palette.common.black,
+	},
+	[`&.${tableCellClasses.body}`]: {
+		fontSize: 14,
+	},
+}));
+
+const StyledTableRow = styled(TableRow)(({theme}) => ({
+	'&:nth-of-type(odd)': {
+		backgroundColor: theme.palette.action.hover,
+	},
+	'&:last-child td, &:last-child th': {
+		border: 0,
+	},
+}));
 
 const MastersList: FC<MasterListProps> = () => {
 	const [masters, setMasters] = useState<Master[]>([]);
+
+	const [notify, setNotify] = useState<boolean>(false);
+
+	const isOpen = (value:boolean) => {
+		setNotify(value);
+	};
 
 
 	useEffect(() => {
@@ -33,45 +60,82 @@ const MastersList: FC<MasterListProps> = () => {
 					},
 				}).then(() => {
 				setMasters(masters.filter((master) => master.id !== id));
-
-				alert('Master has been deleted');
+				setNotify(true);
 			});
 		}
 	};
 
 
 	return (
-		<div className='conteiner'>
+		<div className={classes.conteiner}>
 
-			<div className='wrapper-table'>
+			<TableContainer component={Paper} sx={{width: 4/5}} className={classes.conteiner_table}>
 
-				<table className='content-table-masters'>
-					<tr>
-						<th className='th-master-id'>Id</th>
-						<th className='th-master-name'>Master name</th>
-						<th className='th-master-city'>Cities</th>
-						<th className='th-rating'>Rating</th>
-						<button className='button-add'><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.MASTER_CREATE}`}>Create new master</Link></button>
-					</tr>
-					{
-						masters.map((master) => (
-							<tr>
-								<td>{`${master.id}`}</td>
-								<td>{`${master.name}`}</td>
-								<td>{master.cities.map((city) => {
-									return `${city.name}`;
-								}).join(', ')}</td>
-								<td>{`${master.rating}`}</td>
-								<button className='button-update'><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.MASTER_CREATE}/${master.id}/${master.name}`}>Update</Link></button>
-								<button className='button-delete' onClick = {() => onDelete(master.id)}>Delete</button>
-							</tr>
+				<Table sx={{minWidth: 350}} aria-label="customized table">
+					<TableHead>
+						<TableRow>
+							<StyledTableCell sx={{width: 1/10}}>Id</StyledTableCell>
+							<StyledTableCell sx={{width: 1/5}} align="center">Master name</StyledTableCell>
+							<StyledTableCell sx={{width: 1/4}} align="center">Cities</StyledTableCell>
+							<StyledTableCell sx={{width: 1/4}} align="center">Rating</StyledTableCell>
+							<StyledTableCell sx={{width: 2/6}} align="center">
+								<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.MASTER_CREATE}`}>
+									<Button
+										variant="contained"
+										sx={{width: 1/1, fontSize: 14, borderRadius: 15}}
+										color='success'
+									>
+									Create master
+									</Button>
+								</Link>
+							</StyledTableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{masters.map((master) => (
+							<StyledTableRow>
 
-						))
-					}
-				</table>
+								<StyledTableCell component="th" scope="row"> {master.id.slice(0, 4)} </StyledTableCell>
 
-			</div>
+								<StyledTableCell align="center"> {master.name} </StyledTableCell>
 
+								<StyledTableCell align="center">
+									{master.cities.map((city) => {
+										return `${city.name}`;
+									}).join(', ')}
+								</StyledTableCell>
+
+								<StyledTableCell align="center"> {master.rating.toFixed(2)} </StyledTableCell>
+
+								<StyledTableCell align="center">
+									<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.MASTER_CREATE}/${master.id}/${master.name}`}>
+										<Button
+											variant="contained"
+											sx={{width: 1/2, fontSize: 14, borderRadius: 15}}
+										>
+											Update
+										</Button>
+									</Link>
+									<Button
+										variant="contained"
+										color='error'
+										sx={{width: 1/2, fontSize: 14, borderRadius: 15}}
+										onClick={() => {
+											onDelete(master.id);
+										}}
+									>
+										Delete
+									</Button>
+								</StyledTableCell>
+							</StyledTableRow>
+						))}
+					</TableBody>
+				</Table>
+
+			</TableContainer>
+			{
+				notify ? <AlertMessage alertType='success' message='Master has been deleted' isOpen={isOpen} notify={notify}/> : ''
+			}
 		</div>
 	);
 };
