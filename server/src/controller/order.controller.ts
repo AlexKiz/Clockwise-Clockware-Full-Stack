@@ -69,7 +69,7 @@ export const getOrderForRate = async (req: Request, res: Response) => {
 	try {
 		const {ratingIdentificator} = req.query;
 
-		const orderForRate = await db.Order.findAll({
+		const orderForRate = await db.Order.findOne({
 			attributes: ['id', 'startWorkOn', 'endWorkOn'],
 			where: {
 				ratingIdentificator: ratingIdentificator,

@@ -4,7 +4,7 @@ import React, {useState, useEffect, FC} from 'react';
 import {useHistory, useParams} from 'react-router-dom';
 // @ts-ignore
 import ReactStars from 'react-rating-stars-component';
-import classes from '../order.rate/rate-order.module.css';
+import classes from './rate-order.module.css';
 import {Params, Order} from '../../../data/types/types';
 import {RateOrderProps} from './componentConstants';
 import {URL} from '../../../data/constants/routeConstants';
@@ -17,19 +17,19 @@ const RateOrder: FC<RateOrderProps> = () => {
 
 	const [rating, setRating] = useState<number>(0);
 
-	const [order, setOrder] = useState<Order[]>([]);
+	const [order, setOrder] = useState<Order>({} as Order);
 
 
 	useEffect(() => {
 		const readOrderForRate = async () => {
-			const {data} = await axios.get<Order[]>(URL.ORDER_FOR_RATE, {
+			const {data} = await axios.get<Order>(URL.ORDER_FOR_RATE, {
 
 				params: {
 					ratingIdentificator: ratingIdentificatorParam,
 				},
 			});
 
-			if (data.length) {
+			if (!data) {
 				setOrder(data);
 			} else {
 				alert('Current order has been already rated');
@@ -44,9 +44,9 @@ const RateOrder: FC<RateOrderProps> = () => {
 		event.preventDefault();
 
 		axios.put(URL.RATED_ORDER, {
-			id: order[0].id,
+			id: order.id,
 			orderRated: rating,
-			masterId: order[0].master.id,
+			masterId: order.master.id,
 		}).then(() => {
 			alert('Thanks for your feedback');
 			history.push('/');
@@ -60,26 +60,26 @@ const RateOrder: FC<RateOrderProps> = () => {
 					<form className={classes.form} onSubmit={onSubmit} name='orderForm'>
 
 						<div>
-							{ order[0] &&
+							{ order &&
                             <>
                             	<div className={classes.form_master}>
                             		<label>Please, rate the following master:</label>
-                            		<p>{order[0].master.name}</p>
+                            		<p>{order.master.name}</p>
                             	</div>
                             	<div className={classes.form_orderinfo}>
-                            		<b>Order #{order[0].id}</b>
+                            		<b>Order #{order.id}</b>
                             		<br/>
-                            		<b> User name:</b> <span>{order[0].user.name}</span>
+                            		<b> User name:</b> <span>{order.user.name}</span>
                             		<br/>
-                            		<b> User email:</b> <span>{order[0].user.email}</span>
+                            		<b> User email:</b> <span>{order.user.email}</span>
                             		<br/>
-                            		<b> Clock size:</b>  <span>{order[0].clock.size}</span>
+                            		<b> Clock size:</b>  <span>{order.clock.size}</span>
                             		<br/>
-                            		<b> City:</b>  <span>{order[0].city.name}</span>
+                            		<b> City:</b>  <span>{order.city.name}</span>
                             		<br/>
-                            		<b> Start work on:</b>  <span>{order[0].startWorkOn.split(',').join(' ')}</span>
+                            		<b> Start work on:</b>  <span>{order.startWorkOn.split('T').join(' ')}</span>
                             		<br/>
-                            		<b> End work on:</b>  <span>{order[0].endWorkOn} </span>
+                            		<b> End work on:</b>  <span>{order.endWorkOn.split('T').join(' ')} </span>
                             	</div>
                             </>
 							}

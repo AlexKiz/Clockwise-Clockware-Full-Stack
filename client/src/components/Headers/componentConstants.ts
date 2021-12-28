@@ -1,27 +1,27 @@
-export const MENULINKS = [{
-	name: 'Make order',
-	resourcePath: '/',
-	resourceName: '',
+export const MENU_LINKS = [{
+	title: 'Make order',
+	path: '/',
+	name: '',
 }, {
-	name: 'Login',
-	resourcePath: '/login',
-	resourceName: 'login',
+	title: 'Log in',
+	path: '/login',
+	name: 'login',
 }];
 
-export const PRIVATEMENULINKS = [{
-	name: 'Users List',
-	resourcePath: '/admin/users-list',
-	resourceName: 'users-list',
+export const PRIVATE_MENU_LINKS = [{
+	title: 'Users List',
+	path: '/admin/users-list',
+	name: 'users-list',
 }, {
-	name: 'Cities List',
-	resourcePath: '/admin/cities-list',
-	resourceName: 'cities-list',
+	title: 'Cities List',
+	path: '/admin/cities-list',
+	name: 'cities-list',
 }, {
-	name: 'Masters List',
-	resourcePath: '/admin/masters-list',
-	resourceName: 'masters-list',
+	title: 'Masters List',
+	path: '/admin/masters-list',
+	name: 'masters-list',
 }, {
-	name: 'Orders List',
-	resourcePath: '/admin/orders-list',
-	resourceName: 'orders-list',
+	title: 'Orders List',
+	path: '/admin/orders-list',
+	name: 'orders-list',
 }];

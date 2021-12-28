@@ -4,7 +4,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import './header.css';
 import {useLocation} from 'react-router-dom';
-import {MENULINKS} from './componentConstants';
+import {MENU_LINKS} from './componentConstants';
 
 const PublicHeader = () => {
 	const location = useLocation();
@@ -32,8 +32,8 @@ const PublicHeader = () => {
 				<nav>
 					<ul className='nav__links'>
 						{
-							MENULINKS.map((link) => (
-								<li className={splitLocation[0] === link.resourceName ? 'active' : ''}><Link to={link.resourcePath}>{`${link.name}`}</Link></li>
+							MENU_LINKS.map((link) => (
+								<li className={splitLocation[0] === link.name ? 'active' : ''}><Link to={link.path}>{`${link.title}`}</Link></li>
 							))
 						}
 					</ul>

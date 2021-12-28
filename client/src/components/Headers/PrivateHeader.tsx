@@ -5,7 +5,7 @@ import {Link, useHistory} from 'react-router-dom';
 import './header.css';
 import {useLocation} from 'react-router-dom';
 import {RESOURCE} from '../../data/constants/routeConstants';
-import {PRIVATEMENULINKS} from './componentConstants';
+import {PRIVATE_MENU_LINKS} from './componentConstants';
 
 const PrivateHeader = () => {
 	const history = useHistory();
@@ -39,8 +39,8 @@ const PrivateHeader = () => {
 				<nav>
 					<ul className='nav__links'>
 						{
-							PRIVATEMENULINKS.map((link) => (
-								<li className={splitLocation[0] === link.resourceName ? 'active' : ''}><Link to={link.resourcePath}>{`${link.name}`}</Link></li>
+							PRIVATE_MENU_LINKS.map((link) => (
+								<li className={splitLocation[0] === link.name ? 'active' : ''}><Link to={link.path}>{`${link.title}`}</Link></li>
 							))
 						}
 					</ul>
