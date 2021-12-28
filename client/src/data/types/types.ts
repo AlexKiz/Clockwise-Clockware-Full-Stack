@@ -15,6 +15,7 @@ export type Params = {
     masterNameParam: string
     ratingIdentificatorParam: string
     hashVerify: string
+    generated: string
 }
 
 export type City = {

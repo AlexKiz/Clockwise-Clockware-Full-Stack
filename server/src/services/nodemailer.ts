@@ -32,5 +32,5 @@ export const sendVerificationMail = (email: string, hash: string, password?: str
 	subject: 'Email Verification',
 	text: 'Please verify your email on link below',
 	html: password ? `<p>Click <a href="${process.env.FRONT_URL}/${RESOURCE.VERIFICATION}/${hash}">here</a> to confirm</p>` :
-					`<p>Click <a href="${process.env.FRONT_URL}/${RESOURCE.VERIFICATION}/${hash}/${password}">here</a> to confirm</p>`,
+		`<p>Click <a href="${process.env.FRONT_URL}/${RESOURCE.VERIFICATION}/${hash}/${password}">here</a> to confirm</p>`,
 });

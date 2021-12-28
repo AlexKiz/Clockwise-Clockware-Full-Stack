@@ -5,8 +5,13 @@
     justify-content: center;
 }
 
+.form {
+    width: 90%;
+    margin: 0 auto;
+}
+
 .container_notification {
-    width: 45%;
+    width: 30%;
     background: linear-gradient(to right, rgb(255, 183, 77),rgb(255, 167, 38));
     padding: 30px;
     box-shadow: 0 0 20px 1px rgba(48, 3, 3, 0.596);

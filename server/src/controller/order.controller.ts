@@ -21,7 +21,9 @@ export const postOrder = async (req: Request, res: Response) => {
 			defaults: {name, email, password: generatedPassword, role: 'client', hashVerify},
 		});
 
-		await sendVerificationMail(email, hashVerify, generatedPassword);
+		if (isUserCreated) {
+			await sendVerificationMail(email, hashVerify, generatedPassword);
+		}
 
 		const {id: userId} = user;
 

@@ -53,7 +53,14 @@ export const putUser = async (req: Request, res: Response) => {
 
 export const userVerification = async (req: Request, res: Response) => {
 	try {
-		const {hashVerify} = req.body;
+		const {hashVerify, password} = req.body;
+
+		if (password) {
+			const salt = bcrypt.genSaltSync(10);
+			const hashPassword = bcrypt.hashSync(password, salt);
+			const userVerify = await db.User.update({hashVerify: '', isVerified: true, password: hashPassword}, {where: {hashVerify}});
+			return res.status(200).json(userVerify);
+		}
 
 		const userVerify = await db.User.update({hashVerify: '', isVerified: true}, {where: {hashVerify}});
 
