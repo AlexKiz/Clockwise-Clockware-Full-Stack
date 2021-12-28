@@ -3,7 +3,7 @@
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
-import '../orders.list/orders-list.css';
+import './orders-list.css';
 import {Order} from '../../../../data/types/types';
 import {OrderListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';

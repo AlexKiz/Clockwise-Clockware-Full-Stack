@@ -3,7 +3,7 @@
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
-import '../user.create/user-create-form.css';
+import './user-create-form.css';
 import {Params} from '../../../../data/types/types';
 import {UserCreateProps} from './componentConstant';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';

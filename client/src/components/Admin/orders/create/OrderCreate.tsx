@@ -2,12 +2,13 @@
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
-import '../order.create/order-create-form.css';
+import './order-create-form.css';
 import {Params, User, Clock, City, Master} from '../../../../data/types/types';
 import {openingHours} from '../../../../data/constants/systemConstants';
 import {OrderCreateProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {format} from 'date-fns';
+import { getOrderDates } from 'src/data/utilities/systemUtilities';
 
 
 const OrderCreate: FC<OrderCreateProps> = () => {
@@ -70,18 +71,14 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 	useEffect(() => {
 		const readAvailableMastersData = async () => {
 			if (clocks.length) {
-				const {installationTime} = clocks.filter((clock) => clock.id === clockId)[0];
-				const endDate = new Date(`${orderDate} ${orderTime}`);
-				const startDate = new Date(`${orderDate} ${orderTime}`);
-				startDate.setUTCHours(startDate.getHours());
-				endDate.setUTCHours(endDate.getHours() + installationTime);
+				const [startDate, endDate] = getOrderDates(clocks, orderDate, orderTime, clockId);
 
 				const {data} = await axios.get<Master[]>(URL.AVAILABLE_MASTER, {
 					params: {
 						currentOrderId: orderIdParam,
 						cityId: cityIdParam,
-						startWorkOn: startDate.toISOString(),
-						endWorkOn: endDate.toISOString(),
+						startWorkOn: startDate,
+						endWorkOn: endDate,
 					},
 				});
 
@@ -101,11 +98,6 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		if (clocks.length) {
-			const {installationTime} = clocks.filter((clock) => clock.id === clockId)[0];
-			const endDate = new Date(`${orderDate} ${orderTime}`);
-			const startDate = new Date(`${orderDate} ${orderTime}`);
-			startDate.setUTCHours(startDate.getHours());
-			endDate.setUTCHours(endDate.getHours() + installationTime);
 
 			axios.put(URL.ORDER,
 				{

@@ -3,18 +3,18 @@
 /* eslint-disable max-len */
 import './App.css';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import OrderForm from './components/Order/order.form/OrderForm';
-import MastersList from './components/Admin/masters/master.list/MastersList';
-import MasterCreate from './components/Admin/masters/master.create/MasterCreate';
-import UsersList from './components/Admin/users/user.list/UsersList';
-import UserCreate from './components/Admin/users/user.create/UserCreate';
-import CitiesList from './components/Admin/cities/cities.list/CitiesList';
-import CityCreate from './components/Admin/cities/city.create/CityCreate';
-import OrdersList from './components/Admin/orders/orders.list/OrdersList';
-import OrderCreate from './components/Admin/orders/order.create/OrderCreate';
+import OrderForm from './components/Order/form/OrderForm';
+import MastersList from './components/Admin/masters/list/MastersList';
+import MasterCreate from './components/Admin/masters/create/MasterCreate';
+import UsersList from './components/Admin/users/list/UsersList';
+import UserCreate from './components/Admin/users/create/UserCreate';
+import CitiesList from './components/Admin/cities/list/CitiesList';
+import CityCreate from './components/Admin/cities/create/CityCreate';
+import OrdersList from './components/Admin/orders/list/OrdersList';
+import OrderCreate from './components/Admin/orders/create/OrderCreate';
 import LoginForm from './components/Admin/login/LoginForm';
 import PrivateRoute from './components/Route/PrivateRoute';
-import RateOrder from './components/Order/order.rate/RateOrder';
+import RateOrder from './components/Order/rate/RateOrder';
 import {ROUTES} from './data/constants/routeConstants';
 
 

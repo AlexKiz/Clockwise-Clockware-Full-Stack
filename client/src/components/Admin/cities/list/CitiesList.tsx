@@ -3,7 +3,7 @@
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
-import '../cities.list/cities-list.css';
+import './cities-list.css';
 import {City} from '../../../../data/types/types';
 import {CitiesListProps} from './componentConstants';
 import {URL, RESOURCE} from '../../../../data/constants/routeConstants';
