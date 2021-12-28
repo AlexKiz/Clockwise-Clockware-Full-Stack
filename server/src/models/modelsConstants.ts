@@ -23,24 +23,22 @@ export interface AdminAttributes {
 }
 
 export interface MasterAttributes {
-    id: number,
+    id: string,
     name: string,
-    rating: number,
-    ratedSum: number,
-    ratedQuantity: number,
+    rating: number
 }
 
 export interface MasterCitiesAttributes {
-    masterId: number,
+    masterId: string,
     cityId: number
 }
 
 export interface OrderAttributes {
-    id: number,
+    id: string,
     clockId: number,
-    userId: number,
+    userId: string,
     cityId: number,
-    masterId: number,
+    masterId: string,
     startWorkOn: string,
     endWorkOn: string,
     ratingIdentificator: string,
@@ -48,7 +46,9 @@ export interface OrderAttributes {
 }
 
 export interface UserAttributes {
-    id: number,
+    id: string,
     name: string,
-    email: string
+    password: string,
+    email: string,
+    role: string
 }

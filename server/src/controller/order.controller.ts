@@ -1,9 +1,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 import {Response, Request} from 'express';
-import {transporter, sendMail} from '../services/nodemailer';
+import {sendMail} from '../services/nodemailer';
 import {v4 as uuidv4} from 'uuid';
-import {RESOURCE} from '../../data/constants/routeConstants';
 import db from '../models';
 
 
@@ -94,7 +93,7 @@ export const getOrderForRate = async (req: Request, res: Response) => {
 				},
 				{
 					model: db.Master,
-					attributes: ['id', 'name', 'ratedSum', 'ratedQuantity'],
+					attributes: ['id', 'name'],
 					required: true,
 				},
 			],
@@ -108,18 +107,28 @@ export const getOrderForRate = async (req: Request, res: Response) => {
 
 export const putRatedOrder = async (req: Request, res: Response) => {
 	try {
-		const {id, orderRated, masterId, newRating, newRatedSum, newRatedQuantity} = req.body;
-
-		const masterRating = await db.Master.updateById(masterId, {
-			rating: newRating,
-			ratedSum: newRatedSum,
-			ratedQuantity: newRatedQuantity,
-		});
+		const {id, orderRated, masterId} = req.body;
 
 		const ratedOrder = await db.Order.updateById(id, {
 			orderRating: orderRated,
 			ratingIdentificator: '',
 		});
+
+		const averageRating = await db.Order.findAll({
+			attributes: [[db.sequelize.fn('AVG', db.sequelize.col('orderRating')), 'newRating']],
+			group: 'masterId',
+			where: {
+				masterId,
+				ratingIdentificator: '',
+			},
+			raw: true,
+		});
+
+		if (averageRating.length) {
+			const {newRating: rating} = averageRating[0];
+
+			const masterRating = await db.Master.updateById(masterId, {rating});
+		}
 
 		res.status(200).json(ratedOrder);
 	} catch (error) {

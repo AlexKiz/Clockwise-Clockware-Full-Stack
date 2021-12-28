@@ -3,6 +3,7 @@
 import {
 	Model,
 	Optional,
+	UUIDV4,
 } from 'sequelize';
 import {OrderAttributes} from './modelsConstants';
 
@@ -11,25 +12,25 @@ interface OrderCreationAttributes extends Optional<OrderAttributes, 'id' | 'orde
 export = (sequelize: any, DataTypes: any) => {
 	class Order extends Model<OrderAttributes, OrderCreationAttributes>
 		implements OrderAttributes {
-		public id!: number;
+		public id!: string;
 		public clockId!: number;
-		public userId!: number;
+		public userId!: string;
 		public cityId!: number;
-		public masterId!: number;
+		public masterId!: string;
 		public startWorkOn!: string;
 		public endWorkOn!: string;
 		public ratingIdentificator!: string;
 		public orderRating!: number;
 
-		static findById(entityId: number | number[]) {
+		static findById(entityId: string | string[]) {
 			return this.findAll({where: {id: entityId}});
 		}
 
-		static updateById(entityId: number, {...options}) {
+		static updateById(entityId: string, {...options}) {
 			return this.update({...options}, {where: {id: entityId}});
 		}
 
-		static deleteById(entityId: number) {
+		static deleteById(entityId: string) {
 			return this.destroy({where: {id: entityId}});
 		}
 		static associate(models: any) {
@@ -59,10 +60,10 @@ export = (sequelize: any, DataTypes: any) => {
 	Order.init(
 		{
 			id: {
-				type: DataTypes.INTEGER,
+				type: DataTypes.UUID,
 				allowNull: false,
 				primaryKey: true,
-				autoIncrement: true,
+				defaultValue: UUIDV4,
 				onDelete: 'CASCADE',
 				onUpdate: 'CASCADE',
 			},
@@ -73,7 +74,7 @@ export = (sequelize: any, DataTypes: any) => {
 			},
 
 			userId: {
-				type: DataTypes.INTEGER,
+				type: DataTypes.UUID,
 				allowNull: false,
 			},
 
@@ -83,7 +84,7 @@ export = (sequelize: any, DataTypes: any) => {
 			},
 
 			masterId: {
-				type: DataTypes.INTEGER,
+				type: DataTypes.UUID,
 				allowNull: false,
 			},
 

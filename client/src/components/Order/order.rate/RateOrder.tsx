@@ -22,7 +22,7 @@ const RateOrder: FC<RateOrderProps> = () => {
 
 	useEffect(() => {
 		const readOrderForRate = async () => {
-			const {data} = await axios.get<Order[]>(`/${URL.ORDER_FOR_RATE}`, {
+			const {data} = await axios.get<Order[]>(URL.ORDER_FOR_RATE, {
 
 				params: {
 					ratingIdentificator: ratingIdentificatorParam,
@@ -43,18 +43,10 @@ const RateOrder: FC<RateOrderProps> = () => {
 	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		const {ratedSum, ratedQuantity} = order[0].master;
-		const newRatedSum = ratedSum + rating;
-		const newRatedQuantity = ratedQuantity + 1;
-		const newRating = Number((newRatedSum / newRatedQuantity).toFixed(2));
-
-		axios.put(`/${URL.RATED_ORDER}`, {
+		axios.put(URL.RATED_ORDER, {
 			id: order[0].id,
 			orderRated: rating,
 			masterId: order[0].master.id,
-			newRatedSum,
-			newRatedQuantity,
-			newRating,
 		}).then(() => {
 			alert('Thanks for your feedback');
 			history.push('/');
@@ -70,23 +62,24 @@ const RateOrder: FC<RateOrderProps> = () => {
 						<div>
 							{ order[0] &&
                             <>
+
                             	<div className={classes.form_master}>
                             		<label>Please, rate the following master:</label>
                             		<p>{order[0].master.name}</p>
                             	</div>
                             	<div className={classes.form_orderinfo}>
                             		<b>Order #{order[0].id}</b>
-                            		<br />
+                            		<br/>
                             		<b> User name:</b> <span>{order[0].user.name}</span>
-                            		<br />
+                            		<br/>
                             		<b> User email:</b> <span>{order[0].user.email}</span>
-                            		<br />
+                            		<br/>
                             		<b> Clock size:</b>  <span>{order[0].clock.size}</span>
-                            		<br />
+                            		<br/>
                             		<b> City:</b>  <span>{order[0].city.name}</span>
-                            		<br />
+                            		<br/>
                             		<b> Start work on:</b>  <span>{order[0].startWorkOn.split(',').join(' ')}</span>
-                            		<br />
+                            		<br/>
                             		<b> End work on:</b>  <span>{order[0].endWorkOn} </span>
                             	</div>
                             </>

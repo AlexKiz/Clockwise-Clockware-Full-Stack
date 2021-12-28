@@ -19,18 +19,17 @@ export type City = {
 }
 
 export type Master = {
-    id: number
+    id: string
     name: string
     rating: number
-    ratedSum: number
-    ratedQuantity: number
     cities: City[]
 }
 
 export type User = {
-    id: number
+    id: string
     name: string
     email: string
+    role: string
 }
 
 export type Clock = {
@@ -40,7 +39,7 @@ export type Clock = {
 }
 
 export type Order = {
-    id: number
+    id: string
     user: User
     clock: Clock
     city: City

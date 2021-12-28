@@ -2,12 +2,12 @@
 /* eslint-disable react/jsx-key */
 import React, {useState, useEffect, FC} from 'react';
 import axios from 'axios';
+import PublicHeader from '../../Headers/PublicHeader';
 import '../order.form/order-form.css';
 import {Master, City, Clock} from '../../../data/types/types';
 import {today, openingHours} from '../../../data/constants/systemConstants';
 import {OrderFormProps} from './componentConstants';
 import {URL} from '../../../data/constants/routeConstants';
-import PublicHeader from 'src/components/Headers/PublicHeader';
 
 const OrderForm: FC<OrderFormProps> = () => {
 	const [userName, setUserName] = useState<string>('');
@@ -18,7 +18,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 	const [orderTime, setOrderTime] = useState<string>(`${openingHours[0]}`);
 
-	const [masterId, setMasterId] = useState<number>(0);
+	const [masterId, setMasterId] = useState<string>('');
 	const [masters, setMasters] = useState<Master[]>([]);
 
 	const [cityId, setCityId] = useState<number>(0);
@@ -77,14 +77,14 @@ const OrderForm: FC<OrderFormProps> = () => {
 					if (!data.length) {
 						alert('All masters has been booked at that time. Please choose another time or date');
 						setOrderTime('');
-						setMasterId(0);
+						setMasterId('');
 						setMasters([]);
 					} else {
 						setMasterId(data[0].id);
 						setMasters(data);
 					}
 				}
-			}
+			};
 		};
 		readAvailableMastersData();
 	}, [cityId, clockId, orderDate, orderTime]);
@@ -228,11 +228,11 @@ const OrderForm: FC<OrderFormProps> = () => {
 									<label>Available masters:</label>
 								</div>
 
-								<select name='masterName' onChange={(masterIdEvent) => setMasterId(Number(masterIdEvent.target.value))}>
+								<select name='masterName' onChange={(masterIdEvent) => setMasterId(masterIdEvent.target.value)}>
 									{
 										masters.map((master) => (
 											<option value={master.id}>
-												{`${master.name} | Rating:${master.rating}`}
+												{`${master.name} | Rating:${master.rating.toFixed(2)}`}
 											</option>
 										))
 									}
