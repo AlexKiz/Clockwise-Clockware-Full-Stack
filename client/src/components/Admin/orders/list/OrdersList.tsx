@@ -13,15 +13,18 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	TableFooter,
-	TablePagination,
 	Button,
 	Paper,
 	tableCellClasses,
+	TableFooter,
+	TablePagination,
+	TableSortLabel,
+	Box,
 } from '@mui/material';
 import AlertMessage from '../../../Notification/AlertMessage';
 import PrivateHeader from '../../../Headers/PrivateHeader';
 import TablePaginationActions from '../../../Pagination/TablePaginationActions';
+import {visuallyHidden} from '@mui/utils';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -51,10 +54,8 @@ const OrdersList: FC<OrdersListProps> = () => {
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
 	const [totalOrders, setTotalOrders] = useState<number>(0);
-
-	const isOpen = (value:boolean) => {
-		setNotify(value);
-	};
+	const [sortedField, setSortField] = useState<string>('startWorkOn');
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
 
 	useEffect(() => {
@@ -87,6 +88,10 @@ const OrdersList: FC<OrdersListProps> = () => {
 		}
 	};
 
+	const isOpen = (value:boolean) => {
+		setNotify(value);
+	};
+
 	const handleChangePage = (
 		event: React.MouseEvent<HTMLButtonElement> | null,
 		newPage: number,
@@ -110,15 +115,37 @@ const OrdersList: FC<OrdersListProps> = () => {
 					<Table sx={{minWidth: 650}} aria-label="customized table">
 						<TableHead>
 							<TableRow>
-								<StyledTableCell sx={{width: '6%'}}>Id</StyledTableCell>
-								<StyledTableCell sx={{width: '8%'}} align="center">Clock size</StyledTableCell>
-								<StyledTableCell sx={{width: '11%'}} align="center">User name</StyledTableCell>
-								<StyledTableCell sx={{width: '18%'}} align="center">User Email</StyledTableCell>
-								<StyledTableCell sx={{width: '8%'}} align="center">City</StyledTableCell>
-								<StyledTableCell sx={{width: '11%'}} align="center">Master Name</StyledTableCell>
-								<StyledTableCell sx={{width: '10%'}} align="center">Start on</StyledTableCell>
-								<StyledTableCell sx={{width: '10%'}} align="center">Finish on</StyledTableCell>
-								<StyledTableCell sx={{width: '18%'}} align="center"></StyledTableCell>
+								<StyledTableCell sx={{width: '6%'}}>
+									<TableSortLabel
+										active={sortedField === 'id' ? true : false}
+										direction={sortedField === 'id' ? sortOrder : 'asc'}
+									>
+										Id
+
+									</TableSortLabel>
+								</StyledTableCell>
+								<StyledTableCell sx={{width: '8%'}} align="center">
+									Clock size
+								</StyledTableCell>
+								<StyledTableCell sx={{width: '11%'}} align="center">
+									User name
+								</StyledTableCell>
+								<StyledTableCell sx={{width: '18%'}} align="center">
+									User Email
+								</StyledTableCell>
+								<StyledTableCell sx={{width: '8%'}} align="center">
+									City
+								</StyledTableCell>
+								<StyledTableCell sx={{width: '11%'}} align="center">
+									Master Name
+								</StyledTableCell>
+								<StyledTableCell sx={{width: '10%'}} align="center">
+									Start on
+								</StyledTableCell>
+								<StyledTableCell sx={{width: '10%'}} align="center">
+									Finish on
+								</StyledTableCell>
+								<StyledTableCell sx={{width: '20%'}} align="center"></StyledTableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
