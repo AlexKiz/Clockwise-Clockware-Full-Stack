@@ -42,7 +42,14 @@ const createClient = async (name: string, email: string, password: string, hashV
 	}
 };
 
-const getAdminOrders = async () => {
+type roleMappingOrderGetParams = {
+	limit: number,
+	offset: number,
+	masterId: string,
+	id: string,
+}
+
+const getAdminOrders = async (params: roleMappingOrderGetParams) => {
 	const orders = await db.Order.findAll({
 		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
 		include: [
@@ -67,12 +74,14 @@ const getAdminOrders = async () => {
 				required: true,
 			},
 		],
+		limit: params.limit,
+		offset: params.offset,
 	});
 
 	return orders;
 };
 
-const getMasterOrders = async (params: {masterId: string, id: string}) => {
+const getMasterOrders = async (params: roleMappingOrderGetParams) => {
 	const orders = await db.Order.findAll({
 		order: [['startWorkOn', 'DESC']],
 		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
@@ -101,7 +110,7 @@ const getMasterOrders = async (params: {masterId: string, id: string}) => {
 	return orders;
 };
 
-const getClientOrders = async (params: {masterId: string, id: string}) => {
+const getClientOrders = async (params: roleMappingOrderGetParams) => {
 	const orders = await db.Order.findAll({
 		order: [['startWorkOn', 'DESC']],
 		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted', 'orderRating'],

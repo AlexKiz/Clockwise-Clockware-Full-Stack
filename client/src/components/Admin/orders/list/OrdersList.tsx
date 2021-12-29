@@ -13,12 +13,15 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
+	TableFooter,
+	TablePagination,
 	Button,
 	Paper,
 	tableCellClasses,
 } from '@mui/material';
 import AlertMessage from '../../../Notification/AlertMessage';
 import PrivateHeader from '../../../Headers/PrivateHeader';
+import TablePaginationActions from '../../../Pagination/TablePaginationActions';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -45,6 +48,9 @@ const OrdersList: FC<OrdersListProps> = () => {
 	const [orders, setOrders] = useState<Order[]>([]);
 
 	const [notify, setNotify] = useState<boolean>(false);
+	const [page, setPage] = useState<number>(0);
+	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+	const [totalOrders, setTotalOrders] = useState<number>(0);
 
 	const isOpen = (value:boolean) => {
 		setNotify(value);
@@ -53,13 +59,18 @@ const OrdersList: FC<OrdersListProps> = () => {
 
 	useEffect(() => {
 		const readOrdersData = async () => {
-			const {data} = await axios.get<Order[]>(URL.ORDER);
-
-			setOrders(data);
+			const {data} = await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
+				params: {
+					limit: rowsPerPage,
+					offset: rowsPerPage * page,
+				},
+			});
+			setOrders(data.rows);
+			setTotalOrders(data.count);
 		};
 
 		readOrdersData();
-	}, []);
+	}, [rowsPerPage, page]);
 
 
 	const onDelete = (id: string) => {
@@ -74,6 +85,20 @@ const OrdersList: FC<OrdersListProps> = () => {
 				setNotify(true);
 			});
 		}
+	};
+
+	const handleChangePage = (
+		event: React.MouseEvent<HTMLButtonElement> | null,
+		newPage: number,
+	) => {
+		setPage(newPage);
+	};
+
+	const handleChangeRowsPerPage = (
+		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+	) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
 	};
 
 
@@ -141,6 +166,26 @@ const OrdersList: FC<OrdersListProps> = () => {
 								</StyledTableRow>
 							))}
 						</TableBody>
+						<TableFooter>
+							<TableRow>
+								<TablePagination
+									rowsPerPageOptions={[5, 10, 25, {label: 'All', value: totalOrders}]}
+									colSpan={9}
+									count={totalOrders}
+									rowsPerPage={rowsPerPage}
+									page={page}
+									SelectProps={{
+										inputProps: {
+											'aria-label': 'rows per page',
+										},
+										native: true,
+									}}
+									onPageChange={handleChangePage}
+									onRowsPerPageChange={handleChangeRowsPerPage}
+									ActionsComponent={TablePaginationActions}
+								/>
+							</TableRow>
+						</TableFooter>
 					</Table>
 				</TableContainer>
 				{

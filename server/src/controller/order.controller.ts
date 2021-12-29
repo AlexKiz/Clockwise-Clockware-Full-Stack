@@ -48,11 +48,13 @@ export const postOrder = async (req: Request, res: Response) => {
 
 export const getOrders = async (req: Request, res: Response) => {
 	try {
+		const {limit, offset} = req.query;
+
 		const token = BearerParser.parseBearerToken(req.headers);
 
 		const {role, masterId, id} = await db.User.findOne({where: {token}});
 
-		const orders = await rolesMappingGetOrders[role]({masterId, id});
+		const orders = await rolesMappingGetOrders[role]({masterId, id, limit, offset});
 
 		res.status(200).json(orders);
 	} catch (e) {
