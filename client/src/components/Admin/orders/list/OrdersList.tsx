@@ -17,8 +17,6 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	TableFooter,
-	TablePagination,
 	Button,
 	Paper,
 	tableCellClasses,
@@ -36,6 +34,8 @@ import {
 	Modal,
 	ImageList,
 	ImageListItem,
+	TableFooter,
+	TablePagination,
 } from '@mui/material';
 import {
 	DesktopDateRangePicker,
@@ -412,7 +412,6 @@ const OrdersList: FC<OrdersListProps> = () => {
 									)}
 								/>
 							</LocalizationProvider>
-
 							<Button
 								variant="contained"
 								style={ {fontSize: 14, backgroundColor: 'green', borderRadius: 15} }
