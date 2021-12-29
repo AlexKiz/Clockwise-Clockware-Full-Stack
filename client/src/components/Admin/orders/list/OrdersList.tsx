@@ -667,7 +667,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 							<TableRow>
 								<TablePagination
 									rowsPerPageOptions={[5, 10, 25, {label: 'All', value: totalQuantity}]}
-									colSpan={9}
+									colSpan={10}
 									count={totalQuantity}
 									rowsPerPage={limit}
 									page={page}
