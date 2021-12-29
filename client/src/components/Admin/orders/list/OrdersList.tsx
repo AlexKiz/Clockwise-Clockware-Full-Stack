@@ -762,7 +762,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 								/>
 							</TableRow>
 							<TableRow>
-								{ loading && <TableCell colSpan={9}>
+								{ loading && <TableCell colSpan={10}>
 									<LinearProgress />
 								</TableCell>}
 							</TableRow>
