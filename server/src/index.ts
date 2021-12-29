@@ -19,12 +19,12 @@ app.use(express.static(`../client/build`));
 app.use(express.json());
 
 
-app.use(`/${URL.API}`, cityRouter);
-app.use(`/${URL.API}`, masterRouter);
-app.use(`/${URL.API}`, orderRouter);
-app.use(`/${URL.API}`, userRouter);
-app.use(`/${URL.API}`, adminRouter);
-app.use(`/${URL.API}`, login);
+app.use(URL.API, cityRouter);
+app.use(URL.API, masterRouter);
+app.use(URL.API, orderRouter);
+app.use(URL.API, userRouter);
+app.use(URL.API, adminRouter);
+app.use(URL.API, login);
 
 
 app.get('/*', function(req: Request, res: Response) {

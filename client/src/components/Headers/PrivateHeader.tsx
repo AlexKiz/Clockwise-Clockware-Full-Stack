@@ -1,9 +1,11 @@
+/* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
 import React from 'react';
 import {Link, useHistory} from 'react-router-dom';
 import './header.css';
 import {useLocation} from 'react-router-dom';
 import {RESOURCE} from '../../data/constants/routeConstants';
+import {PRIVATE_MENU_LINKS} from './componentConstants';
 
 const PrivateHeader = () => {
 	const history = useHistory();
@@ -15,7 +17,7 @@ const PrivateHeader = () => {
 		history.push(`/${RESOURCE.LOGIN}`);
 	};
 
-	const splitLocation = pathname.split('/');
+	const splitLocation = pathname.split('/').reverse();
 
 	return (
 		<header>
@@ -36,10 +38,11 @@ const PrivateHeader = () => {
 				</div>
 				<nav>
 					<ul className='nav__links'>
-						<li className={splitLocation[splitLocation.length - 1] === `${RESOURCE.USERS_LIST}` ? 'active' : ''}><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.USERS_LIST}`}>User Controller</Link></li>
-						<li className={splitLocation[splitLocation.length - 1] === `${RESOURCE.CITIES_LIST}` ? 'active' : ''}><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`}>City Controller</Link></li>
-						<li className={splitLocation[splitLocation.length - 1] === `${RESOURCE.MASTERS_LIST}` ? 'active' : ''}><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`}>Master Controller</Link></li>
-						<li className={splitLocation[splitLocation.length - 1] === `${RESOURCE.ORDERS_LIST}` ? 'active' : ''}><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`}>Order Controller</Link></li>
+						{
+							PRIVATE_MENU_LINKS.map((link) => (
+								<li className={splitLocation[0] === link.name ? 'active' : ''}><Link to={link.path}>{`${link.title}`}</Link></li>
+							))
+						}
 					</ul>
 				</nav>
 				<button className='header-button' onClick={logout}>Logout</button>

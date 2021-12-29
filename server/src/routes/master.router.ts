@@ -4,7 +4,7 @@ import {getAvailableMasters} from '../controller/master.controller';
 
 const router = Router();
 
-router.get(`/${URL.AVAILABLE_MASTER}`, getAvailableMasters);
+router.get(URL.AVAILABLE_MASTER, getAvailableMasters);
 
 
 export default router;

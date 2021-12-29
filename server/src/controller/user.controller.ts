@@ -6,7 +6,7 @@ export const postUser = async (req: Request, res: Response) => {
 	try {
 		const {name, email} = req.body;
 
-		const user = await db.User.create({name, email});
+		const user = await db.User.create({name, email, role: 'client'});
 
 		res.status(201).json(user);
 	} catch (error) {
@@ -16,7 +16,7 @@ export const postUser = async (req: Request, res: Response) => {
 
 
 export const getUsers = async (req: Request, res: Response) => {
-	const users = await db.User.findAll();
+	const users = await db.User.findAll({where: {role: 'client'}});
 
 	res.status(200).json(users);
 };
@@ -31,7 +31,7 @@ export const putUser = async (req: Request, res: Response) => {
 			where: {email},
 		});
 
-		if ((!userChecking) || (userChecking.id === +id)) {
+		if ((!userChecking) || (userChecking.id === id)) {
 			const user = await db.User.updateById(id, {name, email});
 
 			res.status(200).json(user);

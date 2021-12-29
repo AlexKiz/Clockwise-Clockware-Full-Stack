@@ -14,15 +14,15 @@ export default (sequelize: any, DataTypes:any) => {
 		public id!: number;
 		public name!: string;
 
-		static findById(entityId: number | number[]) {
+		static findById(entityId: number) {
 			return this.findAll({where: {id: entityId}});
 		}
 
-		static updateById(entityId: number, {...options}) {
-			return this.update({...options}, {where: {id: entityId}});
+		static updateById(entityId: number, {...values}) {
+			return this.update({...values}, {where: {id: entityId}});
 		}
 
-		static deleteById(entityId: number | number[]) {
+		static deleteById(entityId: number) {
 			return this.destroy({where: {id: entityId}});
 		}
 

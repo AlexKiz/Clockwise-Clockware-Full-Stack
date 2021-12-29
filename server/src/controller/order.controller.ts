@@ -10,7 +10,7 @@ export const postOrder = async (req: Request, res: Response) => {
 	try {
 		const {name, email, clockId, cityId, masterId, startWorkOn, endWorkOn} = req.body;
 
-		const [user, isUserCreated] = await db.User.findOrCreate({where: {email}, defaults: {email, name}});
+		const [user, isUserCreated] = await db.User.findOrCreate({where: {email}, defaults: {email, name, role: 'client'}});
 
 		const {id: userId} = user;
 
@@ -65,12 +65,11 @@ export const getOrders = async (req: Request, res: Response) => {
 	res.status(200).json(orders);
 };
 
-
 export const getOrderForRate = async (req: Request, res: Response) => {
 	try {
 		const {ratingIdentificator} = req.query;
 
-		const orderForRate = await db.Order.findAll({
+		const orderForRate = await db.Order.findOne({
 			attributes: ['id', 'startWorkOn', 'endWorkOn'],
 			where: {
 				ratingIdentificator: ratingIdentificator,
@@ -148,15 +147,6 @@ export const putOrder = async (req: Request, res: Response) => {
 	try {
 		const {id, clockId, userId, cityId, masterId, startWorkOn, endWorkOn} = req.body;
 
-		const updateOrder = await db.Order.updateById(id, {
-			clockId,
-			userId,
-			cityId,
-			masterId,
-			startWorkOn,
-			endWorkOn,
-		});
-
 		const order = await db.Order.updateById(id, {
 			clockId,
 			userId,
@@ -184,3 +174,5 @@ export const deleteOrder = async (req: Request, res: Response) => {
 		res.status(500).send();
 	}
 };
+
+
