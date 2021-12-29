@@ -17,6 +17,8 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
+	TableFooter,
+	TablePagination,
 	Button,
 	Paper,
 	tableCellClasses,
@@ -34,8 +36,6 @@ import {
 	Modal,
 	ImageList,
 	ImageListItem,
-	TableFooter,
-	TablePagination,
 } from '@mui/material';
 import {
 	DesktopDateRangePicker,
