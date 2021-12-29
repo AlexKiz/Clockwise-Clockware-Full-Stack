@@ -13,6 +13,8 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
+	TableFooter,
+	TablePagination,
 	Button,
 	Paper,
 	tableCellClasses,
