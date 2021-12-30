@@ -244,7 +244,7 @@ const UserList: FC<UserListProps> = () => {
 							<TableRow>
 								<TablePagination
 									rowsPerPageOptions={[5, 10, 25, {label: 'All', value: totalUsers}]}
-									colSpan={5}
+									colSpan={4}
 									count={totalUsers}
 									rowsPerPage={rowsPerPage}
 									page={page}
