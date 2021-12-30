@@ -16,9 +16,13 @@ import {
 	Button,
 	Paper,
 	tableCellClasses,
+	TableFooter,
+	TablePagination,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import PrivateHeader from 'src/components/Headers/PrivateHeader';
+import TablePaginationActions from '../../../Pagination/TablePaginationActions';
+
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -43,21 +47,25 @@ const MastersList: FC<MasterListProps> = () => {
 	const [masters, setMasters] = useState<Master[]>([]);
 
 	const [notify, setNotify] = useState<boolean>(false);
-
-	const isOpen = (value:boolean) => {
-		setNotify(value);
-	};
+	const [page, setPage] = useState<number>(0);
+	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+	const [totalMasters, setTotalMasters] = useState<number>(0);
 
 
 	useEffect(() => {
 		const readMastersData = async () => {
-			const {data} = await axios.get<Master[]>(URL.MASTER);
-
-			setMasters(data);
+			const {data} = await axios.get<{count: number, rows: Master[]}>(URL.MASTER, {
+				params: {
+					limit: rowsPerPage,
+					offset: rowsPerPage * page,
+				},
+			});
+			setMasters(data.rows);
+			setTotalMasters(data.count);
 		};
 
 		readMastersData();
-	}, []);
+	}, [rowsPerPage, page]);
 
 
 	const onDelete = (id: string) => {
@@ -72,6 +80,24 @@ const MastersList: FC<MasterListProps> = () => {
 				setNotify(true);
 			});
 		}
+	};
+
+	const isOpen = (value:boolean) => {
+		setNotify(value);
+	};
+
+	const handleChangePage = (
+		event: React.MouseEvent<HTMLButtonElement> | null,
+		newPage: number,
+	) => {
+		setPage(newPage);
+	};
+
+	const handleChangeRowsPerPage = (
+		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+	) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
 	};
 
 
@@ -134,6 +160,26 @@ const MastersList: FC<MasterListProps> = () => {
 								</StyledTableRow>
 							))}
 						</TableBody>
+						<TableFooter>
+							<TableRow>
+								<TablePagination
+									rowsPerPageOptions={[5, 10, 25, {label: 'All', value: totalMasters}]}
+									colSpan={5}
+									count={totalMasters}
+									rowsPerPage={rowsPerPage}
+									page={page}
+									SelectProps={{
+										inputProps: {
+											'aria-label': 'rows per page',
+										},
+										native: true,
+									}}
+									onPageChange={handleChangePage}
+									onRowsPerPageChange={handleChangeRowsPerPage}
+									ActionsComponent={TablePaginationActions}
+								/>
+							</TableRow>
+						</TableFooter>
 					</Table>
 				</TableContainer>
 				{

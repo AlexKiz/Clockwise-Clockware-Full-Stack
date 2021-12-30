@@ -16,9 +16,15 @@ export const postCity = async (req: Request, res: Response) => {
 
 
 export const getCities = async (req: Request, res: Response) => {
-	const cities = await db.City.findAll();
+	const {limit, offset} = req.query;
 
-	res.status(200).json(cities);
+	if (limit && offset) {
+		const cities = await db.City.findAndCountAll({limit, offset});
+		return res.status(200).json(cities);
+	} else {
+		const cities = await db.City.findAll();
+		return res.status(200).json(cities);
+	}
 };
 
 export const getCityForUpdate = async (req: Request, res: Response) => {

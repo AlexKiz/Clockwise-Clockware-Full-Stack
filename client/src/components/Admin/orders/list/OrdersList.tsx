@@ -54,8 +54,8 @@ const OrdersList: FC<OrdersListProps> = () => {
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
 	const [totalOrders, setTotalOrders] = useState<number>(0);
-	const [sortedField, setSortField] = useState<string>('startWorkOn');
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+	const [sortedField, setSortField] = useState<string>('id');
+	const [sortingOrder, setSortingOrder] = useState<'asc' | 'desc'>('asc');
 
 
 	useEffect(() => {
@@ -64,6 +64,8 @@ const OrdersList: FC<OrdersListProps> = () => {
 				params: {
 					limit: rowsPerPage,
 					offset: rowsPerPage * page,
+					sortedField,
+					sortingOrder,
 				},
 			});
 			setOrders(data.rows);
@@ -71,7 +73,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 		};
 
 		readOrdersData();
-	}, [rowsPerPage, page]);
+	}, [rowsPerPage, page, sortedField, sortingOrder]);
 
 
 	const onDelete = (id: string) => {
@@ -106,6 +108,12 @@ const OrdersList: FC<OrdersListProps> = () => {
 		setPage(0);
 	};
 
+	const handleRequestSort = (field: string) => {
+		const isAsc = sortedField === field && sortingOrder === 'asc';
+		setSortingOrder(isAsc ? 'desc' : 'asc');
+		setSortField(field);
+	};
+
 
 	return (
 		<div>
@@ -118,14 +126,36 @@ const OrdersList: FC<OrdersListProps> = () => {
 								<StyledTableCell sx={{width: '6%'}}>
 									<TableSortLabel
 										active={sortedField === 'id' ? true : false}
-										direction={sortedField === 'id' ? sortOrder : 'asc'}
+										direction={sortedField === 'id' ? sortingOrder : 'asc'}
+										onClick={() => {
+											handleRequestSort('id');
+										}}
 									>
 										Id
-
+										{sortedField === 'id' ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
 									</TableSortLabel>
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '8%'}} align="center">
-									Clock size
+									<TableSortLabel
+										active={sortedField === 'size' ? true : false}
+										direction={sortedField === 'size' ? sortingOrder : 'asc'}
+										onClick={() => {
+											handleRequestSort('size');
+										}}
+									>
+										Clock size
+										{sortedField === 'size' ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '11%'}} align="center">
 									User name

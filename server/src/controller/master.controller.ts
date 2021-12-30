@@ -19,13 +19,19 @@ export const postMaster = async (req: Request, res: Response) => {
 
 
 export const getMasters = async (req: Request, res: Response) => {
-	const masters = await db.Master.findAll({
+	const {limit, offset} = req.query;
+
+	const masters = await db.Master.findAndCountAll({
 		attributes: ['id', 'name', 'rating'],
 		include: {
 			model: db.City,
 			attributes: ['id', 'name'],
+			require: true,
 			through: {attributes: []},
 		},
+		distinct: true,
+		limit,
+		offset,
 	});
 
 	res.status(200).json(masters);

@@ -23,7 +23,13 @@ export const userRegistration = async (req: Request, res: Response) => {
 
 
 export const getUsers = async (req: Request, res: Response) => {
-	const users = await db.User.findAll({where: {role: 'client'}});
+	const {limit, offset} = req.query;
+
+	const users = await db.User.findAndCountAll({
+		where: {role: 'client'},
+		limit,
+		offset,
+	});
 
 	res.status(200).json(users);
 };

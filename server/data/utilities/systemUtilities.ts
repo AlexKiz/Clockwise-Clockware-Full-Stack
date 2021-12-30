@@ -47,11 +47,14 @@ type roleMappingOrderGetParams = {
 	offset: number,
 	masterId: string,
 	id: string,
+	sortedField: string,
+	sortingOrder: string,
 }
 
 const getAdminOrders = async (params: roleMappingOrderGetParams) => {
 	const orders = await db.Order.findAll({
 		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
+		order: [[`${params.sortedField}`, `${params.sortingOrder}`]],
 		include: [
 			{
 				model: db.Clock,

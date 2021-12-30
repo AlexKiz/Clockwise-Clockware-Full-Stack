@@ -16,9 +16,13 @@ import {
 	Button,
 	Paper,
 	tableCellClasses,
+	TableFooter,
+	TablePagination,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import PrivateHeader from '../../../Headers/PrivateHeader';
+import TablePaginationActions from '../../../Pagination/TablePaginationActions';
+
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -42,20 +46,25 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 const CitiesList: FC<CitiesListProps> = () => {
 	const [cities, setCities] = useState<City[]>([]);
 	const [notify, setNotify] = useState<boolean>(false);
+	const [page, setPage] = useState<number>(0);
+	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+	const [totalCities, setTotalCities] = useState<number>(0);
 
-	const isOpen = (value:boolean) => {
-		setNotify(value);
-	};
 
 	useEffect(()=> {
 		const readCitiesData = async () => {
-			const {data} = await axios.get<City[]>(URL.CITY);
-
-			setCities(data);
+			const {data} = await axios.get<{count: number, rows: City[]}>(URL.CITY, {
+				params: {
+					limit: rowsPerPage,
+					offset: rowsPerPage * page,
+				},
+			});
+			setCities(data.rows);
+			setTotalCities(data.count);
 		};
 
 		readCitiesData();
-	}, []);
+	}, [rowsPerPage, page]);
 
 
 	const onDelete = (id: number) => {
@@ -68,6 +77,24 @@ const CitiesList: FC<CitiesListProps> = () => {
 				setNotify(true);
 			});
 		}
+	};
+
+	const isOpen = (value:boolean) => {
+		setNotify(value);
+	};
+
+	const handleChangePage = (
+		event: React.MouseEvent<HTMLButtonElement> | null,
+		newPage: number,
+	) => {
+		setPage(newPage);
+	};
+
+	const handleChangeRowsPerPage = (
+		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+	) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
 	};
 
 
@@ -122,6 +149,26 @@ const CitiesList: FC<CitiesListProps> = () => {
 								</StyledTableRow>
 							))}
 						</TableBody>
+						<TableFooter>
+							<TableRow>
+								<TablePagination
+									rowsPerPageOptions={[5, 10, 25, {label: 'All', value: totalCities}]}
+									colSpan={3}
+									count={totalCities}
+									rowsPerPage={rowsPerPage}
+									page={page}
+									SelectProps={{
+										inputProps: {
+											'aria-label': 'rows per page',
+										},
+										native: true,
+									}}
+									onPageChange={handleChangePage}
+									onRowsPerPageChange={handleChangeRowsPerPage}
+									ActionsComponent={TablePaginationActions}
+								/>
+							</TableRow>
+						</TableFooter>
 					</Table>
 				</TableContainer>
 				{

@@ -16,9 +16,12 @@ import {
 	Button,
 	Paper,
 	tableCellClasses,
+	TableFooter,
+	TablePagination,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import PrivateHeader from 'src/components/Headers/PrivateHeader';
+import TablePaginationActions from '../../../Pagination/TablePaginationActions';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -45,21 +48,25 @@ const UserList: FC<UserListProps> = () => {
 	const [users, setUsers] = useState<User[]>([]);
 
 	const [notify, setNotify] = useState<boolean>(false);
-
-	const isOpen = (value:boolean) => {
-		setNotify(value);
-	};
+	const [page, setPage] = useState<number>(0);
+	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+	const [totalUsers, setTotalUsers] = useState<number>(0);
 
 
 	useEffect(() => {
 		const readUsersData = async () => {
-			const {data} = await axios.get<User[]>(URL.USER);
-
-			setUsers(data);
+			const {data} = await axios.get<{count: number, rows:User[]}>(URL.USER, {
+				params: {
+					limit: rowsPerPage,
+					offset: rowsPerPage * page,
+				},
+			});
+			setUsers(data.rows);
+			setTotalUsers(data.count);
 		};
 
 		readUsersData();
-	}, []);
+	}, [rowsPerPage, page]);
 
 
 	const onDelete = (id: string) => {
@@ -76,6 +83,23 @@ const UserList: FC<UserListProps> = () => {
 		}
 	};
 
+	const isOpen = (value:boolean) => {
+		setNotify(value);
+	};
+
+	const handleChangePage = (
+		event: React.MouseEvent<HTMLButtonElement> | null,
+		newPage: number,
+	) => {
+		setPage(newPage);
+	};
+
+	const handleChangeRowsPerPage = (
+		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+	) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
+	};
 
 	return (
 		<div>
@@ -120,6 +144,26 @@ const UserList: FC<UserListProps> = () => {
 								</StyledTableRow>
 							))}
 						</TableBody>
+						<TableFooter>
+							<TableRow>
+								<TablePagination
+									rowsPerPageOptions={[5, 10, 25, {label: 'All', value: totalUsers}]}
+									colSpan={5}
+									count={totalUsers}
+									rowsPerPage={rowsPerPage}
+									page={page}
+									SelectProps={{
+										inputProps: {
+											'aria-label': 'rows per page',
+										},
+										native: true,
+									}}
+									onPageChange={handleChangePage}
+									onRowsPerPageChange={handleChangeRowsPerPage}
+									ActionsComponent={TablePaginationActions}
+								/>
+							</TableRow>
+						</TableFooter>
 					</Table>
 				</TableContainer>
 				{
