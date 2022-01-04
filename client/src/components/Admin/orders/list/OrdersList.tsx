@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
 import classes from './orders-list.module.css';
-import {Order} from '../../../../data/types/types';
+import {Order, City} from '../../../../data/types/types';
 import {OrdersListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {styled} from '@mui/material/styles';
@@ -20,11 +20,25 @@ import {
 	TablePagination,
 	TableSortLabel,
 	Box,
+	IconButton,
+	Select,
+	Stack,
+	Checkbox,
+	FormControlLabel,
+	Autocomplete,
+	TextField,
+	InputLabel,
+	MenuItem,
+	OutlinedInput,
+	FormControl,
 } from '@mui/material';
-import AlertMessage from '../../../Notification/AlertMessage';
+import {FilterList} from '@mui/icons-material';
+import AlertMessage from 'src/components/Notification/AlertMessage';
 import PrivateHeader from '../../../Headers/PrivateHeader';
 import TablePaginationActions from '../../../Pagination/TablePaginationActions';
 import {visuallyHidden} from '@mui/utils';
+import CitiesList from '../../cities/list/CitiesList';
+
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -49,8 +63,10 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 
 const OrdersList: FC<OrdersListProps> = () => {
 	const [orders, setOrders] = useState<Order[]>([]);
+	const [cities, setCities] = useState<City[]>([]);
 
 	const [notify, setNotify] = useState<boolean>(false);
+	const [isFilterListOpen, setIsFilterListOpen] = useState<boolean>(false);
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
 	const [totalOrders, setTotalOrders] = useState<number>(0);
@@ -74,6 +90,19 @@ const OrdersList: FC<OrdersListProps> = () => {
 
 		readOrdersData();
 	}, [rowsPerPage, page, sortedField, sortingOrder]);
+
+
+	useEffect(() => {
+		const readCitiesData = async () => {
+			const {data} = await axios.get<City[]>(URL.CITY);
+
+			if (data.length) {
+				setCities(data);
+			}
+		};
+
+		readCitiesData();
+	}, []);
 
 
 	const onDelete = (id: string) => {
@@ -114,13 +143,72 @@ const OrdersList: FC<OrdersListProps> = () => {
 		setSortField(field);
 	};
 
+	const handleFilterList = () => {
+		setIsFilterListOpen((prev) => !prev);
+	};
 
 	return (
 		<div>
 			<PrivateHeader/>
 			<div className={classes.conteiner}>
+				{
+					isFilterListOpen &&
+					<Box
+						sx={{
+							width: '100%',
+							backgroundColor: 'secondary.main',
+							padding: 3,
+						}}
+					>
+						<Stack
+							direction="row"
+							justifyContent="center"
+							alignItems="center"
+							spacing={5}
+						>
+							<Autocomplete
+								disablePortal
+								id="combo-box-demo"
+								options={[{label: 'master 1'},
+									{label: 'master 2'}]}
+								sx={{width: 300, height: 25}}
+								renderInput={(params) => <TextField {...params} label="Sort on master name" />}
+							/>
+							<Select
+								id='cityId'
+								name='cityId'
+								labelId='cityId'
+								sx={{height: 25}}
+								displayEmpty
+								label="City"
+							></Select>
+							<Select
+								id='clockId'
+								name='clockId'
+								labelId='clockId'
+								sx={{height: 25}}
+								displayEmpty
+								label="Clock"
+							></Select>
+							<FormControlLabel
+								control={
+									<Checkbox name="isCompleted" />
+								}
+								label="Only completed orders"
+							/>
+							<Button
+								variant="contained"
+								type="submit"
+								style={ {fontSize: 14, backgroundColor: 'green', borderRadius: 15} }
+							>
+								Accept filters
+							</Button>
+						</Stack>
+					</Box>
+				}
 				<TableContainer component={Paper} sx={{width: '100%'}} className={classes.conteiner_table}>
 					<Table sx={{minWidth: 650}} aria-label="customized table">
+
 						<TableHead>
 							<TableRow>
 								<StyledTableCell sx={{width: '6%'}}>
@@ -142,14 +230,14 @@ const OrdersList: FC<OrdersListProps> = () => {
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '8%'}} align="center">
 									<TableSortLabel
-										active={sortedField === 'size' ? true : false}
-										direction={sortedField === 'size' ? sortingOrder : 'asc'}
+										active={sortedField === 'clock.size' ? true : false}
+										direction={sortedField === 'clock.size' ? sortingOrder : 'asc'}
 										onClick={() => {
-											handleRequestSort('size');
+											handleRequestSort('clock.size');
 										}}
 									>
 										Clock size
-										{sortedField === 'size' ? (
+										{sortedField === 'clock.size' ? (
 											<Box
 												component="span"
 												sx={visuallyHidden}
@@ -158,24 +246,117 @@ const OrdersList: FC<OrdersListProps> = () => {
 									</TableSortLabel>
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '11%'}} align="center">
-									User name
+									<TableSortLabel
+										active={sortedField === 'user.name' ? true : false}
+										direction={sortedField === 'user.name' ? sortingOrder : 'asc'}
+										onClick={() => {
+											handleRequestSort('user.name');
+										}}
+									>
+										User name
+										{sortedField === 'user.name' ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '18%'}} align="center">
-									User Email
+									<TableSortLabel
+										active={sortedField === 'user.email' ? true : false}
+										direction={sortedField === 'user.email' ? sortingOrder : 'asc'}
+										onClick={() => {
+											handleRequestSort('user.email');
+										}}
+									>
+										User Email
+										{sortedField === 'user.email' ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '8%'}} align="center">
-									City
+									<TableSortLabel
+										active={sortedField === 'city.name' ? true : false}
+										direction={sortedField === 'city.name' ? sortingOrder : 'asc'}
+										onClick={() => {
+											handleRequestSort('city.name');
+										}}
+									>
+										City
+										{sortedField === 'city.name' ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '11%'}} align="center">
-									Master Name
+									<TableSortLabel
+										active={sortedField === 'master.name' ? true : false}
+										direction={sortedField === 'master.name' ? sortingOrder : 'asc'}
+										onClick={() => {
+											handleRequestSort('master.name');
+										}}
+									>
+										Master Name
+										{sortedField === 'master.name' ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '10%'}} align="center">
-									Start on
+									<TableSortLabel
+										active={sortedField === 'startWorkOn' ? true : false}
+										direction={sortedField === 'startWorkOn' ? sortingOrder : 'asc'}
+										onClick={() => {
+											handleRequestSort('startWorkOn');
+										}}
+									>
+										Start On
+										{sortedField === 'startWorkOn' ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '10%'}} align="center">
-									Finish on
+									<TableSortLabel
+										active={sortedField === 'endWorkOn' ? true : false}
+										direction={sortedField === 'endWorkOn' ? sortingOrder : 'asc'}
+										onClick={() => {
+											handleRequestSort('endWorkOn');
+										}}
+									>
+										Finish On
+										{sortedField === 'endWorkOn' ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
 								</StyledTableCell>
-								<StyledTableCell sx={{width: '20%'}} align="center"></StyledTableCell>
+								<StyledTableCell sx={{width: '20%'}} align="right">
+									<IconButton
+										style={{marginLeft: 'auto'}}
+										color='inherit'
+										aria-label='filterButton'
+										onClick={handleFilterList}
+									>
+										<FilterList />
+									</IconButton>
+								</StyledTableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>

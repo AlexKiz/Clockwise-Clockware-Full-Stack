@@ -18,10 +18,13 @@ import {
 	tableCellClasses,
 	TableFooter,
 	TablePagination,
+	TableSortLabel,
+	Box,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import PrivateHeader from 'src/components/Headers/PrivateHeader';
 import TablePaginationActions from '../../../Pagination/TablePaginationActions';
+import {visuallyHidden} from '@mui/utils';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -43,6 +46,7 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 	},
 }));
 
+
 const MastersList: FC<MasterListProps> = () => {
 	const [masters, setMasters] = useState<Master[]>([]);
 
@@ -50,6 +54,8 @@ const MastersList: FC<MasterListProps> = () => {
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
 	const [totalMasters, setTotalMasters] = useState<number>(0);
+	const [sortedField, setSortField] = useState<string>('id');
+	const [sortingOrder, setSortingOrder] = useState<'asc' | 'desc'>('asc');
 
 
 	useEffect(() => {
@@ -58,6 +64,8 @@ const MastersList: FC<MasterListProps> = () => {
 				params: {
 					limit: rowsPerPage,
 					offset: rowsPerPage * page,
+					sortedField,
+					sortingOrder,
 				},
 			});
 			setMasters(data.rows);
@@ -65,7 +73,7 @@ const MastersList: FC<MasterListProps> = () => {
 		};
 
 		readMastersData();
-	}, [rowsPerPage, page]);
+	}, [rowsPerPage, page, sortedField, sortingOrder]);
 
 
 	const onDelete = (id: string) => {
@@ -100,6 +108,12 @@ const MastersList: FC<MasterListProps> = () => {
 		setPage(0);
 	};
 
+	const handleRequestSort = (field: string) => {
+		const isAsc = sortedField === field && sortingOrder === 'asc';
+		setSortingOrder(isAsc ? 'desc' : 'asc');
+		setSortField(field);
+	};
+
 
 	return (
 		<div>
@@ -109,10 +123,58 @@ const MastersList: FC<MasterListProps> = () => {
 					<Table sx={{minWidth: 350}} aria-label="customized table">
 						<TableHead>
 							<TableRow>
-								<StyledTableCell sx={{width: '10%'}}>Id</StyledTableCell>
-								<StyledTableCell sx={{width: '20%'}} align="center">Master name</StyledTableCell>
+								<StyledTableCell sx={{width: '10%'}}>
+									<TableSortLabel
+										active={sortedField === 'id' ? true : false}
+										direction={sortedField === 'id' ? sortingOrder : 'asc'}
+										onClick={() => {
+											handleRequestSort('id');
+										}}
+									>
+										Id
+										{sortedField === 'id' ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
+								</StyledTableCell>
+								<StyledTableCell sx={{width: '20%'}} align="center">
+									<TableSortLabel
+										active={sortedField === 'name' ? true : false}
+										direction={sortedField === 'name' ? sortingOrder : 'asc'}
+										onClick={() => {
+											handleRequestSort('name');
+										}}
+									>
+										Master name
+										{sortedField === 'name' ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
+								</StyledTableCell>
 								<StyledTableCell sx={{width: '25%'}} align="center">Cities</StyledTableCell>
-								<StyledTableCell sx={{width: '25%'}} align="center">Rating</StyledTableCell>
+								<StyledTableCell sx={{width: '25%'}} align="center">
+									<TableSortLabel
+										active={sortedField === 'rating' ? true : false}
+										direction={sortedField === 'rating' ? sortingOrder : 'asc'}
+										onClick={() => {
+											handleRequestSort('rating');
+										}}
+									>
+										Rating
+										{sortedField === 'rating' ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
+								</StyledTableCell>
 								<StyledTableCell sx={{width: '20%'}} align="center">
 									<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.MASTER_CREATE}`}>
 										<Button

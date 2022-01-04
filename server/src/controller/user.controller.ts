@@ -23,9 +23,10 @@ export const userRegistration = async (req: Request, res: Response) => {
 
 
 export const getUsers = async (req: Request, res: Response) => {
-	const {limit, offset} = req.query;
+	const {limit, offset, sortedField, sortingOrder} = req.query;
 
 	const users = await db.User.findAndCountAll({
+		order: [[`${sortedField}`, `${sortingOrder}`]],
 		where: {role: 'client'},
 		limit,
 		offset,

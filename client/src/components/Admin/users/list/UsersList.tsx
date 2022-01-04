@@ -18,10 +18,13 @@ import {
 	tableCellClasses,
 	TableFooter,
 	TablePagination,
+	TableSortLabel,
+	Box,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import PrivateHeader from 'src/components/Headers/PrivateHeader';
 import TablePaginationActions from '../../../Pagination/TablePaginationActions';
+import {visuallyHidden} from '@mui/utils';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -51,6 +54,8 @@ const UserList: FC<UserListProps> = () => {
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
 	const [totalUsers, setTotalUsers] = useState<number>(0);
+	const [sortedField, setSortField] = useState<string>('id');
+	const [sortingOrder, setSortingOrder] = useState<'asc' | 'desc'>('asc');
 
 
 	useEffect(() => {
@@ -59,6 +64,8 @@ const UserList: FC<UserListProps> = () => {
 				params: {
 					limit: rowsPerPage,
 					offset: rowsPerPage * page,
+					sortedField,
+					sortingOrder,
 				},
 			});
 			setUsers(data.rows);
@@ -66,7 +73,7 @@ const UserList: FC<UserListProps> = () => {
 		};
 
 		readUsersData();
-	}, [rowsPerPage, page]);
+	}, [rowsPerPage, page, sortedField, sortingOrder]);
 
 
 	const onDelete = (id: string) => {
@@ -101,6 +108,12 @@ const UserList: FC<UserListProps> = () => {
 		setPage(0);
 	};
 
+	const handleRequestSort = (field: string) => {
+		const isAsc = sortedField === field && sortingOrder === 'asc';
+		setSortingOrder(isAsc ? 'desc' : 'asc');
+		setSortField(field);
+	};
+
 	return (
 		<div>
 			<PrivateHeader/>
@@ -109,9 +122,57 @@ const UserList: FC<UserListProps> = () => {
 					<Table sx={{minWidth: 350}} aria-label="customized table">
 						<TableHead>
 							<TableRow>
-								<StyledTableCell sx={{width: '10%'}}>Id</StyledTableCell>
-								<StyledTableCell sx={{width: '25%'}} align="center">User name</StyledTableCell>
-								<StyledTableCell sx={{width: '30%'}} align="center">Email</StyledTableCell>
+								<StyledTableCell sx={{width: '10%'}}>
+									<TableSortLabel
+										active={sortedField === 'id' ? true : false}
+										direction={sortedField === 'id' ? sortingOrder : 'asc'}
+										onClick={() => {
+											handleRequestSort('id');
+										}}
+									>
+										Id
+										{sortedField === 'id' ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
+								</StyledTableCell>
+								<StyledTableCell sx={{width: '25%'}} align="center">
+									<TableSortLabel
+										active={sortedField === 'name' ? true : false}
+										direction={sortedField === 'name' ? sortingOrder : 'asc'}
+										onClick={() => {
+											handleRequestSort('name');
+										}}
+									>
+										User name
+										{sortedField === 'name' ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
+								</StyledTableCell>
+								<StyledTableCell sx={{width: '30%'}} align="center">
+									<TableSortLabel
+										active={sortedField === 'email' ? true : false}
+										direction={sortedField === 'email' ? sortingOrder : 'asc'}
+										onClick={() => {
+											handleRequestSort('email');
+										}}
+									>
+										Email
+										{sortedField === 'email' ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
+								</StyledTableCell>
 								<StyledTableCell sx={{width: '35%'}} align="center"></StyledTableCell>
 							</TableRow>
 						</TableHead>

@@ -19,10 +19,11 @@ export const postMaster = async (req: Request, res: Response) => {
 
 
 export const getMasters = async (req: Request, res: Response) => {
-	const {limit, offset} = req.query;
+	const {limit, offset, sortedField, sortingOrder} = req.query;
 
 	const masters = await db.Master.findAndCountAll({
 		attributes: ['id', 'name', 'rating'],
+		order: [[db.sequelize.col(`${sortedField}`), `${sortingOrder}`]],
 		include: {
 			model: db.City,
 			attributes: ['id', 'name'],

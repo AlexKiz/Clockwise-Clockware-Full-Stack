@@ -18,10 +18,13 @@ import {
 	tableCellClasses,
 	TableFooter,
 	TablePagination,
+	TableSortLabel,
+	Box,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import PrivateHeader from '../../../Headers/PrivateHeader';
 import TablePaginationActions from '../../../Pagination/TablePaginationActions';
+import {visuallyHidden} from '@mui/utils';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -49,6 +52,8 @@ const CitiesList: FC<CitiesListProps> = () => {
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
 	const [totalCities, setTotalCities] = useState<number>(0);
+	const [sortedField, setSortField] = useState<string>('id');
+	const [sortingOrder, setSortingOrder] = useState<'asc' | 'desc'>('asc');
 
 
 	useEffect(()=> {
@@ -57,6 +62,8 @@ const CitiesList: FC<CitiesListProps> = () => {
 				params: {
 					limit: rowsPerPage,
 					offset: rowsPerPage * page,
+					sortedField,
+					sortingOrder,
 				},
 			});
 			setCities(data.rows);
@@ -64,7 +71,7 @@ const CitiesList: FC<CitiesListProps> = () => {
 		};
 
 		readCitiesData();
-	}, [rowsPerPage, page]);
+	}, [rowsPerPage, page, sortedField, sortingOrder]);
 
 
 	const onDelete = (id: number) => {
@@ -97,6 +104,11 @@ const CitiesList: FC<CitiesListProps> = () => {
 		setPage(0);
 	};
 
+	const handleRequestSort = (field: string) => {
+		const isAsc = sortedField === field && sortingOrder === 'asc';
+		setSortingOrder(isAsc ? 'desc' : 'asc');
+		setSortField(field);
+	};
 
 	return (
 		<div>
@@ -106,8 +118,40 @@ const CitiesList: FC<CitiesListProps> = () => {
 					<Table sx={{minWidth: 350}} aria-label="customized table">
 						<TableHead>
 							<TableRow>
-								<StyledTableCell sx={{width: '10%'}}>Id</StyledTableCell>
-								<StyledTableCell sx={{width: '25%'}} align="center">Name</StyledTableCell>
+								<StyledTableCell sx={{width: '10%'}}>
+									<TableSortLabel
+										active={sortedField === 'id' ? true : false}
+										direction={sortedField === 'id' ? sortingOrder : 'asc'}
+										onClick={() => {
+											handleRequestSort('id');
+										}}
+									>
+										Id
+										{sortedField === 'id' ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
+								</StyledTableCell>
+								<StyledTableCell sx={{width: '25%'}} align="center">
+									<TableSortLabel
+										active={sortedField === 'name' ? true : false}
+										direction={sortedField === 'name' ? sortingOrder : 'asc'}
+										onClick={() => {
+											handleRequestSort('name');
+										}}
+									>
+										Name
+										{sortedField === 'name' ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
+								</StyledTableCell>
 								<StyledTableCell sx={{width: '30%'}} align="center">
 									<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.CITY_CREATE}`}>
 										<Button
@@ -124,7 +168,7 @@ const CitiesList: FC<CitiesListProps> = () => {
 						<TableBody>
 							{cities.map((city) => (
 								<StyledTableRow key={city.id}>
-									<StyledTableCell component="th" scope="row"> {city.id} </StyledTableCell>
+									<StyledTableCell component="th" scope="row">{city.id}</StyledTableCell>
 									<StyledTableCell align="center"> {city.name} </StyledTableCell>
 									<StyledTableCell align="center">
 										<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.CITY_CREATE}/${city.name}`}>
