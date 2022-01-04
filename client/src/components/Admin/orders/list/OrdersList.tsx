@@ -200,6 +200,19 @@ const OrdersList: FC<OrdersListProps> = () => {
 	}, [clockSize]);
 
 
+	useEffect(() => {
+		const readCitiesData = async () => {
+			const {data} = await axios.get<City[]>(URL.CITY);
+
+			if (data.length) {
+				setCities(data);
+			}
+		};
+
+		readCitiesData();
+	}, []);
+
+
 	const onDelete = (id: string) => {
 		if (window.confirm(`Do you want to delete order #${id.slice(0, 4)}?`)) {
 			axios.delete(URL.ORDER,
