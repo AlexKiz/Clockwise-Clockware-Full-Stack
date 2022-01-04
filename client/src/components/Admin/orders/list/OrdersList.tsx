@@ -2,7 +2,15 @@ import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
 import classes from './orders-list.module.css';
-import {Order, City, Master, Clock, AlertNotification, FiltersList, FilterInstances} from '../../../../data/types/types';
+import {
+	Order,
+	City,
+	Master,
+	Clock,
+	AlertNotification,
+	FiltersList,
+	FilterInstances,
+} from '../../../../data/types/types';
 import {OrdersListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {styled} from '@mui/material/styles';
@@ -28,8 +36,6 @@ import {
 	TextField,
 	LinearProgress,
 	Typography,
-	TableFooter,
-	TablePagination,
 } from '@mui/material';
 import {
 	DesktopDateRangePicker,
