@@ -9,7 +9,25 @@ import classes from '../registration/registration-form.module.css';
 import {RegistrationFormProps, validate} from './componentConstants';
 import {useFormik} from 'formik';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
-import {Button, Checkbox, FilledInput, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, Stack, TextField} from '@mui/material';
+import {
+	Button,
+	Checkbox,
+	FilledInput,
+	FormControl,
+	FormControlLabel,
+	FormGroup,
+	FormHelperText,
+	FormLabel,
+	IconButton,
+	InputAdornment,
+	InputLabel,
+	MenuItem,
+	OutlinedInput,
+	Select,
+	Stack,
+	TextField,
+	Typography,
+} from '@mui/material';
 import {Visibility, VisibilityOff} from '@mui/icons-material';
 import {City} from 'src/data/types/types';
 import AlertMessage from 'src/components/Notification/AlertMessage';
@@ -80,7 +98,13 @@ const RegistrationForm:FC<RegistrationFormProps> = () => {
 
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Enter Email:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Enter Email:
+									</Typography>
 								</div>
 
 								<TextField
@@ -103,7 +127,13 @@ const RegistrationForm:FC<RegistrationFormProps> = () => {
 
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Enter Password:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Enter Password:
+									</Typography>
 								</div>
 
 								<FormControl fullWidth variant="filled">
@@ -159,7 +189,13 @@ const RegistrationForm:FC<RegistrationFormProps> = () => {
 
 							<div className={classes.from_section}>
 								<div className={classes.form_input__label}>
-									<label>Enter your name:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Enter your name:
+									</Typography>
 								</div>
 
 								<TextField
@@ -235,7 +271,13 @@ const RegistrationForm:FC<RegistrationFormProps> = () => {
 							{ formik.values.isMaster ?
 								<div className={classes.form_section}>
 									<div className={classes.form_input__label}>
-										<label>Choose сities:</label>
+										<Typography
+											variant="h6"
+											gutterBottom
+											component="label"
+										>
+											Choose сities:
+										</Typography>
 									</div>
 
 									<FormControl
