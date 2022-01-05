@@ -43,7 +43,7 @@ export const validate = (values: RegistrationFormValues) => {
 	if (!values.password) {
 		errors.password = 'Required';
 	} else if (!VALID.PASSWORD.test(values.password)) {
-		errors.password = 'Password must contains at least 1 special symbol, upper and lower case letters';
+		errors.password = 'Password must contains at least 1 special symbol, 1 number, upper and lower case letters';
 	} else if (values.password.length < 8) {
 		errors.password = 'Password must be at least 8 characters';
 	}

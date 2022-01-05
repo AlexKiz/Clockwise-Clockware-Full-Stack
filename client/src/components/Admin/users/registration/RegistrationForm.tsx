@@ -31,12 +31,11 @@ import AlertMessage from 'src/components/Notification/AlertMessage';
 
 
 const RegistrationForm:FC<RegistrationFormProps> = () => {
-
 	const [cities, setCities] = useState<City[]>([]);
 
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [notify, setNotify] = useState<boolean>(false);
-	const [isDisabled, setIsDisabled] = useState<boolean>(false);
+	const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
 	const isOpen = (value:boolean) => {
 		setNotify(value);
@@ -81,6 +80,19 @@ const RegistrationForm:FC<RegistrationFormProps> = () => {
 
 		readCitiesData();
 	}, []);
+
+
+	useEffect(() => {
+		const someFunc = () => {
+			if (formik.errors.userEmail || formik.errors.password || formik.errors.checkPassword || !formik.errors.licenseAcception) {
+				setIsDisabled(true);
+			} else if (formik.values.userEmail && formik.values.password && formik.values.checkPassword && formik.values.licenseAcception) {
+				setIsDisabled(false);
+			}
+		};
+
+		someFunc();
+	}, [formik.values.userEmail, formik.values.password, formik.values.checkPassword, formik.values.licenseAcception]);
 
 
 	return (
@@ -324,8 +336,8 @@ const RegistrationForm:FC<RegistrationFormProps> = () => {
 						notify && <AlertMessage alertType='success' message='Check your email to verify account' isOpen={isOpen} notify={notify}/>
 					}
 				</div>
-			</div>
 
+			</div>
 		</div>
 	);
 };
