@@ -1,14 +1,12 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
-import {useHistory} from 'react-router-dom';
 import PublicHeader from '../../../Headers/PublicHeader';
 import classes from '../registration/registration-form.module.css';
 import {RegistrationFormProps, validate} from './componentConstants';
 import {useFormik} from 'formik';
-import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
+import {URL} from '../../../../data/constants/routeConstants';
 import {
 	Button,
 	Checkbox,
@@ -17,7 +15,6 @@ import {
 	FormControlLabel,
 	FormGroup,
 	FormHelperText,
-	FormLabel,
 	IconButton,
 	InputAdornment,
 	InputLabel,
@@ -34,7 +31,6 @@ import AlertMessage from 'src/components/Notification/AlertMessage';
 
 
 const RegistrationForm:FC<RegistrationFormProps> = () => {
-	const history = useHistory();
 
 	const [cities, setCities] = useState<City[]>([]);
 
@@ -325,7 +321,7 @@ const RegistrationForm:FC<RegistrationFormProps> = () => {
 						</Stack>
 					</form>
 					{
-						notify ? <AlertMessage alertType='success' message='Check your email to verify account' isOpen={isOpen} notify={notify}/> : ''
+						notify && <AlertMessage alertType='success' message='Check your email to verify account' isOpen={isOpen} notify={notify}/>
 					}
 				</div>
 			</div>
