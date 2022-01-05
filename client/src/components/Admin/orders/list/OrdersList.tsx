@@ -69,20 +69,20 @@ const OrdersList: FC<OrdersListProps> = () => {
 	return (
 		<div className={classes.conteiner}>
 
-			<TableContainer component={Paper} sx={{width: 1/1}} className={classes.conteiner_table}>
+			<TableContainer component={Paper} sx={{width: '100%'}} className={classes.conteiner_table}>
 
 				<Table sx={{minWidth: 650}} aria-label="customized table">
 					<TableHead>
 						<TableRow>
-							<StyledTableCell sx={{width: 1/16}}>Id</StyledTableCell>
-							<StyledTableCell sx={{width: 1/13}} align="center">Clock size</StyledTableCell>
-							<StyledTableCell sx={{width: 1/9}} align="center">User name</StyledTableCell>
-							<StyledTableCell sx={{width: 3/17}} align="center">User Email</StyledTableCell>
-							<StyledTableCell sx={{width: 1/12}} align="center">City</StyledTableCell>
-							<StyledTableCell sx={{width: 1/9}} align="center">Master Name</StyledTableCell>
-							<StyledTableCell sx={{width: 1/10}} align="center">Start on</StyledTableCell>
-							<StyledTableCell sx={{width: 1/10}} align="center">Finish on</StyledTableCell>
-							<StyledTableCell sx={{width: 2/10}} align="center"></StyledTableCell>
+							<StyledTableCell sx={{width: '6%'}}>Id</StyledTableCell>
+							<StyledTableCell sx={{width: '8%'}} align="center">Clock size</StyledTableCell>
+							<StyledTableCell sx={{width: '11%'}} align="center">User name</StyledTableCell>
+							<StyledTableCell sx={{width: '18%'}} align="center">User Email</StyledTableCell>
+							<StyledTableCell sx={{width: '8%'}} align="center">City</StyledTableCell>
+							<StyledTableCell sx={{width: '11%'}} align="center">Master Name</StyledTableCell>
+							<StyledTableCell sx={{width: '10%'}} align="center">Start on</StyledTableCell>
+							<StyledTableCell sx={{width: '10%'}} align="center">Finish on</StyledTableCell>
+							<StyledTableCell sx={{width: '18%'}} align="center"></StyledTableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -102,7 +102,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 									<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CREATE}/${order.id}/${order.user.id}/${order.clock.id}/${order.city.id}/${order.startWorkOn.split('T')[0]}/${order.startWorkOn.split('T')[1]}/${order.master.id}`}>
 										<Button
 											variant="contained"
-											sx={{width: 1/2, fontSize: 14, borderRadius: 15}}
+											sx={{width: '50%', fontSize: 14, borderRadius: 15}}
 										>
 											Update
 										</Button>
@@ -110,7 +110,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 									<Button
 										variant="contained"
 										color='error'
-										sx={{width: 1/2, fontSize: 14, borderRadius: 15}}
+										sx={{width: '50%', fontSize: 14, borderRadius: 15}}
 										onClick={() => {
 											onDelete(order.id);
 										}}

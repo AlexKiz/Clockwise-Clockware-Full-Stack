@@ -19,6 +19,7 @@ import {
 	FormControl,
 	OutlinedInput,
 	FormHelperText,
+	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import {InputLabel} from '@mui/material';
@@ -119,7 +120,13 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 					<Stack direction="column" justifyContent="center" spacing={1.5}>
 						<div className={classes.form_section}>
 							<div className={classes.form_input__label}>
-								<label>Enter master name:</label>
+								<Typography
+									variant="h6"
+									gutterBottom
+									component="label"
+								>
+										Enter master name:
+								</Typography>
 							</div>
 							<TextField
 								id="masterName"
@@ -141,7 +148,13 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 
 						<div className={classes.form_section}>
 							<div className={classes.form_input__label}>
-								<label>Choose master's сity:</label>
+								<Typography
+									variant="h6"
+									gutterBottom
+									component="label"
+								>
+									Choose master's сity:
+								</Typography>
 							</div>
 
 							<FormControl

@@ -8,7 +8,12 @@ import {AlertNotification, City, Params} from '../../../../data/types/types';
 import {CityCreateProps, validate} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {useFormik} from 'formik';
-import {Button, Stack, TextField} from '@mui/material';
+import {
+	Button,
+	Stack,
+	TextField,
+	Typography,
+} from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 
 
@@ -75,7 +80,13 @@ const CityCreate: FC<CityCreateProps> = () => {
 					<Stack direction="column" justifyContent="center" spacing={1.5}>
 						<div className={classes.form_section}>
 							<div className={classes.form_input__label}>
-								<label>Enter city name:</label>
+								<Typography
+									variant="h6"
+									gutterBottom
+									component="label"
+								>
+									Enter city name:
+								</Typography>
 							</div>
 							<TextField
 								id="cityName"

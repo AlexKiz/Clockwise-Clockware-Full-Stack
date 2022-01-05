@@ -8,7 +8,12 @@ import {AlertNotification, Params} from '../../../../data/types/types';
 import {UserCreateProps, validate} from './componentConstant';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {useFormik} from 'formik';
-import {Button, Stack, TextField} from '@mui/material';
+import {
+	Button,
+	Stack,
+	TextField,
+	Typography,
+} from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 
 
@@ -61,7 +66,13 @@ const UserCreate: FC<UserCreateProps> = () => {
 					<Stack direction="column" justifyContent="center" spacing={1.5}>
 						<div className={classes.form_section}>
 							<div className={classes.form_input__label}>
-								<label>Enter User name:</label>
+								<Typography
+									variant="h6"
+									gutterBottom
+									component="label"
+								>
+										Enter User name:
+								</Typography>
 							</div>
 							<TextField
 								id="userName"
@@ -83,7 +94,13 @@ const UserCreate: FC<UserCreateProps> = () => {
 
 						<div className={classes.form_section}>
 							<div className={classes.form_input__label}>
-								<label>Enter User's email:</label>
+								<Typography
+									variant="h6"
+									gutterBottom
+									component="label"
+								>
+										Enter User's email:
+								</Typography>
 							</div>
 							<TextField
 								id="userEmail"

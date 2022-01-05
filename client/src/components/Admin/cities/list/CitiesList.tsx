@@ -66,17 +66,17 @@ const CitiesList: FC<CitiesListProps> = () => {
 
 		<div className={classes.conteiner}>
 
-			<TableContainer component={Paper} sx={{width: 2/5}} className={classes.conteiner_table}>
+			<TableContainer component={Paper} sx={{width: '40%'}} className={classes.conteiner_table}>
 				<Table sx={{minWidth: 350}} aria-label="customized table">
 					<TableHead>
 						<TableRow>
-							<StyledTableCell sx={{width: 1/10}}>Id</StyledTableCell>
-							<StyledTableCell sx={{width: 1/4}} align="center">Name</StyledTableCell>
-							<StyledTableCell sx={{width: 1/5}} align="center">
+							<StyledTableCell sx={{width: '10%'}}>Id</StyledTableCell>
+							<StyledTableCell sx={{width: '25%'}} align="center">Name</StyledTableCell>
+							<StyledTableCell sx={{width: '30%'}} align="center">
 								<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.CITY_CREATE}`}>
 									<Button
 										variant="contained"
-										sx={{width: 1/1, fontSize: 14, borderRadius: 15}}
+										sx={{width: `100%`, fontSize: 14, borderRadius: 15}}
 										color='success'
 									>
 									Create city
@@ -94,7 +94,7 @@ const CitiesList: FC<CitiesListProps> = () => {
 									<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.CITY_CREATE}/${city.id}/${city.name}`}>
 										<Button
 											variant="contained"
-											sx={{width: 1/2, fontSize: 14, borderRadius: 15}}
+											sx={{width: '50%', fontSize: 14, borderRadius: 15}}
 										>
 											Update
 										</Button>
@@ -102,7 +102,7 @@ const CitiesList: FC<CitiesListProps> = () => {
 									<Button
 										variant="contained"
 										color='error'
-										sx={{width: 1/2, fontSize: 14, borderRadius: 15}}
+										sx={{width: '50%', fontSize: 14, borderRadius: 15}}
 										onClick={() => {
 											onDelete(city.id);
 										}}

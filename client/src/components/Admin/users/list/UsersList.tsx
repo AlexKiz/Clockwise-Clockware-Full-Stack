@@ -8,7 +8,17 @@ import {User} from '../../../../data/types/types';
 import {UserListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {styled} from '@mui/material/styles';
-import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, tableCellClasses} from '@mui/material';
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	Button,
+	Paper,
+	tableCellClasses,
+} from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -71,15 +81,15 @@ const UserList: FC<UserListProps> = () => {
 
 		<div className={classes.conteiner}>
 
-			<TableContainer component={Paper} sx={{width: 4/7}} className={classes.conteiner_table}>
+			<TableContainer component={Paper} sx={{width: '57%'}} className={classes.conteiner_table}>
 
 				<Table sx={{minWidth: 350}} aria-label="customized table">
 					<TableHead>
 						<TableRow>
-							<StyledTableCell sx={{width: 1/10}}>Id</StyledTableCell>
-							<StyledTableCell sx={{width: 1/5}} align="center">User name</StyledTableCell>
-							<StyledTableCell sx={{width: 1/4}} align="center">Email</StyledTableCell>
-							<StyledTableCell sx={{width: 2/7}} align="center"></StyledTableCell>
+							<StyledTableCell sx={{width: '10%'}}>Id</StyledTableCell>
+							<StyledTableCell sx={{width: '25%'}} align="center">User name</StyledTableCell>
+							<StyledTableCell sx={{width: '30%'}} align="center">Email</StyledTableCell>
+							<StyledTableCell sx={{width: '35%'}} align="center"></StyledTableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -96,7 +106,7 @@ const UserList: FC<UserListProps> = () => {
 									<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.USER_CREATE}/${user.id}/${user.name}/${user.email}`}>
 										<Button
 											variant="contained"
-											sx={{width: 1/2, fontSize: 14, borderRadius: 15}}
+											sx={{width: '50%', fontSize: 14, borderRadius: 15}}
 										>
 											Update
 										</Button>
@@ -104,7 +114,7 @@ const UserList: FC<UserListProps> = () => {
 									<Button
 										variant="contained"
 										color='error'
-										sx={{width: 1/2, fontSize: 14, borderRadius: 15}}
+										sx={{width: '50%', fontSize: 14, borderRadius: 15}}
 										onClick={() => {
 											onDelete(user.id);
 										}}

@@ -7,7 +7,17 @@ import classes from '../login/login-form.module.css';
 import {LoginFormProps, validate} from './componentConstants';
 import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
 import {useFormik} from 'formik';
-import {Button, FilledInput, FormControl, IconButton, InputAdornment, InputLabel, Stack, TextField} from '@mui/material';
+import {
+	Button,
+	FilledInput,
+	FormControl,
+	IconButton,
+	InputAdornment,
+	InputLabel,
+	Stack,
+	TextField,
+	Typography,
+} from '@mui/material';
 import {Visibility, VisibilityOff} from '@mui/icons-material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 
@@ -63,7 +73,13 @@ const LoginForm:FC<LoginFormProps> = () => {
 						<Stack direction="column" justifyContent="center" spacing={1}>
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Enter Admin Login:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Enter Admin Login:
+									</Typography>
 								</div>
 
 								<TextField
@@ -85,7 +101,13 @@ const LoginForm:FC<LoginFormProps> = () => {
 							</div>
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Enter Admin Password:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+									Enter Admin Password:
+									</Typography>
 								</div>
 								<FormControl fullWidth variant="filled">
 									<InputLabel>Password</InputLabel>

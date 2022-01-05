@@ -147,7 +147,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
-										variant="h5"
+										variant="h6"
 										gutterBottom
 										component="label"
 									>
@@ -174,7 +174,13 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Enter your email:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Enter your email:
+									</Typography>
 								</div>
 
 								<TextField
@@ -197,7 +203,13 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Choose clocksize:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Choose clocksize:
+									</Typography>
 								</div>
 
 								<FormControl
@@ -230,7 +242,13 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Choose your city:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Choose your city:
+									</Typography>
 								</div>
 
 								<FormControl
@@ -263,7 +281,13 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Choose the date:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Choose the date:
+									</Typography>
 								</div>
 
 								<TextField
@@ -283,7 +307,13 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Choose the time:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Choose the time:
+									</Typography>
 								</div>
 
 								<FormControl
@@ -315,7 +345,13 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Available masters:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Available masters:
+									</Typography>
 								</div>
 
 								<FormControl

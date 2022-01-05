@@ -20,6 +20,7 @@ import {
 	InputLabel,
 	FormControl,
 	FormHelperText,
+	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 
@@ -158,7 +159,13 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Choose user:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Choose user:
+									</Typography>
 								</div>
 
 								<FormControl
@@ -192,7 +199,13 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Choose clock size:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Choose clock size:
+									</Typography>
 								</div>
 
 								<FormControl
@@ -226,7 +239,13 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Choose city:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Choose city:
+									</Typography>
 								</div>
 
 								<FormControl
@@ -259,7 +278,13 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Choose date:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Choose date:
+									</Typography>
 								</div>
 
 								<TextField
@@ -279,7 +304,13 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Choose order time:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Choose order time:
+									</Typography>
 								</div>
 
 								<FormControl
@@ -311,7 +342,13 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Available masters:</label>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Available masters:
+									</Typography>
 								</div>
 
 								<FormControl

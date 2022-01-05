@@ -9,7 +9,7 @@ import classes from './rate-order.module.css';
 import {Params, Order, AlertNotification} from '../../../data/types/types';
 import {RateOrderProps} from './componentConstants';
 import {URL} from '../../../data/constants/routeConstants';
-import {Button} from '@mui/material';
+import {Button, Typography} from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 
 const RateOrder: FC<RateOrderProps> = () => {
@@ -78,7 +78,13 @@ const RateOrder: FC<RateOrderProps> = () => {
 							{ order &&
                             <>
                             	<div className={classes.form_master}>
-                            		<label>Please, rate the following master:</label>
+                            		<Typography
+                            			variant="h6"
+                            			gutterBottom
+                            			component="label"
+                            		>
+										Please, rate the following master:
+                            		</Typography>
                             		<p>{order.master.name}</p>
                             	</div>
                             	<div className={classes.form_orderinfo}>

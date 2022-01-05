@@ -69,20 +69,20 @@ const MastersList: FC<MasterListProps> = () => {
 	return (
 		<div className={classes.conteiner}>
 
-			<TableContainer component={Paper} sx={{width: 4/5}} className={classes.conteiner_table}>
+			<TableContainer component={Paper} sx={{width: '80%'}} className={classes.conteiner_table}>
 
 				<Table sx={{minWidth: 350}} aria-label="customized table">
 					<TableHead>
 						<TableRow>
-							<StyledTableCell sx={{width: 1/10}}>Id</StyledTableCell>
-							<StyledTableCell sx={{width: 1/5}} align="center">Master name</StyledTableCell>
-							<StyledTableCell sx={{width: 1/4}} align="center">Cities</StyledTableCell>
-							<StyledTableCell sx={{width: 1/4}} align="center">Rating</StyledTableCell>
-							<StyledTableCell sx={{width: 2/6}} align="center">
+							<StyledTableCell sx={{width: '10%'}}>Id</StyledTableCell>
+							<StyledTableCell sx={{width: '20%'}} align="center">Master name</StyledTableCell>
+							<StyledTableCell sx={{width: '25%'}} align="center">Cities</StyledTableCell>
+							<StyledTableCell sx={{width: '25%'}} align="center">Rating</StyledTableCell>
+							<StyledTableCell sx={{width: '20%'}} align="center">
 								<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.MASTER_CREATE}`}>
 									<Button
 										variant="contained"
-										sx={{width: 1/1, fontSize: 14, borderRadius: 15}}
+										sx={{width: '100%', fontSize: 14, borderRadius: 15}}
 										color='success'
 									>
 									Create master
@@ -111,7 +111,7 @@ const MastersList: FC<MasterListProps> = () => {
 									<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.MASTER_CREATE}/${master.id}/${master.name}`}>
 										<Button
 											variant="contained"
-											sx={{width: 1/2, fontSize: 14, borderRadius: 15}}
+											sx={{width: '50%', fontSize: 14, borderRadius: 15}}
 										>
 											Update
 										</Button>
@@ -119,7 +119,7 @@ const MastersList: FC<MasterListProps> = () => {
 									<Button
 										variant="contained"
 										color='error'
-										sx={{width: 1/2, fontSize: 14, borderRadius: 15}}
+										sx={{width: '50%', fontSize: 14, borderRadius: 15}}
 										onClick={() => {
 											onDelete(master.id);
 										}}
