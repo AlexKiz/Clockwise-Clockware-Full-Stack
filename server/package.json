@@ -7,7 +7,7 @@
     "node": "<= 14.x"
   },
   "scripts": {
-    "start": "cd ../client && npm run build && cd ../server && tsc && node dist/src/index.js",
+    "start": "tsc && node dist/src/index.js",
     "dev": "ts-node src/index.ts",
     "lint": "eslint ../"
   },

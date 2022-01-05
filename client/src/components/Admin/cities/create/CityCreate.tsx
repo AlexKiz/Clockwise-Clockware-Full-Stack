@@ -1,12 +1,14 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable max-len */
 import axios from 'axios';
 import React, {FC, useState} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
 import classes from './city-create-form.module.css';
-import {City, Params} from '../../../../data/types/types';
+import {AlertNotification, City, Params} from '../../../../data/types/types';
 import {CityCreateProps, validate} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {useFormik} from 'formik';
-import {Button, Stack, TextField, AlertColor} from '@mui/material';
+import {Button, Stack, TextField} from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 
 
@@ -15,12 +17,15 @@ const CityCreate: FC<CityCreateProps> = () => {
 
 	const {cityIdParam, cityNameParam} = useParams<Params>();
 
-	const [notify, setNotify] = useState<boolean>(false);
-	const [alertType, setAlertType] = useState<AlertColor>('success');
-	const [message, setMessage] = useState<string>('');
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
+
 
 	const isOpen = (value:boolean) => {
-		setNotify(value);
+		setAlertOptions({...alertOptions, notify: value});
 	};
 
 	const formik = useFormik({
@@ -36,13 +41,11 @@ const CityCreate: FC<CityCreateProps> = () => {
 						id: values.cityId,
 						name: values.cityName,
 					}).then(() => {
-					setMessage('City has been created');
-					setAlertType('success');
-					setNotify(true);
+					setAlertOptions({message: 'City has been created', type: 'success', notify: true});
 					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`);
 				}).catch((error) => {
 					if (Number(error.response.status) === 400) {
-						alert(error.response.data[0]);
+						setAlertOptions({message: error.response.data, type: 'error', notify: true});
 						values.cityName = '';
 					}
 				});
@@ -51,14 +54,10 @@ const CityCreate: FC<CityCreateProps> = () => {
 					id: values.cityId,
 					name: values.cityName,
 				}).then(() => {
-					setMessage('City has been updated');
-					setAlertType('success');
-					setNotify(true);
+					setAlertOptions({message: 'City has been updated', type: 'success', notify: true});
 					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`);
 				}).catch((error) => {
-					setMessage(error.response.data);
-					setAlertType('error');
-					setNotify(true);
+					setAlertOptions({message: error.response.data, type: 'error', notify: true});
 					values.cityName = cityNameParam;
 				});
 			}
@@ -110,7 +109,7 @@ const CityCreate: FC<CityCreateProps> = () => {
 
 				</form>
 				{
-					notify ? <AlertMessage alertType={alertType} message={message} isOpen={isOpen} notify={notify}/> : ''
+					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
 				}
 			</div>
 

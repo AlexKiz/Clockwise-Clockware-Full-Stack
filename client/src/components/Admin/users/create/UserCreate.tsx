@@ -4,11 +4,11 @@ import axios from 'axios';
 import React, {useState, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
 import classes from './user-create-form.module.css';
-import {Params} from '../../../../data/types/types';
+import {AlertNotification, Params} from '../../../../data/types/types';
 import {UserCreateProps, validate} from './componentConstant';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {useFormik} from 'formik';
-import {Button, Stack, TextField, AlertColor} from '@mui/material';
+import {Button, Stack, TextField} from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 
 
@@ -17,12 +17,14 @@ const UserCreate: FC<UserCreateProps> = () => {
 
 	const {userIdParam, userNameParam, userEmailParam} = useParams<Params>();
 
-	const [notify, setNotify] = useState<boolean>(false);
-	const [alertType, setAlertType] = useState<AlertColor>('success');
-	const [message, setMessage] = useState<string>('');
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
 
 	const isOpen = (value:boolean) => {
-		setNotify(value);
+		setAlertOptions({...alertOptions, notify: value});
 	};
 
 	const formik = useFormik({
@@ -39,14 +41,10 @@ const UserCreate: FC<UserCreateProps> = () => {
 					name: values.userName,
 					email: values.userEmail,
 				}).then(() => {
-				setMessage('User has been updated');
-				setAlertType('success');
-				setNotify(true);
+				setAlertOptions({message: 'User has been updated', type: 'success', notify: true});
 				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.USERS_LIST}`);
 			}).catch(() => {
-				setMessage('User with current email already exists');
-				setAlertType('error');
-				setNotify(true);
+				setAlertOptions({message: 'User with current email already exists', type: 'error', notify: true});
 				values.userEmail = userEmailParam;
 			});
 		},
@@ -119,7 +117,7 @@ const UserCreate: FC<UserCreateProps> = () => {
 
 				</form>
 				{
-					notify ? <AlertMessage alertType={alertType} message={message} isOpen={isOpen} notify={notify}/> : ''
+					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
 				}
 			</div>
 

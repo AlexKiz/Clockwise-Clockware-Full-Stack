@@ -1,3 +1,6 @@
+import {AlertColor} from '@mui/material/Alert';
+
+
 export type Params = {
     orderIdParam: string
     userIdParam: string
@@ -46,4 +49,10 @@ export type Order = {
     master: Master
     startWorkOn: string
     endWorkOn: string
+}
+
+export type AlertNotification = {
+    message: string
+    type: AlertColor
+    notify: boolean
 }

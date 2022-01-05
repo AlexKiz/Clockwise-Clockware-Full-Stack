@@ -1,16 +1,18 @@
+/* eslint-disable max-len */
 /* eslint-disable react/jsx-key */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
 import classes from './order-create-form.module.css';
-import {Params, User, Clock, City, Master} from '../../../../data/types/types';
+import {Params, User, Clock, City, Master, AlertNotification} from '../../../../data/types/types';
 import {OPENING_HOURS} from '../../../../data/constants/systemConstants';
 import {OrderCreateProps, validate} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {format} from 'date-fns';
 import {getOrderDates} from 'src/data/utilities/systemUtilities';
 import {useFormik} from 'formik';
-import {Button,
+import {
+	Button,
 	Stack,
 	TextField,
 	Select,
@@ -18,7 +20,7 @@ import {Button,
 	InputLabel,
 	FormControl,
 	FormHelperText,
-	AlertColor} from '@mui/material';
+} from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 
 
@@ -32,12 +34,15 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 	const [cities, setCities] = useState<City[]>([]);
 	const [masters, setMasters] = useState<Master[]>([]);
 
-	const [notify, setNotify] = useState<boolean>(false);
-	const [alertType, setAlertType] = useState<AlertColor>('success');
-	const [message, setMessage] = useState<string>('');
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
+
 
 	const isOpen = (value:boolean) => {
-		setNotify(value);
+		setAlertOptions({...alertOptions, notify: value});
 	};
 
 	const formik = useFormik({
@@ -69,9 +74,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 						startWorkOn: startDate.toISOString(),
 						endWorkOn: endDate.toISOString(),
 					}).then(() => {
-					setMessage('Order has been updated');
-					setAlertType('success');
-					setNotify(true);
+					setAlertOptions({message: 'Order has been updated', type: 'success', notify: true});
 					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
 				});
 			}
@@ -127,9 +130,11 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 				});
 
 				if (!data.length) {
-					setMessage('All masters has been booked at that time. Please choose another time or date');
-					setAlertType('warning');
-					setNotify(true);
+					setAlertOptions({
+						message: 'All masters has been booked at that time. Please choose another time or date',
+						type: 'warning',
+						notify: true,
+					});
 					formik.values.orderTime = '';
 				} else {
 					setMasters(data);
@@ -352,7 +357,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 
 				</div>
 				{
-					notify ? <AlertMessage alertType={alertType} message={message} isOpen={isOpen} notify={notify}/> : ''
+					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
 				}
 			</div>
 		</div>

@@ -122,7 +122,7 @@ const LoginForm:FC<LoginFormProps> = () => {
 					</form>
 				</div>
 				{
-					notify ? <AlertMessage alertType='error' message='Incorrect logging data' isOpen={isOpen} notify={notify}/> : ''
+					notify && <AlertMessage alertType='error' message='Incorrect logging data' isOpen={isOpen} notify={notify}/>
 				}
 			</div>
 		</div>

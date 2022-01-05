@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable require-jsdoc */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/jsx-key */
@@ -5,7 +6,7 @@ import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
 import classes from './master-create-form.module.css';
-import {City, Master, Params} from '../../../../data/types/types';
+import {AlertNotification, City, Master, Params} from '../../../../data/types/types';
 import {MasterCreateProps, validate} from './componentsConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {useFormik} from 'formik';
@@ -18,7 +19,6 @@ import {
 	FormControl,
 	OutlinedInput,
 	FormHelperText,
-	AlertColor,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import {InputLabel} from '@mui/material';
@@ -31,12 +31,14 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 
 	const [cities, setCities] = useState<City[]>([]);
 
-	const [notify, setNotify] = useState<boolean>(false);
-	const [alertType, setAlertType] = useState<AlertColor>('success');
-	const [message, setMessage] = useState<string>('');
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
 
 	const isOpen = (value:boolean) => {
-		setNotify(value);
+		setAlertOptions({...alertOptions, notify: value});
 	};
 
 	const formik = useFormik({
@@ -53,9 +55,7 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 						name: values.masterName,
 						citiesId: values.citiesId,
 					}).then(() =>{
-					setMessage('Master has been created');
-					setAlertType('success');
-					setNotify(true);
+					setAlertOptions({message: 'Master has been created', type: 'success', notify: true});
 					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`);
 				});
 			} else {
@@ -64,9 +64,7 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 					name: values.masterName,
 					citiesId: values.citiesId,
 				}).then(() => {
-					setMessage('Master has been updated');
-					setAlertType('success');
-					setNotify(true);
+					setAlertOptions({message: 'Master has been updated', type: 'success', notify: true});
 					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`);
 				});
 			}
@@ -188,7 +186,7 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 
 				</form>
 				{
-					notify ? <AlertMessage alertType={alertType} message={message} isOpen={isOpen} notify={notify}/> : ''
+					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
 				}
 			</div>
 

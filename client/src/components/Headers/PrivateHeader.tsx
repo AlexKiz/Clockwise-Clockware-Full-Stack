@@ -24,7 +24,7 @@ const PrivateHeader = () => {
 		<header>
 			<div className={classes.wrapper_header}>
 				<div className={classes.wrapper_logo}>
-					<Link to='/admin/orders-list'>
+					<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`}>
 						<div className={classes.inner_logo}>
 							<div className={classes.inner_logo_img}>
 								<div className={classes.logo_img1a}>

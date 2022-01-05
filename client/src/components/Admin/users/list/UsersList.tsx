@@ -119,7 +119,7 @@ const UserList: FC<UserListProps> = () => {
 
 			</TableContainer>
 			{
-				notify ? <AlertMessage alertType='success' message='User has been deleted' isOpen={isOpen} notify={notify}/> : ''
+				notify && <AlertMessage alertType='success' message='User has been deleted' isOpen={isOpen} notify={notify}/>
 			}
 		</div>
 	);

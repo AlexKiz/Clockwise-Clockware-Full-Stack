@@ -1,1 +1,1 @@
-export interface OrderListProps {}
+export interface OrdersListProps {}

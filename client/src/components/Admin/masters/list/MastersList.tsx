@@ -134,7 +134,7 @@ const MastersList: FC<MasterListProps> = () => {
 
 			</TableContainer>
 			{
-				notify ? <AlertMessage alertType='success' message='Master has been deleted' isOpen={isOpen} notify={notify}/> : ''
+				notify && <AlertMessage alertType='success' message='Master has been deleted' isOpen={isOpen} notify={notify}/>
 			}
 		</div>
 	);

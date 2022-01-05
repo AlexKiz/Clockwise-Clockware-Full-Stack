@@ -1,13 +1,24 @@
+/* eslint-disable max-len */
 /* eslint-disable react/jsx-key */
 import React, {useState, useEffect, FC} from 'react';
 import axios from 'axios';
 import classes from './order-form.module.css';
-import {Master, City, Clock} from '../../../data/types/types';
+import {Master, City, Clock, AlertNotification} from '../../../data/types/types';
 import {OPENING_HOURS} from '../../../data/constants/systemConstants';
 import {OrderFormProps, validate} from './componentConstants';
 import {URL} from '../../../data/constants/routeConstants';
 import {format} from 'date-fns';
-import {Button, Stack, TextField, Select, MenuItem, InputLabel, FormControl, FormHelperText, AlertColor} from '@mui/material';
+import {
+	Button,
+	Stack,
+	TextField,
+	Select,
+	MenuItem,
+	InputLabel,
+	FormControl,
+	FormHelperText,
+	Typography,
+} from '@mui/material';
 import PublicHeader from '../../Headers/PublicHeader';
 import {useFormik} from 'formik';
 import AlertMessage from 'src/components/Notification/AlertMessage';
@@ -19,12 +30,14 @@ const OrderForm: FC<OrderFormProps> = () => {
 	const [cities, setCities] = useState<City[]>([]);
 	const [clocks, setClocks] = useState<Clock[]>([]);
 
-	const [notify, setNotify] = useState<boolean>(false);
-	const [alertType, setAlertType] = useState<AlertColor>('success');
-	const [message, setMessage] = useState<string>('');
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
 
 	const isOpen = (value:boolean) => {
-		setNotify(value);
+		setAlertOptions({...alertOptions, notify: value});
 	};
 
 	const formik = useFormik({
@@ -52,9 +65,11 @@ const OrderForm: FC<OrderFormProps> = () => {
 						startWorkOn: startDate,
 						endWorkOn: endDate,
 					}).then(() => {
-					setAlertType('success');
-					setMessage('Your order has been created! Please rate the master afterwards!');
-					setNotify(true);
+					setAlertOptions({
+						message: 'Your order has been created! Please rate the master afterwards!',
+						type: 'success',
+						notify: true,
+					});
 					formik.resetForm();
 				});
 			}
@@ -102,9 +117,11 @@ const OrderForm: FC<OrderFormProps> = () => {
 					});
 
 					if (!data.length) {
-						setMessage('All masters has been booked at that time. Please choose another time or date');
-						setAlertType('warning');
-						setNotify(true);
+						setAlertOptions({
+							message: 'All masters has been booked at that time. Please choose another time or date',
+							type: 'warning',
+							notify: true,
+						});
 						setMasters([]);
 					} else {
 						setMasters(data);
@@ -129,7 +146,13 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
-									<label>Enter your name:</label>
+									<Typography
+										variant="h5"
+										gutterBottom
+										component="label"
+									>
+										Enter your name:
+									</Typography>
 								</div>
 								<TextField
 									id="userName"
@@ -337,7 +360,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 				</div>
 				{
-					notify ? <AlertMessage alertType={alertType} message={message} isOpen={isOpen} notify={notify}/> : ''
+					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
 				}
 			</div>
 		</div>

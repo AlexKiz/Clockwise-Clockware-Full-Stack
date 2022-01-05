@@ -5,7 +5,7 @@ import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
 import classes from './orders-list.module.css';
 import {Order} from '../../../../data/types/types';
-import {OrderListProps} from './componentConstants';
+import {OrdersListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {styled} from '@mui/material/styles';
 import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, tableCellClasses} from '@mui/material';
@@ -30,7 +30,7 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 	},
 }));
 
-const OrdersList: FC<OrderListProps> = () => {
+const OrdersList: FC<OrdersListProps> = () => {
 	const [orders, setOrders] = useState<Order[]>([]);
 
 	const [notify, setNotify] = useState<boolean>(false);
@@ -125,7 +125,7 @@ const OrdersList: FC<OrderListProps> = () => {
 
 			</TableContainer>
 			{
-				notify ? <AlertMessage alertType='success' message='Order has been deleted' isOpen={isOpen} notify={notify}/> : ''
+				notify && <AlertMessage alertType='success' message='Order has been deleted' isOpen={isOpen} notify={notify}/>
 			}
 		</div>
 	);

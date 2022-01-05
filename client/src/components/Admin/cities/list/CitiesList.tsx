@@ -116,7 +116,7 @@ const CitiesList: FC<CitiesListProps> = () => {
 				</Table>
 			</TableContainer>
 			{
-				notify ? <AlertMessage alertType='success' message='City has been deleted' isOpen={isOpen} notify={notify}/> : ''
+				notify && <AlertMessage alertType='success' message='City has been deleted' isOpen={isOpen} notify={notify}/>
 			}
 		</div>
 	);
