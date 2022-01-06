@@ -214,6 +214,61 @@ const OrdersList: FC<OrdersListProps> = () => {
 	}, []);
 
 
+	useEffect(() => {
+		readMasterData();
+	}, [masterName]);
+
+
+	useEffect(() => {
+		readCityData();
+	}, [cityName]);
+
+
+	useEffect(() => {
+		readClockData();
+	}, [clockSize]);
+
+
+	const readMasterData = debouncer(async () => {
+		const {data} = await axios.get<{count: number, rows: Master[]}>(URL.MASTER, {
+			params: {
+				limit: 5,
+				offset: 0,
+				masterName,
+			},
+		});
+
+		if (data.rows.length) {
+			setMasters(data.rows);
+		}
+	}, 200);
+
+	const readCityData = debouncer(async () => {
+		const {data} = await axios.get<{count: number, rows: City[]}>(URL.CITY, {
+			params: {
+				limit: 5,
+				offset: 0,
+				cityName,
+			},
+		});
+
+		if (data.rows.length) {
+			setCities(data.rows);
+		}
+	}, 200);
+
+	const readClockData = debouncer(async () => {
+		const {data} = await axios.get<Clock[]>(URL.CLOCK, {
+			params: {
+				clockSize,
+			},
+		});
+
+		if (data.length) {
+			setClocks(data);
+		}
+	}, 200);
+
 	const onDelete = (id: string) => {
 		if (window.confirm(`Do you want to delete order #${id.slice(0, 4)}?`)) {
 			axios.delete(URL.ORDER,
@@ -310,6 +365,23 @@ const OrdersList: FC<OrdersListProps> = () => {
 	const handleCloseModalImg = () => {
 		dispatch(setModalImg(''));
 		dispatch(setIsModalOpen(false));
+	};
+
+	const handleFilter = async () => {
+		const {data} = await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
+			params: {
+				limit: rowsPerPage,
+				offset: rowsPerPage * page,
+				sortedField,
+				sortingOrder,
+				masterFilteredId: masterFilter?.id,
+				cityFilteredId: cityFilter?.id,
+				clockFilteredId: clockFilter?.id,
+				isCompletedFilter,
+			},
+		});
+		setOrders(data.rows);
+		setTotalOrders(data.count);
 	};
 
 	return (
