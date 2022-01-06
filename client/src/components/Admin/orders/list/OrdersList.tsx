@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
 import classes from './orders-list.module.css';
-import {Order, City} from '../../../../data/types/types';
+import {Order, City, Master, Clock} from '../../../../data/types/types';
 import {OrdersListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {styled} from '@mui/material/styles';
@@ -37,7 +37,7 @@ import AlertMessage from 'src/components/Notification/AlertMessage';
 import PrivateHeader from '../../../Headers/PrivateHeader';
 import TablePaginationActions from '../../../Pagination/TablePaginationActions';
 import {visuallyHidden} from '@mui/utils';
-import CitiesList from '../../cities/list/CitiesList';
+import {debouncer} from 'src/data/constants/systemUtilities';
 
 
 
@@ -64,6 +64,19 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 const OrdersList: FC<OrdersListProps> = () => {
 	const [orders, setOrders] = useState<Order[]>([]);
 	const [cities, setCities] = useState<City[]>([]);
+	const [masters, setMasters] = useState<Master[]>([]);
+	const [clocks, setClocks] = useState<Clock[]>([]);
+
+	const [masterName, setMasterName] = useState<string>('');
+	const [masterFilter, setMasterFilter] = useState<Master | null>(null);
+
+	const [cityName, setCityName] = useState<string>('');
+	const [cityFilter, setCityFilter] = useState<City | null>(null);
+
+	const [clockSize, setClockSize] = useState<string>('');
+	const [clockFilter, setClockFilter] = useState<Clock | null>(null);
+
+	const [isCompletedFilter, setIsCompletedFilter] = useState<boolean>(false);
 
 	const [notify, setNotify] = useState<boolean>(false);
 	const [isFilterListOpen, setIsFilterListOpen] = useState<boolean>(false);
@@ -104,6 +117,61 @@ const OrdersList: FC<OrdersListProps> = () => {
 		readCitiesData();
 	}, []);
 
+
+	useEffect(() => {
+		readMasterData();
+	}, [masterName]);
+
+
+	useEffect(() => {
+		readCityData();
+	}, [cityName]);
+
+
+	useEffect(() => {
+		readClockData();
+	}, [clockSize]);
+
+
+	const readMasterData = debouncer(async () => {
+		const {data} = await axios.get<{count: number, rows: Master[]}>(URL.MASTER, {
+			params: {
+				limit: 5,
+				offset: 0,
+				masterName,
+			},
+		});
+
+		if (data.rows.length) {
+			setMasters(data.rows);
+		}
+	}, 200);
+
+	const readCityData = debouncer(async () => {
+		const {data} = await axios.get<{count: number, rows: City[]}>(URL.CITY, {
+			params: {
+				limit: 5,
+				offset: 0,
+				cityName,
+			},
+		});
+
+		if (data.rows.length) {
+			setCities(data.rows);
+		}
+	}, 200);
+
+	const readClockData = debouncer(async () => {
+		const {data} = await axios.get<Clock[]>(URL.CLOCK, {
+			params: {
+				clockSize,
+			},
+		});
+
+		if (data.length) {
+			setClocks(data);
+		}
+	}, 200);
 
 	const onDelete = (id: string) => {
 		if (window.confirm(`Do you want to delete order #${id.slice(0, 4)}?`)) {
@@ -147,6 +215,23 @@ const OrdersList: FC<OrdersListProps> = () => {
 		setIsFilterListOpen((prev) => !prev);
 	};
 
+	const handleFilter = async () => {
+		const {data} = await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
+			params: {
+				limit: rowsPerPage,
+				offset: rowsPerPage * page,
+				sortedField,
+				sortingOrder,
+				masterFilteredId: masterFilter?.id,
+				cityFilteredId: cityFilter?.id,
+				clockFilteredId: clockFilter?.id,
+				isCompletedFilter,
+			},
+		});
+		setOrders(data.rows);
+		setTotalOrders(data.count);
+	};
+
 	return (
 		<div>
 			<PrivateHeader/>
@@ -156,9 +241,10 @@ const OrdersList: FC<OrdersListProps> = () => {
 					<Box
 						sx={{
 							width: '100%',
-							backgroundColor: 'secondary.main',
-							padding: 3,
+							pt: 3,
+							pb: 3,
 						}}
+						style={{backgroundColor: '#bcd406'}}
 					>
 						<Stack
 							direction="row"
@@ -169,37 +255,60 @@ const OrdersList: FC<OrdersListProps> = () => {
 							<Autocomplete
 								disablePortal
 								id="combo-box-demo"
-								options={[{label: 'master 1'},
-									{label: 'master 2'}]}
-								sx={{width: 300, height: 25}}
-								renderInput={(params) => <TextField {...params} label="Sort on master name" />}
+								options={masters}
+								value={masterFilter}
+								getOptionLabel={(option) => option.name}
+								onChange={(e: React.SyntheticEvent<Element, Event>, value: Master | null) => setMasterFilter(value)}
+								onInputChange={(MasterNameEvent: React.SyntheticEvent<Element, Event>, value: string) => setMasterName(value)}
+								sx={{width: 300}}
+								renderInput={(params) =>
+									<TextField {...params}
+										label="Sort on master name"
+									/>}
 							/>
-							<Select
-								id='cityId'
-								name='cityId'
-								labelId='cityId'
-								sx={{height: 25}}
-								displayEmpty
-								label="City"
-							></Select>
-							<Select
-								id='clockId'
-								name='clockId'
-								labelId='clockId'
-								sx={{height: 25}}
-								displayEmpty
-								label="Clock"
-							></Select>
+							<Autocomplete
+								disablePortal
+								id="combo-box-demo"
+								options={cities}
+								value={cityFilter}
+								getOptionLabel={(option) => option.name}
+								onChange={(e: React.SyntheticEvent<Element, Event>, value: City | null) => setCityFilter(value)}
+								onInputChange={(CityNameEvent: React.SyntheticEvent<Element, Event>, value: string) => setCityName(value)}
+								sx={{width: 300}}
+								renderInput={(params) =>
+									<TextField {...params}
+										label="Sort on city name"
+									/>}
+							/>
+							<Autocomplete
+								disablePortal
+								id="combo-box-demo"
+								options={clocks}
+								value={clockFilter}
+								getOptionLabel={(option) => option.size}
+								onChange={(e: React.SyntheticEvent<Element, Event>, value: Clock | null) => setClockFilter(value)}
+								onInputChange={(ClockSizeEvent: React.SyntheticEvent<Element, Event>, value: string) => setClockSize(value)}
+								sx={{width: 300}}
+								renderInput={(params) =>
+									<TextField {...params}
+										label="Sort on clock size"
+									/>}
+							/>
 							<FormControlLabel
 								control={
-									<Checkbox name="isCompleted" />
+									<Checkbox
+										name="isCompleted"
+										onChange={() => {
+											setIsCompletedFilter((prev) => !prev);
+										}}
+									/>
 								}
 								label="Only completed orders"
 							/>
 							<Button
 								variant="contained"
-								type="submit"
 								style={ {fontSize: 14, backgroundColor: 'green', borderRadius: 15} }
+								onClick={handleFilter}
 							>
 								Accept filters
 							</Button>
@@ -435,3 +544,5 @@ const OrdersList: FC<OrdersListProps> = () => {
 };
 
 export default OrdersList;
+
+

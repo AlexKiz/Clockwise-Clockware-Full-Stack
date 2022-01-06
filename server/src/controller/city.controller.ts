@@ -18,9 +18,15 @@ export const postCity = async (req: Request, res: Response) => {
 export const getCities = async (req: Request, res: Response) => {
 	const {limit, offset, sortedField, sortingOrder} = req.query;
 
-	if (limit && offset) {
+	if (limit && offset && sortedField && sortingOrder) {
 		const cities = await db.City.findAndCountAll({
 			order: [[db.sequelize.col(`${sortedField}`), `${sortingOrder}`]],
+			limit,
+			offset,
+		});
+		return res.status(200).json(cities);
+	} else if (limit && offset) {
+		const cities = await db.City.findAndCountAll({
 			limit,
 			offset,
 		});
