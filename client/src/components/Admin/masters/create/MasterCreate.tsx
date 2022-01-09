@@ -163,10 +163,9 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 									id='citiesId'
 									name='citiesId'
 									labelId='cities'
-									displayEmpty
 									multiple
-									onChange={formik.handleChange}
 									value={formik.values.citiesId}
+									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
 									input={<OutlinedInput notched={Boolean(formik.values.citiesId.length)} label="Cities" />}
 								>

@@ -1,10 +1,11 @@
-import {rolesMappingGetOrders} from './../../data/utilities/systemUtilities';
+import {filtersOptions, rolesMappingGetOrders} from './../../data/utilities/systemUtilities';
 import {Response, Request} from 'express';
 import {sendMail, sendVerificationMail} from '../services/nodemailer';
 import {v4 as uuidv4} from 'uuid';
 import db from '../models';
 import {BearerParser} from 'bearer-token-parser';
 import bcrypt from 'bcrypt';
+import Op from 'sequelize/types/lib/operators';
 
 
 export const postOrder = async (req: Request, res: Response) => {
@@ -48,7 +49,48 @@ export const postOrder = async (req: Request, res: Response) => {
 
 export const getOrders = async (req: Request, res: Response) => {
 	try {
-		const {limit, offset, sortedField, sortingOrder} = req.query;
+		const {
+			limit,
+			offset,
+			sortedField,
+			sortingOrder,
+			masterFilteredId,
+			cityFilteredId,
+			clockFilteredId,
+			isCompletedFilter,
+			startDateFilter,
+			endDateFilter,
+		} = req.query;
+
+		const filterOptions: filtersOptions = {};
+
+		if (isCompletedFilter !== undefined) {
+			filterOptions.isCompleted = isCompletedFilter;
+		}
+
+		if (clockFilteredId) {
+			filterOptions.clockId = Number(clockFilteredId);
+		}
+
+		if (masterFilteredId) {
+			filterOptions.masterId = String(masterFilteredId);
+		}
+
+		if (cityFilteredId) {
+			filterOptions.cityId = Number(cityFilteredId);
+		}
+
+		if (startDateFilter) {
+			filterOptions.startWorkOn = {
+				[Op.gte]: String(startDateFilter).split('T')[0],
+			};
+		}
+
+		if (endDateFilter) {
+			filterOptions.endWorkOn = {
+				[Op.lte]: String(endDateFilter).split('T')[0],
+			};
+		}
 
 		const token = BearerParser.parseBearerToken(req.headers);
 

@@ -37,7 +37,7 @@ export const getMasters = async (req: Request, res: Response) => {
 		});
 
 		return res.status(200).json(masters);
-	} else {
+	} else if (masterName) {
 		const masters = await db.Master.findAndCountAll({
 			attributes: ['id', 'name', 'rating'],
 			include: {
@@ -55,6 +55,17 @@ export const getMasters = async (req: Request, res: Response) => {
 		});
 
 		return res.status(200).json(masters);
+	} else {
+		const masters = await db.Master.findAll({
+			attributes: ['id', 'name', 'rating'],
+			include: {
+				model: db.City,
+				attributes: ['id', 'name'],
+				through: {attributes: []},
+			},
+		});
+
+		res.status(200).json(masters);
 	}
 };
 

@@ -32,6 +32,12 @@ import {
 	OutlinedInput,
 	FormControl,
 } from '@mui/material';
+import {
+	DesktopDateRangePicker,
+	DateRange,
+	LocalizationProvider,
+} from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import {FilterList} from '@mui/icons-material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import PrivateHeader from '../../../Headers/PrivateHeader';
@@ -76,7 +82,14 @@ const OrdersList: FC<OrdersListProps> = () => {
 	const [clockSize, setClockSize] = useState<string>('');
 	const [clockFilter, setClockFilter] = useState<Clock | null>(null);
 
-	const [isCompletedFilter, setIsCompletedFilter] = useState<boolean>(false);
+	const [dateFilter, setDateFilter] = useState<DateRange<Date>>([null, null]);
+
+	const [isCompletedFilter, setIsCompletedFilter] = useState<boolean | null>(null);
+
+	const [isFilterButtonsDisabled, setIsFilterButtonsDisabled] = useState<{accept: boolean, reset: boolean}>({
+		accept: false,
+		reset: true,
+	});
 
 	const [notify, setNotify] = useState<boolean>(false);
 	const [isFilterListOpen, setIsFilterListOpen] = useState<boolean>(false);
@@ -95,6 +108,12 @@ const OrdersList: FC<OrdersListProps> = () => {
 					offset: rowsPerPage * page,
 					sortedField,
 					sortingOrder,
+					masterFilteredId: masterFilter?.id,
+					cityFilteredId: cityFilter?.id,
+					clockFilteredId: clockFilter?.id,
+					isCompletedFilter,
+					startDateFilter: dateFilter[0],
+					endDateFilter: dateFilter[1],
 				},
 			});
 			setOrders(data.rows);
@@ -215,7 +234,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 		setIsFilterListOpen((prev) => !prev);
 	};
 
-	const handleFilter = async () => {
+	const handleAcceptFilter = async () => {
 		const {data} = await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
 			params: {
 				limit: rowsPerPage,
@@ -226,10 +245,39 @@ const OrdersList: FC<OrdersListProps> = () => {
 				cityFilteredId: cityFilter?.id,
 				clockFilteredId: clockFilter?.id,
 				isCompletedFilter,
+				startDateFilter: dateFilter[0],
+				endDateFilter: dateFilter[1],
 			},
 		});
 		setOrders(data.rows);
 		setTotalOrders(data.count);
+		setIsFilterButtonsDisabled({
+			accept: true,
+			reset: false,
+		});
+		setPage(0);
+	};
+
+	const handleResetFilter = async () => {
+		const {data} = await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
+			params: {
+				limit: rowsPerPage,
+				offset: rowsPerPage * page,
+				sortedField,
+				sortingOrder,
+			},
+		});
+		setOrders(data.rows);
+		setTotalOrders(data.count);
+		setMasterFilter(null);
+		setCityFilter(null);
+		setClockFilter(null);
+		setIsCompletedFilter(null);
+		setDateFilter([null, null]);
+		setIsFilterButtonsDisabled({
+			accept: false,
+			reset: true,
+		});
 	};
 
 	return (
@@ -244,7 +292,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 							pt: 3,
 							pb: 3,
 						}}
-						style={{backgroundColor: '#bcd406'}}
+						style={{backgroundColor: '#a3a29b'}}
 					>
 						<Stack
 							direction="row"
@@ -258,9 +306,15 @@ const OrdersList: FC<OrdersListProps> = () => {
 								options={masters}
 								value={masterFilter}
 								getOptionLabel={(option) => option.name}
-								onChange={(e: React.SyntheticEvent<Element, Event>, value: Master | null) => setMasterFilter(value)}
+								onChange={(e: React.SyntheticEvent<Element, Event>, value: Master | null) => {
+									setMasterFilter(value);
+									setIsFilterButtonsDisabled({
+										...isFilterButtonsDisabled,
+										accept: false,
+									});
+								}}
 								onInputChange={(MasterNameEvent: React.SyntheticEvent<Element, Event>, value: string) => setMasterName(value)}
-								sx={{width: 300}}
+								sx={{width: 200}}
 								renderInput={(params) =>
 									<TextField {...params}
 										label="Sort on master name"
@@ -272,9 +326,21 @@ const OrdersList: FC<OrdersListProps> = () => {
 								options={cities}
 								value={cityFilter}
 								getOptionLabel={(option) => option.name}
-								onChange={(e: React.SyntheticEvent<Element, Event>, value: City | null) => setCityFilter(value)}
-								onInputChange={(CityNameEvent: React.SyntheticEvent<Element, Event>, value: string) => setCityName(value)}
-								sx={{width: 300}}
+								onChange={(e: React.SyntheticEvent<Element, Event>, value: City | null) => {
+									setCityFilter(value);
+									setIsFilterButtonsDisabled({
+										...isFilterButtonsDisabled,
+										accept: false,
+									});
+								}}
+								onInputChange={(CityNameEvent: React.SyntheticEvent<Element, Event>, value: string) => {
+									setCityName(value);
+									setIsFilterButtonsDisabled({
+										...isFilterButtonsDisabled,
+										accept: false,
+									});
+								}}
+								sx={{width: 200}}
 								renderInput={(params) =>
 									<TextField {...params}
 										label="Sort on city name"
@@ -286,9 +352,15 @@ const OrdersList: FC<OrdersListProps> = () => {
 								options={clocks}
 								value={clockFilter}
 								getOptionLabel={(option) => option.size}
-								onChange={(e: React.SyntheticEvent<Element, Event>, value: Clock | null) => setClockFilter(value)}
+								onChange={(e: React.SyntheticEvent<Element, Event>, value: Clock | null) => {
+									setClockFilter(value);
+									setIsFilterButtonsDisabled({
+										...isFilterButtonsDisabled,
+										accept: false,
+									});
+								}}
 								onInputChange={(ClockSizeEvent: React.SyntheticEvent<Element, Event>, value: string) => setClockSize(value)}
-								sx={{width: 300}}
+								sx={{width: 200}}
 								renderInput={(params) =>
 									<TextField {...params}
 										label="Sort on clock size"
@@ -300,17 +372,52 @@ const OrdersList: FC<OrdersListProps> = () => {
 										name="isCompleted"
 										onChange={() => {
 											setIsCompletedFilter((prev) => !prev);
+											setIsFilterButtonsDisabled({
+												...isFilterButtonsDisabled,
+												accept: false,
+											});
 										}}
 									/>
 								}
-								label="Only completed orders"
+								label="Completed orders"
 							/>
+							<LocalizationProvider dateAdapter={AdapterDateFns}>
+								<DesktopDateRangePicker
+									startText='Sort on start date'
+									endText='Sort on end date'
+									value={dateFilter}
+									onChange={(value) => {
+										setDateFilter(value);
+										setIsFilterButtonsDisabled({
+											...isFilterButtonsDisabled,
+											accept: false,
+										});
+									}}
+									renderInput={(startProps, endProps) => (
+										<>
+											<TextField {...startProps} sx={{width: 150}} />
+											<Box sx={{mx: 2}}> - </Box>
+											<TextField {...endProps} sx={{width: 150}}/>
+										</>
+									)}
+								/>
+							</LocalizationProvider>
+
 							<Button
 								variant="contained"
 								style={ {fontSize: 14, backgroundColor: 'green', borderRadius: 15} }
-								onClick={handleFilter}
+								onClick={handleAcceptFilter}
+								disabled={isFilterButtonsDisabled.accept}
 							>
 								Accept filters
+							</Button>
+							<Button
+								variant="contained"
+								style={ {fontSize: 14, backgroundColor: 'red', borderRadius: 15} }
+								onClick={handleResetFilter}
+								disabled={isFilterButtonsDisabled.reset}
+							>
+								Reset filters
 							</Button>
 						</Stack>
 					</Box>

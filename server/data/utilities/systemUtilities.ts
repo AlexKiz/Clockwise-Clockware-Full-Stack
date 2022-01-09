@@ -1,3 +1,4 @@
+import {Op} from 'sequelize/types';
 import db from '../../src/models';
 import {sendVerificationMail} from '../../src/services/nodemailer';
 
@@ -42,6 +43,15 @@ const createClient = async (name: string, email: string, password: string, hashV
 	}
 };
 
+export type filtersOptions = {
+	clockId?: number,
+	isCompleted?: any,
+	masterId?: string,
+	cityId?: number,
+	startWorkOn?: {[Op.gte]:string},
+	endWorkOn?: {[Op.lte]:string}
+};
+
 type roleMappingOrderGetParams = {
 	limit: number,
 	offset: number,
@@ -49,6 +59,7 @@ type roleMappingOrderGetParams = {
 	id: string,
 	sortedField: string,
 	sortingOrder: string,
+	filterOptions: filtersOptions,
 }
 
 const getAdminOrders = async (params: roleMappingOrderGetParams) => {
@@ -79,6 +90,7 @@ const getAdminOrders = async (params: roleMappingOrderGetParams) => {
 		],
 		limit: params.limit,
 		offset: params.offset,
+		where: params.filterOptions,
 	});
 
 	return orders;

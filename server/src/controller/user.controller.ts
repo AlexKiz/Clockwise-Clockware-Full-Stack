@@ -24,15 +24,22 @@ export const userRegistration = async (req: Request, res: Response) => {
 
 export const getUsers = async (req: Request, res: Response) => {
 	const {limit, offset, sortedField, sortingOrder} = req.query;
+	if (sortedField && sortingOrder) {
+		const users = await db.User.findAndCountAll({
+			order: [[`${sortedField}`, `${sortingOrder}`]],
+			where: {role: 'client'},
+			limit,
+			offset,
+		});
 
-	const users = await db.User.findAndCountAll({
-		order: [[`${sortedField}`, `${sortingOrder}`]],
-		where: {role: 'client'},
-		limit,
-		offset,
-	});
+		res.status(200).json(users);
+	} else {
+		const users = await db.User.findAll({
+			where: {role: 'client'},
+		});
 
-	res.status(200).json(users);
+		res.status(200).json(users);
+	}
 };
 
 
