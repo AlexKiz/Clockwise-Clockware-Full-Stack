@@ -21,16 +21,11 @@ import {
 	TableSortLabel,
 	Box,
 	IconButton,
-	Select,
 	Stack,
 	Checkbox,
 	FormControlLabel,
 	Autocomplete,
 	TextField,
-	InputLabel,
-	MenuItem,
-	OutlinedInput,
-	FormControl,
 } from '@mui/material';
 import {
 	DesktopDateRangePicker,
@@ -44,7 +39,6 @@ import PrivateHeader from '../../../Headers/PrivateHeader';
 import TablePaginationActions from '../../../Pagination/TablePaginationActions';
 import {visuallyHidden} from '@mui/utils';
 import {debouncer} from 'src/data/constants/systemUtilities';
-
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -313,7 +307,9 @@ const OrdersList: FC<OrdersListProps> = () => {
 										accept: false,
 									});
 								}}
-								onInputChange={(MasterNameEvent: React.SyntheticEvent<Element, Event>, value: string) => setMasterName(value)}
+								onInputChange={
+									(MasterNameEvent: React.SyntheticEvent<Element, Event>, value: string) => setMasterName(value)
+								}
 								sx={{width: 200}}
 								renderInput={(params) =>
 									<TextField {...params}
