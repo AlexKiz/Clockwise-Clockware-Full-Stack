@@ -61,7 +61,6 @@ import {
 	setOrdersQuantity,
 	setOrdersSortingField,
 	setOrdersSortingOrder,
-	setCSVOrderData,
 } from 'src/store/actions/order';
 import {
 	setMasterFilter,
