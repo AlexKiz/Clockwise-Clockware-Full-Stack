@@ -367,7 +367,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 		dispatch(setIsModalOpen(false));
 	};
 
-	const handleFilter = async () => {
+	const handleAcceptFilter = async () => {
 		const {data} = await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
 			params: {
 				limit: rowsPerPage,
@@ -378,10 +378,39 @@ const OrdersList: FC<OrdersListProps> = () => {
 				cityFilteredId: cityFilter?.id,
 				clockFilteredId: clockFilter?.id,
 				isCompletedFilter,
+				startDateFilter: dateFilter[0],
+				endDateFilter: dateFilter[1],
 			},
 		});
 		setOrders(data.rows);
 		setTotalOrders(data.count);
+		setIsFilterButtonsDisabled({
+			accept: true,
+			reset: false,
+		});
+		setPage(0);
+	};
+
+	const handleResetFilter = async () => {
+		const {data} = await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
+			params: {
+				limit: rowsPerPage,
+				offset: rowsPerPage * page,
+				sortedField,
+				sortingOrder,
+			},
+		});
+		setOrders(data.rows);
+		setTotalOrders(data.count);
+		setMasterFilter(null);
+		setCityFilter(null);
+		setClockFilter(null);
+		setIsCompletedFilter(null);
+		setDateFilter([null, null]);
+		setIsFilterButtonsDisabled({
+			accept: false,
+			reset: true,
+		});
 	};
 
 	return (
