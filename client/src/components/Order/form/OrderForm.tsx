@@ -1,10 +1,10 @@
-import React, {useState, useEffect, FC} from 'react';
+import React, {useState, useEffect, FC, useCallback} from 'react';
 import axios from 'axios';
 import classes from './order-form.module.css';
 import {Master, City, Clock, AlertNotification} from '../../../data/types/types';
 import {OPENING_HOURS} from '../../../data/constants/systemConstants';
 import {OrderFormProps, validate} from './componentConstants';
-import {URL} from '../../../data/constants/routeConstants';
+import {URL as URLS} from '../../../data/constants/routeConstants';
 import {format, isBefore} from 'date-fns';
 import {
 	Button,
@@ -17,7 +17,15 @@ import {
 	FormHelperText,
 	Typography,
 	CircularProgress,
+	Badge,
+	Fab,
+	Modal,
+	ImageList,
+	ImageListItem,
+	Box,
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import PublicHeader from '../../Headers/PublicHeader';
 import {useFormik} from 'formik';
 import AlertMessage from 'src/components/Notification/AlertMessage';
@@ -35,6 +43,10 @@ const OrderForm: FC<OrderFormProps> = () => {
 		message: '',
 	});
 	const [loading, setLoading] = useState<boolean>(false);
+
+	const [images, setImages] = useState<File[] | null>([]);
+	const [imageUrls, setImageUrls] = useState<string[]>([]);
+	const [openModalImg, setOpenModalImg] = useState<boolean>(false);
 
 	const isOpen = (value:boolean) => {
 		setAlertOptions({...alertOptions, notify: value});
@@ -55,7 +67,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 			if (clocks.length) {
 				const [startDate, endDate] = getOrderDates(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
 				setLoading(true);
-				await axios.post(URL.ORDER,
+				await axios.post(URLS.ORDER,
 					{
 						name: values.name,
 						email: values.email,
@@ -80,7 +92,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 	useEffect(() => {
 		const readCitiesData = async () => {
-			const {data} = await axios.get<City[]>(URL.CITY_FOR_ORDER);
+			const {data} = await axios.get<City[]>(URLS.CITY_FOR_ORDER);
 			if (data.length) {
 				setCities(data);
 			}
@@ -92,7 +104,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 	useEffect(() => {
 		const readClocksData = async () => {
-			const {data} = await axios.get<Clock[]>(URL.CLOCK);
+			const {data} = await axios.get<Clock[]>(URLS.CLOCK);
 
 			if (data.length) {
 				setClocks(data);
@@ -109,7 +121,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 				const [startDate, endDate] = getOrderDates(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
 
 				if (formik.values.cityId && formik.values.orderDate && formik.values.orderTime && formik.values.clockId) {
-					const {data} = await axios.get<Master[]>(URL.AVAILABLE_MASTER, {
+					const {data} = await axios.get<Master[]>(URLS.AVAILABLE_MASTER, {
 						params: {
 							cityId: formik.values.cityId,
 							startWorkOn: startDate,
@@ -133,6 +145,47 @@ const OrderForm: FC<OrderFormProps> = () => {
 		readAvailableMastersData();
 	}, [formik.values.cityId, formik.values.clockId, formik.values.orderDate, formik.values.orderTime]);
 
+
+	useEffect(() => {
+		if (!images?.length) {
+			return;
+		}
+
+		const imageUrlsList: string[] = [];
+
+		images?.forEach((item) => imageUrlsList.push(URL.createObjectURL(item)));
+		setImageUrls(imageUrlsList);
+	}, [images]);
+
+	const readFiles = useCallback(async () => {
+		if (images?.length && images.some((file) => file.size > 1024 * 1024)) {
+			setImages([]);
+			setAlertOptions({
+				message: 'Photo must be 1 MB size or less',
+				type: 'warning',
+				notify: true,
+			});
+			return;
+		}
+	}, [images]);
+
+	const handlePhotoUpload = (event) => {
+		if (event.currentTarget.files && event.currentTarget.files.length > 5) {
+			setImages([]);
+			setAlertOptions({
+				message: 'Number of photos must be 5 or less',
+				type: 'warning',
+				notify: true,
+			});
+			return;
+		} else {
+			setImages([...event.currentTarget.files]);
+		}
+	};
+
+
+	const handleOpenModalImg = () => setOpenModalImg(true);
+	const handleCloseModalImg = () => setOpenModalImg(false);
 
 	return (
 		<div>
@@ -202,7 +255,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 										gutterBottom
 										component="label"
 									>
-										Choose clocksize:
+										Choose clock size:
 									</Typography>
 								</div>
 								<FormControl
@@ -369,6 +422,72 @@ const OrderForm: FC<OrderFormProps> = () => {
 									<FormHelperText> {formik.touched.masterId && formik.errors.masterId} </FormHelperText>
 								</FormControl>
 							</div>
+							<div className={classes.form_section}>
+								<Typography
+									htmlFor="upload-photo"
+									component='label'
+									style={{marginRight: 20}}>
+									<input
+										style={{display: 'none'}}
+										id="upload-photo"
+										name="upload-photo"
+										type="file"
+										multiple
+										accept=".PNG, .JPG, .JPEG"
+										onChange={handlePhotoUpload}
+									/>
+									<Badge badgeContent={images?.length && `${images?.length}/5`} color="secondary">
+										<Fab
+											color="primary"
+											size="small"
+											component="span"
+											aria-label="add"
+											variant="extended"
+										>
+											<AddIcon /> Upload photo
+										</Fab>
+									</Badge>
+								</Typography>
+								<Fab
+									size="small"
+									component="span"
+									aria-label="add"
+									variant="extended"
+									disabled={images?.length ? false : true}
+									onClick={handleOpenModalImg}
+								>
+									<ImageOutlinedIcon /> Uploaded photos
+								</Fab>
+							</div>
+
+							<Modal
+								open={openModalImg}
+								onClose={handleCloseModalImg}
+								aria-labelledby="modal-modal-title"
+								aria-describedby="modal-modal-description"
+							>
+								<Box sx={{top: '50%',
+									position: 'absolute' as const,
+									left: '50%',
+									transform: 'translate(-50%, -50%)',
+									width: 500,
+									bgcolor: 'background.paper',
+									border: '2px solid #000',
+									boxShadow: 24,
+									p: 4}}
+								>
+									<ImageList sx={{width: 500, height: 450, top: '50%', right: '50%'}} cols={3} rowHeight={164}>
+										{imageUrls.map((item) => (
+											<ImageListItem key={item}>
+												<img
+													src={`${item}`}
+													loading="lazy"
+												/>
+											</ImageListItem>
+										))}
+									</ImageList>
+								</Box>
+							</Modal>
 							<div className={classes.form_section}>
 								<Button
 									variant="contained"
