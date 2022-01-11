@@ -471,7 +471,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 								aria-describedby="modal-modal-description"
 							>
 								<Box sx={{top: '50%',
-									position: 'absolute' as const,
+									position: 'absolute',
 									left: '50%',
 									transform: 'translate(-50%, -50%)',
 									width: 500,
