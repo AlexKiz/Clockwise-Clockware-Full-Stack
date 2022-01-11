@@ -1,17 +1,60 @@
 import axios from 'axios';
 import {RESOURCE, URL} from '../../../data/constants/routeConstants';
-import React, {useEffect, useState, FC} from 'react';
+import React, {useState, useEffect, FC} from 'react';
 import {useHistory} from 'react-router-dom';
 import PublicHeader from '../../Headers/PublicHeader';
-import '../login/login-form.css';
-import {LoginFormProps} from './componentConstants';
+import classes from '../login/login-form.module.css';
+import {LoginFormProps, validate} from './componentConstants';
 import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
+import {useFormik} from 'formik';
+import {
+	Button,
+	FilledInput,
+	FormControl,
+	IconButton,
+	InputAdornment,
+	InputLabel,
+	Stack,
+	TextField,
+	Typography,
+} from '@mui/material';
+import {Visibility, VisibilityOff} from '@mui/icons-material';
+import AlertMessage from 'src/components/Notification/AlertMessage';
+
 
 const LoginForm:FC<LoginFormProps> = () => {
 	const history = useHistory();
 
-	const [adminLogin, setAdminLogin] = useState<string>('');
-	const [adminPassword, setAdminPassword] = useState<string>('');
+	const [showPassword, setShowPassword] = useState<boolean>(false);
+	const [notify, setNotify] = useState<boolean>(false);
+
+	const isOpen = (value:boolean) => {
+		setNotify(value);
+	};
+
+	const formik = useFormik({
+		initialValues: {
+			adminLogin: '',
+			adminPassword: '',
+		},
+		validate,
+		onSubmit: async (values) => {
+			const payload = {
+				adminLogin: values.adminLogin,
+				adminPassword: values.adminPassword,
+			};
+
+			try {
+				const {headers: {authorization: accessToken}} = await axios.post(URL.LOGIN, payload);
+				localStorage.setItem(ACCESS_TOKEN, accessToken.split(' ')[1]);
+				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
+			} catch (e) {
+				setNotify(true);
+			}
+			formik.resetForm();
+		},
+	});
+
 
 	useEffect(() => {
 		if (localStorage.getItem(ACCESS_TOKEN)) {
@@ -20,64 +63,90 @@ const LoginForm:FC<LoginFormProps> = () => {
 	}, []);
 
 
-	const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-		const payload = {
-			adminLogin,
-			adminPassword,
-		};
-
-		try {
-			const {headers: {authorization: accessToken}} = await axios.post(URL.LOGIN, payload);
-			localStorage.setItem(ACCESS_TOKEN, accessToken.split(' ')[1]);
-			history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
-		} catch (e) {
-			alert('Incorrect logging data');
-			setAdminPassword('');
-		}
-	};
-
 	return (
 		<div>
 			<PublicHeader/>
 
-			<div className='container-form'>
-				<form className='form' onSubmit={onSubmit}>
-					<div>
-						<div className='form-section'>
-							<div className='form-input__label'>
-								<label>Enter Admin Login:</label>
-							</div>
-							<input
-								placeholder='Email'
-								type='email'
-								name='login'
-								value={adminLogin}
-								onChange = {(adminLoginEvent) => setAdminLogin(adminLoginEvent.target.value)}
-								required
-							>
-							</input>
-						</div>
-						<div className='form-section'>
-							<div className='form-input__label'>
-								<label>Enter Admin Password:</label>
-							</div>
-							<input
-								placeholder='Password'
-								type='password'
-								name='password'
-								value={adminPassword}
-								onChange = {(adminPasswordEvent) => setAdminPassword(adminPasswordEvent.target.value)}
-							>
-							</input>
-						</div>
-						<div className='form-button'>
-							<button type='submit'>Sign In</button>
-						</div>
-					</div>
-				</form>
-			</div>
+			<div className={classes.conteiner}>
+				<div className={classes.container_form}>
+					<form className={classes.form} onSubmit={formik.handleSubmit}>
+						<Stack direction="column" justifyContent="center" spacing={1}>
+							<div className={classes.form_section}>
+								<div className={classes.form_input__label}>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Enter Admin Login:
+									</Typography>
+								</div>
 
+								<TextField
+									id="adminLogin"
+									name='adminLogin'
+									label="Email"
+									placeholder="example@mail.com"
+									variant="filled"
+									size="small"
+									margin="dense"
+									fullWidth
+									value={formik.values.adminLogin}
+									onChange={formik.handleChange}
+									onBlur={formik.handleBlur}
+									error={formik.touched.adminLogin && Boolean(formik.errors.adminLogin)}
+									helperText={formik.touched.adminLogin && formik.errors.adminLogin}
+									required
+								/>
+							</div>
+							<div className={classes.form_section}>
+								<div className={classes.form_input__label}>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+									Enter Admin Password:
+									</Typography>
+								</div>
+								<FormControl fullWidth variant="filled">
+									<InputLabel>Password</InputLabel>
+									<FilledInput
+										id="filled-adornment-password"
+										type={showPassword ? 'text' : 'password'}
+										value={formik.values.adminPassword}
+										onChange={formik.handleChange('adminPassword')}
+										endAdornment={
+											<InputAdornment position="end">
+												<IconButton
+													aria-label="toggle password visibility"
+													onClick={() => setShowPassword((showPassword) => !showPassword)}
+													edge="end"
+												>
+													{showPassword ? <VisibilityOff /> : <Visibility />}
+												</IconButton>
+											</InputAdornment>
+										}
+									/>
+								</FormControl>
+							</div>
+							<div className={classes.form_section}>
+								<Button
+									variant="contained"
+									type="submit"
+									className={classes.form_btn}
+									style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
+								>
+										Sign In
+								</Button>
+							</div>
+						</Stack>
+					</form>
+				</div>
+				{
+					notify && <AlertMessage alertType='error' message='Incorrect logging data' isOpen={isOpen} notify={notify}/>
+				}
+			</div>
 		</div>
 	);
 };

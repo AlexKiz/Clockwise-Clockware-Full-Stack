@@ -1,88 +1,129 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable max-len */
 import axios from 'axios';
-import React, {useState, useEffect, FC} from 'react';
+import React, {FC, useState} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
-import './city-create-form.css';
-import {City, Params} from '../../../../data/types/types';
-import {CityCreateProps} from './componentConstants';
+import classes from './city-create-form.module.css';
+import {AlertNotification, City, Params} from '../../../../data/types/types';
+import {CityCreateProps, validate} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
+import {useFormik} from 'formik';
+import {
+	Button,
+	Stack,
+	TextField,
+	Typography,
+} from '@mui/material';
+import AlertMessage from 'src/components/Notification/AlertMessage';
 
 
 const CityCreate: FC<CityCreateProps> = () => {
 	const history = useHistory();
 
-	const [cityName, setCityName] = useState<string>('');
-	const [cityId, setCityId] = useState<number>(0);
-
 	const {cityIdParam, cityNameParam} = useParams<Params>();
 
-
-	useEffect(() => {
-		if (cityIdParam) {
-			setCityId(Number(cityIdParam));
-			setCityName(cityNameParam);
-		}
-	}, []);
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
 
 
-	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-		if (!cityIdParam) {
-			axios.post<City>(URL.CITY,
-				{
-					id: cityId,
-					name: cityName,
-				}).then(() => {
-				alert('City has been created');
-				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`);
-			}).catch((error) => {
-				if (Number(error.response.status) === 400) {
-					alert(error.response.data[0]);
-					setCityName('');
-				}
-			});
-		} else {
-			axios.put<City>(URL.CITY, {
-				id: cityId,
-				name: cityName,
-			}).then(() => {
-				alert('City has been updated');
-				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`);
-			}).catch((error) => {
-				alert(error.response.data);
-				setCityName(cityNameParam);
-			});
-		}
+	const isOpen = (value:boolean) => {
+		setAlertOptions({...alertOptions, notify: value});
 	};
 
+	const formik = useFormik({
+		initialValues: {
+			cityName: cityNameParam || '',
+			cityId: Number(cityIdParam || 0),
+		},
+		validate,
+		onSubmit: async (values) => {
+			if (!cityIdParam) {
+				await axios.post<City>(URL.CITY,
+					{
+						id: values.cityId,
+						name: values.cityName,
+					}).then(() => {
+					setAlertOptions({message: 'City has been created', type: 'success', notify: true});
+					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`);
+				}).catch((error) => {
+					if (Number(error.response.status) === 400) {
+						setAlertOptions({message: error.response.data, type: 'error', notify: true});
+						values.cityName = '';
+					}
+				});
+			} else {
+				await axios.put<City>(URL.CITY, {
+					id: values.cityId,
+					name: values.cityName,
+				}).then(() => {
+					setAlertOptions({message: 'City has been updated', type: 'success', notify: true});
+					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`);
+				}).catch((error) => {
+					setAlertOptions({message: error.response.data, type: 'error', notify: true});
+					values.cityName = cityNameParam;
+				});
+			}
+		},
+	});
+
+
 	return (
+		<div>
 
-		<div className='container-form'>
+			<div className={classes.container_form}>
 
-			<form className='form' onSubmit = {onSubmit}>
+				<form className={classes.form} onSubmit = {formik.handleSubmit}>
 
-				<div>
-
-					<div className='form-section'>
-						<div className='form-input__label'>
-							<label>Enter city name:</label>
+					<Stack direction="column" justifyContent="center" spacing={1.5}>
+						<div className={classes.form_section}>
+							<div className={classes.form_input__label}>
+								<Typography
+									variant="h6"
+									gutterBottom
+									component="label"
+								>
+									Enter city name:
+								</Typography>
+							</div>
+							<TextField
+								id="cityName"
+								name="cityName"
+								label="City name"
+								placeholder="Name"
+								variant="filled"
+								size="small"
+								margin="dense"
+								fullWidth
+								value={formik.values.cityName}
+								onChange={formik.handleChange}
+								onBlur={formik.handleBlur}
+								error={formik.touched.cityName && Boolean(formik.errors.cityName)}
+								helperText={formik.touched.cityName && formik.errors.cityName}
+								required
+							/>
 						</div>
-						<input
-							type = "text"
-							placeholder = "Name"
-							pattern='^[A-Za-zА-Яа-я]{3,100}$|^[A-Za-zА-Яа-я]{3,49}[-\s]{1}[A-Za-zА-Яа-я]{3,50}$'
-							title='City name must be at least 3 letter and alphabetical only'
-							value = {cityName}
-							onChange = {(cityNameEvent) =>setCityName(cityNameEvent.target.value)}
-						></input>
-					</div>
 
-					<div className='form-button'>
-						<button type = 'submit'>Submit</button>
-					</div>
+						<div className={classes.form_section}>
+							<Button
+								variant="contained"
+								type="submit"
+								className={classes.form_btn}
+								style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
+							>
+								Submit
+							</Button>
+						</div>
+					</Stack>
 
-				</div>
+				</form>
+				{
+					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
+				}
+			</div>
 
-			</form>
 		</div>
 	);
 };

@@ -2,33 +2,79 @@
 /* eslint-disable react/jsx-key */
 import React, {useState, useEffect, FC} from 'react';
 import axios from 'axios';
-import './order-form.css';
-import {Master, City, Clock} from '../../../data/types/types';
+import classes from './order-form.module.css';
+import {Master, City, Clock, AlertNotification} from '../../../data/types/types';
 import {OPENING_HOURS} from '../../../data/constants/systemConstants';
-import {OrderFormProps} from './componentConstants';
+import {OrderFormProps, validate} from './componentConstants';
 import {URL} from '../../../data/constants/routeConstants';
 import {format} from 'date-fns';
-import PublicHeader from 'src/components/Headers/PublicHeader';
-import {getOrderDates} from '../../../data/utilities/systemUtilities';
+import {
+	Button,
+	Stack,
+	TextField,
+	Select,
+	MenuItem,
+	InputLabel,
+	FormControl,
+	FormHelperText,
+	Typography,
+} from '@mui/material';
+import PublicHeader from '../../Headers/PublicHeader';
+import {useFormik} from 'formik';
+import AlertMessage from 'src/components/Notification/AlertMessage';
+import {getOrderDates} from 'src/data/utilities/systemUtilities';
 
 
 const OrderForm: FC<OrderFormProps> = () => {
-	const [userName, setUserName] = useState<string>('');
-
-	const [userEmail, setUserEmail] = useState<string>('');
-
-	const [orderDate, setOrderDate] = useState<string>('');
-
-	const [orderTime, setOrderTime] = useState<string>(OPENING_HOURS[0]);
-
-	const [masterId, setMasterId] = useState<string>('');
 	const [masters, setMasters] = useState<Master[]>([]);
-
-	const [cityId, setCityId] = useState<number>(0);
 	const [cities, setCities] = useState<City[]>([]);
-
-	const [clockId, setClockId] = useState<number>(0);
 	const [clocks, setClocks] = useState<Clock[]>([]);
+
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
+
+	const isOpen = (value:boolean) => {
+		setAlertOptions({...alertOptions, notify: value});
+	};
+
+	const formik = useFormik({
+		initialValues: {
+			userName: '',
+			userEmail: '',
+			cityId: 0,
+			clockId: 0,
+			orderDate: '',
+			orderTime: '',
+			masterId: '',
+		},
+		validate,
+		onSubmit: async (values) => {
+			if (clocks.length) {
+				const [startDate, endDate] = getOrderDates(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
+
+				await axios.post(URL.ORDER,
+					{
+						name: values.userName,
+						email: values.userEmail,
+						clockId: values.clockId,
+						cityId: values.cityId,
+						masterId: values. masterId,
+						startWorkOn: startDate,
+						endWorkOn: endDate,
+					}).then(() => {
+					setAlertOptions({
+						message: 'Your order has been created! Please rate the master afterwards!',
+						type: 'success',
+						notify: true,
+					});
+					formik.resetForm();
+				});
+			}
+		},
+	});
 
 
 	useEffect(() => {
@@ -36,7 +82,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 			const {data} = await axios.get<City[]>(URL.CITY_FOR_ORDER);
 			if (data.length) {
 				setCities(data);
-				setCityId(data[0].id);
 			}
 		};
 
@@ -49,7 +94,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 			const {data} = await axios.get<Clock[]>(URL.CLOCK);
 
 			if (data.length) {
-				setClockId(data[0].id);
 				setClocks(data);
 			}
 		};
@@ -61,189 +105,299 @@ const OrderForm: FC<OrderFormProps> = () => {
 	useEffect(() => {
 		const readAvailableMastersData = async () => {
 			if (clocks.length) {
-				const [startDate, endDate] = getOrderDates(clocks, orderDate, orderTime, clockId);
+				const [startDate, endDate] = getOrderDates(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
 
-				if (cityId && orderDate && orderTime && clockId) {
+				if (formik.values.cityId && formik.values.orderDate && formik.values.orderTime && formik.values.clockId) {
 					const {data} = await axios.get<Master[]>(URL.AVAILABLE_MASTER, {
 						params: {
-							cityId,
+							cityId: formik.values.cityId,
 							startWorkOn: startDate,
 							endWorkOn: endDate,
 						},
 					});
 
 					if (!data.length) {
-						alert('All masters has been booked at that time. Please choose another time or date');
-						setOrderTime('');
-						setMasterId('');
+						setAlertOptions({
+							message: 'All masters has been booked at that time. Please choose another time or date',
+							type: 'warning',
+							notify: true,
+						});
 						setMasters([]);
 					} else {
-						setMasterId(data[0].id);
 						setMasters(data);
 					}
 				}
 			}
 		};
 		readAvailableMastersData();
-	}, [cityId, clockId, orderDate, orderTime]);
+	}, [formik.values.cityId, formik.values.clockId, formik.values.orderDate, formik.values.orderTime]);
 
-
-	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-		if (clocks.length) {
-			const [startDate, endDate] = getOrderDates(clocks, orderDate, orderTime, clockId);
-
-			axios.post(URL.ORDER,
-				{
-					name: userName,
-					email: userEmail,
-					clockId,
-					cityId,
-					masterId,
-					startWorkOn: startDate,
-					endWorkOn: endDate,
-				});
-
-			setUserName('');
-			setUserEmail('');
-			setOrderTime('');
-			setOrderDate('');
-			alert('Your order has been created! Please confirm it on your Emailbox. Have a good day!');
-		}
-	};
 
 	return (
 		<div>
 			<PublicHeader/>
-			<div className='conteiner'>
+			<div className={classes.conteiner}>
 
-				<div className='container-form'>
+				<div className={classes.container_form}>
 
-					<form className='form' onSubmit={onSubmit} name='orderForm'>
+					<form className={classes.form} onSubmit={formik.handleSubmit}>
 
-						<div>
+						<Stack direction="column" justifyContent="center" spacing={1.5}>
 
-							<div className='form-section'>
-								<div className='form-input__label'>
-									<label>Enter your name:</label>
+							<div className={classes.form_section}>
+								<div className={classes.form_input__label}>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Enter your name:
+									</Typography>
 								</div>
-
-								<input
-									type='text'
-									placeholder='Ivan Ivanov'
-									pattern='^([(A-Za-zА-Яа-я]{3,49})$|^([A-Za-zА-Яа-я]{3,49}[\s]{1}[A-Za-zА-Яа-я]{3,50})$'
-									title='User name must be at least 3 letter and alphabetical characters only'
-									value={userName}
-									onChange={(userNameEvent) => setUserName(userNameEvent.target.value)}
+								<TextField
+									id="userName"
+									name="userName"
+									label="Full name"
+									placeholder="Ivan Ivanov"
+									variant="filled"
+									size="small"
+									margin="dense"
+									fullWidth
+									value={formik.values.userName}
+									onChange={formik.handleChange}
+									onBlur={formik.handleBlur}
+									error={formik.touched.userName && Boolean(formik.errors.userName)}
+									helperText={formik.touched.userName && formik.errors.userName}
 									required
-								></input>
+								/>
 							</div>
 
-							<div className='form-section'>
-								<div className='form-input__label'>
-									<label>Enter your email:</label>
+							<div className={classes.form_section}>
+								<div className={classes.form_input__label}>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Enter your email:
+									</Typography>
 								</div>
 
-								<input
-									type='email'
-									placeholder='example@mail.com'
-									pattern='^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'
-									title='Email must be according the example: myemail@mail.com'
-									value={userEmail}
-									onChange={(userEmailEvent) => setUserEmail(userEmailEvent.target.value)}
+								<TextField
+									id="userEmail"
+									name='userEmail'
+									label="Email"
+									placeholder="example@mail.com"
+									variant="filled"
+									size="small"
+									margin="dense"
+									fullWidth
+									value={formik.values.userEmail}
+									onChange={formik.handleChange}
+									onBlur={formik.handleBlur}
+									error={formik.touched.userEmail && Boolean(formik.errors.userEmail)}
+									helperText={formik.touched.userEmail && formik.errors.userEmail}
 									required
-								></input>
+								/>
 							</div>
 
-							<div className='form-section'>
-								<div className='form-input__label'>
-									<label>Choose clocksize:</label>
+							<div className={classes.form_section}>
+								<div className={classes.form_input__label}>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Choose clocksize:
+									</Typography>
 								</div>
 
-								<select name='clocksize' onChange={(clockIdEvent) => setClockId(Number(clockIdEvent.target.value))}>
-									{
-										clocks.map((clock) => (
-											<option value={clock.id}>
-												{`${clock.size}`}
-											</option>
-										))
-									}
-								</select>
+								<FormControl
+									fullWidth
+									error={formik.touched.clockId && Boolean(formik.errors.clockId)}
+								>
+									<InputLabel id="clockId">Size</InputLabel>
+									<Select
+										id='clockId'
+										name='clockId'
+										labelId="clockId"
+										displayEmpty
+										onChange={formik.handleChange}
+										value={formik.values.clockId || ''}
+										label="Size"
+										onBlur={formik.handleBlur}
+										required
+									>
+										{
+											clocks.map((clock) => (
+												<MenuItem value={clock.id}>
+													{`${clock.size}`}
+												</MenuItem>
+											))
+										}
+									</Select>
+									<FormHelperText> {formik.touched.clockId && formik.errors.clockId} </FormHelperText>
+								</FormControl>
 							</div>
 
-							<div className='form-section'>
-								<div className='form-input__label'>
-									<label>Choose your city:</label>
+							<div className={classes.form_section}>
+								<div className={classes.form_input__label}>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Choose your city:
+									</Typography>
 								</div>
 
-								<select name='cities' onChange={(cityIdEvent) => setCityId(Number(cityIdEvent.target.value))}>
-									{
-										cities.map((city) => (
-											<option value={city.id}>
-												{`${city.name}`}
-											</option>
-										))
-									}
-								</select>
+								<FormControl
+									fullWidth
+									error={formik.touched.cityId && Boolean(formik.errors.cityId)}
+								>
+									<InputLabel id="cityId">City</InputLabel>
+									<Select
+										id='cityId'
+										name='cityId'
+										labelId="cityId"
+										onChange={formik.handleChange}
+										displayEmpty
+										value={formik.values.cityId || ''}
+										label="City"
+										onBlur={formik.handleBlur}
+										required
+									>
+										{
+											cities.map((city) => (
+												<MenuItem value={city.id}>
+													{`${city.name}`}
+												</MenuItem>
+											))
+										}
+									</Select>
+									<FormHelperText> {formik.touched.cityId && formik.errors.cityId} </FormHelperText>
+								</FormControl>
 							</div>
 
-							<div className='form-section'>
-								<div className='form-input__label'>
-									<label>Choose the date:</label>
+							<div className={classes.form_section}>
+								<div className={classes.form_input__label}>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Choose the date:
+									</Typography>
 								</div>
 
-								<input
-									type='date'
+								<TextField
+									id="orderDate"
 									name='orderDate'
-									min= {format(new Date(), 'yyyy-MM-dd')}
-									value={orderDate}
-									onChange={(orderDateEvent) => setOrderDate(orderDateEvent.target.value)}
-								></input>
+									type='date'
+									InputProps={{inputProps: {min: format(new Date(), 'yyyy-MM-dd')}}}
+									variant="outlined"
+									size="small"
+									margin="dense"
+									fullWidth
+									value={formik.values.orderDate}
+									onChange={formik.handleChange}
+									required
+								/>
 							</div>
 
-							<div className='form-section'>
-								<div className='form-input__label'>
-									<label>Choose the time:</label>
+							<div className={classes.form_section}>
+								<div className={classes.form_input__label}>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Choose the time:
+									</Typography>
 								</div>
 
-								<select name='orderTime' onChange={(orderTimeEvent) => setOrderTime(orderTimeEvent.target.value)}>
-									{
-										OPENING_HOURS.map((elem) => (
-											<option value={elem}>
-												{`${elem}`}
-											</option>
-										))
-									}
-								</select>
+								<FormControl
+									fullWidth
+									error={formik.touched.orderTime && Boolean(formik.errors.orderTime)}
+								>
+									<InputLabel id="orderTime">Time</InputLabel>
+									<Select
+										id='orderTime'
+										name='orderTime'
+										labelId="orderTime"
+										onChange={formik.handleChange}
+										value={formik.values.orderTime}
+										label="Time"
+										onBlur={formik.handleBlur}
+										required
+									>
+										{
+											OPENING_HOURS.map((elem) => (
+												<MenuItem value={elem}>
+													{`${elem}`}
+												</MenuItem>
+											))
+										}
+									</Select>
+									<FormHelperText> {formik.touched.orderTime && formik.errors.orderTime} </FormHelperText>
+								</FormControl>
 							</div>
 
-							<div className='form-section'>
-								<div className='form-input__label'>
-									<label>Available masters:</label>
+							<div className={classes.form_section}>
+								<div className={classes.form_input__label}>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										Available masters:
+									</Typography>
 								</div>
 
-								<select name='masterName' onChange={(masterIdEvent) => setMasterId(masterIdEvent.target.value)}>
-									{
-										masters.map((master) => (
-											<option value={master.id}>
-												{`${master.name} | Rating:${master.rating.toFixed(2)}`}
-											</option>
-										))
-									}
-									<option value="" disabled selected hidden>Choose the master</option>
-								</select>
+								<FormControl
+									fullWidth
+									error={formik.touched.masterId && Boolean(formik.errors.masterId)}
+								>
+									<InputLabel id="masterId">Choose the master</InputLabel>
+									<Select
+										id='masterId'
+										name='masterId'
+										labelId="masterId"
+										onChange={formik.handleChange}
+										value={formik.values.masterId}
+										label="Choose the master"
+										onBlur={formik.handleBlur}
+										required
+									>
+										{
+											masters.map((master) => (
+												<MenuItem value={master.id}>
+													{`${master.name} | Rating:${master.rating.toFixed(2)}`}
+												</MenuItem>
+											))
+										}
+									</Select>
+									<FormHelperText> {formik.touched.masterId && formik.errors.masterId} </FormHelperText>
+								</FormControl>
 							</div>
-
-							<div className='form-button'>
-								<button type="submit"> Create order </button>
+							<div className={classes.form_section}>
+								<Button
+									variant="contained"
+									type="submit"
+									className={classes.form_btn}
+									style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
+								>
+										Create order
+								</Button>
 							</div>
-
-						</div>
+						</Stack>
 
 					</form>
 
 				</div>
-
+				{
+					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
+				}
 			</div>
 		</div>
 	);

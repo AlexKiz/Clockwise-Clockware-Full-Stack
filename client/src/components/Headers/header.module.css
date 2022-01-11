@@ -1,12 +1,10 @@
-
-
-li,a, button {
+header li, header a, header button {
     font-family: 'Bitter', serif;
     font-size: 22px;
     font-weight: 400;
 }
 
-.wrapper-header {
+.wrapper_header {
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -15,29 +13,29 @@ li,a, button {
     margin: 0px 0px 40px 0px;
 }
 
-.wrapper-logo a, img {
+.wrapper_logo a, img {
     height: 81px;
     width: 331px; 
 }
 
-.wrapper-logo {
+.wrapper_logo {
     display: flex;
     align-items: center;
     transition: 0.5s ease;
     transform: scale(1);
 }
 
-.wrapper-logo:hover {
+.wrapper_logo:hover {
     transform: scale(1.05);
 }
 
-.inner-logo {
+.inner_logo {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.logo-img1a {
+.logo_img1a {
     background-image: url('../../img/logo1a.png');
     background-size: cover;
     height: 80px;
@@ -45,38 +43,38 @@ li,a, button {
     transition: transform .2s;
 }
 
-.logo-img1b {
+.logo_img1b {
     background-image: url('../../img/logo1b.png');
     background-size: cover;
     height: 100%;
     width: 100%;
 }
 
-.logo-img1c {
+.logo_img1c {
     background-image: url('../../img/logo1c.png');
     background-size: cover;
     height: 100%;
     width: 100%;
 }
 
-.logo-text1d {
+.logo_text1d {
     background-image: url('../../img/logo1d.png');
     background-size: cover;
     height: 81px;
     width: 281px;
 }
 
-.inner-logo .logo-img1a {
+.inner_logo .logo_img1a {
 
     animation: spin-reverse linear 2.5s infinite;
 }
 
-.inner-logo .logo-img1b {
+.inner_logo .logo_img1b {
 
     animation: spin linear 2.5s infinite;
 }
 
-.inner-logo .logo-img1c {
+.inner_logo .logo_img1c {
     animation: spin linear 6s infinite;
 }
 
@@ -132,19 +130,8 @@ li.active a{
     border-bottom: 3px solid rgba(252, 225, 209, 0.884);
 }
 
-.header-button {
-    height: 55px;
-    width: 160px;
-    border: 2px solid transparent;
-    border-radius: 20px;
-    background:rgb(255, 180, 67);
-    cursor: pointer;
-    transition: all 1s ease;
-    box-sizing: border-box;
+.form_btn{
+    height: 45px;
+    width: 10%;
 }
 
-.header-button:hover {
-    background: rgb(247, 132, 0);
-    border: 2px solid rgb(0, 0, 0);
-    color: rgb(24, 6, 71);
-}

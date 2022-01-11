@@ -7,7 +7,7 @@
     "node": "<= 14.x"
   },
   "scripts": {
-    "start": "set NODE_ENV='production' && npm i && tsc && node dist/src/index.js",
+    "start": "tsc && node dist/src/index.js",
     "dev": "ts-node src/index.ts",
     "lint": "eslint ../"
   },

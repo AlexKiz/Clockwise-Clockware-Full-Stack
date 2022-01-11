@@ -3,14 +3,41 @@
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
-import './orders-list.css';
+import classes from './orders-list.module.css';
 import {Order} from '../../../../data/types/types';
-import {OrderListProps} from './componentConstants';
+import {OrdersListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
+import {styled} from '@mui/material/styles';
+import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, tableCellClasses} from '@mui/material';
+import AlertMessage from '../../../Notification/AlertMessage';
 
+const StyledTableCell = styled(TableCell)(({theme}) => ({
+	[`&.${tableCellClasses.head}`]: {
+		backgroundColor: theme.palette.warning.main,
+		color: theme.palette.common.black,
+	},
+	[`&.${tableCellClasses.body}`]: {
+		fontSize: 14,
+	},
+}));
 
-const OrdersList: FC<OrderListProps> = () => {
+const StyledTableRow = styled(TableRow)(({theme}) => ({
+	'&:nth-of-type(odd)': {
+		backgroundColor: theme.palette.action.hover,
+	},
+	'&:last-child td, &:last-child th': {
+		border: 0,
+	},
+}));
+
+const OrdersList: FC<OrdersListProps> = () => {
 	const [orders, setOrders] = useState<Order[]>([]);
+
+	const [notify, setNotify] = useState<boolean>(false);
+
+	const isOpen = (value:boolean) => {
+		setNotify(value);
+	};
 
 
 	useEffect(() => {
@@ -33,49 +60,73 @@ const OrdersList: FC<OrderListProps> = () => {
 					},
 				}).then(() => {
 				setOrders(orders.filter((order) => order.id !== id));
-
-				alert('Order has been deleted');
+				setNotify(true);
 			});
 		}
 	};
 
 
 	return (
-		<div className='conteiner'>
+		<div className={classes.conteiner}>
 
-			<div className='wrapper-table'>
+			<TableContainer component={Paper} sx={{width: '100%'}} className={classes.conteiner_table}>
 
-				<table className='content-table-orders'>
-					<tr>
-						<th className='th-order-id'>Id</th>
-						<th className='th-clock-size'>Clock size</th>
-						<th className='th-order-user'>User name</th>
-						<th className='th-order-email'>User email</th>
-						<th className='th-order-city'>City</th>
-						<th className='th-order-master'>Master name</th>
-						<th className='th-order-start'>Start on</th>
-						<th className='th-order-end'>Finish on</th>
-					</tr>
-					{
-						orders.map((order) => (
-							<tr>
-								<td>{`${order.id}`}</td>
-								<td>{`${order.clock.size}`}</td>
-								<td>{`${order.user.name}`}</td>
-								<td>{`${order.user.email}`}</td>
-								<td>{`${order.city.name}`}</td>
-								<td>{`${order.master.name}`}</td>
-								<td>{`${order.startWorkOn.split('T').join(' ')}`}</td>
-								<td>{`${order.endWorkOn.split('T').join(' ')}`}</td>
-								<button className='button-update'><Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CREATE}/${order.id}/${order.user.id}/${order.clock.id}/${order.city.id}/${order.startWorkOn.split('T')[0]}/${order.startWorkOn.split('T')[1]}/${order.master.id}`}>Update</Link></button>
-								<button className='button-delete' onClick={() => onDelete(order.id)}>Delete</button>
-							</tr>
-						))
-					}
-				</table>
+				<Table sx={{minWidth: 650}} aria-label="customized table">
+					<TableHead>
+						<TableRow>
+							<StyledTableCell sx={{width: '6%'}}>Id</StyledTableCell>
+							<StyledTableCell sx={{width: '8%'}} align="center">Clock size</StyledTableCell>
+							<StyledTableCell sx={{width: '11%'}} align="center">User name</StyledTableCell>
+							<StyledTableCell sx={{width: '18%'}} align="center">User Email</StyledTableCell>
+							<StyledTableCell sx={{width: '8%'}} align="center">City</StyledTableCell>
+							<StyledTableCell sx={{width: '11%'}} align="center">Master Name</StyledTableCell>
+							<StyledTableCell sx={{width: '10%'}} align="center">Start on</StyledTableCell>
+							<StyledTableCell sx={{width: '10%'}} align="center">Finish on</StyledTableCell>
+							<StyledTableCell sx={{width: '18%'}} align="center"></StyledTableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{orders.map((order) => (
+							<StyledTableRow>
 
-			</div>
+								<StyledTableCell component="th" scope="row"> {order.id.slice(0, 4)} </StyledTableCell>
+								<StyledTableCell align="center"> {order.clock.size} </StyledTableCell>
+								<StyledTableCell align="center"> {order.user.name} </StyledTableCell>
+								<StyledTableCell align="center"> {order.user.email} </StyledTableCell>
+								<StyledTableCell align="center"> {order.city.name} </StyledTableCell>
+								<StyledTableCell align="center"> {order.master.name} </StyledTableCell>
+								<StyledTableCell align="center"> {order.startWorkOn.split('T').join(' ')} </StyledTableCell>
+								<StyledTableCell align="center"> {order.endWorkOn.split('T').join(' ')} </StyledTableCell>
 
+								<StyledTableCell align="center">
+									<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CREATE}/${order.id}/${order.user.id}/${order.clock.id}/${order.city.id}/${order.startWorkOn.split('T')[0]}/${order.startWorkOn.split('T')[1]}/${order.master.id}`}>
+										<Button
+											variant="contained"
+											sx={{width: '50%', fontSize: 14, borderRadius: 15}}
+										>
+											Update
+										</Button>
+									</Link>
+									<Button
+										variant="contained"
+										color='error'
+										sx={{width: '50%', fontSize: 14, borderRadius: 15}}
+										onClick={() => {
+											onDelete(order.id);
+										}}
+									>
+										Delete
+									</Button>
+								</StyledTableCell>
+							</StyledTableRow>
+						))}
+					</TableBody>
+				</Table>
+
+			</TableContainer>
+			{
+				notify && <AlertMessage alertType='success' message='Order has been deleted' isOpen={isOpen} notify={notify}/>
+			}
 		</div>
 	);
 };

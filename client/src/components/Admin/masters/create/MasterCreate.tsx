@@ -1,12 +1,28 @@
+/* eslint-disable max-len */
+/* eslint-disable require-jsdoc */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/jsx-key */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
-import './master-create-form.css';
-import {City, Master, Params} from '../../../../data/types/types';
-import {MasterCreateProps} from './componentsConstants';
+import classes from './master-create-form.module.css';
+import {AlertNotification, City, Master, Params} from '../../../../data/types/types';
+import {MasterCreateProps, validate} from './componentsConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
+import {useFormik} from 'formik';
+import {
+	Button,
+	Stack,
+	TextField,
+	Select,
+	MenuItem,
+	FormControl,
+	OutlinedInput,
+	FormHelperText,
+	Typography,
+} from '@mui/material';
+import AlertMessage from 'src/components/Notification/AlertMessage';
+import {InputLabel} from '@mui/material';
 
 
 const MasterCreate: FC<MasterCreateProps> = () => {
@@ -14,12 +30,47 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 
 	const {masterIdParam, masterNameParam} = useParams<Params>();
 
-	const [masterName, setMasterName] = useState<string>('');
-	const [masterId, setMasterId]= useState<string>('');
-
-	const [citiesId, setCitiesId] = useState<number[]>([]);
 	const [cities, setCities] = useState<City[]>([]);
 
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
+
+	const isOpen = (value:boolean) => {
+		setAlertOptions({...alertOptions, notify: value});
+	};
+
+	const formik = useFormik({
+		initialValues: {
+			masterId: masterIdParam || '',
+			masterName: masterNameParam || '',
+			citiesId: [] as number[],
+		},
+		validate,
+		onSubmit: async (values) => {
+			if (!masterIdParam) {
+				axios.post(URL.MASTER,
+					{
+						name: values.masterName,
+						citiesId: values.citiesId,
+					}).then(() =>{
+					setAlertOptions({message: 'Master has been created', type: 'success', notify: true});
+					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`);
+				});
+			} else {
+				axios.put(URL.MASTER, {
+					id: values.masterId,
+					name: values.masterName,
+					citiesId: values.citiesId,
+				}).then(() => {
+					setAlertOptions({message: 'Master has been updated', type: 'success', notify: true});
+					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`);
+				});
+			}
+		},
+	});
 
 	useEffect(() => {
 		const readMastersData = async () => {
@@ -33,12 +84,10 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 						const currentMasterCities = currentMaster[0].cities.map((city) => {
 							return city.id;
 						});
-						setMasterName( masterNameParam );
-						setMasterId( masterIdParam );
-						setCitiesId( currentMasterCities );
+						formik.values.masterId = masterIdParam;
+						formik.values.citiesId.push(...currentMasterCities);
 					} else {
-						setMasterName( masterNameParam );
-						setMasterId( masterIdParam );
+						formik.values.masterId = masterIdParam;
 					}
 				}
 			}
@@ -61,96 +110,98 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 	}, []);
 
 
-	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-
-		if (!masterIdParam) {
-			axios.post(URL.MASTER,
-				{
-					name: masterName,
-					citiesId,
-				}).then(() =>{
-				setMasterName('');
-				alert('Master has been created');
-				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`);
-			});
-		} else {
-			axios.put(URL.MASTER, {
-				id: masterId,
-				name: masterName,
-				citiesId,
-			}).then(() => {
-				alert('Master has been updated');
-				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`);
-			});
-		}
-	};
-
-
 	return (
-		<div className='container-form'>
+		<div>
 
-			<form className='form' onSubmit={onSubmit}>
+			<div className={classes.container_form}>
 
-				<div>
+				<form className={classes.form} onSubmit = {formik.handleSubmit}>
 
-					<div className='form-section'>
-						<div className='form-input__label'>
-							<label>Enter master name:</label>
+					<Stack direction="column" justifyContent="center" spacing={1.5}>
+						<div className={classes.form_section}>
+							<div className={classes.form_input__label}>
+								<Typography
+									variant="h6"
+									gutterBottom
+									component="label"
+								>
+										Enter master name:
+								</Typography>
+							</div>
+							<TextField
+								id="masterName"
+								name="masterName"
+								label="Master name"
+								placeholder="Full name"
+								variant="filled"
+								size="small"
+								margin="dense"
+								fullWidth
+								value={formik.values.masterName}
+								onChange={formik.handleChange}
+								onBlur={formik.handleBlur}
+								error={formik.touched.masterName && Boolean(formik.errors.masterName)}
+								helperText={formik.touched.masterName && formik.errors.masterName}
+								required
+							/>
 						</div>
-						<input
-							type='text'
-							placeholder = 'Name Surname'
-							pattern='^[A-Za-zА-Яа-я]{3,49}$|^[A-Za-zА-Яа-я]{3,49}[\s]{1}[A-Za-zА-Яа-я]{3,50}$'
-							title='Master name must be at least 3 letter and alphabetical characters only'
-							value={masterName}
-							onChange={(masterNameEvent) => setMasterName(masterNameEvent.target.value)}
-						>
-						</input>
-					</div>
 
+						<div className={classes.form_section}>
+							<div className={classes.form_input__label}>
+								<Typography
+									variant="h6"
+									gutterBottom
+									component="label"
+								>
+									Choose master's сity:
+								</Typography>
+							</div>
 
-					<div className='form-input__label'>
-						<label>Choose master's сity:</label>
-					</div>
-
-					<div className='form-section_checkbox'>
-						{
-							cities.map((city) => (
-								<div className='form-section_checkbox'>
-									<div className='form-input_checkbox'>
-										<input
-											type="checkbox"
+							<FormControl
+								fullWidth
+								error={formik.touched.citiesId && Boolean(formik.errors.citiesId)}
+							>
+								<InputLabel id="cities">Cities</InputLabel>
+								<Select
+									id='citiesId'
+									name='citiesId'
+									labelId='cities'
+									displayEmpty
+									multiple
+									onChange={formik.handleChange}
+									value={formik.values.citiesId}
+									onBlur={formik.handleBlur}
+									input={<OutlinedInput label="Cities" />}
+								>
+									{cities.map((city) => (
+										<MenuItem
 											value={city.id}
-											checked={citiesId.includes(city.id)}
-											onChange = {
-												function(event) {
-													if (event.target.checked) {
-														setCitiesId([...citiesId, Number(event.target.value)]);
-													} else {
-														setCitiesId([...citiesId].filter((elem) => elem !== Number(event.target.value)));
-													}
-												}
-											}
-										/>
-									</div>
-									<div className='checkbox-label'>
-										<span className='form-input_checkbox-name'>{city.name}</span>
-									</div>
-								</div>
-							))
-						}
-					</div>
+										>
+											{city.name}
+										</MenuItem>
+									))}
+								</Select>
+								<FormHelperText> {formik.touched.citiesId && formik.errors.citiesId} </FormHelperText>
+							</FormControl>
+						</div>
 
-					<div className='form-button'>
-						<button type='submit'>
-                            Submit
-						</button>
-					</div>
+						<div className={classes.form_section}>
+							<Button
+								variant="contained"
+								type="submit"
+								className={classes.form_btn}
+								style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
+							>
+								Submit
+							</Button>
+						</div>
+					</Stack>
 
-				</div>
-
-			</form>
+				</form>
+				{
+					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
+				}
+			</div>
 
 		</div>
 	);

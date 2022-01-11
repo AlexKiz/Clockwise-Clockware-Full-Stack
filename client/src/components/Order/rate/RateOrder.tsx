@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-mixed-spaces-and-tabs */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
@@ -5,10 +6,11 @@ import {useHistory, useParams} from 'react-router-dom';
 // @ts-ignore
 import ReactStars from 'react-rating-stars-component';
 import classes from './rate-order.module.css';
-import {Params, Order} from '../../../data/types/types';
+import {Params, Order, AlertNotification} from '../../../data/types/types';
 import {RateOrderProps} from './componentConstants';
 import {URL} from '../../../data/constants/routeConstants';
-
+import {Button, Typography} from '@mui/material';
+import AlertMessage from 'src/components/Notification/AlertMessage';
 
 const RateOrder: FC<RateOrderProps> = () => {
 	const history = useHistory();
@@ -18,6 +20,12 @@ const RateOrder: FC<RateOrderProps> = () => {
 	const [rating, setRating] = useState<number>(0);
 
 	const [order, setOrder] = useState<Order>({} as Order);
+
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
 
 
 	useEffect(() => {
@@ -39,6 +47,9 @@ const RateOrder: FC<RateOrderProps> = () => {
 		readOrderForRate();
 	}, []);
 
+	const isOpen = (value:boolean) => {
+		setAlertOptions({...alertOptions, notify: value});
+	};
 
 	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -48,7 +59,11 @@ const RateOrder: FC<RateOrderProps> = () => {
 			orderRated: rating,
 			masterId: order.master.id,
 		}).then(() => {
-			alert('Thanks for your feedback');
+			setAlertOptions({
+				message: 'Thanks for your feedback',
+				type: 'success',
+				notify: true,
+			});
 			history.push('/');
 		});
 	};
@@ -63,7 +78,13 @@ const RateOrder: FC<RateOrderProps> = () => {
 							{ order &&
                             <>
                             	<div className={classes.form_master}>
-                            		<label>Please, rate the following master:</label>
+                            		<Typography
+                            			variant="h6"
+                            			gutterBottom
+                            			component="label"
+                            		>
+										Please, rate the following master:
+                            		</Typography>
                             		<p>{order.master.name}</p>
                             	</div>
                             	<div className={classes.form_orderinfo}>
@@ -96,11 +117,21 @@ const RateOrder: FC<RateOrderProps> = () => {
 							</div>
 
 							<div className={classes.form_button}>
-								<button type="submit"> Rate order </button>
+								<Button
+									variant="contained"
+									type="submit"
+									className={classes.form_btn}
+									style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
+								>
+										Create order
+								</Button>
 							</div>
 
 						</div>
 					</form>
+					{
+						alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
+					}
 				</div>
 			</div>
 
