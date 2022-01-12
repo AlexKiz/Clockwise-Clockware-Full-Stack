@@ -34,8 +34,6 @@ import {
 	Modal,
 	ImageList,
 	ImageListItem,
-	TableFooter,
-	TablePagination,
 } from '@mui/material';
 import {
 	DesktopDateRangePicker,
