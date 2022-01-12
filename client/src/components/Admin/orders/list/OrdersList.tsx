@@ -36,6 +36,10 @@ import {
 	TextField,
 	LinearProgress,
 	Typography,
+	Fab,
+	Modal,
+	ImageList,
+	ImageListItem,
 } from '@mui/material';
 import {
 	DesktopDateRangePicker,
@@ -48,6 +52,7 @@ import PrivateHeader from '../../../Headers/PrivateHeader';
 import TablePaginationActions from '../../../Pagination/TablePaginationActions';
 import {visuallyHidden} from '@mui/utils';
 import {debouncer} from 'src/data/constants/systemUtilities';
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -103,6 +108,8 @@ const OrdersList: FC<OrdersListProps> = () => {
 	const [sortingOrder, setSortingOrder] = useState<'asc' | 'desc'>('asc');
 
 	const [loading, setLoading] = useState<boolean>(false);
+	const [modalOptions, setModalOptions] = useState<{modalImg: string, isModalOpen: boolean}>({modalImg: '', isModalOpen: false});
+
 
 	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
 		notify: false,
@@ -316,6 +323,15 @@ const OrdersList: FC<OrdersListProps> = () => {
 		});
 		setLoading(false);
 	};
+
+	const handleOpenModalImg = (img: string) => setModalOptions({
+		modalImg: img,
+		isModalOpen: true,
+	});
+	const handleCloseModalImg = () => setModalOptions({
+		modalImg: '',
+		isModalOpen: false,
+	});
 
 	return (
 		<div>
@@ -549,7 +565,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 										) : null}
 									</TableSortLabel>
 								</StyledTableCell>
-								<StyledTableCell sx={{width: '18%'}} align="center">
+								<StyledTableCell sx={{width: '12%'}} align="center">
 									<TableSortLabel
 										active={sortedField === 'user.email' ? true : false}
 										direction={sortedField === 'user.email' ? sortingOrder : 'asc'}
@@ -634,6 +650,9 @@ const OrdersList: FC<OrdersListProps> = () => {
 										) : null}
 									</TableSortLabel>
 								</StyledTableCell>
+								<StyledTableCell sx={{width: '6%'}} align="center">
+									Photos
+								</StyledTableCell>
 								<StyledTableCell sx={{width: '20%'}} align="right">
 									<IconButton
 										style={{marginLeft: 'auto'}}
@@ -657,6 +676,22 @@ const OrdersList: FC<OrdersListProps> = () => {
 									<StyledTableCell align="center"> {order.master.name} </StyledTableCell>
 									<StyledTableCell align="center"> {order.startWorkOn.split('T').join(' ')} </StyledTableCell>
 									<StyledTableCell align="center"> {order.endWorkOn.split('T').join(' ')} </StyledTableCell>
+									<StyledTableCell align="center">
+										<Fab
+											size="small"
+											component="span"
+											aria-label="add"
+											variant="extended"
+											sx={{width: '90%'}}
+											disabled={order.images ? false : true}
+											onClick={() => {
+												handleOpenModalImg(order.images);
+											}}
+										>
+											<ImageOutlinedIcon />
+										</Fab>
+									</StyledTableCell>
+
 									<StyledTableCell align="center">
 										{ !order.isCompleted ?
 											<Link to={
@@ -710,7 +745,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 							<TableRow>
 								<TablePagination
 									rowsPerPageOptions={[5, 10, 25, {label: 'All', value: totalOrders}]}
-									colSpan={9}
+									colSpan={10}
 									count={totalOrders}
 									rowsPerPage={rowsPerPage}
 									page={page}
@@ -733,6 +768,34 @@ const OrdersList: FC<OrdersListProps> = () => {
 						</TableFooter>
 					</Table>
 				</TableContainer>
+				<Modal
+					open={modalOptions.isModalOpen}
+					onClose={handleCloseModalImg}
+					aria-labelledby="modal-modal-title"
+					aria-describedby="modal-modal-description"
+				>
+					<Box sx={{top: '50%',
+						position: 'absolute',
+						left: '50%',
+						transform: 'translate(-50%, -50%)',
+						width: 500,
+						bgcolor: 'background.paper',
+						border: '2px solid #000',
+						boxShadow: 24,
+						p: 4}}
+					>
+						<ImageList sx={{width: 500, height: 450, top: '50%', right: '50%'}} cols={3} rowHeight={164}>
+							{modalOptions.modalImg.split(',').map((item) => (
+								<ImageListItem key={item}>
+									<img
+										src={`${item}`}
+										loading="lazy"
+									/>
+								</ImageListItem>
+							))}
+						</ImageList>
+					</Box>
+				</Modal>
 				{
 					alertOptions.notify &&
 					<AlertMessage

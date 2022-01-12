@@ -10,6 +10,7 @@ export interface OrderFormValues {
 	orderDate: string
 	orderTime: string
 	masterId: string
+	orderPhotos: string[]
 }
 
 export type OrderFormValidation = {

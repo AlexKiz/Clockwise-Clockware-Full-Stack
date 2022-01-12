@@ -44,7 +44,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 	});
 	const [loading, setLoading] = useState<boolean>(false);
 
-	const [images, setImages] = useState<File[] | null>([]);
+	const [images, setImages] = useState<File[]>([]);
 	const [imageUrls, setImageUrls] = useState<string[]>([]);
 	const [openModalImg, setOpenModalImg] = useState<boolean>(false);
 
@@ -61,6 +61,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 			orderDate: '',
 			orderTime: '',
 			masterId: '',
+			orderPhotos: [] as string[],
 		},
 		validate,
 		onSubmit: async (values) => {
@@ -76,6 +77,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 						masterId: values. masterId,
 						startWorkOn: startDate,
 						endWorkOn: endDate,
+						orderPhotos: values.orderPhotos,
 					}).then(() => {
 					setLoading(false);
 					setAlertOptions({
@@ -83,6 +85,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 						type: 'success',
 						notify: true,
 					});
+					setImages([]);
 					formik.resetForm();
 				});
 			}
@@ -152,22 +155,31 @@ const OrderForm: FC<OrderFormProps> = () => {
 		}
 
 		const imageUrlsList: string[] = [];
-
 		images?.forEach((item) => imageUrlsList.push(URL.createObjectURL(item)));
 		setImageUrls(imageUrlsList);
 	}, [images]);
 
 	const readFiles = useCallback(async () => {
-		if (images?.length && images.some((file) => file.size > 1024 * 1024)) {
-			setImages([]);
-			setAlertOptions({
-				message: 'Photo must be 1 MB size or less',
-				type: 'warning',
-				notify: true,
-			});
-			return;
-		}
+		const binaryImages = await Promise.all<any>(
+			images.map(async (file) => {
+				return new Promise((resolve) => {
+					const reader = new FileReader();
+					reader.readAsDataURL(file);
+					reader.onload = () => {
+						const result = reader.result;
+						resolve(result);
+					};
+				});
+			}));
+
+		formik.values.orderPhotos = binaryImages;
 	}, [images]);
+
+
+	useEffect(()=>{
+		readFiles();
+	}, [images]);
+
 
 	const handlePhotoUpload = (event) => {
 		if (event.currentTarget.files && event.currentTarget.files.length > 5) {
@@ -178,11 +190,18 @@ const OrderForm: FC<OrderFormProps> = () => {
 				notify: true,
 			});
 			return;
+		} else if (images?.length && images.some((file) => file.size > 1024 * 1024)) {
+			setImages([]);
+			setAlertOptions({
+				message: 'Photo must be 1 MB size or less',
+				type: 'warning',
+				notify: true,
+			});
+			return;
 		} else {
 			setImages([...event.currentTarget.files]);
 		}
 	};
-
 
 	const handleOpenModalImg = () => setOpenModalImg(true);
 	const handleCloseModalImg = () => setOpenModalImg(false);
@@ -423,41 +442,43 @@ const OrderForm: FC<OrderFormProps> = () => {
 								</FormControl>
 							</div>
 							<div className={classes.form_section}>
-								<Typography
-									htmlFor="upload-photo"
-									component='label'
-									style={{marginRight: 20}}>
-									<input
-										style={{display: 'none'}}
-										id="upload-photo"
-										name="upload-photo"
-										type="file"
-										multiple
-										accept=".PNG, .JPG, .JPEG"
-										onChange={handlePhotoUpload}
-									/>
-									<Badge badgeContent={images?.length && `${images?.length}/5`} color="secondary">
-										<Fab
-											color="primary"
-											size="small"
-											component="span"
-											aria-label="add"
-											variant="extended"
-										>
-											<AddIcon /> Upload photo
-										</Fab>
-									</Badge>
-								</Typography>
-								<Fab
-									size="small"
-									component="span"
-									aria-label="add"
-									variant="extended"
-									disabled={images?.length ? false : true}
-									onClick={handleOpenModalImg}
-								>
-									<ImageOutlinedIcon /> Uploaded photos
-								</Fab>
+								<Stack direction="row" justifyContent="center" spacing={3} sx={{width: '100%'}}>
+									<Typography
+										htmlFor="upload-photo"
+										component='label'
+									>
+										<input
+											style={{display: 'none'}}
+											id="upload-photo"
+											name="upload-photo"
+											type="file"
+											multiple
+											accept=".PNG, .JPG, .JPEG"
+											onChange={handlePhotoUpload}
+										/>
+										<Badge badgeContent={images?.length && `${images?.length}/5`} color="secondary">
+											<Fab
+												color="primary"
+												size="large"
+												component="span"
+												aria-label="add"
+												variant="extended"
+											>
+												<AddIcon /> Upload photo
+											</Fab>
+										</Badge>
+									</Typography>
+									<Fab
+										size="large"
+										component="span"
+										aria-label="add"
+										variant="extended"
+										disabled={images?.length ? false : true}
+										onClick={handleOpenModalImg}
+									>
+										<ImageOutlinedIcon /> Uploaded photos
+									</Fab>
+								</Stack>
 							</div>
 
 							<Modal

@@ -64,7 +64,7 @@ type roleMappingOrderGetParams = {
 
 const getAdminOrders = async (params: roleMappingOrderGetParams) => {
 	const orders = await db.Order.findAndCountAll({
-		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
+		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted', ['orderImages', 'images']],
 		order: [[db.sequelize.col(`${params.sortedField}`), `${params.sortingOrder}`]],
 		include: [
 			{
@@ -99,7 +99,7 @@ const getAdminOrders = async (params: roleMappingOrderGetParams) => {
 const getMasterOrders = async (params: roleMappingOrderGetParams) => {
 	const orders = await db.Order.findAll({
 		order: [['startWorkOn', 'DESC']],
-		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
+		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted', ['orderImages', 'images']],
 		include: [
 			{
 				model: db.Clock,

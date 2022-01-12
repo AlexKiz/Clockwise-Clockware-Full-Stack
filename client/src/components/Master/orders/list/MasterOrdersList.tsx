@@ -16,11 +16,17 @@ import {
 	Paper,
 	tableCellClasses,
 	Typography,
+	Fab,
+	Modal,
+	Box,
+	ImageList,
+	ImageListItem,
 } from '@mui/material';
 import AlertMessage from '../../../Notification/AlertMessage';
 import PrivateHeader from '../../../Headers/PrivateHeader';
 import jwtDecode from 'jwt-decode';
 import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -50,6 +56,8 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 		type: 'success',
 		message: '',
 	});
+
+	const [modalOptions, setModalOptions] = useState<{modalImg: string, isModalOpen: boolean}>({modalImg: '', isModalOpen: false});
 
 	const isOpen = (value:boolean) => {
 		setAlertOptions({...alertOptions, notify: value});
@@ -83,6 +91,15 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 
 		readOrdersData();
 	}, []);
+
+	const handleOpenModalImg = (img: string) => setModalOptions({
+		modalImg: img,
+		isModalOpen: true,
+	});
+	const handleCloseModalImg = () => setModalOptions({
+		modalImg: '',
+		isModalOpen: false,
+	});
 
 
 	useEffect(() => {
@@ -125,6 +142,22 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 									<StyledTableCell align="center"> {order.endWorkOn.split('T').join(' ')} </StyledTableCell>
 									<StyledTableCell align="center"> {order.clock.price} </StyledTableCell>
 									<StyledTableCell align="center">
+										<Fab
+											size="small"
+											component="span"
+											aria-label="add"
+											variant="extended"
+											sx={{width: '90%'}}
+											disabled={order.images ? false : true}
+											onClick={() => {
+												handleOpenModalImg(order.images);
+											}}
+										>
+											<ImageOutlinedIcon />
+										</Fab>
+									</StyledTableCell>
+
+									<StyledTableCell align="center">
 										<Button
 											disabled={order.isCompleted}
 											variant="contained"
@@ -154,6 +187,34 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 						</TableBody>
 					</Table>
 				</TableContainer>
+				<Modal
+					open={modalOptions.isModalOpen}
+					onClose={handleCloseModalImg}
+					aria-labelledby="modal-modal-title"
+					aria-describedby="modal-modal-description"
+				>
+					<Box sx={{top: '50%',
+						position: 'absolute',
+						left: '50%',
+						transform: 'translate(-50%, -50%)',
+						width: 500,
+						bgcolor: 'background.paper',
+						border: '2px solid #000',
+						boxShadow: 24,
+						p: 4}}
+					>
+						<ImageList sx={{width: 500, height: 450, top: '50%', right: '50%'}} cols={3} rowHeight={164}>
+							{modalOptions.modalImg.split(',').map((item) => (
+								<ImageListItem key={item}>
+									<img
+										src={`${item}`}
+										loading="lazy"
+									/>
+								</ImageListItem>
+							))}
+						</ImageList>
+					</Box>
+				</Modal>
 				{
 					alertOptions.notify &&
 					<AlertMessage
