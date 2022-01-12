@@ -299,6 +299,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 		dispatch(setIsModalOpen(false));
 	};
 
+
 	return (
 		<div>
 			<PrivateHeader/>
@@ -734,5 +735,3 @@ const OrdersList: FC<OrdersListProps> = () => {
 };
 
 export default OrdersList;
-
-
