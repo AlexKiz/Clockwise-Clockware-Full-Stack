@@ -7,10 +7,10 @@ import classes from '../verification/verification.module.css';
 import {URL} from '../../../../data/constants/routeConstants';
 import {Params} from 'src/data/types/types';
 import {Button, Stack} from '@mui/material';
-import {VerifiactionProps} from './componentConstants';
+import {VerificationProps} from './componentConstants';
 
 
-const Verification: FC<VerifiactionProps> = () => {
+const Verification: FC<VerificationProps> = () => {
 	const history = useHistory();
 
 	const {hashVerify} = useParams<Params>();

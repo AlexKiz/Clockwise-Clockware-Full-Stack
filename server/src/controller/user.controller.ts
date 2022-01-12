@@ -1,7 +1,8 @@
+/* eslint-disable max-len */
 import {Response, Request} from 'express';
 import db from '../models';
 import bcrypt from 'bcrypt';
-import {sendVerificationMail} from '../services/nodemailer';
+import {rolesMappingCreate} from './../../data/utilities/systemUtilities';
 
 
 export const userRegistration = async (req: Request, res: Response) => {
@@ -11,20 +12,10 @@ export const userRegistration = async (req: Request, res: Response) => {
 		const salt = bcrypt.genSaltSync(10);
 		const hashPassword = bcrypt.hashSync(password, salt);
 		const hashForVerification = bcrypt.hashSync(`${name}${email}`, salt);
-		const hashVerify = hashForVerification.replace(/\//g, "i")
-		
-		if (role === 'master') {
-			const master = await db.Master.create({name});
-			master.setCities(citiesId);
+		const hashVerify = hashForVerification.replace(/\//g, 'i');
 
-			const user = await db.User.create({name, email, password: hashPassword, role, hashVerify, masterId: master.id});
-			await sendVerificationMail(email, hashVerify);
-			return res.status(201).json(user);
-		}
+		const user = rolesMappingCreate[role](name, email, hashPassword, hashVerify, citiesId);
 
-		const user = await db.User.create({name, email, password: hashPassword, role, hashVerify});
-		await sendVerificationMail(email, hashVerify);
-		
 		res.status(201).json(user);
 	} catch (error) {
 		res.status(500).send();
@@ -63,13 +54,13 @@ export const putUser = async (req: Request, res: Response) => {
 
 export const userVerification = async (req: Request, res: Response) => {
 	try {
-		const { hashVerify } = req.body;
-		
-		const userVerify = await db.User.update({hashVerify: '', isVerified: true}, {where: {hashVerify}})
-		
-		res.status(200).json(userVerify)
+		const {hashVerify} = req.body;
+
+		const userVerify = await db.User.update({hashVerify: '', isVerified: true}, {where: {hashVerify}});
+
+		res.status(200).json(userVerify);
 	} catch (error) {
-		res.status(500).send()
+		res.status(500).send();
 	}
 };
 

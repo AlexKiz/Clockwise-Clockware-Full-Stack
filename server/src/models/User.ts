@@ -87,13 +87,13 @@ export default (sequelize: any, DataTypes: any) => {
 
 			isVerified: {
 				type: DataTypes.BOOLEAN,
-				defaultValue: false
+				defaultValue: false,
 			},
 
 			masterId: {
 				type: DataTypes.UUID,
 				allowNull: true,
-			}
+			},
 		}, {
 			sequelize,
 			modelName: 'user',

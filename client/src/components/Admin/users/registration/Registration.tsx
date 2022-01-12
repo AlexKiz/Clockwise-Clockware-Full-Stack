@@ -4,7 +4,7 @@ import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import PublicHeader from '../../../Headers/PublicHeader';
 import classes from '../registration/registration-form.module.css';
-import {RegistrationFormProps, validate} from './componentConstants';
+import {RegistrationProps, validate} from './componentConstants';
 import {useFormik} from 'formik';
 import {URL} from '../../../../data/constants/routeConstants';
 import {
@@ -30,7 +30,7 @@ import {City} from 'src/data/types/types';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 
 
-const RegistrationForm:FC<RegistrationFormProps> = () => {
+const Registration:FC<RegistrationProps> = () => {
 	const [cities, setCities] = useState<City[]>([]);
 
 	const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -43,9 +43,9 @@ const RegistrationForm:FC<RegistrationFormProps> = () => {
 
 	const formik = useFormik({
 		initialValues: {
-			userEmail: '',
-			userFirstName: '',
-			userLastName: '',
+			email: '',
+			firstName: '',
+			lastName: '',
 			password: '',
 			checkPassword: '',
 			licenseAcception: false,
@@ -57,8 +57,8 @@ const RegistrationForm:FC<RegistrationFormProps> = () => {
 		onSubmit: async (values) => {
 			await axios.post(URL.REGISTRATION,
 				{
-					email: values.userEmail,
-					name: `${values.userFirstName} ${values.userLastName}`,
+					email: values.email,
+					name: `${values.firstName} ${values.lastName}`,
 					password: values.password,
 					citiesId: values.citiesId,
 					role: values.isMaster ? 'master' : 'client',
@@ -83,16 +83,16 @@ const RegistrationForm:FC<RegistrationFormProps> = () => {
 
 
 	useEffect(() => {
-		const someFunc = () => {
-			if (formik.errors.userEmail || formik.errors.password || formik.errors.checkPassword || !formik.errors.licenseAcception) {
+		const disableSubmit = () => {
+			if (formik.errors.email || formik.errors.password || formik.errors.checkPassword || !formik.errors.licenseAcception) {
 				setIsDisabled(true);
-			} else if (formik.values.userEmail && formik.values.password && formik.values.checkPassword && formik.values.licenseAcception) {
+			} else if (formik.values.email && formik.values.password && formik.values.checkPassword && formik.values.licenseAcception) {
 				setIsDisabled(false);
 			}
 		};
 
-		someFunc();
-	}, [formik.values.userEmail, formik.values.password, formik.values.checkPassword, formik.values.licenseAcception]);
+		disableSubmit();
+	}, [formik.values.email, formik.values.password, formik.values.checkPassword, formik.values.licenseAcception]);
 
 
 	return (
@@ -116,19 +116,19 @@ const RegistrationForm:FC<RegistrationFormProps> = () => {
 								</div>
 
 								<TextField
-									id="userEmail"
-									name='userEmail'
+									id="email"
+									name='email'
 									label="Email"
 									placeholder="example@mail.com"
 									variant="filled"
 									size="small"
 									margin="dense"
 									fullWidth
-									value={formik.values.userEmail}
+									value={formik.values.email}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
-									error={formik.touched.userEmail && Boolean(formik.errors.userEmail)}
-									helperText={formik.touched.userEmail && formik.errors.userEmail}
+									error={formik.touched.email && Boolean(formik.errors.email)}
+									helperText={formik.touched.email && formik.errors.email}
 									required
 								/>
 							</div>
@@ -207,36 +207,36 @@ const RegistrationForm:FC<RegistrationFormProps> = () => {
 								</div>
 
 								<TextField
-									id="userFirstName"
-									name='userFirstName'
+									id="firstName"
+									name='firstName'
 									label="First Name"
 									placeholder="First Name"
 									variant="filled"
 									size="small"
 									margin="dense"
 									fullWidth
-									value={formik.values.userFirstName}
+									value={formik.values.firstName}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
-									error={formik.touched.userFirstName && Boolean(formik.errors.userFirstName)}
-									helperText={formik.touched.userFirstName && formik.errors.userFirstName}
+									error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+									helperText={formik.touched.firstName && formik.errors.firstName}
 									required
 								/>
 
 								<TextField
-									id="userLastName"
-									name='userLastName'
+									id="lastName"
+									name='lastName'
 									label="Last Name"
 									placeholder="Last Name"
 									variant="filled"
 									size="small"
 									margin="dense"
 									fullWidth
-									value={formik.values.userLastName}
+									value={formik.values.lastName}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
-									error={formik.touched.userLastName && Boolean(formik.errors.userLastName)}
-									helperText={formik.touched.userLastName && formik.errors.userLastName}
+									error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+									helperText={formik.touched.lastName && formik.errors.lastName}
 									required
 								/>
 
@@ -342,4 +342,4 @@ const RegistrationForm:FC<RegistrationFormProps> = () => {
 	);
 };
 
-export default RegistrationForm;
+export default Registration;

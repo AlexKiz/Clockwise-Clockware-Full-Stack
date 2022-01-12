@@ -1,1 +1,1 @@
-export interface VerifiactionProps {};
+export interface VerificationProps {};

@@ -1,11 +1,11 @@
 import {VALID} from '../../../../data/constants/systemConstants';
 
-export interface RegistrationFormProps {};
+export interface RegistrationProps {};
 
-export interface RegistrationFormValues {
-    userEmail: string
-    userFirstName: string
-    userLastName: string
+export interface RegistrationValues {
+    email: string
+    firstName: string
+    lastName: string
     password: string
     checkPassword: string
     isMaster: boolean
@@ -13,10 +13,10 @@ export interface RegistrationFormValues {
     citiesId?: number[]
 }
 
-export type RegistrationFormValidation = {
-	userEmail?: string,
-    userFirstName?: string,
-    userLastName?: string,
+export type RegistrationValidation = {
+	email?: string,
+    firstName?: string,
+    lastName?: string,
     password?: string,
     checkPassword?: string,
     isMaster?: string,
@@ -24,33 +24,22 @@ export type RegistrationFormValidation = {
     citiesId?: string,
 }
 
-export const validate = (values: RegistrationFormValues) => {
-	const errors: RegistrationFormValidation = {};
-	if (!values.userEmail) {
-		errors.userEmail = 'Required';
-	} else if (!VALID.EMAIL.test(values.userEmail)) {
-		errors.userEmail = 'Email should match the example: myemail@mail.com';
+const requiredFields: string[] = ['email', 'firstName', 'lastName', 'password', 'checkPassword'];
+
+export const validate = (values: RegistrationValues) => {
+	const errors: RegistrationValidation = {};
+
+	if (!VALID.EMAIL.test(values.email)) {
+		errors.email = 'Email should match the example: myemail@mail.com';
 	}
 
-	if (!values.userFirstName) {
-		errors.userFirstName = 'Required';
-	}
-
-	if (!values.userLastName) {
-		errors.userLastName = 'Required';
-	}
-
-	if (!values.password) {
-		errors.password = 'Required';
-	} else if (!VALID.PASSWORD.test(values.password)) {
+	if (!VALID.PASSWORD.test(values.password)) {
 		errors.password = 'Password must contains at least 1 special symbol, 1 number, upper and lower case letters';
 	} else if (values.password.length < 8) {
 		errors.password = 'Password must be at least 8 characters';
 	}
 
-	if (!values.checkPassword) {
-		errors.checkPassword = 'Required';
-	} else if (values.checkPassword !== values.password) {
+	if (values.checkPassword !== values.password) {
 		errors.checkPassword = 'Password does not match';
 	}
 
@@ -61,6 +50,12 @@ export const validate = (values: RegistrationFormValues) => {
 	if (!values.licenseAcception) {
 		errors.licenseAcception = 'You must accept license term to sign in';
 	}
+
+	requiredFields.some((field) => {
+		if (!values[field]) {
+			errors[field] = 'Required';
+		}
+	});
 
 	return errors;
 };

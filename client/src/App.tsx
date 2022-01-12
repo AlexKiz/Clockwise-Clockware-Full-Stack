@@ -15,7 +15,7 @@ import OrderCreate from './components/Admin/orders/create/OrderCreate';
 import LoginForm from './components/Admin/login/LoginForm';
 import PrivateRoute from './components/Route/PrivateRoute';
 import RateOrder from './components/Order/rate/RateOrder';
-import RegistrationForm from './components/Admin/users/registration/RegistrationForm';
+import Registration from './components/Admin/users/registration/Registration';
 import {ROUTES} from './data/constants/routeConstants';
 import Verification from './components/Admin/users/verification/Verification';
 
@@ -27,7 +27,7 @@ function App() {
 				<Route component={OrderForm} {...ROUTES.ORDER_FORM}/>
 				<Route component={LoginForm} {...ROUTES.ADMIN_LOGIN}/>
 				<Route component={RateOrder} {...ROUTES.RATE_ORDER}/>
-				<Route component={RegistrationForm} {...ROUTES.REGISTRATION_FORM}/>
+				<Route component={Registration} {...ROUTES.REGISTRATION}/>
 				<Route component={Verification} {...ROUTES.USER_VERIFY}/>
 				<PrivateRoute component={MastersList} {...ROUTES.ADMIN_MASTERS_LIST}/>
 				<PrivateRoute component={MasterCreate} {...ROUTES.ADMIN_MASTER_CREATE}/>

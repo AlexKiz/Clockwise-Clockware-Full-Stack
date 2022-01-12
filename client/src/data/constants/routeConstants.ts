@@ -53,7 +53,7 @@ export const ROUTES = {
 		path: '/',
 		exact: true,
 	},
-	REGISTRATION_FORM: {
+	REGISTRATION: {
 		path: `/${RESOURCE.REGISTRATION}`,
 	},
 	ADMIN_MASTERS_LIST: {
