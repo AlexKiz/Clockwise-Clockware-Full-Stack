@@ -183,7 +183,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 			return;
 		} else {
 			setImages([...event.currentTarget.files]);
-		}
+		};
 	};
 
 	const handleOpenModalImg = () => setOpenModalImg(true);
