@@ -6,6 +6,6 @@ import {userRegistrationValidate} from '../controller/user.validate';
 const router = Router();
 
 router.post(URL.REGISTRATION, [userRegistrationValidate], userRegistration);
-router.put(URL.VERIFY, userVerification)
+router.put(URL.VERIFY, userVerification);
 
 export default router;

@@ -20,7 +20,7 @@ const Verification: FC<VerificationProps> = () => {
 			const user = await axios.put(URL.VERIFY, {
 				hashVerify,
 			});
-			if (!user[0]) {
+			if (user && !user[0]) { // 1 if changed,0 if didnt change, undefined
 				history.push(URL.LOGIN);
 			}
 		};
