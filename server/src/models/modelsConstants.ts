@@ -44,6 +44,7 @@ export interface OrderAttributes {
     ratingIdentificator: string,
     orderRating: number
     isCompleted: boolean
+    orderImages: string
 }
 
 export interface UserAttributes {

@@ -5,12 +5,13 @@ import {v4 as uuidv4} from 'uuid';
 import db from '../models';
 import {BearerParser} from 'bearer-token-parser';
 import bcrypt from 'bcrypt';
+import {cloudinary} from './../services/cloudinary';
 import {Op} from 'sequelize';
 
 
 export const postOrder = async (req: Request, res: Response) => {
 	try {
-		const {name, email, clockId, cityId, masterId, startWorkOn, endWorkOn} = req.body;
+		const {name, email, clockId, cityId, masterId, startWorkOn, endWorkOn, orderPhotos} = req.body;
 
 		const generatedPassword = uuidv4();
 		const salt = bcrypt.genSaltSync(10);
@@ -30,6 +31,12 @@ export const postOrder = async (req: Request, res: Response) => {
 
 		const ratingIdentificator = uuidv4();
 
+		const orderImagesURL = await Promise.all<string[]>(
+			orderPhotos.map(async (photo: string) => {
+				return await cloudinary.v2.uploader.upload(photo).then((result: { url: any; }) => result.url);
+			}),
+		);
+
 		const order = await db.Order.create({
 			clockId,
 			userId,
@@ -38,6 +45,7 @@ export const postOrder = async (req: Request, res: Response) => {
 			startWorkOn,
 			endWorkOn,
 			ratingIdentificator,
+			orderImages: orderImagesURL?.join(','),
 		});
 
 		res.status(201).json(order);
