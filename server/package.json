@@ -28,6 +28,7 @@
     "bearer-token-parser": "^1.0.3",
     "cloudinary": "^1.28.1",
     "cors": "^2.8.5",
+    "cron": "^1.8.2",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
@@ -44,6 +45,7 @@
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
+    "@types/cron": "^1.7.3",
     "@types/express": "^4.17.13",
     "@types/jest": "^27.0.3",
     "@types/node": "^16.11.10",

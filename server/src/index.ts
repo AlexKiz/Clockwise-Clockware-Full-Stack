@@ -10,6 +10,7 @@ import cors from 'cors';
 import path from 'path';
 import {URL} from '../data/constants/routeConstants';
 import db from './models';
+import {nearOrderNotification} from './services/cron';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -32,10 +33,12 @@ app.get('/*', function(req: Request, res: Response) {
 	res.sendFile(path.resolve('../', 'client', 'build', 'index.html'));
 });
 
+
 const start = async () => {
 	try {
 		await db.sequelize.authenticate();
 		await db.sequelize.sync();
+		nearOrderNotification.start();
 		app.listen(PORT, () => {
 			console.log(`Server has been started on port ${PORT} `);
 		});
