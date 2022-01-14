@@ -51,6 +51,20 @@ import TablePaginationActions from '../../../Pagination/TablePaginationActions';
 import {visuallyHidden} from '@mui/utils';
 import {debouncer} from 'src/data/constants/systemUtilities';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
+import {useDispatch, useSelector} from 'react-redux';
+import {OrderState} from 'src/store/types/order';
+import {
+	getOrders,
+	setOrdersPage,
+	setOrdersLimit,
+	setOrdersQuantity,
+	setOrdersSortingField,
+	setOrdersSortingOrder,
+	setIsCompletedFilter,
+	setStartDateFilter,
+	setEndDateFilter,
+} from 'src/store/actions/order';
+import {CombinedState} from 'redux';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -74,7 +88,21 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 
 
 const OrdersList: FC<OrdersListProps> = () => {
-	const [orders, setOrders] = useState<Order[]>([]);
+	const {
+		orders,
+		page,
+		limit,
+		totalQuantity,
+		sortedField,
+		sortingOrder,
+		masterFilteredId: reduxMasterFilter,
+		cityFilteredId: reduxCityFilter,
+		clockFilteredId: reduxClockFilter,
+		isCompletedFilter,
+		startDateFilter: reduxStartDateFilter,
+		endDateFilter: reduxEndDateFilter,
+	} = useSelector((state: CombinedState<{order: OrderState}>) => state.order);
+
 	const [cities, setCities] = useState<City[]>([]);
 	const [masters, setMasters] = useState<Master[]>([]);
 	const [clocks, setClocks] = useState<Clock[]>([]);
@@ -107,6 +135,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 
 	const [loading, setLoading] = useState<boolean>(false);
 	const [modalOptions, setModalOptions] = useState<{modalImg: string, isModalOpen: boolean}>({modalImg: '', isModalOpen: false});
+	const dispatch = useDispatch();
 
 
 	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
@@ -225,7 +254,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 						id,
 					},
 				}).then(() => {
-				setOrders(orders.filter((order) => order.id !== id));
+				// setOrders(orders.filter((order) => order.id !== id)); // ?????
 				setAlertOptions({
 					type: 'success',
 					message: 'Order has been deleted!',
@@ -243,20 +272,20 @@ const OrdersList: FC<OrdersListProps> = () => {
 		event: React.MouseEvent<HTMLButtonElement> | null,
 		newPage: number,
 	) => {
-		setPage(newPage);
+		dispatch(setOrdersPage(newPage));
 	};
 
 	const handleChangeRowsPerPage = (
 		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
-		setRowsPerPage(parseInt(event.target.value, 10));
-		setPage(0);
+		dispatch(setOrdersLimit(parseInt(event.target.value, 10)));
+		dispatch(setOrdersPage(0));
 	};
 
 	const handleRequestSort = (field: string) => {
 		const isAsc = sortedField === field && sortingOrder === 'asc';
-		setSortingOrder(isAsc ? 'desc' : 'asc');
-		setSortField(field);
+		dispatch(setOrdersSortingOrder(isAsc ? 'desc' : 'asc'));
+		dispatch(setOrdersSortingField(field));
 	};
 
 	const handleFilterList = () => {
@@ -279,13 +308,24 @@ const OrdersList: FC<OrdersListProps> = () => {
 				endDateFilter: filtersList.endWorkOn,
 			},
 		});
-		setOrders(data.rows);
-		setTotalOrders(data.count);
 		setIsFilterButtonsDisabled({
 			accept: true,
 			reset: false,
 		});
-		setPage(0);
+		dispatch(getOrders(
+			page,
+			limit,
+			sortedField,
+			sortingOrder,
+			masterFilter?.id,
+			cityFilter?.id,
+			clockFilter?.id,
+			isCompletedFilter,
+			dateFilter[0],
+			dateFilter[1],
+		));
+		dispatch(setOrdersQuantity(totalQuantity));
+		dispatch(setOrdersPage(0));
 		setLoading(false);
 	};
 
@@ -319,6 +359,9 @@ const OrdersList: FC<OrdersListProps> = () => {
 			accept: false,
 			reset: true,
 		});
+		dispatch(getOrders(page, limit, sortedField, sortingOrder));
+		dispatch(setOrdersQuantity(totalQuantity));
+		dispatch(setIsCompletedFilter(null));
 		setLoading(false);
 	};
 
@@ -742,10 +785,10 @@ const OrdersList: FC<OrdersListProps> = () => {
 						<TableFooter>
 							<TableRow>
 								<TablePagination
-									rowsPerPageOptions={[5, 10, 25, {label: 'All', value: totalOrders}]}
+									rowsPerPageOptions={[5, 10, 25, {label: 'All', value: totalQuantity}]}
 									colSpan={10}
-									count={totalOrders}
-									rowsPerPage={rowsPerPage}
+									count={totalQuantity}
+									rowsPerPage={limit}
 									page={page}
 									SelectProps={{
 										inputProps: {
