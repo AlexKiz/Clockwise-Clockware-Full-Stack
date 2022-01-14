@@ -80,6 +80,7 @@ import {CityState} from 'src/store/types/city';
 import {ClockState} from 'src/store/types/clock';
 import {ModalState} from 'src/store/types/modal';
 import {MasterState} from 'src/store/types/master';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -661,6 +662,26 @@ const OrdersList: FC<OrdersListProps> = () => {
 						</TableBody>
 						<TableFooter>
 							<TableRow>
+								<TableCell colSpan={4}>
+									<Stack direction='row' spacing={1.5}>
+										<Button
+											variant="contained"
+											sx={{width: '45%', fontSize: 12, borderRadius: 8}}
+											color='success'
+											startIcon={<DescriptionOutlinedIcon fontSize='medium'/>}
+										>
+											Import current page to Excel
+										</Button>
+										<Button
+											variant="contained"
+											sx={{width: '45%', fontSize: 12, borderRadius: 8}}
+											color='success'
+											startIcon={<DescriptionOutlinedIcon fontSize='medium'/>}
+										>
+											Import all pages to Excel
+										</Button>
+									</Stack>
+								</TableCell>
 								<TablePagination
 									rowsPerPageOptions={[5, 10, 25, {label: 'All', value: totalQuantity}]}
 									colSpan={10}
