@@ -78,25 +78,25 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 			<MasterHeader/>
 			<div className={classes.conteiner}>
 
-				<TableContainer component={Paper} sx={{width: 4/5}} className={classes.conteiner_table}>
+				<TableContainer component={Paper} sx={{width: '80%'}} className={classes.conteiner_table}>
 
 					<Table sx={{minWidth: 650}} aria-label="customized table">
 						<TableHead>
 							<TableRow>
-								<StyledTableCell sx={{width: 1/13}} align="center">Client name</StyledTableCell>
-								<StyledTableCell sx={{width: 1/9}} align="center">Clock size</StyledTableCell>
-								<StyledTableCell sx={{width: 3/17}} align="center">City</StyledTableCell>
-								<StyledTableCell sx={{width: 1/10}} align="center">Start on</StyledTableCell>
-								<StyledTableCell sx={{width: 1/10}} align="center">Finish on</StyledTableCell>
-								<StyledTableCell sx={{width: 1/10}} align="center">Total price</StyledTableCell>
-								<StyledTableCell sx={{width: 2/10}} align="center"></StyledTableCell>
+								<StyledTableCell sx={{width: '16%'}} align="center">Client name</StyledTableCell>
+								<StyledTableCell sx={{width: '16%'}} align="center">Clock size</StyledTableCell>
+								<StyledTableCell sx={{width: '18%'}} align="center">City</StyledTableCell>
+								<StyledTableCell sx={{width: '10%'}} align="center">Start on</StyledTableCell>
+								<StyledTableCell sx={{width: '10%'}} align="center">Finish on</StyledTableCell>
+								<StyledTableCell sx={{width: '10%'}} align="center">Total price</StyledTableCell>
+								<StyledTableCell sx={{width: '20%'}} align="center"></StyledTableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
 							{orders.map((order) => (
 								<StyledTableRow>
 
-									<StyledTableCell component="th" scope="row"> {order.user.name} </StyledTableCell>
+									<StyledTableCell component="th" scope="row" align="center"> {order.user.name} </StyledTableCell>
 									<StyledTableCell align="center"> {order.clock.size} </StyledTableCell>
 									<StyledTableCell align="center"> {order.city.name} </StyledTableCell>
 									<StyledTableCell align="center"> {order.startWorkOn.split('T').join(' ')} </StyledTableCell>
@@ -107,7 +107,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 										<Button
 											disabled={order.isCompleted}
 											variant="contained"
-											sx={{width: 1/1, fontSize: 14, borderRadius: 15}}
+											sx={{width: '100%', fontSize: 14, borderRadius: 15}}
 											onClick={() => completeOrder(order)}
 										>
 											{order.isCompleted ? 'Done!' : 'Complete Order'}
@@ -120,7 +120,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 
 				</TableContainer>
 				{
-					notify ? <AlertMessage alertType='success' message='Order has been completed!' isOpen={isOpen} notify={notify}/> : ''
+					notify && <AlertMessage alertType='success' message='Order has been completed!' isOpen={isOpen} notify={notify}/>
 				}
 			</div>
 		</div>

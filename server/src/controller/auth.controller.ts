@@ -30,8 +30,6 @@ export const auth = async (req: Request, res: Response) => {
 	
 	const accessToken = jwt.sign({userRole}, `${process.env.PRIVATE_KEY}`, {expiresIn: '4h'});
 	
-	console.log(accessToken);
-	
 	await db.User.updateById(userId, {token: accessToken})
 
 	res.set({Authorization: `Bearer ${accessToken}`}).status(200).json({message: 'Successfully authorizated!', role: userRole, userName});

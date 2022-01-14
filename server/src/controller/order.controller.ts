@@ -34,76 +34,70 @@ export const postOrder = async (req: Request, res: Response) => {
 
 
 export const getOrders = async (req: Request, res: Response) => {
-
 	try {
+		const token = (<string>req.headers.authorization).split(' ')[1];
 
-	const token = (<string>req.headers.authorization).split(' ')[1];
+		const {id: userId, role: userRole, masterId: masterId} = await db.User.findOne({where: {token}});
 
-	const {id: userId, role: userRole, masterId: masterId} = await db.User.findOne({where: {token}})
-		console.log(userRole);
-		
-	if (userRole === 'admin') {
-		const orders = await db.Order.findAll({
-			attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
-			include: [
-				{
-					model: db.Clock,
-					attributes: ['id', 'size'],
-					required: true,
-				},
-				{
-					model: db.User,
-					attributes: ['id', 'name', 'email'],
-					required: true,
-				},
-				{
-					model: db.City,
-					attributes: ['id', 'name'],
-					required: true,
-				},
-				{
-					model: db.Master,
-					attributes: ['id', 'name'],
-					required: true,
-				},
-			],
-		});
+		if (userRole === 'admin') {
+			const orders = await db.Order.findAll({
+				attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
+				include: [
+					{
+						model: db.Clock,
+						attributes: ['id', 'size'],
+						required: true,
+					},
+					{
+						model: db.User,
+						attributes: ['id', 'name', 'email'],
+						required: true,
+					},
+					{
+						model: db.City,
+						attributes: ['id', 'name'],
+						required: true,
+					},
+					{
+						model: db.Master,
+						attributes: ['id', 'name'],
+						required: true,
+					},
+				],
+			});
 
-		return res.status(200).json(orders)
+			return res.status(200).json(orders);
+		} else if (userRole === 'master') {
+			const orders = await db.Order.findAll({
+				order: [['startWorkOn', 'DESC']],
+				attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
+				include: [
+					{
+						model: db.Clock,
+						attributes: ['id', 'size', 'price'],
+						required: true,
+					},
+					{
+						model: db.User,
+						attributes: ['id', 'name', 'email'],
+						required: true,
+					},
+					{
+						model: db.City,
+						attributes: ['id', 'name'],
+						required: true,
+					},
+				],
+				where: {
+					masterId,
+				},
+			});
 
-	} else if (userRole === 'master') {
-		const orders = await db.Order.findAll({
-			order: [['startWorkOn', 'DESC']],
-			attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
-			include: [
-				{
-					model: db.Clock,
-					attributes: ['id', 'size', 'price'],
-					required: true,
-				},
-				{
-					model: db.User,
-					attributes: ['id', 'name', 'email'],
-					required: true,
-				},
-				{
-					model: db.City,
-					attributes: ['id', 'name'],
-					required: true,
-				},
-			],
-			where: {
-				masterId
-			}
-		});
-		
-		return res.status(200).json(orders)
+			return res.status(200).json(orders);
+		}
+	} catch (e) {
+		res.status(500).send();
 	}
-
-	} catch(e) {
-	res.status(500).send()
-}
-
 };
 
 export const getOrderForRate = async (req: Request, res: Response) => {
@@ -205,18 +199,17 @@ export const putOrder = async (req: Request, res: Response) => {
 
 export const completeOrder = async (req: Request, res: Response) => {
 	try {
-		const {id, clientEmail, ratingIdentificator} = req.body 
+		const {id, clientEmail, ratingIdentificator} = req.body;
 
-		const order = await db.Order.updateById(id, {isCompleted: true})
-console.log(1);
+		const order = await db.Order.updateById(id, {isCompleted: true});
 
 		await sendMail(clientEmail, ratingIdentificator);
 
-		res.status(200).json(order)
-	} catch(e) {
-		res.status(500).send()
+		res.status(200).json(order);
+	} catch (e) {
+		res.status(500).send();
 	}
-}
+};
 
 
 export const deleteOrder = async (req: Request, res: Response) => {
