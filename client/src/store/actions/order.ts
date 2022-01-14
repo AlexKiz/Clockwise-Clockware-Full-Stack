@@ -53,5 +53,3 @@ export const setOrdersSortingField = (sortingField: string) => {
 export const setOrdersSortingOrder = (sortingOrder: 'asc' | 'desc') => {
 	return {type: OrderActionTypes.SET_SORTING_ORDER, payload: sortingOrder};
 };
-
-
