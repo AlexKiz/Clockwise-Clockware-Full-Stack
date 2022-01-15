@@ -80,6 +80,7 @@ export type FilterInstances = {
     clock: Clock | null
     date: DateRange<Date>
 };
+
 export type csvOrderShape = {
     'Order Id': string,
     'Clock Size': string,

@@ -296,7 +296,6 @@ export const getXSLXOrders = async (req: Request, res: Response) => {
 	}
 };
 
-
 export const putRatedOrder = async (req: Request, res: Response) => {
 	try {
 		const {id, orderRated, masterId} = req.body;
@@ -330,7 +329,7 @@ export const putRatedOrder = async (req: Request, res: Response) => {
 
 
 export const getClocks = async (req: Request, res: Response) => {
-	const {clockSize} =req.query;
+	const {clockSize} = req.query;
 
 	if (clockSize === 'string') {
 		const clocks = await db.Clock.findAll({
