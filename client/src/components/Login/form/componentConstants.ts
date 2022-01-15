@@ -7,10 +7,6 @@ export interface LoginFormValues {
 	userPassword: string
 }
 
-export interface RoleChecking {
-	role: string
-}
-
 export type LoginFormValidation = {
 	userLogin?: string,
 	userPassword?: string,

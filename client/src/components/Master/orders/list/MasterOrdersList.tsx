@@ -1,13 +1,15 @@
+/* eslint-disable camelcase */
 /* eslint-disable max-len */
 /* eslint-disable react/jsx-key */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import classes from './master-orders-list.module.css';
-import {Order} from '../../../../data/types/types';
+import {Order, AlertNotification} from '../../../../data/types/types';
 import {MasterOrdersListProps} from './componentConstants';
 import {URL} from '../../../../data/constants/routeConstants';
 import {styled} from '@mui/material/styles';
-import {Table,
+import {
+	Table,
 	TableBody,
 	TableCell,
 	TableContainer,
@@ -15,9 +17,13 @@ import {Table,
 	TableRow,
 	Button,
 	Paper,
-	tableCellClasses} from '@mui/material';
+	tableCellClasses,
+} from '@mui/material';
 import AlertMessage from '../../../Notification/AlertMessage';
 import MasterHeader from '../../../Headers/MasterHeader';
+import jwt_decode from 'jwt-decode';
+import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
+
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -41,10 +47,14 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 	const [orders, setOrders] = useState<Order[]>([]);
 
-	const [notify, setNotify] = useState<boolean>(false);
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
 
 	const isOpen = (value:boolean) => {
-		setNotify(value);
+		setAlertOptions({...alertOptions, notify: value});
 	};
 
 	const completeOrder = async (order: Order) => {
@@ -58,7 +68,11 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 				setOrders(data);
 			});
 		}
-		setNotify(true);
+		setAlertOptions({
+			type: 'success',
+			message: 'Order has been completed!',
+			notify: true,
+		});
 	};
 
 
@@ -70,6 +84,19 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 		};
 
 		readOrdersData();
+	}, []);
+
+
+	useEffect(() => {
+		const token = localStorage.getItem(ACCESS_TOKEN);
+		if (token) {
+			const {userName: masterName} = jwt_decode<{userName: string}>(token);
+			setAlertOptions({
+				notify: true,
+				type: 'info',
+				message: `Hello, ${masterName}!`,
+			});
+		}
 	}, []);
 
 
@@ -120,7 +147,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 
 				</TableContainer>
 				{
-					notify && <AlertMessage alertType='success' message='Order has been completed!' isOpen={isOpen} notify={notify}/>
+					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
 				}
 			</div>
 		</div>

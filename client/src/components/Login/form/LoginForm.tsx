@@ -1,10 +1,11 @@
+/* eslint-disable camelcase */
 import axios from 'axios';
 import {RESOURCE, URL} from '../../../data/constants/routeConstants';
 import React, {useState, useEffect, FC} from 'react';
 import {useHistory} from 'react-router-dom';
 import PublicHeader from '../../Headers/PublicHeader';
 import classes from './login-form.module.css';
-import {LoginFormProps, RoleChecking, validate} from './componentConstants';
+import {LoginFormProps, validate} from './componentConstants';
 import {ACCESS_TOKEN, ROLE} from 'src/data/constants/systemConstants';
 import {useFormik} from 'formik';
 import {
@@ -20,6 +21,7 @@ import {
 } from '@mui/material';
 import {Visibility, VisibilityOff} from '@mui/icons-material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
+import jwt_decode from 'jwt-decode';
 
 
 const LoginForm:FC<LoginFormProps> = () => {
@@ -62,22 +64,16 @@ const LoginForm:FC<LoginFormProps> = () => {
 
 
 	useEffect(() => {
-		if (localStorage.getItem(ACCESS_TOKEN)) {
-			const checkRole = async () => {
-				const {data} = await axios.get<RoleChecking>(URL.LOGIN, {
-					params: {
-						token: localStorage.getItem(ACCESS_TOKEN),
-					},
-				});
+		const token = localStorage.getItem(ACCESS_TOKEN);
+		if (token) {
+			const {userRole} = jwt_decode<{userRole}>(token);
 
-				if (data && data.role === ROLE.ADMIN) {
-					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
-				} else if (data && data.role === ROLE.MASTER) {
-					history.push(`/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`);
-				}
-			};
-			checkRole();
-		}
+			if (userRole === ROLE.ADMIN) {
+				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
+			} else if (userRole === ROLE.MASTER) {
+				history.push(`/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`);
+			}
+		};
 	}, []);
 
 
