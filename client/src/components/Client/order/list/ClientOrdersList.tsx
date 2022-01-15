@@ -17,7 +17,7 @@ import {Table,
 	Button,
 	Paper,
 	tableCellClasses} from '@mui/material';
-import MasterHeader from '../../../Headers/MasterHeader';
+import ClientHeader from '../../../Headers/ClientHeader';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -44,8 +44,8 @@ const ClientOrdersList: FC<ClientOrdersListProps> = () => {
 
 	const [orders, setOrders] = useState<Order[]>([]);
 
-	const rateOrder = async (value: string) => {
-		history.push(`/${RESOURCE.RATE}/${value}`);
+	const rateOrder = async (ratingIdentificator: string) => {
+		history.push(`/${RESOURCE.RATE}/${ratingIdentificator}`);
 	};
 
 	useEffect(() => {
@@ -61,27 +61,33 @@ const ClientOrdersList: FC<ClientOrdersListProps> = () => {
 
 	return (
 		<div>
-			<MasterHeader/>
+			<ClientHeader/>
 			<div className={classes.conteiner}>
 
-				<TableContainer component={Paper} sx={{width: 4/5}} className={classes.conteiner_table}>
+				<TableContainer component={Paper} sx={{width: '80%'}} className={classes.conteiner_table}>
 
 					<Table sx={{minWidth: 650}} aria-label="customized table">
 						<TableHead>
 							<TableRow>
-								<StyledTableCell sx={{width: 2/10}} align="center">Master name</StyledTableCell>
-								<StyledTableCell sx={{width: 2/10}} align="center">Clock size</StyledTableCell>
-								<StyledTableCell sx={{width: 1/10}} align="center">Start on</StyledTableCell>
-								<StyledTableCell sx={{width: 1/10}} align="center">Finish on</StyledTableCell>
-								<StyledTableCell sx={{width: 1/10}} align="center">Total price</StyledTableCell>
-								<StyledTableCell sx={{width: 3/10}} align="center">Rating:</StyledTableCell>
+								<StyledTableCell sx={{width: '20%'}} align="center">Master name</StyledTableCell>
+								<StyledTableCell sx={{width: '20%'}} align="center">Clock size</StyledTableCell>
+								<StyledTableCell sx={{width: '10%'}} align="center">Start on</StyledTableCell>
+								<StyledTableCell sx={{width: '10%'}} align="center">Finish on</StyledTableCell>
+								<StyledTableCell sx={{width: '10%'}} align="center">Total price</StyledTableCell>
+								<StyledTableCell sx={{width: '30%'}} align="center">Rating:</StyledTableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
 							{orders.map((order) => (
 								<StyledTableRow>
 
-									<StyledTableCell component="th" scope="row"> {order.master.name} </StyledTableCell>
+									<StyledTableCell
+										component="th"
+										scope="row"
+										align='center'
+									>
+										{order.master.name}
+									</StyledTableCell>
 									<StyledTableCell align="center"> {order.clock.size} </StyledTableCell>
 									<StyledTableCell align="center"> {order.startWorkOn.split('T').join(' ')} </StyledTableCell>
 									<StyledTableCell align="center"> {order.endWorkOn.split('T').join(' ')} </StyledTableCell>

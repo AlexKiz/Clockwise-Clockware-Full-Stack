@@ -73,6 +73,8 @@ const LoginForm:FC<LoginFormProps> = () => {
 				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
 			} else if (role === ROLE.MASTER) {
 				history.push(`/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`);
+			} else if (userRole === ROLE.CLIENT) {
+				history.push(`/${RESOURCE.CLIENT}/${RESOURCE.ORDERS_LIST}`);
 			}
 		}
 	}, []);

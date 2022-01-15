@@ -50,9 +50,9 @@ export const getOrders = async (req: Request, res: Response) => {
 	try {
 		const token = BearerParser.parseBearerToken(req.headers);
 
-		const {role, masterId} = await db.User.findOne({where: {token}});
+		const {role, masterId, id} = await db.User.findOne({where: {token}});
 
-		const orders = await rolesMappingGetOrders[role](masterId);
+		const orders = await rolesMappingGetOrders[role](masterId, id);
 
 		res.status(200).json(orders);
 	} catch (e) {

@@ -101,6 +101,28 @@ const getMasterOrders = async (masterId: string) => {
 	return orders;
 };
 
+const getClientOrders = async (masterId:string, id: string) => {
+	const orders = await db.Order.findAll({
+		order: [['startWorkOn', 'DESC']],
+		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
+		include: [
+			{
+				model: db.Clock,
+				attributes: ['id', 'size', 'price'],
+				required: true,
+			},
+			{
+				model: db.Master,
+				attributes: ['id', 'name'],
+				required: true,
+			},
+		],
+		where: {id},
+	});
+
+	return orders;
+};
+
 export const rolesMappingCreate: any = {
 	'master': createMaster,
 	'client': createClient,
@@ -109,4 +131,5 @@ export const rolesMappingCreate: any = {
 export const rolesMappingGetOrders: any = {
 	'admin': getAdminOrders,
 	'master': getMasterOrders,
+	'client': getClientOrders,
 };
