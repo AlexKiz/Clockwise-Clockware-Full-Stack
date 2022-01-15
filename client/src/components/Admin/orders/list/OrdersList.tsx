@@ -297,6 +297,24 @@ const OrdersList: FC<OrdersListProps> = () => {
 		dispatch(setIsModalOpen(false));
 	};
 
+	const handleImportXLSX = async () => {
+		const getXLSXFile = await axios.get(URL.EXPORT_XLSX, {
+			params: {
+				limit,
+				offset: limit * page,
+				sortedField,
+				sortingOrder,
+				masterFilteredId,
+				cityFilteredId,
+				clockFilteredId,
+				isCompletedFilter,
+				startDateFilter,
+				endDateFilter,
+			},
+		});
+	};
+
+
 	return (
 		<div>
 			<PrivateHeader/>
@@ -663,19 +681,20 @@ const OrdersList: FC<OrdersListProps> = () => {
 						</TableBody>
 						<TableFooter>
 							<TableRow>
-								<TableCell colSpan={4}>
+								<TableCell colSpan={6}>
 									<Stack direction='row' spacing={1.5}>
 										<Button
 											variant="contained"
-											sx={{width: '45%', fontSize: 12, borderRadius: 8}}
+											sx={{width: '37%', fontSize: 12, borderRadius: 8}}
 											color='success'
+											onClick={handleImportXLSX}
 											startIcon={<DescriptionOutlinedIcon fontSize='medium'/>}
 										>
 											Import current page to Excel
 										</Button>
 										<Button
 											variant="contained"
-											sx={{width: '45%', fontSize: 12, borderRadius: 8}}
+											sx={{width: '37%', fontSize: 12, borderRadius: 8}}
 											color='success'
 											startIcon={<DescriptionOutlinedIcon fontSize='medium'/>}
 										>

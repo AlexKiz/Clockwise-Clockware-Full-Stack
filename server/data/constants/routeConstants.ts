@@ -13,7 +13,8 @@ export enum URL {
     API = '/api',
     REGISTRATION = '/user/registration',
     VERIFY = '/user/verify',
-    COMPLETE_ORDER = '/completeOrder'
+    COMPLETE_ORDER = '/completeOrder',
+    EXPORT_XLSX = '/exportXLSX',
 }
 
 export enum RESOURCE {

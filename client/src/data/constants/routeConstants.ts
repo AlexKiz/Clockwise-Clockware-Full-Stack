@@ -16,7 +16,8 @@ export enum URL {
     ORDERS_RATING = '/ordersRating',
 	REGISTRATION = '/user/registration',
 	VERIFY = '/user/verify',
-	COMPLETE_ORDER = '/completeOrder'
+	COMPLETE_ORDER = '/completeOrder',
+	EXPORT_XLSX = '/exportXLSX'
 }
 
 export enum RESOURCE {

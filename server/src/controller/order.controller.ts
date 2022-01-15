@@ -8,6 +8,7 @@ import bcrypt from 'bcrypt';
 import {CloudinaryService} from './../services/cloudinary';
 import {Op} from 'sequelize';
 import dotenv from 'dotenv';
+import XLSX from 'xlsx';
 
 dotenv.config();
 
@@ -196,6 +197,88 @@ export const getOrderForRate = async (req: Request, res: Response) => {
 	}
 };
 
+
+export const getXSLXOrders = async (req: Request, res: Response) => {
+	try {
+		const {
+			limit,
+			offset,
+			sortedField,
+			sortingOrder,
+			masterFilteredId,
+			cityFilteredId,
+			clockFilteredId,
+			isCompletedFilter,
+			startDateFilter,
+			endDateFilter,
+		} = req.query;
+
+		const filterOptions: filtersOptions = {};
+
+		if (isCompletedFilter !== undefined) {
+			filterOptions.isCompleted = Boolean(isCompletedFilter);
+		}
+
+		if (clockFilteredId) {
+			filterOptions.clockId = Number(clockFilteredId);
+		}
+
+		if (masterFilteredId) {
+			filterOptions.masterId = String(masterFilteredId);
+		}
+
+		if (cityFilteredId) {
+			filterOptions.cityId = Number(cityFilteredId);
+		}
+
+		if (startDateFilter) {
+			filterOptions.startWorkOn = {
+				[Op.gte]: String(startDateFilter).split('T')[0],
+			};
+		}
+
+		if (endDateFilter) {
+			filterOptions.endWorkOn = {
+				[Op.lte]: String(endDateFilter).split('T')[0],
+			};
+		}
+
+		const orders = await db.Order.findAll({
+			order: [[db.sequelize.col(`${sortedField}`), `${sortingOrder}`]],
+			include: [
+				{
+					model: db.Clock,
+					attributes: ['id', 'size'],
+					required: true,
+				},
+				{
+					model: db.User,
+					attributes: ['id', 'name', 'email'],
+					required: true,
+				},
+				{
+					model: db.City,
+					attributes: ['id', 'name'],
+					required: true,
+				},
+				{
+					model: db.Master,
+					attributes: ['id', 'name'],
+					required: true,
+				},
+			],
+			limit,
+			offset,
+			where: filterOptions,
+		});
+
+		const convertOrdersToXLSX = () => {
+			const workSheet = XLSX.utils.json_to_sheet(orders);
+		};
+	} catch (e) {
+		res.status(500).send();
+	}
+};
 
 export const putRatedOrder = async (req: Request, res: Response) => {
 	try {
