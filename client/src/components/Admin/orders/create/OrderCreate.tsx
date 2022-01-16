@@ -6,7 +6,7 @@ import {Params, User, Clock, City, Master, AlertNotification, Order} from '../..
 import {OPENING_HOURS} from '../../../../data/constants/systemConstants';
 import {OrderCreateProps, validate} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
-import {format} from 'date-fns';
+import {format, isBefore} from 'date-fns';
 import {getOrderDates} from 'src/data/utilities/systemUtilities';
 import {useFormik} from 'formik';
 import {
@@ -331,7 +331,11 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 									>
 										{
 											OPENING_HOURS.map((elem) => (
-												<MenuItem key={elem} value={elem}>
+												<MenuItem
+													key={elem}
+													value={elem}
+													disabled={isBefore(new Date(`${formik.values.orderDate} ${elem}`), new Date())}
+												>
 													{`${elem}`}
 												</MenuItem>
 											))
