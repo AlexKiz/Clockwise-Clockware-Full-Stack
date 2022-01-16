@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
 import classes from './masters-list.module.css';
-import {Master} from '../../../../data/types/types';
+import {AlertNotification, Master} from '../../../../data/types/types';
 import {MasterListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {styled} from '@mui/material/styles';
@@ -20,6 +20,8 @@ import {
 	TablePagination,
 	TableSortLabel,
 	Box,
+	LinearProgress,
+	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import PrivateHeader from 'src/components/Headers/PrivateHeader';
@@ -49,27 +51,41 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 
 const MastersList: FC<MasterListProps> = () => {
 	const [masters, setMasters] = useState<Master[]>([]);
-
-	const [notify, setNotify] = useState<boolean>(false);
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
 	const [totalMasters, setTotalMasters] = useState<number>(0);
 	const [sortedField, setSortField] = useState<string>('id');
 	const [sortingOrder, setSortingOrder] = useState<'asc' | 'desc'>('asc');
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
+	const [loading, setLoading] = useState<boolean>(false);
 
 
 	useEffect(() => {
 		const readMastersData = async () => {
-			const {data} = await axios.get<{count: number, rows: Master[]}>(URL.MASTER, {
+			setLoading(true);
+			await axios.get<{count: number, rows: Master[]}>(URL.MASTER, {
 				params: {
 					limit: rowsPerPage,
 					offset: rowsPerPage * page,
 					sortedField,
 					sortingOrder,
 				},
+			}).then((response) => {
+				setMasters(response.data.rows);
+				setTotalMasters(response.data.count);
+				setLoading(false);
+			}).catch(() => {
+				setLoading(false);
+				setAlertOptions({
+					type: 'warning',
+					message: 'There is an error occurred while fetching data!',
+					notify: true,
+				});
 			});
-			setMasters(data.rows);
-			setTotalMasters(data.count);
 		};
 
 		readMastersData();
@@ -85,13 +101,17 @@ const MastersList: FC<MasterListProps> = () => {
 					},
 				}).then(() => {
 				setMasters(masters.filter((master) => master.id !== id));
-				setNotify(true);
+				setAlertOptions({
+					type: 'success',
+					message: 'Master has been deleted!',
+					notify: true,
+				});
 			});
 		}
 	};
 
 	const isOpen = (value:boolean) => {
-		setNotify(value);
+		setAlertOptions({...alertOptions, notify: value});
 	};
 
 	const handleChangePage = (
@@ -221,6 +241,21 @@ const MastersList: FC<MasterListProps> = () => {
 									</StyledTableCell>
 								</StyledTableRow>
 							))}
+							{ !masters.length &&
+								<TableRow>
+									<TableCell
+										colSpan={9}
+										sx={{height: 365, p: 0}}
+										align='center'>
+										<Typography
+											variant='h3'
+											component='label'
+										>
+											{loading ? 'Loading...' : 'There are no data matching the fetch!'}
+										</Typography>
+									</TableCell>
+								</TableRow>
+							}
 						</TableBody>
 						<TableFooter>
 							<TableRow>
@@ -241,11 +276,16 @@ const MastersList: FC<MasterListProps> = () => {
 									ActionsComponent={TablePaginationActions}
 								/>
 							</TableRow>
+							<TableRow>
+								{ loading && <TableCell colSpan={5}>
+									<LinearProgress />
+								</TableCell>}
+							</TableRow>
 						</TableFooter>
 					</Table>
 				</TableContainer>
 				{
-					notify && <AlertMessage alertType='success' message='Master has been deleted' isOpen={isOpen} notify={notify}/>
+					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
 				}
 			</div>
 		</div>

@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
 import classes from './user-list.module.css';
-import {User} from '../../../../data/types/types';
+import {AlertNotification, User} from '../../../../data/types/types';
 import {UserListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {styled} from '@mui/material/styles';
@@ -20,6 +20,8 @@ import {
 	TablePagination,
 	TableSortLabel,
 	Box,
+	LinearProgress,
+	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import PrivateHeader from 'src/components/Headers/PrivateHeader';
@@ -49,27 +51,41 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 
 const UserList: FC<UserListProps> = () => {
 	const [users, setUsers] = useState<User[]>([]);
-
-	const [notify, setNotify] = useState<boolean>(false);
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
 	const [totalUsers, setTotalUsers] = useState<number>(0);
 	const [sortedField, setSortField] = useState<string>('id');
 	const [sortingOrder, setSortingOrder] = useState<'asc' | 'desc'>('asc');
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
+	const [loading, setLoading] = useState<boolean>(false);
 
 
 	useEffect(() => {
 		const readUsersData = async () => {
-			const {data} = await axios.get<{count: number, rows:User[]}>(URL.USER, {
+			setLoading(true);
+			await axios.get<{count: number, rows:User[]}>(URL.USER, {
 				params: {
 					limit: rowsPerPage,
 					offset: rowsPerPage * page,
 					sortedField,
 					sortingOrder,
 				},
+			}).then((response) => {
+				setUsers(response.data.rows);
+				setTotalUsers(response.data.count);
+				setLoading(false);
+			}).catch(() => {
+				setLoading(false);
+				setAlertOptions({
+					type: 'warning',
+					message: 'There is an error occurred while fetching data!',
+					notify: true,
+				});
 			});
-			setUsers(data.rows);
-			setTotalUsers(data.count);
 		};
 
 		readUsersData();
@@ -85,13 +101,17 @@ const UserList: FC<UserListProps> = () => {
 					},
 				}).then(() => {
 				setUsers(users.filter((user) => user.id !== id));
-				setNotify(true);
+				setAlertOptions({
+					type: 'success',
+					message: 'User has been deleted!',
+					notify: true,
+				});
 			});
 		}
 	};
 
 	const isOpen = (value:boolean) => {
-		setNotify(value);
+		setAlertOptions({...alertOptions, notify: value});
 	};
 
 	const handleChangePage = (
@@ -204,6 +224,21 @@ const UserList: FC<UserListProps> = () => {
 									</StyledTableCell>
 								</StyledTableRow>
 							))}
+							{ !users.length &&
+								<TableRow>
+									<TableCell
+										colSpan={9}
+										sx={{height: 365, p: 0}}
+										align='center'>
+										<Typography
+											variant='h3'
+											component='label'
+										>
+											{loading ? 'Loading...' : 'There are no data matching the fetch!'}
+										</Typography>
+									</TableCell>
+								</TableRow>
+							}
 						</TableBody>
 						<TableFooter>
 							<TableRow>
@@ -224,16 +259,21 @@ const UserList: FC<UserListProps> = () => {
 									ActionsComponent={TablePaginationActions}
 								/>
 							</TableRow>
+							<TableRow>
+								{ loading && <TableCell colSpan={4}>
+									<LinearProgress />
+								</TableCell>}
+							</TableRow>
 						</TableFooter>
 					</Table>
 				</TableContainer>
 				{
-					notify &&
+					alertOptions.notify &&
 					<AlertMessage
-						alertType='success'
-						message='User has been deleted'
+						alertType={alertOptions.type}
+						message={alertOptions.message}
 						isOpen={isOpen}
-						notify={notify}
+						notify={alertOptions.notify}
 					/>
 				}
 			</div>

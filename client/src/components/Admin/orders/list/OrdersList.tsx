@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
 import classes from './orders-list.module.css';
-import {Order, City, Master, Clock} from '../../../../data/types/types';
+import {Order, City, Master, Clock, AlertNotification} from '../../../../data/types/types';
 import {OrdersListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {styled} from '@mui/material/styles';
@@ -26,6 +26,8 @@ import {
 	FormControlLabel,
 	Autocomplete,
 	TextField,
+	LinearProgress,
+	Typography,
 } from '@mui/material';
 import {
 	DesktopDateRangePicker,
@@ -85,7 +87,12 @@ const OrdersList: FC<OrdersListProps> = () => {
 		reset: true,
 	});
 
-	const [notify, setNotify] = useState<boolean>(false);
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
+
 	const [isFilterListOpen, setIsFilterListOpen] = useState<boolean>(false);
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
@@ -93,10 +100,12 @@ const OrdersList: FC<OrdersListProps> = () => {
 	const [sortedField, setSortField] = useState<string>('id');
 	const [sortingOrder, setSortingOrder] = useState<'asc' | 'desc'>('asc');
 
+	const [loading, setLoading] = useState<boolean>(false);
 
 	useEffect(() => {
 		const readOrdersData = async () => {
-			const {data} = await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
+			setLoading(true);
+			await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
 				params: {
 					limit: rowsPerPage,
 					offset: rowsPerPage * page,
@@ -109,9 +118,18 @@ const OrdersList: FC<OrdersListProps> = () => {
 					startDateFilter: dateFilter[0],
 					endDateFilter: dateFilter[1],
 				},
+			}).then((response) => {
+				setOrders(response.data.rows);
+				setTotalOrders(response.data.count);
+				setLoading(false);
+			}).catch(() => {
+				setLoading(false);
+				setAlertOptions({
+					type: 'warning',
+					message: 'There is an error occurred while fetching data!',
+					notify: true,
+				});
 			});
-			setOrders(data.rows);
-			setTotalOrders(data.count);
 		};
 
 		readOrdersData();
@@ -195,13 +213,17 @@ const OrdersList: FC<OrdersListProps> = () => {
 					},
 				}).then(() => {
 				setOrders(orders.filter((order) => order.id !== id));
-				setNotify(true);
+				setAlertOptions({
+					type: 'success',
+					message: 'Order has been deleted!',
+					notify: true,
+				});
 			});
 		}
 	};
 
 	const isOpen = (value:boolean) => {
-		setNotify(value);
+		setAlertOptions({...alertOptions, notify: value});
 	};
 
 	const handleChangePage = (
@@ -229,6 +251,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 	};
 
 	const handleAcceptFilter = async () => {
+		setLoading(true);
 		const {data} = await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
 			params: {
 				limit: rowsPerPage,
@@ -250,9 +273,11 @@ const OrdersList: FC<OrdersListProps> = () => {
 			reset: false,
 		});
 		setPage(0);
+		setLoading(false);
 	};
 
 	const handleResetFilter = async () => {
+		setLoading(true);
 		const {data} = await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
 			params: {
 				limit: rowsPerPage,
@@ -272,6 +297,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 			accept: false,
 			reset: true,
 		});
+		setLoading(false);
 	};
 
 	return (
@@ -615,6 +641,21 @@ const OrdersList: FC<OrdersListProps> = () => {
 									</StyledTableCell>
 								</StyledTableRow>
 							))}
+							{ !orders.length &&
+								<TableRow>
+									<TableCell
+										colSpan={9}
+										sx={{height: 365, p: 0}}
+										align='center'>
+										<Typography
+											variant='h3'
+											component='label'
+										>
+											{loading ? 'Loading...' : 'There are no data matching the fetch!'}
+										</Typography>
+									</TableCell>
+								</TableRow>
+							}
 						</TableBody>
 						<TableFooter>
 							<TableRow>
@@ -635,11 +676,16 @@ const OrdersList: FC<OrdersListProps> = () => {
 									ActionsComponent={TablePaginationActions}
 								/>
 							</TableRow>
+							<TableRow>
+								{ loading && <TableCell colSpan={9}>
+									<LinearProgress />
+								</TableCell>}
+							</TableRow>
 						</TableFooter>
 					</Table>
 				</TableContainer>
 				{
-					notify && <AlertMessage alertType='success' message='Order has been deleted' isOpen={isOpen} notify={notify}/>
+					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
 				}
 			</div>
 		</div>

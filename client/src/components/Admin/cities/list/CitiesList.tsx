@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
 import classes from './cities-list.module.css';
-import {City} from '../../../../data/types/types';
+import {AlertNotification, City} from '../../../../data/types/types';
 import {CitiesListProps} from './componentConstants';
 import {URL, RESOURCE} from '../../../../data/constants/routeConstants';
 import {styled} from '@mui/material/styles';
@@ -20,6 +20,8 @@ import {
 	TablePagination,
 	TableSortLabel,
 	Box,
+	LinearProgress,
+	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import PrivateHeader from '../../../Headers/PrivateHeader';
@@ -48,26 +50,41 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 
 const CitiesList: FC<CitiesListProps> = () => {
 	const [cities, setCities] = useState<City[]>([]);
-	const [notify, setNotify] = useState<boolean>(false);
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
 	const [totalCities, setTotalCities] = useState<number>(0);
 	const [sortedField, setSortField] = useState<string>('id');
 	const [sortingOrder, setSortingOrder] = useState<'asc' | 'desc'>('asc');
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
+	const [loading, setLoading] = useState<boolean>(false);
 
 
 	useEffect(()=> {
 		const readCitiesData = async () => {
-			const {data} = await axios.get<{count: number, rows: City[]}>(URL.CITY, {
+			setLoading(true);
+			await axios.get<{count: number, rows: City[]}>(URL.CITY, {
 				params: {
 					limit: rowsPerPage,
 					offset: rowsPerPage * page,
 					sortedField,
 					sortingOrder,
 				},
+			}).then((response) => {
+				setCities(response.data.rows);
+				setTotalCities(response.data.count);
+				setLoading(false);
+			}).catch(() => {
+				setLoading(false);
+				setAlertOptions({
+					type: 'warning',
+					message: 'There is an error occurred while fetching data!',
+					notify: true,
+				});
 			});
-			setCities(data.rows);
-			setTotalCities(data.count);
 		};
 
 		readCitiesData();
@@ -81,13 +98,17 @@ const CitiesList: FC<CitiesListProps> = () => {
 					data: {id},
 				}).then(() => {
 				setCities(cities.filter((city) => city.id !== id));
-				setNotify(true);
+				setAlertOptions({
+					type: 'success',
+					message: 'City has been deleted!',
+					notify: true,
+				});
 			});
 		}
 	};
 
 	const isOpen = (value:boolean) => {
-		setNotify(value);
+		setAlertOptions({...alertOptions, notify: value});
 	};
 
 	const handleChangePage = (
@@ -192,6 +213,21 @@ const CitiesList: FC<CitiesListProps> = () => {
 									</StyledTableCell>
 								</StyledTableRow>
 							))}
+							{ !cities.length &&
+								<TableRow>
+									<TableCell
+										colSpan={9}
+										sx={{height: 365, p: 0}}
+										align='center'>
+										<Typography
+											variant='h3'
+											component='label'
+										>
+											{loading ? 'Loading...' : 'There are no data matching the fetch!'}
+										</Typography>
+									</TableCell>
+								</TableRow>
+							}
 						</TableBody>
 						<TableFooter>
 							<TableRow>
@@ -212,16 +248,21 @@ const CitiesList: FC<CitiesListProps> = () => {
 									ActionsComponent={TablePaginationActions}
 								/>
 							</TableRow>
+							<TableRow>
+								{ loading && <TableCell colSpan={3}>
+									<LinearProgress />
+								</TableCell>}
+							</TableRow>
 						</TableFooter>
 					</Table>
 				</TableContainer>
 				{
-					notify &&
+					alertOptions.notify &&
 					<AlertMessage
-						alertType='success'
-						message='City has been deleted'
+						alertType={alertOptions.type}
+						message={alertOptions.message}
 						isOpen={isOpen}
-						notify={notify}
+						notify={alertOptions.notify}
 					/>
 				}
 			</div>

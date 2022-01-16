@@ -5,14 +5,14 @@ import classes from './verification.module.css';
 import {URL} from '../../../../data/constants/routeConstants';
 import {Params} from 'src/data/types/types';
 import {
-	Button, 
-	FilledInput, 
-	FormControl, 
-	FormHelperText, 
-	IconButton, 
-	InputAdornment, 
-	InputLabel, 
-	Stack
+	Button,
+	FilledInput,
+	FormControl,
+	FormHelperText,
+	IconButton,
+	InputAdornment,
+	InputLabel,
+	Stack,
 } from '@mui/material';
 import {VerificationProps, validate} from './componentConstants';
 import {useFormik} from 'formik';
