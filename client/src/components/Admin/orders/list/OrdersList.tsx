@@ -190,7 +190,6 @@ const OrdersList: FC<OrdersListProps> = () => {
 		getDebouncedMasters();
 	}, [masterName]);
 
-
 	useEffect(() => {
 		getDebouncedCities();
 	}, [cityName]);
@@ -298,6 +297,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 		dispatch(setModalImg(''));
 		dispatch(setIsModalOpen(false));
 	};
+
 
 	return (
 		<div>
