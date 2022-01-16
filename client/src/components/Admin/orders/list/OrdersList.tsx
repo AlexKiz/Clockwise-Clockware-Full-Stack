@@ -200,74 +200,6 @@ const OrdersList: FC<OrdersListProps> = () => {
 	}, [clockSize]);
 
 
-	useEffect(() => {
-		const readCitiesData = async () => {
-			const {data} = await axios.get<City[]>(URL.CITY);
-
-			if (data.length) {
-				setCities(data);
-			}
-		};
-
-		readCitiesData();
-	}, []);
-
-
-	useEffect(() => {
-		readMasterData();
-	}, [masterName]);
-
-
-	useEffect(() => {
-		readCityData();
-	}, [cityName]);
-
-
-	useEffect(() => {
-		readClockData();
-	}, [clockSize]);
-
-
-	const readMasterData = debouncer(async () => {
-		const {data} = await axios.get<{count: number, rows: Master[]}>(URL.MASTER, {
-			params: {
-				limit: 5,
-				offset: 0,
-				masterName,
-			},
-		});
-
-		if (data.rows.length) {
-			setMasters(data.rows);
-		}
-	}, 200);
-
-	const readCityData = debouncer(async () => {
-		const {data} = await axios.get<{count: number, rows: City[]}>(URL.CITY, {
-			params: {
-				limit: 5,
-				offset: 0,
-				cityName,
-			},
-		});
-
-		if (data.rows.length) {
-			setCities(data.rows);
-		}
-	}, 200);
-
-	const readClockData = debouncer(async () => {
-		const {data} = await axios.get<Clock[]>(URL.CLOCK, {
-			params: {
-				clockSize,
-			},
-		});
-
-		if (data.length) {
-			setClocks(data);
-		}
-	}, 200);
-
 	const onDelete = (id: string) => {
 		if (window.confirm(`Do you want to delete order #${id.slice(0, 4)}?`)) {
 			axios.delete(URL.ORDER,
@@ -366,51 +298,6 @@ const OrdersList: FC<OrdersListProps> = () => {
 		dispatch(setIsModalOpen(false));
 	};
 
-	const handleAcceptFilter = async () => {
-		const {data} = await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
-			params: {
-				limit: rowsPerPage,
-				offset: rowsPerPage * page,
-				sortedField,
-				sortingOrder,
-				masterFilteredId: masterFilter?.id,
-				cityFilteredId: cityFilter?.id,
-				clockFilteredId: clockFilter?.id,
-				isCompletedFilter,
-				startDateFilter: dateFilter[0],
-				endDateFilter: dateFilter[1],
-			},
-		});
-		setOrders(data.rows);
-		setTotalOrders(data.count);
-		setIsFilterButtonsDisabled({
-			accept: true,
-			reset: false,
-		});
-		setPage(0);
-	};
-
-	const handleResetFilter = async () => {
-		const {data} = await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
-			params: {
-				limit: rowsPerPage,
-				offset: rowsPerPage * page,
-				sortedField,
-				sortingOrder,
-			},
-		});
-		setOrders(data.rows);
-		setTotalOrders(data.count);
-		setMasterFilter(null);
-		setCityFilter(null);
-		setClockFilter(null);
-		setIsCompletedFilter(null);
-		setDateFilter([null, null]);
-		setIsFilterButtonsDisabled({
-			accept: false,
-			reset: true,
-		});
-	};
 
 	return (
 		<div>
