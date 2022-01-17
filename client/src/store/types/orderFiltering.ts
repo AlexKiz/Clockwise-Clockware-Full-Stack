@@ -46,16 +46,6 @@ interface SetIsCompletedFilterAction {
 
 interface SetDateFilterArray {
     type: OrderFilteringActionTypes.SET_DATE_FILTER_ARRAY,
-    payload: [Date | null, Date | null]
-}
-
-interface SetDateFilterArray {
-    type: OrderFilteringActionTypes.SET_DATE_FILTER_ARRAY,
-    payload: [Date | null, Date | null]
-}
-
-interface SetDateFilterArray {
-    type: OrderFilteringActionTypes.SET_DATE_FILTER_ARRAY,
     payload: DateRange<Date>
 }
 
