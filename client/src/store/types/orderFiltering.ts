@@ -51,11 +51,6 @@ interface SetDateFilterArray {
 
 interface SetDateFilterArray {
     type: OrderFilteringActionTypes.SET_DATE_FILTER_ARRAY,
-    payload: [Date | null, Date | null]
-}
-
-interface SetDateFilterArray {
-    type: OrderFilteringActionTypes.SET_DATE_FILTER_ARRAY,
     payload: DateRange<Date>
 }
 
@@ -67,16 +62,6 @@ interface SetStartDateFilterAction {
 interface SetEndDateFilterAction {
     type: OrderFilteringActionTypes.SET_END_DATE_FILTER,
     payload: Date | null
-}
-
-interface SetIsFiltersListOpen {
-    type: OrderFilteringActionTypes.SET_IS_FILTERS_LIST_OPEN,
-    payload: boolean
-}
-
-interface SetIsFiltersButtonsDisabled {
-    type: OrderFilteringActionTypes.SET_IS_FILTERS_BUTTONS_DISABLED,
-    payload: {accept: boolean, reset: boolean}
 }
 
 interface SetIsFiltersListOpen {
