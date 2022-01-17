@@ -1,3 +1,4 @@
+import {modalReducer} from './modal';
 import {notificationReducer} from './notification';
 import {clockReducer} from './clock';
 import {masterReducer} from './master';
@@ -13,4 +14,5 @@ export const rootReducer = combineReducers({
 	master: masterReducer,
 	clock: clockReducer,
 	notification: notificationReducer,
+	modal: modalReducer,
 });

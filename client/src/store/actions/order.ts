@@ -24,6 +24,7 @@ export const getOrders = (page = 0, limit = 5, sortingField = 'id', sortingOrder
 				},
 			});
 			dispatch({type: OrderActionTypes.GET_SUCCESS, payload: data.rows});
+			dispatch({type: OrderActionTypes.SET_QUANTITY, payload: data.count});
 		} catch (e) {
 			dispatch({
 				type: OrderActionTypes.GET_ERROR,
