@@ -300,7 +300,6 @@ const OrdersList: FC<OrdersListProps> = () => {
 		dispatch(setIsModalOpen(false));
 	};
 
-
 	return (
 		<div>
 			<PrivateHeader/>
