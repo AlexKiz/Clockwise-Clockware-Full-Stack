@@ -11,12 +11,6 @@ export interface OrderState {
     totalQuantity: number
     sortedField: string
     sortingOrder: 'asc' | 'desc'
-    masterFilteredId?: string | null
-    cityFilteredId?: number | null
-    clockFilteredId?: number | null
-    isCompletedFilter?: boolean | null
-    startDateFilter?: Date | null
-    endDateFilter?: Date| null
 }
 
 export enum OrderActionTypes {
@@ -28,12 +22,6 @@ export enum OrderActionTypes {
     SET_QUANTITY = 'SET_ORDERS_QUANTITY',
     SET_SORTING_FIELD = 'SET_ORDERS_SORTING_FIELD',
     SET_SORTING_ORDER = 'SET_ORDERS_SORTING_ORDER',
-    SET_MASTER_FILTER = 'SET_MASTER_FILTER',
-    SET_CITY_FILTER = 'SET_CITY_FILTER',
-    SET_CLOCK_FILTER = 'SET_CLOCK_FILTER',
-    SET_COMPLETED_FILTER = 'SET_COMPLETED_FILTER',
-    SET_START_DATE_FILTER = 'SET_START_DATE_FILTER',
-    SET_END_DATE_FILTER = 'SET_END_DATE_FILTER'
 }
 
 interface GetOrdersAction {
@@ -75,35 +63,6 @@ interface SetOrdersSortingOrderAction {
     payload: 'asc' | 'desc'
 }
 
-interface SetMasterFilterAction {
-    type: OrderActionTypes.SET_MASTER_FILTER,
-    payload: string
-}
-
-interface SetCityFilterAction {
-    type: OrderActionTypes.SET_CITY_FILTER,
-    payload: number
-}
-
-interface SetClockFilterAction {
-    type: OrderActionTypes.SET_CLOCK_FILTER,
-    payload: number
-}
-
-interface SetIsCompletedFilterAction {
-    type: OrderActionTypes.SET_COMPLETED_FILTER,
-    payload: boolean
-}
-
-interface SetStartDateFilterAction {
-    type: OrderActionTypes.SET_START_DATE_FILTER,
-    payload: Date
-}
-
-interface SetEndDateFilterAction {
-    type: OrderActionTypes.SET_END_DATE_FILTER,
-    payload: Date
-}
 
 export type OrderAction =
 GetOrdersAction |
@@ -113,10 +72,5 @@ SetOrdersPageAction |
 SetOrdersLimitAction |
 SetOrdersQuantityAction |
 SetOrdersSortingFieldAction |
-SetOrdersSortingOrderAction |
-SetMasterFilterAction |
-SetCityFilterAction |
-SetClockFilterAction |
-SetIsCompletedFilterAction |
-SetStartDateFilterAction |
-SetEndDateFilterAction
+SetOrdersSortingOrderAction
+
