@@ -173,7 +173,6 @@ const OrdersList: FC<OrdersListProps> = () => {
 		dispatch(setOrdersQuantity(totalQuantity));
 	}, [limit, page, sortedField, sortingOrder]);
 
-
 	const getDebouncedCities = debouncer(() => {
 		dispatch(getCities(cityName));
 	}, 200);
