@@ -193,19 +193,30 @@ const OrdersList: FC<OrdersListProps> = () => {
 		readOrdersData();
 	}, [rowsPerPage, page, sortedField, sortingOrder]);
 
+	const getDebouncedCities = debouncer(() => {
+		dispatch(getCities(cityName));
+	}, 200);
+
+	const getDebouncedMasters = debouncer(() => {
+		dispatch(getMasters(masterName));
+	}, 200);
+
+	const getDebouncedClocks = debouncer(() => {
+		dispatch(getClocks(clockSize));
+	}, 200);
 
 	useEffect(() => {
-		dispatch(getMasters(masterName));
+		getDebouncedMasters();
 	}, [masterName]);
 
 
 	useEffect(() => {
-		dispatch(getCities(cityName));
+		getDebouncedCities();
 	}, [cityName]);
 
 
 	useEffect(() => {
-		dispatch(getClocks(clockSize));
+		getDebouncedClocks();
 	}, [clockSize]);
 
 
@@ -322,7 +333,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 								value={masterFilteringInstance}
 								getOptionLabel={(option) => option.name}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: Master | null) => {
-									dispatch(setMasterFilteringInstance(value));
+									dispatch(setMasterFilter(value ? value.id : value));
 									dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 								}}
 								onInputChange={(MasterNameEvent: React.SyntheticEvent<Element, Event>, value: string) => {
@@ -341,7 +352,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 								value={cityFilteringInstance}
 								getOptionLabel={(option) => option.name}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: City | null) => {
-									dispatch(setCityFilteringInstance(value));
+									dispatch(setCityFilter(value ? value.id : value));
 									dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 								}}
 								onInputChange={(CityNameEvent: React.SyntheticEvent<Element, Event>, value: string) => {
@@ -360,7 +371,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 								value={clockFilteringInstance}
 								getOptionLabel={(option) => option.size}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: Clock | null) => {
-									dispatch(setClockFilteringInstance(value));
+									dispatch(setClockFilter(value ? value.id : value));
 									dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 								}}
 								onInputChange={(ClockSizeEvent: React.SyntheticEvent<Element, Event>, value: string) => {
@@ -390,6 +401,8 @@ const OrdersList: FC<OrdersListProps> = () => {
 									value={dateFilteringArray}
 									onChange={(value) => {
 										dispatch(setDateFilteringArray(value));
+										dispatch(setStartDateFilter(value[0]));
+										dispatch(setEndDateFilter(value[1]));
 										dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 									}}
 									renderInput={(startProps, endProps) => (
@@ -640,7 +653,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 							{ !orders.length &&
 								<TableRow>
 									<TableCell
-										colSpan={9}
+										colSpan={10}
 										sx={{height: 365, p: 0}}
 										align='center'>
 										<Typography
