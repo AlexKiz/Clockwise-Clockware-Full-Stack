@@ -1,12 +1,20 @@
+/* eslint-disable max-len */
 import {Response, Request} from 'express';
 import db from '../models';
+import bcrypt from 'bcrypt';
+import {rolesMappingCreate} from './../../data/utilities/systemUtilities';
 
 
-export const postUser = async (req: Request, res: Response) => {
+export const userRegistration = async (req: Request, res: Response) => {
 	try {
-		const {name, email} = req.body;
+		const {name, email, password, citiesId, role} = req.body;
 
-		const user = await db.User.create({name, email, role: 'client'});
+		const salt = bcrypt.genSaltSync(10);
+		const hashPassword = bcrypt.hashSync(password, salt);
+		const hashForVerification = bcrypt.hashSync(`${name}${email}`, salt);
+		const hashVerify = hashForVerification.replace(/\//g, 'i');
+
+		const user = rolesMappingCreate[role](name, email, hashPassword, hashVerify, citiesId);
 
 		res.status(201).json(user);
 	} catch (error) {
@@ -38,6 +46,19 @@ export const putUser = async (req: Request, res: Response) => {
 		} else {
 			res.status(400).send('User with current email exists');
 		}
+	} catch (error) {
+		res.status(500).send();
+	}
+};
+
+
+export const userVerification = async (req: Request, res: Response) => {
+	try {
+		const {hashVerify} = req.body;
+
+		const userVerify = await db.User.update({hashVerify: '', isVerified: true}, {where: {hashVerify}});
+
+		res.status(200).json(userVerify);
 	} catch (error) {
 		res.status(500).send();
 	}

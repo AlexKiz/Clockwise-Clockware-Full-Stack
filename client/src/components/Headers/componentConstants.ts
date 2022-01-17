@@ -6,6 +6,10 @@ export const MENU_LINKS = [{
 	title: 'Log in',
 	path: '/login',
 	name: 'login',
+}, {
+	title: 'Sign up',
+	path: '/registration-form',
+	name: 'registration-form',
 }];
 
 export const PRIVATE_MENU_LINKS = [{

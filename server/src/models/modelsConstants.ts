@@ -50,5 +50,8 @@ export interface UserAttributes {
     name: string,
     password: string,
     email: string,
-    role: string
+    role: string,
+    masterId: string,
+    hashVerify: string,
+    isVerified: boolean
 }

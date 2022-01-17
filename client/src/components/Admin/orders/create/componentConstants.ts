@@ -19,31 +19,16 @@ export type OrderCreateFormValidation = {
 	masterId?: string
 }
 
+const requiredFields: string[] = ['userId', 'clockId', 'cityId', 'orderTime', 'orderDate', 'masterId'];
+
 export const validate = (values: OrderCreateFormValues) => {
 	const errors: OrderCreateFormValidation = {};
-	if (!values.userId) {
-		errors.userId = 'Required';
-	}
 
-	if (!values.clockId) {
-		errors.clockId = 'Required';
-	}
-
-	if (!values.cityId) {
-		errors.cityId = 'Required';
-	}
-
-	if (!values.orderTime) {
-		errors.orderTime = 'Required';
-	}
-
-	if (!values.orderDate) {
-		errors.orderDate = 'Required';
-	}
-
-	if (!values.masterId) {
-		errors.masterId = 'Required';
-	}
+	requiredFields.some((field) => {
+		if (!values[field]) {
+			errors[field] = 'Required';
+		}
+	});
 
 	return errors;
 };

@@ -23,39 +23,24 @@ export type OrderFormValidation = {
 	masterId?: string
 }
 
+const requiredFields: string[] = ['userName', 'userEmail', 'clockId', 'cityId', 'orderTime', 'orderDate', 'masterId'];
+
 export const validate = (values: OrderFormValues) => {
 	const errors: OrderFormValidation = {};
-	if (!values.userName) {
-		errors.userName = 'Required';
-	} else if (!VALID.NAME.test(values.userName)) {
+
+	if (!VALID.NAME.test(values.userName)) {
 		errors.userName = 'User name must be at least 3 letter and alphabetical characters only.';
 	}
 
-	if (!values.userEmail) {
-		errors.userEmail = 'Required';
-	} else if (!VALID.EMAIL.test(values.userEmail)) {
+	if (!VALID.EMAIL.test(values.userEmail)) {
 		errors.userEmail = 'Email should match the example: myemail@mail.com';
 	}
 
-	if (!values.clockId) {
-		errors.clockId = 'Required';
-	}
-
-	if (!values.cityId) {
-		errors.cityId = 'Required';
-	}
-
-	if (!values.orderTime) {
-		errors.orderTime = 'Required';
-	}
-
-	if (!values.orderDate) {
-		errors.orderDate = 'Required';
-	}
-
-	if (!values.masterId) {
-		errors.masterId = 'Required';
-	}
+	requiredFields.some((field) => {
+		if (!values[field]) {
+			errors[field] = 'Required';
+		}
+	});
 
 	return errors;
 };

@@ -3,8 +3,8 @@ import {VALID} from '../../data/constants/systemConstants';
 import db from '../models';
 
 
-export const postUserValidate = async (req: Request, res: Response, next: NextFunction) => {
-	const {name, email} = req.body;
+export const userRegistrationValidate = async (req: Request, res: Response, next: NextFunction) => {
+	const {name, email, password, role, citiesId} = req.body;
 
 	const validationErrors: string[] = [];
 
@@ -14,6 +14,16 @@ export const postUserValidate = async (req: Request, res: Response, next: NextFu
 
 	if (!VALID.USER_EMAIL.test(email)) {
 		validationErrors.push('Invalid user email');
+	}
+
+	if (!VALID.PASSWORD.test(password)) {
+		validationErrors.push('Invalid password');
+	}
+
+	const validCityId = await db.City.findById(citiesId);
+
+	if (role === 'master' && !validCityId.length) {
+		validationErrors.push('Cities with current ids does not exist');
 	}
 
 	if (validationErrors.length) {

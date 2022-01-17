@@ -15,6 +15,7 @@ export type UserCreateFormValidation = {
 
 export const validate = (values: UserCreateFormValues) => {
 	const errors: UserCreateFormValidation = {};
+
 	if (!values.userName) {
 		errors.userName = 'Required';
 	} else if (!VALID.NAME.test(values.userName)) {

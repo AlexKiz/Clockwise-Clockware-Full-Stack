@@ -8,7 +8,17 @@ import {Master} from '../../../../data/types/types';
 import {MasterListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {styled} from '@mui/material/styles';
-import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, tableCellClasses} from '@mui/material';
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	Button,
+	Paper,
+	tableCellClasses,
+} from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({

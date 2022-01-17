@@ -1,0 +1,38 @@
+.container {
+    max-width: 1700px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.container_notification {
+    width: 45%;
+    background: linear-gradient(to right, rgb(255, 183, 77),rgb(255, 167, 38));
+    padding: 30px;
+    box-shadow: 0 0 20px 1px rgba(48, 3, 3, 0.596);
+    border-radius: 20px;
+    border: 1px solid transparent;
+    transition: 1s ease;
+    margin: 40px;
+}
+
+.container_notification:hover {
+    border: 1px solid rgb(255, 255, 255);
+}
+
+.form_label {
+    text-align: center;
+}
+
+.form_section{
+    width: 100%;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn{
+    height: 65px;
+    width: 50%;
+}

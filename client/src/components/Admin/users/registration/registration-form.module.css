@@ -4,7 +4,7 @@ label, button {
     font-weight: 400;
 }
 
-.conteiner {
+.container {
     max-width: 1700px;
     margin: 0 auto;
 }
@@ -29,7 +29,7 @@ label, button {
     margin: 0 auto;
 }
 
-.form input, select {
+.form input {
     height: 32px;
     border-radius: 7px;
     font-size: 16px;

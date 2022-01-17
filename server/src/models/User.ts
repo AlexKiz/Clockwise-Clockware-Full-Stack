@@ -7,7 +7,7 @@ import {
 } from 'sequelize';
 import {UserAttributes} from './modelsConstants';
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'| 'password'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
 
 export default (sequelize: any, DataTypes: any) => {
 	class User extends Model<UserAttributes, UserCreationAttributes>
@@ -17,6 +17,10 @@ export default (sequelize: any, DataTypes: any) => {
 		public password!: string;
 		public email!: string;
 		public role!: string;
+		public masterId!: string;
+		public hashVerify!: string;
+		public isVerified!: boolean;
+
 
 		static findById(entityId: string) {
 			return this.findAll({where: {id: entityId}});
@@ -33,6 +37,11 @@ export default (sequelize: any, DataTypes: any) => {
 		static associate(models: any) {
 			User.hasMany(models.Order, {
 				foreignKey: 'userId',
+				onDelete: 'CASCADE',
+				onUpdate: 'CASCADE',
+			});
+			User.belongsTo(models.Master, {
+				foreignKey: 'masterId',
 				onDelete: 'CASCADE',
 				onUpdate: 'CASCADE',
 			});
@@ -69,6 +78,21 @@ export default (sequelize: any, DataTypes: any) => {
 			role: {
 				type: DataTypes.STRING(30),
 				allowNull: false,
+			},
+
+			hashVerify: {
+				type: DataTypes.STRING(150),
+				allowNull: true,
+			},
+
+			isVerified: {
+				type: DataTypes.BOOLEAN,
+				defaultValue: false,
+			},
+
+			masterId: {
+				type: DataTypes.UUID,
+				allowNull: true,
 			},
 		}, {
 			sequelize,
