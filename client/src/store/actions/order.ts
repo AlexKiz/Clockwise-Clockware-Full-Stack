@@ -53,26 +53,4 @@ export const setOrdersSortingOrder = (sortingOrder: 'asc' | 'desc') => {
 	return {type: OrderActionTypes.SET_SORTING_ORDER, payload: sortingOrder};
 };
 
-export const setMasterFilter = (masterFilteredId: string| null) => {
-	return {type: OrderActionTypes.SET_MASTER_FILTER, payload: masterFilteredId};
-};
 
-export const setCityFilter = (cityFilteredId: number | null) => {
-	return {type: OrderActionTypes.SET_CITY_FILTER, payload: cityFilteredId};
-};
-
-export const setClockFilter = (clockFilteredId: number | null) => {
-	return {type: OrderActionTypes.SET_CLOCK_FILTER, payload: clockFilteredId};
-};
-
-export const setIsCompletedFilter = (isCompletedFilter: boolean | null) => {
-	return {type: OrderActionTypes.SET_COMPLETED_FILTER, payload: isCompletedFilter};
-};
-
-export const setStartDateFilter = (startDateFilter: Date | null) => {
-	return {type: OrderActionTypes.SET_START_DATE_FILTER, payload: startDateFilter};
-};
-
-export const setEndDateFilter = (endDateFilter: Date | null) => {
-	return {type: OrderActionTypes.SET_END_DATE_FILTER, payload: endDateFilter};
-};
