@@ -6,7 +6,7 @@ import {Master} from 'src/data/types/types';
 import {debouncer} from 'src/data/constants/systemUtilities';
 
 
-export const getMaster = (masterName: string = '') => {
+export const getMasters = (masterName: string = '') => {
 	return async (dispatch: Dispatch<MasterAction>) => {
 		const readMasterData = debouncer(async () => {
 			const {data} = await axios.get<{count: number, rows: Master[]}>(URL.MASTER, {
@@ -29,6 +29,6 @@ export const setMasterName = (masterName: string) => {
 	return {type: MasterActionTypes.SET_NAME, payload: masterName};
 };
 
-export const setMasterFilteringInstance = (masterInstance: Master) => {
+export const setMasterFilteringInstance = (masterInstance: Master | null) => {
 	return {type: MasterActionTypes.SET_FILTER_INSTANCE, payload: masterInstance};
 };

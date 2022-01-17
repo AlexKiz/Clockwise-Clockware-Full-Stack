@@ -6,7 +6,7 @@ import {City} from 'src/data/types/types';
 import {debouncer} from 'src/data/constants/systemUtilities';
 
 
-export const getCity = (cityName: string = '') => {
+export const getCities = (cityName = '') => {
 	return async (dispatch: Dispatch<CityAction>) => {
 		const readCityData = debouncer(async () => {
 			const {data} = await axios.get<{count: number, rows: City[]}>(URL.CITY, {
@@ -29,6 +29,6 @@ export const setCityName = (cityName: string) => {
 	return {type: CityActionTypes.SET_NAME, payload: cityName};
 };
 
-export const setCityFilteringInstance = (cityInstance: City) => {
+export const setCityFilteringInstance = (cityInstance: City | null) => {
 	return {type: CityActionTypes.SET_FILTER_INSTANCE, payload: cityInstance};
 };

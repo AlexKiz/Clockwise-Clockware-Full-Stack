@@ -27,6 +27,6 @@ export const setClockSize = (clockSize: string) => {
 	return {type: ClockActionTypes.SET_SIZE, payload: clockSize};
 };
 
-export const setClockFilteringInstance = (clockInstance: Clock) => {
+export const setClockFilteringInstance = (clockInstance: Clock | null) => {
 	return {type: ClockActionTypes.SET_FILTER_INSTANCE, payload: clockInstance};
 };

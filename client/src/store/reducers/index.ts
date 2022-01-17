@@ -1,3 +1,4 @@
+import {notificationReducer} from './notification';
 import {clockReducer} from './clock';
 import {masterReducer} from './master';
 import {combineReducers} from 'redux';
@@ -11,4 +12,5 @@ export const rootReducer = combineReducers({
 	city: cityReducer,
 	master: masterReducer,
 	clock: clockReducer,
+	notification: notificationReducer,
 });
