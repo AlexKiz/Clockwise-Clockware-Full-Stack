@@ -34,6 +34,8 @@ import {
 	Modal,
 	ImageList,
 	ImageListItem,
+	TableFooter,
+	TablePagination,
 } from '@mui/material';
 import {
 	DesktopDateRangePicker,
@@ -686,7 +688,9 @@ const OrdersList: FC<OrdersListProps> = () => {
 											variant="contained"
 											sx={{width: '37%', fontSize: 12, borderRadius: 8}}
 											color='success'
-											onClick={handleImportXLSX}
+											onClick={() => {
+												handleImportXLSX;
+											}}
 											startIcon={<DescriptionOutlinedIcon fontSize='medium'/>}
 										>
 											Import current page to Excel

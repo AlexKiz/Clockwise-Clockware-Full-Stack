@@ -10,12 +10,6 @@ const initialState: OrderState = {
 	totalQuantity: 0,
 	sortedField: 'id',
 	sortingOrder: 'asc',
-	masterFilteredId: null,
-	cityFilteredId: null,
-	clockFilteredId: null,
-	isCompletedFilter: null,
-	startDateFilter: null,
-	endDateFilter: null,
 };
 
 export const orderReducer = (state = initialState, action: OrderAction): OrderState => {
@@ -36,18 +30,6 @@ export const orderReducer = (state = initialState, action: OrderAction): OrderSt
 		return {...state, sortedField: action.payload};
 	case OrderActionTypes.SET_SORTING_ORDER:
 		return {...state, sortingOrder: action.payload};
-	case OrderActionTypes.SET_MASTER_FILTER:
-		return {...state, masterFilteredId: action.payload};
-	case OrderActionTypes.SET_CITY_FILTER:
-		return {...state, cityFilteredId: action.payload};
-	case OrderActionTypes.SET_CLOCK_FILTER:
-		return {...state, clockFilteredId: action.payload};
-	case OrderActionTypes.SET_COMPLETED_FILTER:
-		return {...state, isCompletedFilter: action.payload};
-	case OrderActionTypes.SET_START_DATE_FILTER:
-		return {...state, startDateFilter: action.payload};
-	case OrderActionTypes.SET_END_DATE_FILTER:
-		return {...state, endDateFilter: action.payload};
 	default:
 		return state;
 	}

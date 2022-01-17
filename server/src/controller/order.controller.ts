@@ -272,9 +272,14 @@ export const getXSLXOrders = async (req: Request, res: Response) => {
 			where: filterOptions,
 		});
 
-		const convertOrdersToXLSX = () => {
-			const workSheet = XLSX.utils.json_to_sheet(orders);
-		};
+		const workSheet = XLSX.utils.json_to_sheet(orders);
+		const workBook = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(workBook, workSheet, 'AllOrders');
+
+		const buffer = XLSX.write(workBook, {bookType: 'xlsx', type: 'buffer'});
+
+		const xlsxFile = XLSX.writeFile(workBook, 'ordersData.xlsx');
+		res.status(200).send(xlsxFile);
 	} catch (e) {
 		res.status(500).send();
 	}
