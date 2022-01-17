@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
-import {DateRange} from '@mui/lab/DateRangePicker/RangeTypes';
+import {RangeInput} from '@mui/lab/DateRangePicker/RangeTypes';
 
 export interface OrderFilteringState {
     masterFilteredId?: string | null
     cityFilteredId?: number | null
     clockFilteredId?: number | null
     isCompletedFilter?: boolean | null
-    dateFilteringArray? : [Date | null, Date | null]
+    dateFilteringArray: RangeInput<Date | null>
     startDateFilter?: Date | null
     endDateFilter?: Date | null
     isFiltersListOpen: boolean
@@ -47,7 +47,7 @@ interface SetIsCompletedFilterAction {
 
 interface SetDateFilterArray {
     type: OrderFilteringActionTypes.SET_DATE_FILTER_ARRAY,
-    payload: [Date | null, Date | null]
+    payload: RangeInput<Date | null>
 }
 
 interface SetStartDateFilterAction {

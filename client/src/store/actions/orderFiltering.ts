@@ -1,4 +1,4 @@
-import {DateRange} from '@mui/lab/DateRangePicker/RangeTypes';
+import {RangeInput} from '@mui/lab/DateRangePicker/RangeTypes';
 import {OrderFilteringActionTypes} from '../types/orderFiltering';
 
 export const setMasterFilter = (masterFilteredId: string| null) => {
@@ -17,7 +17,7 @@ export const setIsCompletedFilter = (isCompletedFilter: boolean | null) => {
 	return {type: OrderFilteringActionTypes.SET_COMPLETED_FILTER, payload: isCompletedFilter};
 };
 
-export const setDateFilteringArray = (date: DateRange<[Date | null, Date | null]>) => {
+export const setDateFilteringArray = (date: RangeInput<Date | null>) => {
 	return {type: OrderFilteringActionTypes.SET_DATE_FILTER_ARRAY, payload: date};
 };
 
