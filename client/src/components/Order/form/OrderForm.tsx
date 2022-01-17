@@ -42,8 +42,8 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 	const formik = useFormik({
 		initialValues: {
-			userName: '',
-			userEmail: '',
+			name: '',
+			email: '',
 			cityId: 0,
 			clockId: 0,
 			orderDate: '',
@@ -57,8 +57,8 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 				await axios.post(URL.ORDER,
 					{
-						name: values.userName,
-						email: values.userEmail,
+						name: values.name,
+						email: values.email,
 						clockId: values.clockId,
 						cityId: values.cityId,
 						masterId: values. masterId,
@@ -155,19 +155,19 @@ const OrderForm: FC<OrderFormProps> = () => {
 									</Typography>
 								</div>
 								<TextField
-									id="userName"
-									name="userName"
+									id="name"
+									name="name"
 									label="Full name"
 									placeholder="Ivan Ivanov"
 									variant="filled"
 									size="small"
 									margin="dense"
 									fullWidth
-									value={formik.values.userName}
+									value={formik.values.name}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
-									error={formik.touched.userName && Boolean(formik.errors.userName)}
-									helperText={formik.touched.userName && formik.errors.userName}
+									error={formik.touched.name && Boolean(formik.errors.name)}
+									helperText={formik.touched.name && formik.errors.name}
 									required
 								/>
 							</div>
@@ -184,19 +184,19 @@ const OrderForm: FC<OrderFormProps> = () => {
 								</div>
 
 								<TextField
-									id="userEmail"
-									name='userEmail'
+									id="email"
+									name='email'
 									label="Email"
 									placeholder="example@mail.com"
 									variant="filled"
 									size="small"
 									margin="dense"
 									fullWidth
-									value={formik.values.userEmail}
+									value={formik.values.email}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
-									error={formik.touched.userEmail && Boolean(formik.errors.userEmail)}
-									helperText={formik.touched.userEmail && formik.errors.userEmail}
+									error={formik.touched.email && Boolean(formik.errors.email)}
+									helperText={formik.touched.email && formik.errors.email}
 									required
 								/>
 							</div>

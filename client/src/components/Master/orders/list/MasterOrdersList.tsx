@@ -58,7 +58,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 	};
 
 	const completeOrder = async (order: Order) => {
-		if (window.confirm(`Do you want to complete this order?`)) {
+		if (window.confirm(`Do you want to complete order #${order.id.slice(0, 4)}?`)) {
 			await axios.put(URL.COMPLETE_ORDER, {
 				id: order.id,
 				clientEmail: order.user.email,

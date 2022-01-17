@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import {InputLabel} from '@mui/material';
-import AdminHeader from 'src/components/Headers/AdminHeader';
+import AdminHeader from '../../../Headers/AdminHeader';
 
 
 const MasterCreate: FC<MasterCreateProps> = () => {
@@ -45,8 +45,8 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 
 	const formik = useFormik({
 		initialValues: {
-			masterId: masterIdParam || '',
-			masterName: masterNameParam || '',
+			id: masterIdParam || '',
+			name: masterNameParam || '',
 			citiesId: [] as number[],
 		},
 		validate,
@@ -54,7 +54,7 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 			if (!masterIdParam) {
 				axios.post(URL.MASTER,
 					{
-						name: values.masterName,
+						name: values.name,
 						citiesId: values.citiesId,
 					}).then(() =>{
 					setAlertOptions({message: 'Master has been created', type: 'success', notify: true});
@@ -62,8 +62,8 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 				});
 			} else {
 				axios.put(URL.MASTER, {
-					id: values.masterId,
-					name: values.masterName,
+					id: values.id,
+					name: values.name,
 					citiesId: values.citiesId,
 				}).then(() => {
 					setAlertOptions({message: 'Master has been updated', type: 'success', notify: true});
@@ -85,10 +85,10 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 						const currentMasterCities = currentMaster[0].cities.map((city) => {
 							return city.id;
 						});
-						formik.values.masterId = masterIdParam;
+						formik.values.id = masterIdParam;
 						formik.values.citiesId.push(...currentMasterCities);
 					} else {
-						formik.values.masterId = masterIdParam;
+						formik.values.id = masterIdParam;
 					}
 				}
 			}
@@ -130,19 +130,19 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 								</Typography>
 							</div>
 							<TextField
-								id="masterName"
-								name="masterName"
+								id="name"
+								name="name"
 								label="Master name"
 								placeholder="Full name"
 								variant="filled"
 								size="small"
 								margin="dense"
 								fullWidth
-								value={formik.values.masterName}
+								value={formik.values.name}
 								onChange={formik.handleChange}
 								onBlur={formik.handleBlur}
-								error={formik.touched.masterName && Boolean(formik.errors.masterName)}
-								helperText={formik.touched.masterName && formik.errors.masterName}
+								error={formik.touched.name && Boolean(formik.errors.name)}
+								helperText={formik.touched.name && formik.errors.name}
 								required
 							/>
 						</div>

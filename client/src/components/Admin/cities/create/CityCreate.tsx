@@ -36,35 +36,34 @@ const CityCreate: FC<CityCreateProps> = () => {
 
 	const formik = useFormik({
 		initialValues: {
-			cityName: cityNameParam || '',
-			cityId: Number(cityIdParam || 0),
+			name: cityNameParam || '',
+			id: Number(cityIdParam || 0),
 		},
 		validate,
 		onSubmit: async (values) => {
 			if (!cityIdParam) {
 				await axios.post<City>(URL.CITY,
 					{
-						id: values.cityId,
-						name: values.cityName,
+						name: values.name,
 					}).then(() => {
 					setAlertOptions({message: 'City has been created', type: 'success', notify: true});
 					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`);
 				}).catch((error) => {
 					if (Number(error.response.status) === 400) {
 						setAlertOptions({message: error.response.data, type: 'error', notify: true});
-						values.cityName = '';
+						values.name = '';
 					}
 				});
 			} else {
 				await axios.put<City>(URL.CITY, {
-					id: values.cityId,
-					name: values.cityName,
+					id: values.id,
+					name: values.name,
 				}).then(() => {
 					setAlertOptions({message: 'City has been updated', type: 'success', notify: true});
 					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`);
 				}).catch((error) => {
 					setAlertOptions({message: error.response.data, type: 'error', notify: true});
-					values.cityName = cityNameParam;
+					values.name = cityNameParam;
 				});
 			}
 		},
@@ -90,19 +89,19 @@ const CityCreate: FC<CityCreateProps> = () => {
 								</Typography>
 							</div>
 							<TextField
-								id="cityName"
-								name="cityName"
+								id="name"
+								name="name"
 								label="City name"
 								placeholder="Name"
 								variant="filled"
 								size="small"
 								margin="dense"
 								fullWidth
-								value={formik.values.cityName}
+								value={formik.values.name}
 								onChange={formik.handleChange}
 								onBlur={formik.handleBlur}
-								error={formik.touched.cityName && Boolean(formik.errors.cityName)}
-								helperText={formik.touched.cityName && formik.errors.cityName}
+								error={formik.touched.name && Boolean(formik.errors.name)}
+								helperText={formik.touched.name && formik.errors.name}
 								required
 							/>
 						</div>

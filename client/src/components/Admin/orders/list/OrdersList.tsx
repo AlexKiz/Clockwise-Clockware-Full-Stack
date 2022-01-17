@@ -20,7 +20,8 @@ import {
 	tableCellClasses,
 } from '@mui/material';
 import AlertMessage from '../../../Notification/AlertMessage';
-import AdminHeader from 'src/components/Headers/AdminHeader';
+import AdminHeader from '../../../Headers/AdminHeader';
+
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -40,6 +41,7 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 		border: 0,
 	},
 }));
+
 
 const OrdersList: FC<OrdersListProps> = () => {
 	const [orders, setOrders] = useState<Order[]>([]);
@@ -63,7 +65,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 
 
 	const onDelete = (id: string) => {
-		if (window.confirm('Do you want to delete this order?')) {
+		if (window.confirm(`Do you want to delete order #${id.slice(0, 4)}?`)) {
 			axios.delete(URL.ORDER,
 				{
 					data: {
@@ -116,7 +118,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 											<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CREATE}/${order.id}/${order.user.id}/${order.clock.id}/${order.city.id}/${order.startWorkOn.split('T')[0]}/${order.startWorkOn.split('T')[1]}/${order.master.id}`}>
 												<Button
 													variant="contained"
-													sx={{width: 1/2, fontSize: 14, borderRadius: 15}}
+													sx={{width: '50%', fontSize: 14, borderRadius: 15}}
 												>
 													Update
 												</Button>

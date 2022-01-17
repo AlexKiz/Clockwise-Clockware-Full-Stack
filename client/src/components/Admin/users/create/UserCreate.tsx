@@ -15,7 +15,7 @@ import {
 	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
-import AdminHeader from 'src/components/Headers/AdminHeader';
+import AdminHeader from '../../../Headers/AdminHeader';
 
 
 const UserCreate: FC<UserCreateProps> = () => {
@@ -35,23 +35,23 @@ const UserCreate: FC<UserCreateProps> = () => {
 
 	const formik = useFormik({
 		initialValues: {
-			userName: userNameParam,
-			userId: userIdParam,
-			userEmail: userEmailParam,
+			name: userNameParam,
+			id: userIdParam,
+			email: userEmailParam,
 		},
 		validate,
 		onSubmit: async (values) => {
 			await axios.put(URL.USER,
 				{
-					id: values.userId,
-					name: values.userName,
-					email: values.userEmail,
+					id: values.id,
+					name: values.name,
+					email: values.email,
 				}).then(() => {
 				setAlertOptions({message: 'User has been updated', type: 'success', notify: true});
 				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.USERS_LIST}`);
 			}).catch(() => {
 				setAlertOptions({message: 'User with current email already exists', type: 'error', notify: true});
-				values.userEmail = userEmailParam;
+				values.email = userEmailParam;
 			});
 		},
 	});
@@ -76,19 +76,19 @@ const UserCreate: FC<UserCreateProps> = () => {
 								</Typography>
 							</div>
 							<TextField
-								id="userName"
-								name="userName"
+								id="name"
+								name="name"
 								label="User name"
 								placeholder="Name"
 								variant="filled"
 								size="small"
 								margin="dense"
 								fullWidth
-								value={formik.values.userName}
+								value={formik.values.name}
 								onChange={formik.handleChange}
 								onBlur={formik.handleBlur}
-								error={formik.touched.userName && Boolean(formik.errors.userName)}
-								helperText={formik.touched.userName && formik.errors.userName}
+								error={formik.touched.name && Boolean(formik.errors.name)}
+								helperText={formik.touched.name && formik.errors.name}
 								required
 							/>
 						</div>
@@ -104,19 +104,19 @@ const UserCreate: FC<UserCreateProps> = () => {
 								</Typography>
 							</div>
 							<TextField
-								id="userEmail"
-								name="userEmail"
+								id="email"
+								name="email"
 								label="Email"
 								placeholder="Email"
 								variant="filled"
 								size="small"
 								margin="dense"
 								fullWidth
-								value={formik.values.userEmail}
+								value={formik.values.email}
 								onChange={formik.handleChange}
 								onBlur={formik.handleBlur}
-								error={formik.touched.userEmail && Boolean(formik.errors.userEmail)}
-								helperText={formik.touched.userEmail && formik.errors.userEmail}
+								error={formik.touched.email && Boolean(formik.errors.email)}
+								helperText={formik.touched.email && formik.errors.email}
 								required
 							/>
 						</div>

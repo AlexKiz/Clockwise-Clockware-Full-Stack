@@ -21,7 +21,8 @@ import {
 } from '@mui/material';
 import {Visibility, VisibilityOff} from '@mui/icons-material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
-import jwt_decode from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
+import {BearerParser} from 'bearer-token-parser';
 
 
 const LoginForm:FC<LoginFormProps> = () => {
@@ -36,19 +37,18 @@ const LoginForm:FC<LoginFormProps> = () => {
 
 	const formik = useFormik({
 		initialValues: {
-			userLogin: '',
-			userPassword: '',
+			login: '',
+			password: '',
 		},
 		validate,
 		onSubmit: async (values) => {
-			const payload = {
-				userLogin: values.userLogin,
-				userPassword: values.userPassword,
-			};
-
 			try {
-				const login = await axios.post(URL.LOGIN, payload);
-				localStorage.setItem(ACCESS_TOKEN, login.headers.authorization.split(' ')[1]);
+				const login = await axios.post(URL.LOGIN, {
+					login: values.login,
+					password: values.password,
+				});
+				const token = BearerParser.parseBearerToken(login.headers);
+				localStorage.setItem(ACCESS_TOKEN, token);
 
 				if (login.data.role === ROLE.ADMIN) {
 					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
@@ -66,7 +66,7 @@ const LoginForm:FC<LoginFormProps> = () => {
 	useEffect(() => {
 		const token = localStorage.getItem(ACCESS_TOKEN);
 		if (token) {
-			const {userRole} = jwt_decode<{userRole}>(token);
+			const {userRole} = jwtDecode<{userRole}>(token);
 
 			if (userRole === ROLE.ADMIN) {
 				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
@@ -97,19 +97,19 @@ const LoginForm:FC<LoginFormProps> = () => {
 								</div>
 
 								<TextField
-									id="userLogin"
-									name='userLogin'
+									id="login"
+									name='login'
 									label="Email"
 									placeholder="example@mail.com"
 									variant="filled"
 									size="small"
 									margin="dense"
 									fullWidth
-									value={formik.values.userLogin}
+									value={formik.values.login}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
-									error={formik.touched.userLogin && Boolean(formik.errors.userLogin)}
-									helperText={formik.touched.userLogin && formik.errors.userLogin}
+									error={formik.touched.login && Boolean(formik.errors.login)}
+									helperText={formik.touched.login && formik.errors.login}
 									required
 								/>
 							</div>
@@ -128,8 +128,8 @@ const LoginForm:FC<LoginFormProps> = () => {
 									<FilledInput
 										id="filled-adornment-password"
 										type={showPassword ? 'text' : 'password'}
-										value={formik.values.userPassword}
-										onChange={formik.handleChange('userPassword')}
+										value={formik.values.password}
+										onChange={formik.handleChange('password')}
 										endAdornment={
 											<InputAdornment position="end">
 												<IconButton

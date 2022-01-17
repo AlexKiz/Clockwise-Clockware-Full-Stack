@@ -1,38 +1,38 @@
 /* eslint-disable max-len */
 import {METHOD} from './../../data/constants/systemConstants';
 import {Response, Request, NextFunction} from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, {JwtPayload} from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import db from '../models';
 
 
 export const auth = async (req: Request, res: Response) => {
 	try {
-		const {userLogin, userPassword} = req.body;
+		const {login, password} = req.body;
 
-		const user = await db.User.findOne({where: {email: userLogin}});
+		const user = await db.User.findOne({where: {email: login}});
 
 		if (!user) {
 			return res.status(400).json({message: 'Wrong data'});
 		}
 
-		const {password: hashPass, role: userRole, id: userId, isVerified: verify, name: userName} = user;
+		const {password: hashPass, role, id, isVerified: verify, name} = user;
 
 		if (!verify) {
 			return res.status(400).json({message: 'You need to verify your email first!'});
 		}
 
-		const isCompare = await bcrypt.compare(userPassword, hashPass);
+		const isCompare = await bcrypt.compare(password, hashPass);
 
 		if (!isCompare) {
 			return res.status(400).json({message: 'Wrong login or password'});
 		}
 
-		const accessToken = jwt.sign({userRole, userName}, `${process.env.PRIVATE_KEY}`, {expiresIn: '4h'});
+		const accessToken = jwt.sign({role, name}, `${process.env.PRIVATE_KEY}`, {expiresIn: '4h'});
 
-		await db.User.updateById(userId, {token: accessToken});
+		await db.User.updateById(id, {token: accessToken});
 
-		res.set({Authorization: `Bearer ${accessToken}`}).status(200).json({message: 'Successfully authorizated!', role: userRole, userName});
+		res.set({Authorization: `Bearer ${accessToken}`}).status(200).json({message: 'Successfully authorizated!', role, name});
 	} catch (e) {
 		res.status(400).json({message: 'Login error'});
 	}
@@ -68,9 +68,9 @@ export const checkRole = (roles: string[]) => {
 
 		try {
 			const accessToken = (<string>req.headers.authorization).split(' ')[1];
-			const decoded = jwt.verify(accessToken, `${process.env.PRIVATE_KEY}`);
+			const decoded: string | jwt.JwtPayload = jwt.verify(accessToken, `${process.env.PRIVATE_KEY}`);
 
-			const checkingRole:string = (<any>decoded).userRole;
+			const checkingRole: string = (<JwtPayload>decoded).userRole;
 
 			let hasRole = false;
 

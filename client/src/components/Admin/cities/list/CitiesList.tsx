@@ -20,7 +20,7 @@ import {
 	tableCellClasses,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
-import AdminHeader from 'src/components/Headers/AdminHeader';
+import AdminHeader from '../../../Headers/AdminHeader';
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
 	[`&.${tableCellClasses.head}`]: {

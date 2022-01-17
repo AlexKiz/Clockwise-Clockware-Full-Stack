@@ -17,13 +17,16 @@ const Verification: FC<VerificationProps> = () => {
 
 	useEffect(() => {
 		const verifyUser = async () => {
-			const user = await axios.put(URL.VERIFY, {
+			await axios.put(URL.VERIFY, {
 				hashVerify,
+			}).then((response) => {
+				const [isUserVerified] = response.data;
+				if (!isUserVerified) {
+					history.push(URL.LOGIN);
+				}
 			});
-			if (user && !user[0]) {
-				history.push(URL.LOGIN);
-			}
 		};
+
 		verifyUser();
 	}, []);
 
@@ -49,7 +52,7 @@ const Verification: FC<VerificationProps> = () => {
 								className={classes.btn}
 								style={ {fontSize: 22, backgroundColor: 'green', borderRadius: 15} }
 							>
-						GO TO MAIN PAGE
+								GO TO MAIN PAGE
 							</Button>
 						</div>
 					</Stack>

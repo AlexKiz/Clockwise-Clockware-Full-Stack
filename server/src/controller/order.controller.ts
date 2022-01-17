@@ -37,9 +37,9 @@ export const getOrders = async (req: Request, res: Response) => {
 	try {
 		const token = (<string>req.headers.authorization).split(' ')[1];
 
-		const {id: userId, role: userRole, masterId: masterId} = await db.User.findOne({where: {token}});
+		const {id: userId, role, masterId} = await db.User.findOne({where: {token}});
 
-		if (userRole === 'admin') {
+		if (role === 'admin') {
 			const orders = await db.Order.findAll({
 				attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
 				include: [
@@ -67,7 +67,7 @@ export const getOrders = async (req: Request, res: Response) => {
 			});
 
 			return res.status(200).json(orders);
-		} else if (userRole === 'master') {
+		} else if (role === 'master') {
 			const orders = await db.Order.findAll({
 				order: [['startWorkOn', 'DESC']],
 				attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
