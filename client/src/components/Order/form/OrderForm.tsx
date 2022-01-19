@@ -160,7 +160,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 	}, [images]);
 
 	const readFiles = useCallback(async () => {
-		const binaryImages = await Promise.all<any>(
+		const binaryImages = await Promise.all<any>( // TODO: out
 			images.map(async (file) => {
 				return new Promise((resolve) => {
 					const reader = new FileReader();

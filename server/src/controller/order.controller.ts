@@ -9,6 +9,7 @@ import {CloudinaryService} from './../services/cloudinary';
 import {Op} from 'sequelize';
 import dotenv from 'dotenv';
 import XLSX from 'xlsx';
+import stream from 'stream';
 
 dotenv.config();
 
@@ -219,71 +220,93 @@ export const getXSLXOrders = async (req: Request, res: Response) => {
 			filterOptions.isCompleted = Boolean(isCompletedFilter);
 		}
 
-		if (clockFilteredId) {
+		if (clockFilteredId !== 'null') {
 			filterOptions.clockId = Number(clockFilteredId);
 		}
 
-		if (masterFilteredId) {
+		if (masterFilteredId !== 'null') {
 			filterOptions.masterId = String(masterFilteredId);
 		}
 
-		if (cityFilteredId) {
+		if (cityFilteredId !== 'null') {
 			filterOptions.cityId = Number(cityFilteredId);
 		}
 
-		if (startDateFilter) {
+		if (startDateFilter !== 'null') {
 			filterOptions.startWorkOn = {
-				[Op.gte]: String(startDateFilter).split('T')[0],
+				[Op.gte]: (<string>startDateFilter),
 			};
 		}
 
-		if (endDateFilter) {
+		if (endDateFilter !== 'null') {
 			filterOptions.endWorkOn = {
-				[Op.lte]: String(endDateFilter).split('T')[0],
+				[Op.lte]: (<string>endDateFilter),
 			};
 		}
 
 		const orders = await db.Order.findAll({
 			order: [[db.sequelize.col(`${sortedField}`), `${sortingOrder}`]],
+			attributes: ['id', 'orderRating', 'startWorkOn', 'endWorkOn', 'isCompleted'],
 			include: [
 				{
 					model: db.Clock,
-					attributes: ['id', 'size'],
+					attributes: ['size', 'price'],
 					required: true,
 				},
 				{
 					model: db.User,
-					attributes: ['id', 'name', 'email'],
+					attributes: ['name', 'email'],
 					required: true,
 				},
 				{
 					model: db.City,
-					attributes: ['id', 'name'],
+					attributes: ['name'],
 					required: true,
 				},
 				{
 					model: db.Master,
-					attributes: ['id', 'name'],
+					attributes: ['name'],
 					required: true,
 				},
 			],
-			limit,
-			offset,
 			where: filterOptions,
 		});
 
-		const workSheet = XLSX.utils.json_to_sheet(orders);
+		const orderXLSXShape = orders.map((order: any) => {
+			return {
+				'Order Id': order.id,
+				'Clock Size': order.clock.size,
+				'User Name': order.user.name,
+				'User Email': order.user.email,
+				'City': order.city.name,
+				'Master Name': order.master.name,
+				'Start On': order.startWorkOn,
+				'End On': order.endWorkOn,
+				'Completed': order.isCompleted,
+				'Rating': order.orderRating,
+			};
+		});
+
+		const workSheet = XLSX.utils.json_to_sheet(orderXLSXShape);
 		const workBook = XLSX.utils.book_new();
 		XLSX.utils.book_append_sheet(workBook, workSheet, 'AllOrders');
 
-		const buffer = XLSX.write(workBook, {bookType: 'xlsx', type: 'buffer'});
+		const XLSXBuffer = XLSX.write(workBook, {bookType: 'xlsx', type: 'buffer'});
 
-		const xlsxFile = XLSX.writeFile(workBook, 'ordersData.xlsx');
-		res.status(200).send(xlsxFile);
+		const readableStream = new stream.Readable();
+
+		readableStream.push(XLSXBuffer);
+		readableStream.push(null);
+
+		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		res.setHeader('Content-Disposition', 'attachment; filename=orders.xlsx');
+
+		readableStream.pipe(res);
 	} catch (e) {
 		res.status(500).send();
 	}
 };
+
 
 export const putRatedOrder = async (req: Request, res: Response) => {
 	try {
@@ -354,6 +377,7 @@ export const putOrder = async (req: Request, res: Response) => {
 		res.status(500).send();
 	}
 };
+
 
 export const completeOrder = async (req: Request, res: Response) => {
 	try {
