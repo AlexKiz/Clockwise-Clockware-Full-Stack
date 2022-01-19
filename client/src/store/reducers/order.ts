@@ -10,6 +10,7 @@ const initialState: OrderState = {
 	totalQuantity: 0,
 	sortedField: 'id',
 	sortingOrder: 'asc',
+	csvOrderData: '',
 };
 
 export const orderReducer = (state = initialState, action: OrderAction): OrderState => {
@@ -30,6 +31,8 @@ export const orderReducer = (state = initialState, action: OrderAction): OrderSt
 		return {...state, sortedField: action.payload};
 	case OrderActionTypes.SET_SORTING_ORDER:
 		return {...state, sortingOrder: action.payload};
+	case OrderActionTypes.SET_CSV_ORDER_SHAPE:
+		return {...state, csvOrderData: action.payload};
 	default:
 		return state;
 	}

@@ -61,6 +61,7 @@ import {
 	setOrdersQuantity,
 	setOrdersSortingField,
 	setOrdersSortingOrder,
+	setCSVOrderData,
 } from 'src/store/actions/order';
 import {
 	setMasterFilter,
@@ -84,6 +85,7 @@ import {ClockState} from 'src/store/types/clock';
 import {ModalState} from 'src/store/types/modal';
 import {MasterState} from 'src/store/types/master';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import {CSVLink} from 'react-csv';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -280,13 +282,13 @@ const OrdersList: FC<OrdersListProps> = () => {
 		dispatch(setCityFilteringInstance(null));
 		dispatch(setClockFilter(null));
 		dispatch(setClockFilteringInstance(null));
+		dispatch(setIsCompletedFilter(null));
 		dispatch(setDateFilteringArray([null, null]));
 		dispatch(setStartDateFilter(null));
 		dispatch(setEndDateFilter(null));
 		dispatch(setIsFiltersButtonsDisabled(false, true));
 		dispatch(getOrders(page, limit, sortedField, sortingOrder));
 		dispatch(setOrdersQuantity(totalQuantity));
-		dispatch(setIsCompletedFilter(null));
 	};
 
 	const handleOpenModalImg = (img: string) => {
@@ -297,23 +299,6 @@ const OrdersList: FC<OrdersListProps> = () => {
 	const handleCloseModalImg = () => {
 		dispatch(setModalImg(''));
 		dispatch(setIsModalOpen(false));
-	};
-
-	const handleImportXLSX = async () => {
-		const getXLSXFile = await axios.get(URL.EXPORT_XLSX, {
-			params: {
-				limit,
-				offset: limit * page,
-				sortedField,
-				sortingOrder,
-				masterFilteredId,
-				cityFilteredId,
-				clockFilteredId,
-				isCompletedFilter,
-				startDateFilter,
-				endDateFilter,
-			},
-		});
 	};
 
 
@@ -339,10 +324,10 @@ const OrdersList: FC<OrdersListProps> = () => {
 						>
 							<Autocomplete
 								disablePortal
-								id="combo-box-demo"
+								id="masterFilter"
 								options={masters}
 								value={masterFilteringInstance}
-								getOptionLabel={(option) => option.name}
+								getOptionLabel={(master) => master.name}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: Master | null) => {
 									dispatch(setMasterFilteringInstance(value));
 									dispatch(setMasterFilter(value ? value.id : value));
@@ -359,10 +344,10 @@ const OrdersList: FC<OrdersListProps> = () => {
 							/>
 							<Autocomplete
 								disablePortal
-								id="combo-box-demo"
+								id="cityFilter"
 								options={cities}
 								value={cityFilteringInstance}
-								getOptionLabel={(option) => option.name}
+								getOptionLabel={(city) => city.name}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: City | null) => {
 									dispatch(setCityFilteringInstance(value));
 									dispatch(setCityFilter(value ? value.id : value));
@@ -379,10 +364,10 @@ const OrdersList: FC<OrdersListProps> = () => {
 							/>
 							<Autocomplete
 								disablePortal
-								id="combo-box-demo"
+								id="clockFilter"
 								options={clocks}
 								value={clockFilteringInstance}
-								getOptionLabel={(option) => option.size}
+								getOptionLabel={(clock) => clock.size}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: Clock | null) => {
 									dispatch(setClockFilteringInstance(value));
 									dispatch(setClockFilter(value ? value.id : value));
@@ -685,25 +670,47 @@ const OrdersList: FC<OrdersListProps> = () => {
 							<TableRow>
 								<TableCell colSpan={6}>
 									<Stack direction='row' spacing={1.5}>
-										<Button
-											variant="contained"
-											sx={{width: '37%', fontSize: 12, borderRadius: 8}}
-											color='success'
-											onClick={() => {
-												handleImportXLSX;
-											}}
-											startIcon={<DescriptionOutlinedIcon fontSize='medium'/>}
+										<a href={
+											`${process.env.REACT_APP_API_URL}/exportXLSX?sortedField=${sortedField}&sortingOrder=${sortingOrder}
+											&masterFilteredId=${masterFilteredId}&cityFilteredId=${cityFilteredId}&clockFilteredId=${clockFilteredId}
+											&isCompletedFilter=${isCompletedFilter}&startDateFilter=${startDateFilter}&endDateFilter=${endDateFilter}`
+										}>
+											<Button
+												variant="contained"
+												sx={{width: '100%', fontSize: 12, borderRadius: 8}}
+												color='success'
+												startIcon={<DescriptionOutlinedIcon fontSize='medium'/>}
+											>
+											Download all pages
+											</Button>
+										</a>
+										<CSVLink
+											data={orders.map((order) => {
+												return {
+													'Order Id': order.id,
+													'Clock Size': order.clock.size,
+													'User Name': order.user.name,
+													'User Email': order.user.email,
+													'City': order.city.name,
+													'Master Name': order.master.name,
+													'Start On': order.startWorkOn,
+													'End On': order.endWorkOn,
+													'Completed': order.isCompleted,
+													'Rating': order.orderRating,
+												};
+											})}
+											separator={';'}
+											filename={'orderPage.csv'}
 										>
-											Import current page to Excel
-										</Button>
-										<Button
-											variant="contained"
-											sx={{width: '37%', fontSize: 12, borderRadius: 8}}
-											color='success'
-											startIcon={<DescriptionOutlinedIcon fontSize='medium'/>}
-										>
-											Import all pages to Excel
-										</Button>
+											<Button
+												variant="contained"
+												sx={{width: '100%', fontSize: 12, borderRadius: 8}}
+												color='success'
+												startIcon={<DescriptionOutlinedIcon fontSize='medium'/>}
+											>
+											Download current page
+											</Button>
+										</CSVLink>
 									</Stack>
 								</TableCell>
 								<TablePagination

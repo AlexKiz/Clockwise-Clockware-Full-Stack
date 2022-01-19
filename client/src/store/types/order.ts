@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import {Order} from 'src/data/types/types';
+import {csvOrderShape, Order} from 'src/data/types/types';
 
 
 export interface OrderState {
@@ -11,6 +10,7 @@ export interface OrderState {
     totalQuantity: number
     sortedField: string
     sortingOrder: 'asc' | 'desc'
+    csvOrderData: csvOrderShape | null | any
 }
 
 export enum OrderActionTypes {
@@ -22,6 +22,7 @@ export enum OrderActionTypes {
     SET_QUANTITY = 'SET_ORDERS_QUANTITY',
     SET_SORTING_FIELD = 'SET_ORDERS_SORTING_FIELD',
     SET_SORTING_ORDER = 'SET_ORDERS_SORTING_ORDER',
+    SET_CSV_ORDER_SHAPE = 'SET_CSV_ORDER_SHAPE'
 }
 
 interface GetOrdersAction {
@@ -63,6 +64,11 @@ interface SetOrdersSortingOrderAction {
     payload: 'asc' | 'desc'
 }
 
+interface SetCSVOrderShape {
+    type: OrderActionTypes.SET_CSV_ORDER_SHAPE,
+    payload: csvOrderShape
+}
+
 
 export type OrderAction =
 GetOrdersAction |
@@ -72,4 +78,5 @@ SetOrdersPageAction |
 SetOrdersLimitAction |
 SetOrdersQuantityAction |
 SetOrdersSortingFieldAction |
-SetOrdersSortingOrderAction
+SetOrdersSortingOrderAction |
+SetCSVOrderShape
