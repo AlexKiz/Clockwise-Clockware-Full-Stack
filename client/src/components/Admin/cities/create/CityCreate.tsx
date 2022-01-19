@@ -1,5 +1,3 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable max-len */
 import axios from 'axios';
 import React, {FC, useState} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
@@ -120,7 +118,13 @@ const CityCreate: FC<CityCreateProps> = () => {
 
 				</form>
 				{
-					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
+					alertOptions.notify &&
+					<AlertMessage
+						alertType={alertOptions.type}
+						message={alertOptions.message}
+						isOpen={isOpen}
+						notify={alertOptions.notify}
+					/>
 				}
 			</div>
 

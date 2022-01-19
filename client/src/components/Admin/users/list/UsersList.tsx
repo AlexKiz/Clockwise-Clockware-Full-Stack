@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-key */
-/* eslint-disable max-len */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
@@ -21,6 +19,7 @@ import {
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import AdminHeader from 'src/components/Headers/AdminHeader';
+
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -82,9 +81,7 @@ const UserList: FC<UserListProps> = () => {
 		<div>
 			<AdminHeader/>
 			<div className={classes.conteiner}>
-
 				<TableContainer component={Paper} sx={{width: '57%'}} className={classes.conteiner_table}>
-
 					<Table sx={{minWidth: 350}} aria-label="customized table">
 						<TableHead>
 							<TableRow>
@@ -96,21 +93,17 @@ const UserList: FC<UserListProps> = () => {
 						</TableHead>
 						<TableBody>
 							{users.map((user) => (
-								<StyledTableRow>
-
+								<StyledTableRow key={user.id}>
 									<StyledTableCell component="th" scope="row"> {user.id.slice(0, 4)} </StyledTableCell>
-
 									<StyledTableCell align="center"> {user.name} </StyledTableCell>
-
 									<StyledTableCell align="center"> {user.email} </StyledTableCell>
-
 									<StyledTableCell align="center">
 										<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.USER_CREATE}/${user.id}/${user.name}/${user.email}`}>
 											<Button
 												variant="contained"
 												sx={{width: '50%', fontSize: 14, borderRadius: 15}}
 											>
-											Update
+												Update
 											</Button>
 										</Link>
 										<Button
@@ -121,17 +114,22 @@ const UserList: FC<UserListProps> = () => {
 												onDelete(user.id);
 											}}
 										>
-										Delete
+											Delete
 										</Button>
 									</StyledTableCell>
 								</StyledTableRow>
 							))}
 						</TableBody>
 					</Table>
-
 				</TableContainer>
 				{
-					notify && <AlertMessage alertType='success' message='User has been deleted' isOpen={isOpen} notify={notify}/>
+					notify &&
+					<AlertMessage
+						alertType='success'
+						message='User has been deleted'
+						isOpen={isOpen}
+						notify={notify}
+					/>
 				}
 			</div>
 		</div>

@@ -1,7 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable require-jsdoc */
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable react/jsx-key */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
@@ -154,7 +150,7 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 									gutterBottom
 									component="label"
 								>
-									Choose master's сity:
+									Choose masters сity:
 								</Typography>
 							</div>
 
@@ -176,6 +172,7 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 								>
 									{cities.map((city) => (
 										<MenuItem
+											key={city.id}
 											value={city.id}
 										>
 											{city.name}
@@ -200,7 +197,13 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 
 				</form>
 				{
-					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
+					alertOptions.notify &&
+					<AlertMessage
+						alertType={alertOptions.type}
+						message={alertOptions.message}
+						isOpen={isOpen}
+						notify={alertOptions.notify}
+					/>
 				}
 			</div>
 

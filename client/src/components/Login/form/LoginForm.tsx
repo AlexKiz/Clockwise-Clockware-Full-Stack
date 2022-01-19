@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import axios from 'axios';
 import {RESOURCE, URL} from '../../../data/constants/routeConstants';
 import React, {useState, useEffect, FC} from 'react';
@@ -66,21 +65,20 @@ const LoginForm:FC<LoginFormProps> = () => {
 	useEffect(() => {
 		const token = localStorage.getItem(ACCESS_TOKEN);
 		if (token) {
-			const {userRole} = jwtDecode<{userRole}>(token);
+			const {userRole} = jwtDecode<{userRole: string}>(token);
 
 			if (userRole === ROLE.ADMIN) {
 				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
 			} else if (userRole === ROLE.MASTER) {
 				history.push(`/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`);
 			}
-		};
+		}
 	}, []);
 
 
 	return (
 		<div>
 			<PublicHeader/>
-
 			<div className={classes.conteiner}>
 				<div className={classes.container_form}>
 					<form className={classes.form} onSubmit={formik.handleSubmit}>
@@ -95,7 +93,6 @@ const LoginForm:FC<LoginFormProps> = () => {
 										Enter Admin Login:
 									</Typography>
 								</div>
-
 								<TextField
 									id="login"
 									name='login'
@@ -120,7 +117,7 @@ const LoginForm:FC<LoginFormProps> = () => {
 										gutterBottom
 										component="label"
 									>
-									Enter Admin Password:
+										Enter Admin Password:
 									</Typography>
 								</div>
 								<FormControl fullWidth variant="filled">
@@ -151,14 +148,20 @@ const LoginForm:FC<LoginFormProps> = () => {
 									className={classes.form_btn}
 									style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
 								>
-										Sign In
+									Sign In
 								</Button>
 							</div>
 						</Stack>
 					</form>
 				</div>
 				{
-					notify && <AlertMessage alertType='error' message='Incorrect logging data' isOpen={isOpen} notify={notify}/>
+					notify &&
+					<AlertMessage
+						alertType='error'
+						message='Incorrect logging data'
+						isOpen={isOpen}
+						notify={notify}
+					/>
 				}
 			</div>
 		</div>

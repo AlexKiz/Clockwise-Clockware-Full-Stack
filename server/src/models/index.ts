@@ -1,14 +1,13 @@
-/* eslint-disable new-cap */
 'use strict';
 
 require('dotenv').config();
 const Sequelize = require('sequelize');
-import City from './City'
-import Clock from './Clock'
-import Master from './Master'
-import MasterCities from './MasterCities'
-import Order from './Order'
-import User from './User'
+import City from './City';
+import Clock from './Clock';
+import Master from './Master';
+import MasterCities from './MasterCities';
+import Order from './Order';
+import User from './User';
 const env = process.env.MODE || 'development';
 const config = require('../config/config')[env];
 

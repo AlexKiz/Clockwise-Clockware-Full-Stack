@@ -1,6 +1,6 @@
 import {VALID} from '../../../data/constants/systemConstants';
 
-export interface LoginFormProps {};
+export interface LoginFormProps {}
 
 export interface LoginFormValues {
 	login: string

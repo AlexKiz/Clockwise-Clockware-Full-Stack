@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-key */
-/* eslint-disable max-len */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
@@ -76,9 +74,7 @@ const CitiesList: FC<CitiesListProps> = () => {
 	return (
 		<div>
 			<AdminHeader/>
-
 			<div className={classes.conteiner}>
-
 				<TableContainer component={Paper} sx={{width: '40%'}} className={classes.conteiner_table}>
 					<Table sx={{minWidth: 350}} aria-label="customized table">
 						<TableHead>
@@ -100,7 +96,7 @@ const CitiesList: FC<CitiesListProps> = () => {
 						</TableHead>
 						<TableBody>
 							{cities.map((city) => (
-								<StyledTableRow>
+								<StyledTableRow key={city.id}>
 									<StyledTableCell component="th" scope="row"> {city.id} </StyledTableCell>
 									<StyledTableCell align="center"> {city.name} </StyledTableCell>
 									<StyledTableCell align="center">
@@ -129,7 +125,13 @@ const CitiesList: FC<CitiesListProps> = () => {
 					</Table>
 				</TableContainer>
 				{
-					notify && <AlertMessage alertType='success' message='City has been deleted' isOpen={isOpen} notify={notify}/>
+					notify &&
+					<AlertMessage
+						alertType='success'
+						message='City has been deleted'
+						isOpen={isOpen}
+						notify={notify}
+					/>
 				}
 			</div>
 		</div>

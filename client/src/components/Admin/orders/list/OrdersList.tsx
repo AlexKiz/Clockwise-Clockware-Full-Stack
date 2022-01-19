@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable react/jsx-key */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
@@ -83,9 +81,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 		<div>
 			<AdminHeader/>
 			<div className={classes.conteiner}>
-
 				<TableContainer component={Paper} sx={{width: '100%'}} className={classes.conteiner_table}>
-
 					<Table sx={{minWidth: 650}} aria-label="customized table">
 						<TableHead>
 							<TableRow>
@@ -102,8 +98,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 						</TableHead>
 						<TableBody>
 							{orders.map((order) => (
-								<StyledTableRow>
-
+								<StyledTableRow key={order.id}>
 									<StyledTableCell component="th" scope="row"> {order.id.slice(0, 4)} </StyledTableCell>
 									<StyledTableCell align="center"> {order.clock.size} </StyledTableCell>
 									<StyledTableCell align="center"> {order.user.name} </StyledTableCell>
@@ -112,10 +107,11 @@ const OrdersList: FC<OrdersListProps> = () => {
 									<StyledTableCell align="center"> {order.master.name} </StyledTableCell>
 									<StyledTableCell align="center"> {order.startWorkOn.split('T').join(' ')} </StyledTableCell>
 									<StyledTableCell align="center"> {order.endWorkOn.split('T').join(' ')} </StyledTableCell>
-
 									<StyledTableCell align="center">
 										{ !order.isCompleted ?
-											<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CREATE}/${order.id}/${order.user.id}/${order.clock.id}/${order.city.id}/${order.startWorkOn.split('T')[0]}/${order.startWorkOn.split('T')[1]}/${order.master.id}`}>
+											<Link to={
+												`/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CREATE}/${order.id}`
+											}>
 												<Button
 													variant="contained"
 													sx={{width: '50%', fontSize: 14, borderRadius: 15}}
@@ -139,14 +135,13 @@ const OrdersList: FC<OrdersListProps> = () => {
 												onDelete(order.id);
 											}}
 										>
-										Delete
+											Delete
 										</Button>
 									</StyledTableCell>
 								</StyledTableRow>
 							))}
 						</TableBody>
 					</Table>
-
 				</TableContainer>
 				{
 					notify && <AlertMessage alertType='success' message='Order has been deleted' isOpen={isOpen} notify={notify}/>

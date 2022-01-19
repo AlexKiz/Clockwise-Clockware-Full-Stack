@@ -1,6 +1,6 @@
 import {VALID} from '../../../../data/constants/systemConstants';
 
-export interface RegistrationProps {};
+export interface RegistrationProps {}
 
 export interface RegistrationValues {
     email: string

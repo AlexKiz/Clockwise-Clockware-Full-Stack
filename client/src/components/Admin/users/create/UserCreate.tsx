@@ -1,5 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable max-len */
 import axios from 'axios';
 import React, {useState, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
@@ -61,9 +59,7 @@ const UserCreate: FC<UserCreateProps> = () => {
 		<div>
 			<AdminHeader/>
 			<div className={classes.container_form}>
-
 				<form className={classes.form} onSubmit = {formik.handleSubmit}>
-
 					<Stack direction="column" justifyContent="center" spacing={1.5}>
 						<div className={classes.form_section}>
 							<div className={classes.form_input__label}>
@@ -72,7 +68,7 @@ const UserCreate: FC<UserCreateProps> = () => {
 									gutterBottom
 									component="label"
 								>
-										Enter User name:
+									Enter User name:
 								</Typography>
 							</div>
 							<TextField
@@ -92,7 +88,6 @@ const UserCreate: FC<UserCreateProps> = () => {
 								required
 							/>
 						</div>
-
 						<div className={classes.form_section}>
 							<div className={classes.form_input__label}>
 								<Typography
@@ -100,7 +95,7 @@ const UserCreate: FC<UserCreateProps> = () => {
 									gutterBottom
 									component="label"
 								>
-										Enter User's email:
+									Enter User email:
 								</Typography>
 							</div>
 							<TextField
@@ -120,7 +115,6 @@ const UserCreate: FC<UserCreateProps> = () => {
 								required
 							/>
 						</div>
-
 						<div className={classes.form_section}>
 							<Button
 								variant="contained"
@@ -132,13 +126,17 @@ const UserCreate: FC<UserCreateProps> = () => {
 							</Button>
 						</div>
 					</Stack>
-
 				</form>
 				{
-					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
+					alertOptions.notify &&
+					<AlertMessage
+						alertType={alertOptions.type}
+						message={alertOptions.message}
+						isOpen={isOpen}
+						notify={alertOptions.notify}
+					/>
 				}
 			</div>
-
 		</div>
 	);
 };

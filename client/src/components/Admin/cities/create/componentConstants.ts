@@ -1,6 +1,6 @@
 import {VALID} from 'src/data/constants/systemConstants';
 
-export interface CityCreateProps {};
+export interface CityCreateProps {}
 
 export interface CityCreateFormValues {
 	name: string

@@ -7,7 +7,7 @@ import {
 } from 'sequelize';
 import {MasterAttributes} from './modelsConstants';
 
-interface MasterCreationAttributes extends Optional<MasterAttributes, 'id' | 'rating'> {}
+type MasterCreationAttributes = Optional<MasterAttributes, 'id' | 'rating'>
 
 export default (sequelize: any, DataTypes: any) => {
 	class Master extends Model<MasterAttributes, MasterCreationAttributes>
@@ -46,7 +46,7 @@ export default (sequelize: any, DataTypes: any) => {
 				onUpdate: 'CASCADE',
 			});
 		}
-	};
+	}
 
 	Master.init(
 		{

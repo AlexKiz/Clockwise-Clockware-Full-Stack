@@ -6,9 +6,9 @@ import {
 } from 'sequelize';
 import {CityAttributes} from './modelsConstants';
 
-interface CityCreationAttributes extends Optional<CityAttributes, 'id'> {}
+type CityCreationAttributes = Optional<CityAttributes, 'id'>
 
-export default (sequelize: any, DataTypes:any) => {
+export default (sequelize: any, DataTypes: any) => {
 	class City extends Model<CityAttributes, CityCreationAttributes>
 		implements CityAttributes {
 		public id!: number;
@@ -39,7 +39,7 @@ export default (sequelize: any, DataTypes:any) => {
 				onUpdate: 'CASCADE',
 			});
 		}
-	};
+	}
 
 	City.init(
 		{

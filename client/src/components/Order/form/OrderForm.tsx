@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable react/jsx-key */
 import React, {useState, useEffect, FC} from 'react';
 import axios from 'axios';
 import classes from './order-form.module.css';
@@ -137,13 +135,9 @@ const OrderForm: FC<OrderFormProps> = () => {
 		<div>
 			<PublicHeader/>
 			<div className={classes.conteiner}>
-
 				<div className={classes.container_form}>
-
 					<form className={classes.form} onSubmit={formik.handleSubmit}>
-
 						<Stack direction="column" justifyContent="center" spacing={1.5}>
-
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -171,7 +165,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 									required
 								/>
 							</div>
-
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -182,7 +175,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 										Enter your email:
 									</Typography>
 								</div>
-
 								<TextField
 									id="email"
 									name='email'
@@ -200,7 +192,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 									required
 								/>
 							</div>
-
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -211,7 +202,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 										Choose clocksize:
 									</Typography>
 								</div>
-
 								<FormControl
 									fullWidth
 									error={formik.touched.clockId && Boolean(formik.errors.clockId)}
@@ -230,7 +220,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 									>
 										{
 											clocks.map((clock) => (
-												<MenuItem value={clock.id}>
+												<MenuItem key={clock.id} value={clock.id}>
 													{`${clock.size}`}
 												</MenuItem>
 											))
@@ -239,7 +229,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 									<FormHelperText> {formik.touched.clockId && formik.errors.clockId} </FormHelperText>
 								</FormControl>
 							</div>
-
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -250,7 +239,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 										Choose your city:
 									</Typography>
 								</div>
-
 								<FormControl
 									fullWidth
 									error={formik.touched.cityId && Boolean(formik.errors.cityId)}
@@ -269,7 +257,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 									>
 										{
 											cities.map((city) => (
-												<MenuItem value={city.id}>
+												<MenuItem key={city.id} value={city.id}>
 													{`${city.name}`}
 												</MenuItem>
 											))
@@ -278,7 +266,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 									<FormHelperText> {formik.touched.cityId && formik.errors.cityId} </FormHelperText>
 								</FormControl>
 							</div>
-
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -289,7 +276,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 										Choose the date:
 									</Typography>
 								</div>
-
 								<TextField
 									id="orderDate"
 									name='orderDate'
@@ -304,7 +290,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 									required
 								/>
 							</div>
-
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -315,7 +300,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 										Choose the time:
 									</Typography>
 								</div>
-
 								<FormControl
 									fullWidth
 									error={formik.touched.orderTime && Boolean(formik.errors.orderTime)}
@@ -333,7 +317,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 									>
 										{
 											OPENING_HOURS.map((elem) => (
-												<MenuItem value={elem}>
+												<MenuItem key={elem} value={elem}>
 													{`${elem}`}
 												</MenuItem>
 											))
@@ -342,7 +326,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 									<FormHelperText> {formik.touched.orderTime && formik.errors.orderTime} </FormHelperText>
 								</FormControl>
 							</div>
-
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -353,7 +336,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 										Available masters:
 									</Typography>
 								</div>
-
 								<FormControl
 									fullWidth
 									error={formik.touched.masterId && Boolean(formik.errors.masterId)}
@@ -371,7 +353,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 									>
 										{
 											masters.map((master) => (
-												<MenuItem value={master.id}>
+												<MenuItem key={master.id} value={master.id}>
 													{`${master.name} | Rating:${master.rating.toFixed(2)}`}
 												</MenuItem>
 											))
@@ -391,12 +373,16 @@ const OrderForm: FC<OrderFormProps> = () => {
 								</Button>
 							</div>
 						</Stack>
-
 					</form>
-
 				</div>
 				{
-					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
+					alertOptions.notify &&
+					<AlertMessage
+						alertType={alertOptions.type}
+						message={alertOptions.message}
+						isOpen={isOpen}
+						notify={alertOptions.notify}
+					/>
 				}
 			</div>
 		</div>

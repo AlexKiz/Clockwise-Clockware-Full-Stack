@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {Response, Request} from 'express';
 import db from '../models';
 import bcrypt from 'bcrypt';

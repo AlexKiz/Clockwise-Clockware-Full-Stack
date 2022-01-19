@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-key */
-/* eslint-disable max-len */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import PublicHeader from '../../../Headers/PublicHeader';
@@ -98,12 +96,10 @@ const Registration:FC<RegistrationProps> = () => {
 	return (
 		<div>
 			<PublicHeader/>
-
 			<div className={classes.container}>
 				<div className={classes.container_form}>
 					<form className={classes.form} onSubmit={formik.handleSubmit}>
 						<Stack direction='column' justifyContent='center' spacing={1}>
-
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -114,7 +110,6 @@ const Registration:FC<RegistrationProps> = () => {
 										Enter Email:
 									</Typography>
 								</div>
-
 								<TextField
 									id="email"
 									name='email'
@@ -132,7 +127,6 @@ const Registration:FC<RegistrationProps> = () => {
 									required
 								/>
 							</div>
-
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -143,7 +137,6 @@ const Registration:FC<RegistrationProps> = () => {
 										Enter Password:
 									</Typography>
 								</div>
-
 								<FormControl fullWidth variant="filled">
 									<InputLabel>Password</InputLabel>
 									<FilledInput
@@ -168,7 +161,6 @@ const Registration:FC<RegistrationProps> = () => {
 									/>
 									<FormHelperText error> {formik.touched.password && formik.errors.password} </FormHelperText>
 								</FormControl>
-
 								<FormControl fullWidth variant="filled">
 									<InputLabel>Confirm password</InputLabel>
 									<FilledInput
@@ -194,7 +186,6 @@ const Registration:FC<RegistrationProps> = () => {
 									<FormHelperText error> {formik.touched.checkPassword && formik.errors.checkPassword} </FormHelperText>
 								</FormControl>
 							</div>
-
 							<div className={classes.from_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -205,7 +196,6 @@ const Registration:FC<RegistrationProps> = () => {
 										Enter your name:
 									</Typography>
 								</div>
-
 								<TextField
 									id="firstName"
 									name='firstName'
@@ -222,7 +212,6 @@ const Registration:FC<RegistrationProps> = () => {
 									helperText={formik.touched.firstName && formik.errors.firstName}
 									required
 								/>
-
 								<TextField
 									id="lastName"
 									name='lastName'
@@ -239,11 +228,8 @@ const Registration:FC<RegistrationProps> = () => {
 									helperText={formik.touched.lastName && formik.errors.lastName}
 									required
 								/>
-
 							</div>
-
 							<div className={classes.form_section}>
-
 								<FormControl
 									required
 									error={formik.touched.licenseAcception && Boolean(formik.errors.licenseAcception)}
@@ -271,11 +257,11 @@ const Registration:FC<RegistrationProps> = () => {
 											label="Sign up as master"
 										/>
 									</FormGroup>
-									<FormHelperText error >{formik.touched.licenseAcception && Boolean(formik.errors.licenseAcception)}</FormHelperText>
+									<FormHelperText error>
+										{formik.touched.licenseAcception && Boolean(formik.errors.licenseAcception)}
+									</FormHelperText>
 								</FormControl>
-
 							</div>
-
 							{ formik.values.isMaster ?
 								<div className={classes.form_section}>
 									<div className={classes.form_input__label}>
@@ -287,7 +273,6 @@ const Registration:FC<RegistrationProps> = () => {
 											Choose сities:
 										</Typography>
 									</div>
-
 									<FormControl
 										fullWidth
 										error={formik.touched.citiesId && Boolean(formik.errors.citiesId)}
@@ -307,6 +292,7 @@ const Registration:FC<RegistrationProps> = () => {
 										>
 											{cities.map((city) => (
 												<MenuItem
+													key={city.id}
 													value={city.id}
 												>
 													{city.name}
@@ -317,7 +303,6 @@ const Registration:FC<RegistrationProps> = () => {
 									</FormControl>
 								</div> : ''
 							}
-
 							<div className={classes.form_section}>
 								<Button
 									disabled={isDisabled}
@@ -329,14 +314,18 @@ const Registration:FC<RegistrationProps> = () => {
 								Submit
 								</Button>
 							</div>
-
 						</Stack>
 					</form>
 					{
-						notify && <AlertMessage alertType='success' message='Check your email to verify account' isOpen={isOpen} notify={notify}/>
+						notify &&
+						<AlertMessage
+							alertType='success'
+							message='Check your email to verify account'
+							isOpen={isOpen}
+							notify={notify}
+						/>
 					}
 				</div>
-
 			</div>
 		</div>
 	);

@@ -10,9 +10,7 @@ export default (sequelize: any, DataTypes: any) => {
 		implements MasterCitiesAttributes {
 		public masterId!: string;
 		public cityId!: number;
-
-		static associate(models: any) {}
-	};
+	}
 
 	MasterCities.init(
 		{

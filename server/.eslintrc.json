@@ -7,7 +7,10 @@
     },
     "extends": [
         "plugin:react/recommended",
-        "google"
+        "google",
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -21,7 +24,7 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "linebreak-style": 0,
+        "linebreak-style":  ["error", "unix"],
         "indent": ["error", "tab"],
         "no-tabs": ["error", { "allowIndentationTabs": true }],
         "max-len": ["error", { "code": 120 }],

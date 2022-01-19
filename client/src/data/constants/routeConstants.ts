@@ -10,6 +10,7 @@ export enum URL {
     AVAILABLE_MASTER = '/availableMasters',
     CITY_FOR_ORDER = '/cityForOrder',
     ORDER_FOR_RATE = '/orderForRate',
+	ORDER_FOR_UPDATE = '/orderForUpdate',
     RATED_ORDER = '/ratedOrder',
     ORDERS_RATING = '/ordersRating',
 	REGISTRATION = '/user/registration',
@@ -83,7 +84,7 @@ export const ROUTES = {
 		path: `/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`,
 	},
 	ADMIN_ORDER_CREATE: {
-		path: `/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CREATE}/:${PARAM.ORDER_ID}?/:${PARAM.USER_ID}?/:${PARAM.CLOCK_ID}?/:${PARAM.CITY_ID}?/:${PARAM.ORDER_DATE}?/:${PARAM.ORDER_TIME}?/:${PARAM.MASTER_ID}?`,
+		path: `/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CREATE}/:${PARAM.ORDER_ID}?`,
 	},
 	LOGIN: {
 		path: `/${RESOURCE.LOGIN}`,

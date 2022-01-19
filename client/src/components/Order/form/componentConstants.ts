@@ -1,4 +1,3 @@
-export interface OrderFormProps {}
 import {VALID} from 'src/data/constants/systemConstants';
 
 export interface OrderFormProps {}

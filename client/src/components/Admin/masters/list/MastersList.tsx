@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-key */
-/* eslint-disable max-len */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
@@ -81,9 +79,7 @@ const MastersList: FC<MasterListProps> = () => {
 		<div>
 			<AdminHeader/>
 			<div className={classes.conteiner}>
-
 				<TableContainer component={Paper} sx={{width: '80%'}} className={classes.conteiner_table}>
-
 					<Table sx={{minWidth: 350}} aria-label="customized table">
 						<TableHead>
 							<TableRow>
@@ -98,7 +94,7 @@ const MastersList: FC<MasterListProps> = () => {
 											sx={{width: '100%', fontSize: 14, borderRadius: 15}}
 											color='success'
 										>
-									Create master
+											Create master
 										</Button>
 									</Link>
 								</StyledTableCell>
@@ -106,27 +102,22 @@ const MastersList: FC<MasterListProps> = () => {
 						</TableHead>
 						<TableBody>
 							{masters.map((master) => (
-								<StyledTableRow>
-
+								<StyledTableRow key={master.id}>
 									<StyledTableCell component="th" scope="row"> {master.id.slice(0, 4)} </StyledTableCell>
-
 									<StyledTableCell align="center"> {master.name} </StyledTableCell>
-
 									<StyledTableCell align="center">
 										{master.cities.map((city) => {
 											return `${city.name}`;
 										}).join(', ')}
 									</StyledTableCell>
-
 									<StyledTableCell align="center"> {master.rating.toFixed(2)} </StyledTableCell>
-
 									<StyledTableCell align="center">
 										<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.MASTER_CREATE}/${master.id}/${master.name}`}>
 											<Button
 												variant="contained"
 												sx={{width: '50%', fontSize: 14, borderRadius: 15}}
 											>
-											Update
+												Update
 											</Button>
 										</Link>
 										<Button
@@ -137,14 +128,13 @@ const MastersList: FC<MasterListProps> = () => {
 												onDelete(master.id);
 											}}
 										>
-										Delete
+											Delete
 										</Button>
 									</StyledTableCell>
 								</StyledTableRow>
 							))}
 						</TableBody>
 					</Table>
-
 				</TableContainer>
 				{
 					notify && <AlertMessage alertType='success' message='Master has been deleted' isOpen={isOpen} notify={notify}/>

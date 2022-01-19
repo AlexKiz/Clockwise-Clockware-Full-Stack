@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable no-mixed-spaces-and-tabs */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {useHistory, useParams} from 'react-router-dom';
@@ -9,7 +7,7 @@ import classes from './rate-order.module.css';
 import {Params, Order, AlertNotification} from '../../../data/types/types';
 import {RateOrderProps} from './componentConstants';
 import {URL} from '../../../data/constants/routeConstants';
-import {Button, Typography} from '@mui/material';
+import {Button, Stack, Typography} from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 
 const RateOrder: FC<RateOrderProps> = () => {
@@ -19,7 +17,7 @@ const RateOrder: FC<RateOrderProps> = () => {
 
 	const [rating, setRating] = useState<number>(0);
 
-	const [order, setOrder] = useState<Order>({} as Order);
+	const [order, setOrder] = useState<Order | null>(null);
 
 	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
 		notify: false,
@@ -37,10 +35,14 @@ const RateOrder: FC<RateOrderProps> = () => {
 				},
 			});
 
-			if (!data) {
+			if (data) {
 				setOrder(data);
 			} else {
-				alert('Current order has been already rated');
+				setAlertOptions({
+					message: 'Current order has been already rated',
+					type: 'warning',
+					notify: true,
+				});
 				history.push('/');
 			}
 		};
@@ -55,9 +57,9 @@ const RateOrder: FC<RateOrderProps> = () => {
 		event.preventDefault();
 
 		axios.put(URL.RATED_ORDER, {
-			id: order.id,
+			id: order?.id,
 			orderRated: rating,
-			masterId: order.master.id,
+			masterId: order?.master.id,
 		}).then(() => {
 			setAlertOptions({
 				message: 'Thanks for your feedback',
@@ -76,33 +78,78 @@ const RateOrder: FC<RateOrderProps> = () => {
 
 						<div>
 							{ order &&
-                            <>
-                            	<div className={classes.form_master}>
-                            		<Typography
-                            			variant="h6"
-                            			gutterBottom
-                            			component="label"
-                            		>
-										Please, rate the following master:
-                            		</Typography>
-                            		<p>{order.master.name}</p>
-                            	</div>
-                            	<div className={classes.form_orderinfo}>
-                            		<b>Order #{order.id}</b>
-                            		<br/>
-                            		<b> User name:</b> <span>{order.user.name}</span>
-                            		<br/>
-                            		<b> User email:</b> <span>{order.user.email}</span>
-                            		<br/>
-                            		<b> Clock size:</b>  <span>{order.clock.size}</span>
-                            		<br/>
-                            		<b> City:</b>  <span>{order.city.name}</span>
-                            		<br/>
-                            		<b> Start work on:</b>  <span>{order.startWorkOn.split('T').join(' ')}</span>
-                            		<br/>
-                            		<b> End work on:</b>  <span>{order.endWorkOn.split('T').join(' ')} </span>
-                            	</div>
-                            </>
+								<Stack direction="column" justifyContent="center" spacing={1.5}>
+									<div className={classes.form_master}>
+										<Typography
+											variant="h6"
+											gutterBottom
+											component="label"
+										>
+											Please, rate the following master:
+										</Typography>
+										<Typography
+											variant="subtitle1"
+											gutterBottom
+											component="div"
+										>
+											{order.master.name}
+										</Typography>
+									</div>
+
+									<div className={classes.form_orderinfo}>
+										<Stack direction="column" justifyContent="center" spacing={1.5}>
+											<Typography
+												variant="subtitle1"
+												gutterBottom
+												component="div"
+											>
+												<b>Order #{order.id}</b>
+											</Typography>
+											<Typography
+												variant="subtitle1"
+												gutterBottom
+												component="div"
+											>
+												<b> User name:</b> {order.user.name}
+											</Typography>
+											<Typography
+												variant="subtitle1"
+												gutterBottom
+												component="div"
+											>
+												<b> User email:</b> {order.user.email}
+											</Typography>
+											<Typography
+												variant="subtitle1"
+												gutterBottom
+												component="div"
+											>
+												<b> Clock size:</b>  <span>{order.clock.size}</span>
+											</Typography>
+											<Typography
+												variant="subtitle1"
+												gutterBottom
+												component="div"
+											>
+												<b> City:</b>  <span>{order.city.name}</span>
+											</Typography>
+											<Typography
+												variant="subtitle1"
+												gutterBottom
+												component="div"
+											>
+												<b> Start work on:</b>  <span>{order.startWorkOn.split('T').join(' ')}</span>
+											</Typography>
+											<Typography
+												variant="subtitle1"
+												gutterBottom
+												component="div"
+											>
+												<b> End work on:</b>  <span>{order.endWorkOn.split('T').join(' ')} </span>
+											</Typography>
+										</Stack>
+									</div>
+								</Stack>
 							}
 
 							<div className={classes.form_stars}>
@@ -130,7 +177,13 @@ const RateOrder: FC<RateOrderProps> = () => {
 						</div>
 					</form>
 					{
-						alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
+						alertOptions.notify &&
+						<AlertMessage
+							alertType={alertOptions.type}
+							message={alertOptions.message}
+							isOpen={isOpen}
+							notify={alertOptions.notify}
+						/>
 					}
 				</div>
 			</div>

@@ -1,6 +1,3 @@
-/* eslint-disable camelcase */
-/* eslint-disable max-len */
-/* eslint-disable react/jsx-key */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import classes from './master-orders-list.module.css';
@@ -21,7 +18,7 @@ import {
 } from '@mui/material';
 import AlertMessage from '../../../Notification/AlertMessage';
 import MasterHeader from '../../../Headers/MasterHeader';
-import jwt_decode from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
 
 
@@ -90,7 +87,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 	useEffect(() => {
 		const token = localStorage.getItem(ACCESS_TOKEN);
 		if (token) {
-			const {userName: masterName} = jwt_decode<{userName: string}>(token);
+			const {userName: masterName} = jwtDecode<{userName: string}>(token);
 			setAlertOptions({
 				notify: true,
 				type: 'info',
@@ -104,9 +101,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 		<div>
 			<MasterHeader/>
 			<div className={classes.conteiner}>
-
 				<TableContainer component={Paper} sx={{width: '80%'}} className={classes.conteiner_table}>
-
 					<Table sx={{minWidth: 650}} aria-label="customized table">
 						<TableHead>
 							<TableRow>
@@ -121,15 +116,13 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 						</TableHead>
 						<TableBody>
 							{orders.map((order) => (
-								<StyledTableRow>
-
+								<StyledTableRow key={order.id}>
 									<StyledTableCell component="th" scope="row" align="center"> {order.user.name} </StyledTableCell>
 									<StyledTableCell align="center"> {order.clock.size} </StyledTableCell>
 									<StyledTableCell align="center"> {order.city.name} </StyledTableCell>
 									<StyledTableCell align="center"> {order.startWorkOn.split('T').join(' ')} </StyledTableCell>
 									<StyledTableCell align="center"> {order.endWorkOn.split('T').join(' ')} </StyledTableCell>
 									<StyledTableCell align="center"> {order.clock.price} </StyledTableCell>
-
 									<StyledTableCell align="center">
 										<Button
 											disabled={order.isCompleted}
@@ -144,10 +137,15 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 							))}
 						</TableBody>
 					</Table>
-
 				</TableContainer>
 				{
-					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
+					alertOptions.notify &&
+					<AlertMessage
+						alertType={alertOptions.type}
+						message={alertOptions.message}
+						isOpen={isOpen}
+						notify={alertOptions.notify}
+					/>
 				}
 			</div>
 		</div>

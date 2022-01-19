@@ -6,7 +6,10 @@
     },
     "extends": [
         "plugin:react/recommended",
-        "google"
+        "google",
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -21,11 +24,13 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "linebreak-style": 0,
+        "linebreak-style": ["error", "unix"],
         "indent": ["error", "tab"],
         "no-tabs": ["error", { "allowIndentationTabs": true }],
         "max-len": ["error", { "code": 140 }],
         "new-cap": ["error", { "properties": false, "capIsNew": false }],
-        "no-mixed-spaces-and-tabs": ["error", "smart-tabs"]
+        "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
+        "@typescript-eslint/no-empty-interface": "off",
+        "@typescript-eslint/ban-ts-comment": "off"
     }
 }

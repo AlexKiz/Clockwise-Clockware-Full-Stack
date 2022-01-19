@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {METHOD} from './../../data/constants/systemConstants';
 import {Response, Request, NextFunction} from 'express';
 import jwt, {JwtPayload} from 'jsonwebtoken';
@@ -32,7 +31,9 @@ export const auth = async (req: Request, res: Response) => {
 
 		await db.User.updateById(id, {token: accessToken});
 
-		res.set({Authorization: `Bearer ${accessToken}`}).status(200).json({message: 'Successfully authorizated!', role, name});
+		res.set({
+			Authorization: `Bearer ${accessToken}`,
+		}).status(200).json({message: 'Successfully authorizated!', role, name});
 	} catch (e) {
 		res.status(400).json({message: 'Login error'});
 	}
@@ -70,7 +71,7 @@ export const checkRole = (roles: string[]) => {
 			const accessToken = (<string>req.headers.authorization).split(' ')[1];
 			const decoded: string | jwt.JwtPayload = jwt.verify(accessToken, `${process.env.PRIVATE_KEY}`);
 
-			const checkingRole: string = (<JwtPayload>decoded).userRole;
+			const checkingRole: string = (<JwtPayload>decoded).role;
 
 			let hasRole = false;
 

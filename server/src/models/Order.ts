@@ -7,7 +7,7 @@ import {
 } from 'sequelize';
 import {OrderAttributes} from './modelsConstants';
 
-interface OrderCreationAttributes extends Optional<OrderAttributes, 'id' | 'orderRating'> {}
+type OrderCreationAttributes = Optional<OrderAttributes, 'id' | 'orderRating'>
 
 export = (sequelize: any, DataTypes: any) => {
 	class Order extends Model<OrderAttributes, OrderCreationAttributes>
@@ -56,7 +56,7 @@ export = (sequelize: any, DataTypes: any) => {
 				onUpdate: 'CASCADE',
 			});
 		}
-	};
+	}
 
 	Order.init(
 		{
@@ -111,8 +111,8 @@ export = (sequelize: any, DataTypes: any) => {
 
 			isCompleted: {
 				type: DataTypes.BOOLEAN,
-				defaultValue: false
-			}
+				defaultValue: false,
+			},
 		}, {
 			sequelize,
 			modelName: 'order',

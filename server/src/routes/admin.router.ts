@@ -8,7 +8,7 @@ import {postCityValidate, putCityValidate, deleteCityValidate} from '../controll
 import {postMaster, getMasters, putMaster, deleteMaster} from '../controller/master.controller';
 import {postMasterValidate, putMasterValidate, deleteMasterValidate} from '../controller/master.validate';
 
-import {putOrder, deleteOrder} from '../controller/order.controller';
+import {getOrderForUpdate, putOrder, deleteOrder} from '../controller/order.controller';
 import {putOrderValidate, deleteOrderValidate} from '../controller/order.validate';
 
 import {getUsers, putUser, deleteUser} from '../controller/user.controller';
@@ -25,6 +25,7 @@ router.get(URL.MASTER, [isAuth, checkRole(['admin'])], getMasters);
 router.put(URL.MASTER, [isAuth, putMasterValidate, checkRole(['admin'])], putMaster);
 router.delete(URL.MASTER, [isAuth, deleteMasterValidate, checkRole(['admin'])], deleteMaster);
 
+router.get(URL.ORDER_FOR_UPDATE, [isAuth, checkRole(['admin'])], getOrderForUpdate);
 router.put(URL.ORDER, [isAuth, putOrderValidate, checkRole(['admin'])], putOrder);
 router.delete(URL.ORDER, [isAuth, deleteOrderValidate, checkRole(['admin'])], deleteOrder);
 

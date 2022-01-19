@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 export enum URL {
     CITY = '/city',
     LOGIN = '/login',
@@ -9,6 +8,7 @@ export enum URL {
     AVAILABLE_MASTER = '/availableMasters',
     CITY_FOR_ORDER = '/cityForOrder',
     ORDER_FOR_RATE = '/orderForRate',
+    ORDER_FOR_UPDATE = '/orderForUpdate',
     RATED_ORDER = '/ratedOrder',
     API = '/api',
     REGISTRATION = '/user/registration',

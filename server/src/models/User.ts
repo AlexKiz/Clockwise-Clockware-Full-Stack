@@ -7,7 +7,7 @@ import {
 } from 'sequelize';
 import {UserAttributes} from './modelsConstants';
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+type UserCreationAttributes = Optional<UserAttributes, 'id'>
 
 export default (sequelize: any, DataTypes: any) => {
 	class User extends Model<UserAttributes, UserCreationAttributes>
@@ -47,7 +47,7 @@ export default (sequelize: any, DataTypes: any) => {
 				onUpdate: 'CASCADE',
 			});
 		}
-	};
+	}
 
 	User.init(
 		{

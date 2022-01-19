@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-mixed-spaces-and-tabs */
 import axios from 'axios';
 import React, {useEffect, FC} from 'react';
 import {useHistory, useParams} from 'react-router-dom';
@@ -37,14 +35,12 @@ const Verification: FC<VerificationProps> = () => {
 
 	return (
 		<div>
-
 			<div className={classes.container}>
 				<div className={classes.container_notification}>
 					<Stack direction='column' justifyContent='center' spacing={2}>
 						<div className={classes.form_label}>
 							<label>CONGRATULATIONS! You have verified your email!</label>
 						</div>
-
 						<div className={classes.form_section}>
 							<Button
 								variant="contained"
@@ -58,7 +54,6 @@ const Verification: FC<VerificationProps> = () => {
 					</Stack>
 				</div>
 			</div>
-
 		</div>
 	);
 };
