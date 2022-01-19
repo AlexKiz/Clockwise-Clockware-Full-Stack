@@ -18,7 +18,7 @@ import {
 	tableCellClasses,
 } from '@mui/material';
 import AlertMessage from '../../../Notification/AlertMessage';
-import AdminHeader from '../../../Headers/AdminHeader';
+import AdminHeader from '../../../Headers/PrivateHeader';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({

@@ -3,8 +3,10 @@ import {Link, useHistory} from 'react-router-dom';
 import classes from './header.module.css';
 import {useLocation} from 'react-router-dom';
 import {RESOURCE} from '../../data/constants/routeConstants';
-import {ADMIN_MENU_LINKS} from './componentConstants';
+import {roleMappingHeaderLink, roleMappingHeaderLogo} from './componentConstants';
 import {Button} from '@mui/material';
+import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
+import jwtDecode from 'jwt-decode';
 
 const PrivateHeader = () => {
 	const history = useHistory();
@@ -12,9 +14,11 @@ const PrivateHeader = () => {
 	const {pathname} = location;
 
 	const logout = () => {
-		localStorage.removeItem('accessToken');
+		localStorage.removeItem(ACCESS_TOKEN);
 		history.push(`/${RESOURCE.LOGIN}`);
 	};
+
+	const {role} = jwtDecode<{role: string}>(String(localStorage.getItem(ACCESS_TOKEN)));
 
 	const splitLocation = pathname.split('/').reverse();
 
@@ -22,7 +26,7 @@ const PrivateHeader = () => {
 		<header>
 			<div className={classes.wrapper_header}>
 				<div className={classes.wrapper_logo}>
-					<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`}>
+					<Link to={roleMappingHeaderLogo[role]}>
 						<div className={classes.inner_logo}>
 							<div className={classes.inner_logo_img}>
 								<div className={classes.logo_img1a}>
@@ -38,7 +42,7 @@ const PrivateHeader = () => {
 				<nav>
 					<ul className={classes.nav__links}>
 						{
-							ADMIN_MENU_LINKS.map((link) => (
+							roleMappingHeaderLink[role].map((link) => (
 								<li
 									className={splitLocation[0] === link.name ? classes.active : ''}
 									key={link.path}

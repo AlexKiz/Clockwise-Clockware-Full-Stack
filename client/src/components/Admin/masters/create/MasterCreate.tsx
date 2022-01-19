@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import {InputLabel} from '@mui/material';
-import AdminHeader from '../../../Headers/AdminHeader';
+import AdminHeader from '../../../Headers/PrivateHeader';
 
 
 const MasterCreate: FC<MasterCreateProps> = () => {

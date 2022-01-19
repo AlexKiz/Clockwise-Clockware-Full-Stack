@@ -1,3 +1,5 @@
+import {RESOURCE} from 'src/data/constants/routeConstants';
+
 export const MENU_LINKS = [{
 	title: 'Make order',
 	path: '/',
@@ -35,3 +37,13 @@ export const MASTER_MENU_LINKS = [{
 	path: '/master/orders-list',
 	name: 'orders-list',
 }];
+
+export const roleMappingHeaderLink = {
+	'admin': ADMIN_MENU_LINKS,
+	'master': MASTER_MENU_LINKS,
+};
+
+export const roleMappingHeaderLogo = {
+	'admin': `/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`,
+	'master': `/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`,
+};

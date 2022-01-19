@@ -21,7 +21,7 @@ import {
 	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
-import AdminHeader from 'src/components/Headers/AdminHeader';
+import AdminHeader from 'src/components/Headers/PrivateHeader';
 
 
 const OrderCreate: FC<OrderCreateProps> = () => {
@@ -83,14 +83,17 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 
 	useEffect(() => {
 		const readCurrentOrder = async () => {
-			const {data} = await axios.get<Order>(URL.ORDER_FOR_UPDATE);
+			const {data} = await axios.get<Order>(URL.ORDER_FOR_UPDATE, {
+				params: {
+					id: orderIdParam,
+				},
+			});
 			formik.values.userId = data.user.id;
 			formik.values.cityId = data.city.id;
 			formik.values.clockId = data.clock.id;
 			formik.values.orderDate = data.startWorkOn.slice(0, 10);
 			formik.values.orderTime = data. startWorkOn.slice(11, 16);
 			formik.values.masterId = data.master.id;
-			console.log(formik.values);
 		};
 
 		readCurrentOrder();

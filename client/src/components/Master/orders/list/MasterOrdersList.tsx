@@ -17,7 +17,7 @@ import {
 	tableCellClasses,
 } from '@mui/material';
 import AlertMessage from '../../../Notification/AlertMessage';
-import MasterHeader from '../../../Headers/MasterHeader';
+import MasterHeader from '../../../Headers/PrivateHeader';
 import jwtDecode from 'jwt-decode';
 import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
 
@@ -87,7 +87,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 	useEffect(() => {
 		const token = localStorage.getItem(ACCESS_TOKEN);
 		if (token) {
-			const {userName: masterName} = jwtDecode<{userName: string}>(token);
+			const {name: masterName} = jwtDecode<{name: string}>(token);
 			setAlertOptions({
 				notify: true,
 				type: 'info',

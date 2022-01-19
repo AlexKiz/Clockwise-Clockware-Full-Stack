@@ -18,7 +18,7 @@ import {
 	tableCellClasses,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
-import AdminHeader from '../../../Headers/AdminHeader';
+import AdminHeader from '../../../Headers/PrivateHeader';
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -88,7 +88,7 @@ const CitiesList: FC<CitiesListProps> = () => {
 											sx={{width: `100%`, fontSize: 14, borderRadius: 15}}
 											color='success'
 										>
-									Create city
+											Create city
 										</Button>
 									</Link>
 								</StyledTableCell>
@@ -100,12 +100,12 @@ const CitiesList: FC<CitiesListProps> = () => {
 									<StyledTableCell component="th" scope="row"> {city.id} </StyledTableCell>
 									<StyledTableCell align="center"> {city.name} </StyledTableCell>
 									<StyledTableCell align="center">
-										<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.CITY_CREATE}/${city.id}/${city.name}`}>
+										<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.CITY_CREATE}/${city.name}`}>
 											<Button
 												variant="contained"
 												sx={{width: '50%', fontSize: 14, borderRadius: 15}}
 											>
-									Create city
+												Update
 											</Button>
 										</Link>
 										<Button

@@ -3,6 +3,7 @@ import {Response, Request, NextFunction} from 'express';
 import jwt, {JwtPayload} from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import db from '../models';
+import {BearerParser} from 'bearer-token-parser';
 
 
 export const auth = async (req: Request, res: Response) => {
@@ -68,7 +69,7 @@ export const checkRole = (roles: string[]) => {
 		}
 
 		try {
-			const accessToken = (<string>req.headers.authorization).split(' ')[1];
+			const accessToken = BearerParser.parseBearerToken(req.headers);
 			const decoded: string | jwt.JwtPayload = jwt.verify(accessToken, `${process.env.PRIVATE_KEY}`);
 
 			const checkingRole: string = (<JwtPayload>decoded).role;

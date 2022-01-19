@@ -11,6 +11,7 @@ export enum URL {
     CITY_FOR_ORDER = '/cityForOrder',
     ORDER_FOR_RATE = '/orderForRate',
 	ORDER_FOR_UPDATE = '/orderForUpdate',
+	CITY_FOR_UPDATE = '/cityForupdate',
     RATED_ORDER = '/ratedOrder',
     ORDERS_RATING = '/ordersRating',
 	REGISTRATION = '/user/registration',
@@ -75,7 +76,7 @@ export const ROUTES = {
 		path: `/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`,
 	},
 	ADMIN_CITY_CREATE: {
-		path: `/${RESOURCE.ADMIN}/${RESOURCE.CITY_CREATE}/:${PARAM.CITY_ID}?/:${PARAM.CITY_NAME}?`,
+		path: `/${RESOURCE.ADMIN}/${RESOURCE.CITY_CREATE}/:${PARAM.CITY_NAME}?`,
 	},
 	ADMIN_ORDERS_LIST: {
 		path: `/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`,

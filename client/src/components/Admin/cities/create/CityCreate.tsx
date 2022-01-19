@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
 import classes from './city-create-form.module.css';
 import {AlertNotification, City, Params} from '../../../../data/types/types';
@@ -13,13 +13,13 @@ import {
 	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
-import AdminHeader from '../../../Headers/AdminHeader';
+import AdminHeader from '../../../Headers/PrivateHeader';
 
 
 const CityCreate: FC<CityCreateProps> = () => {
 	const history = useHistory();
 
-	const {cityIdParam, cityNameParam} = useParams<Params>();
+	const {cityNameParam} = useParams<Params>();
 
 	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
 		notify: false,
@@ -35,11 +35,11 @@ const CityCreate: FC<CityCreateProps> = () => {
 	const formik = useFormik({
 		initialValues: {
 			name: cityNameParam || '',
-			id: Number(cityIdParam || 0),
+			id: 0,
 		},
 		validate,
 		onSubmit: async (values) => {
-			if (!cityIdParam) {
+			if (!cityNameParam) {
 				await axios.post<City>(URL.CITY,
 					{
 						name: values.name,
@@ -66,6 +66,21 @@ const CityCreate: FC<CityCreateProps> = () => {
 			}
 		},
 	});
+
+
+	useEffect(() => {
+		const readCityForUpdate = async () => {
+			const {data} = await axios.get<City>(URL.CITY_FOR_UPDATE, {
+				params: {
+					name: cityNameParam,
+				},
+			});
+
+			formik.values.id = data.id;
+		};
+
+		readCityForUpdate();
+	}, []);
 
 
 	return (

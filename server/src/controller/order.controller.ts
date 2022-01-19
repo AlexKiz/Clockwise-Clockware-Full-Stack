@@ -1,7 +1,9 @@
+import {rolesMappingGetOrders} from './../../data/utilities/systemUtilities';
 import {Response, Request} from 'express';
 import {sendMail} from '../services/nodemailer';
 import {v4 as uuidv4} from 'uuid';
 import db from '../models';
+import {BearerParser} from 'bearer-token-parser';
 
 
 export const postOrder = async (req: Request, res: Response) => {
@@ -36,73 +38,22 @@ export const postOrder = async (req: Request, res: Response) => {
 
 export const getOrders = async (req: Request, res: Response) => {
 	try {
-		const token = (<string>req.headers.authorization).split(' ')[1];
+		const token = BearerParser.parseBearerToken(req.headers);
 
 		const {role, masterId} = await db.User.findOne({where: {token}});
 
-		if (role === 'admin') {
-			const orders = await db.Order.findAll({
-				attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
-				include: [
-					{
-						model: db.Clock,
-						attributes: ['id', 'size'],
-						required: true,
-					},
-					{
-						model: db.User,
-						attributes: ['id', 'name', 'email'],
-						required: true,
-					},
-					{
-						model: db.City,
-						attributes: ['id', 'name'],
-						required: true,
-					},
-					{
-						model: db.Master,
-						attributes: ['id', 'name'],
-						required: true,
-					},
-				],
-			});
+		const orders = await rolesMappingGetOrders[role](masterId);
 
-			return res.status(200).json(orders);
-		} else if (role === 'master') {
-			const orders = await db.Order.findAll({
-				order: [['startWorkOn', 'DESC']],
-				attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
-				include: [
-					{
-						model: db.Clock,
-						attributes: ['id', 'size', 'price'],
-						required: true,
-					},
-					{
-						model: db.User,
-						attributes: ['id', 'name', 'email'],
-						required: true,
-					},
-					{
-						model: db.City,
-						attributes: ['id', 'name'],
-						required: true,
-					},
-				],
-				where: {
-					masterId,
-				},
-			});
-
-			return res.status(200).json(orders);
-		}
+		res.status(200).json(orders);
 	} catch (e) {
 		res.status(500).send();
 	}
 };
 
 export const getOrderForUpdate = async (req: Request, res: Response) => {
-	const orders = await db.Order.findOne({
+	const {id} = req.query;
+
+	const order = await db.Order.findOne({
 		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
 		include: [
 			{
@@ -126,9 +77,10 @@ export const getOrderForUpdate = async (req: Request, res: Response) => {
 				required: true,
 			},
 		],
+		where: {id},
 	});
 
-	return res.status(200).json(orders);
+	return res.status(200).json(order);
 };
 
 export const getOrderForRate = async (req: Request, res: Response) => {

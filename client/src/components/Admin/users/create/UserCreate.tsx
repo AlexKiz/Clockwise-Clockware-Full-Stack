@@ -13,7 +13,7 @@ import {
 	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
-import AdminHeader from '../../../Headers/AdminHeader';
+import AdminHeader from '../../../Headers/PrivateHeader';
 
 
 const UserCreate: FC<UserCreateProps> = () => {

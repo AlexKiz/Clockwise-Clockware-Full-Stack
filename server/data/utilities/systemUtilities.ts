@@ -42,7 +42,71 @@ const createClient = async (name: string, email: string, password: string, hashV
 	}
 };
 
+const getAdminOrders = async () => {
+	const orders = await db.Order.findAll({
+		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
+		include: [
+			{
+				model: db.Clock,
+				attributes: ['id', 'size'],
+				required: true,
+			},
+			{
+				model: db.User,
+				attributes: ['id', 'name', 'email'],
+				required: true,
+			},
+			{
+				model: db.City,
+				attributes: ['id', 'name'],
+				required: true,
+			},
+			{
+				model: db.Master,
+				attributes: ['id', 'name'],
+				required: true,
+			},
+		],
+	});
+
+	return orders;
+};
+
+const getMasterOrders = async (masterId: string) => {
+	const orders = await db.Order.findAll({
+		order: [['startWorkOn', 'DESC']],
+		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
+		include: [
+			{
+				model: db.Clock,
+				attributes: ['id', 'size', 'price'],
+				required: true,
+			},
+			{
+				model: db.User,
+				attributes: ['id', 'name', 'email'],
+				required: true,
+			},
+			{
+				model: db.City,
+				attributes: ['id', 'name'],
+				required: true,
+			},
+		],
+		where: {
+			masterId,
+		},
+	});
+
+	return orders;
+};
+
 export const rolesMappingCreate: any = {
 	'master': createMaster,
 	'client': createClient,
+};
+
+export const rolesMappingGetOrders: any = {
+	'admin': getAdminOrders,
+	'master': getMasterOrders,
 };

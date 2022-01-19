@@ -65,11 +65,11 @@ const LoginForm:FC<LoginFormProps> = () => {
 	useEffect(() => {
 		const token = localStorage.getItem(ACCESS_TOKEN);
 		if (token) {
-			const {userRole} = jwtDecode<{userRole: string}>(token);
+			const {role} = jwtDecode<{role: string}>(token);
 
-			if (userRole === ROLE.ADMIN) {
+			if (role === ROLE.ADMIN) {
 				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
-			} else if (userRole === ROLE.MASTER) {
+			} else if (role === ROLE.MASTER) {
 				history.push(`/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`);
 			}
 		}
