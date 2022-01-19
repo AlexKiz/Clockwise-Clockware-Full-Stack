@@ -296,6 +296,7 @@ export const getXSLXOrders = async (req: Request, res: Response) => {
 	}
 };
 
+
 export const putRatedOrder = async (req: Request, res: Response) => {
 	try {
 		const {id, orderRated, masterId} = req.body;

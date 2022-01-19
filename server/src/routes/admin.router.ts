@@ -33,6 +33,6 @@ router.get(URL.USER, [isAuth, checkRole(['admin'])], getUsers);
 router.put(URL.USER, [isAuth, putUserValidate, checkRole(['admin'])], putUser);
 router.delete(URL.USER, [isAuth, deleteUserValidate, checkRole(['admin'])], deleteUser);
 
-router.get(URL.EXPORT_XLSX, [isAuth, checkRole(['admin'])], getXSLXOrders);
+router.get(URL.EXPORT_XLSX, /* [isAuth, checkRole(['admin'])],*/ getXSLXOrders);
 
 export default router;
