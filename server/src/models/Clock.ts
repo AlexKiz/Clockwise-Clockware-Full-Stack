@@ -7,7 +7,7 @@ import {
 } from 'sequelize';
 import {ClockAttributes} from './modelsConstants';
 
-interface ClockCreationAttributes extends Optional<ClockAttributes, 'id'| 'installationTime' > {}
+type ClockCreationAttributes = Optional<ClockAttributes, 'id'| 'installationTime' >
 
 export default (sequelize: any, DataTypes: any) => {
 	class Clock extends Model<ClockAttributes, ClockCreationAttributes>
@@ -28,7 +28,7 @@ export default (sequelize: any, DataTypes: any) => {
 				onUpdate: 'CASCADE',
 			});
 		}
-	};
+	}
 	Clock.init(
 		{
 			id: {

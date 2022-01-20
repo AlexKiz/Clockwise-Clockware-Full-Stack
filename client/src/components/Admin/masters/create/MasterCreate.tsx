@@ -1,7 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable require-jsdoc */
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable react/jsx-key */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
@@ -23,6 +19,7 @@ import {
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import {InputLabel} from '@mui/material';
+import AdminHeader from '../../../Headers/PrivateHeader';
 
 
 const MasterCreate: FC<MasterCreateProps> = () => {
@@ -44,8 +41,8 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 
 	const formik = useFormik({
 		initialValues: {
-			masterId: masterIdParam || '',
-			masterName: masterNameParam || '',
+			id: masterIdParam || '',
+			name: masterNameParam || '',
 			citiesId: [] as number[],
 		},
 		validate,
@@ -53,7 +50,7 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 			if (!masterIdParam) {
 				axios.post(URL.MASTER,
 					{
-						name: values.masterName,
+						name: values.name,
 						citiesId: values.citiesId,
 					}).then(() =>{
 					setAlertOptions({message: 'Master has been created', type: 'success', notify: true});
@@ -61,8 +58,8 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 				});
 			} else {
 				axios.put(URL.MASTER, {
-					id: values.masterId,
-					name: values.masterName,
+					id: values.id,
+					name: values.name,
 					citiesId: values.citiesId,
 				}).then(() => {
 					setAlertOptions({message: 'Master has been updated', type: 'success', notify: true});
@@ -84,10 +81,10 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 						const currentMasterCities = currentMaster[0].cities.map((city) => {
 							return city.id;
 						});
-						formik.values.masterId = masterIdParam;
+						formik.values.id = masterIdParam;
 						formik.values.citiesId.push(...currentMasterCities);
 					} else {
-						formik.values.masterId = masterIdParam;
+						formik.values.id = masterIdParam;
 					}
 				}
 			}
@@ -112,7 +109,7 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 
 	return (
 		<div>
-
+			<AdminHeader/>
 			<div className={classes.container_form}>
 
 				<form className={classes.form} onSubmit = {formik.handleSubmit}>
@@ -129,19 +126,19 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 								</Typography>
 							</div>
 							<TextField
-								id="masterName"
-								name="masterName"
+								id="name"
+								name="name"
 								label="Master name"
 								placeholder="Full name"
 								variant="filled"
 								size="small"
 								margin="dense"
 								fullWidth
-								value={formik.values.masterName}
+								value={formik.values.name}
 								onChange={formik.handleChange}
 								onBlur={formik.handleBlur}
-								error={formik.touched.masterName && Boolean(formik.errors.masterName)}
-								helperText={formik.touched.masterName && formik.errors.masterName}
+								error={formik.touched.name && Boolean(formik.errors.name)}
+								helperText={formik.touched.name && formik.errors.name}
 								required
 							/>
 						</div>
@@ -153,7 +150,7 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 									gutterBottom
 									component="label"
 								>
-									Choose master's сity:
+									Choose masters сity:
 								</Typography>
 							</div>
 
@@ -175,6 +172,7 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 								>
 									{cities.map((city) => (
 										<MenuItem
+											key={city.id}
 											value={city.id}
 										>
 											{city.name}
@@ -199,7 +197,13 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 
 				</form>
 				{
-					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
+					alertOptions.notify &&
+					<AlertMessage
+						alertType={alertOptions.type}
+						message={alertOptions.message}
+						isOpen={isOpen}
+						notify={alertOptions.notify}
+					/>
 				}
 			</div>
 

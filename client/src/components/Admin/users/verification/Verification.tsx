@@ -1,9 +1,7 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-mixed-spaces-and-tabs */
 import axios from 'axios';
 import React, {useEffect, FC} from 'react';
 import {useHistory, useParams} from 'react-router-dom';
-import classes from '../verification/verification.module.css';
+import classes from './verification.module.css';
 import {URL} from '../../../../data/constants/routeConstants';
 import {Params} from 'src/data/types/types';
 import {Button, Stack} from '@mui/material';
@@ -17,13 +15,16 @@ const Verification: FC<VerificationProps> = () => {
 
 	useEffect(() => {
 		const verifyUser = async () => {
-			const user = await axios.put(URL.VERIFY, {
+			await axios.put(URL.VERIFY, {
 				hashVerify,
+			}).then((response) => {
+				const [isUserVerified] = response.data;
+				if (!isUserVerified) {
+					history.push(URL.LOGIN);
+				}
 			});
-			if (user && !user[0]) {
-				history.push(URL.LOGIN);
-			}
 		};
+
 		verifyUser();
 	}, []);
 
@@ -34,14 +35,12 @@ const Verification: FC<VerificationProps> = () => {
 
 	return (
 		<div>
-
 			<div className={classes.container}>
 				<div className={classes.container_notification}>
 					<Stack direction='column' justifyContent='center' spacing={2}>
 						<div className={classes.form_label}>
 							<label>CONGRATULATIONS! You have verified your email!</label>
 						</div>
-
 						<div className={classes.form_section}>
 							<Button
 								variant="contained"
@@ -49,13 +48,12 @@ const Verification: FC<VerificationProps> = () => {
 								className={classes.btn}
 								style={ {fontSize: 22, backgroundColor: 'green', borderRadius: 15} }
 							>
-						GO TO MAIN PAGE
+								GO TO MAIN PAGE
 							</Button>
 						</div>
 					</Stack>
 				</div>
 			</div>
-
 		</div>
 	);
 };

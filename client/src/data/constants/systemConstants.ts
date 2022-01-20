@@ -8,3 +8,9 @@ export const VALID = {
 	CITY: new RegExp(/^[A-Za-zА-Яа-я]{3,100}$|^[A-Za-zА-Яа-я]{3,49}[-\s]{1}[A-Za-zА-Яа-я]{3,50}$/),
 	PASSWORD: new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{0,}$/),
 };
+
+export enum ROLE {
+	ADMIN = 'admin',
+    MASTER = 'master',
+}
+

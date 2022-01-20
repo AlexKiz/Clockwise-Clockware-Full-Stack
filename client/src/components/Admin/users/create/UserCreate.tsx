@@ -1,5 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable max-len */
 import axios from 'axios';
 import React, {useState, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
@@ -15,6 +13,7 @@ import {
 	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
+import AdminHeader from '../../../Headers/PrivateHeader';
 
 
 const UserCreate: FC<UserCreateProps> = () => {
@@ -34,23 +33,23 @@ const UserCreate: FC<UserCreateProps> = () => {
 
 	const formik = useFormik({
 		initialValues: {
-			userName: userNameParam,
-			userId: userIdParam,
-			userEmail: userEmailParam,
+			name: userNameParam,
+			id: userIdParam,
+			email: userEmailParam,
 		},
 		validate,
 		onSubmit: async (values) => {
 			await axios.put(URL.USER,
 				{
-					id: values.userId,
-					name: values.userName,
-					email: values.userEmail,
+					id: values.id,
+					name: values.name,
+					email: values.email,
 				}).then(() => {
 				setAlertOptions({message: 'User has been updated', type: 'success', notify: true});
 				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.USERS_LIST}`);
 			}).catch(() => {
 				setAlertOptions({message: 'User with current email already exists', type: 'error', notify: true});
-				values.userEmail = userEmailParam;
+				values.email = userEmailParam;
 			});
 		},
 	});
@@ -58,11 +57,9 @@ const UserCreate: FC<UserCreateProps> = () => {
 
 	return (
 		<div>
-
+			<AdminHeader/>
 			<div className={classes.container_form}>
-
 				<form className={classes.form} onSubmit = {formik.handleSubmit}>
-
 					<Stack direction="column" justifyContent="center" spacing={1.5}>
 						<div className={classes.form_section}>
 							<div className={classes.form_input__label}>
@@ -71,27 +68,26 @@ const UserCreate: FC<UserCreateProps> = () => {
 									gutterBottom
 									component="label"
 								>
-										Enter User name:
+									Enter User name:
 								</Typography>
 							</div>
 							<TextField
-								id="userName"
-								name="userName"
+								id="name"
+								name="name"
 								label="User name"
 								placeholder="Name"
 								variant="filled"
 								size="small"
 								margin="dense"
 								fullWidth
-								value={formik.values.userName}
+								value={formik.values.name}
 								onChange={formik.handleChange}
 								onBlur={formik.handleBlur}
-								error={formik.touched.userName && Boolean(formik.errors.userName)}
-								helperText={formik.touched.userName && formik.errors.userName}
+								error={formik.touched.name && Boolean(formik.errors.name)}
+								helperText={formik.touched.name && formik.errors.name}
 								required
 							/>
 						</div>
-
 						<div className={classes.form_section}>
 							<div className={classes.form_input__label}>
 								<Typography
@@ -99,27 +95,26 @@ const UserCreate: FC<UserCreateProps> = () => {
 									gutterBottom
 									component="label"
 								>
-										Enter User's email:
+									Enter User email:
 								</Typography>
 							</div>
 							<TextField
-								id="userEmail"
-								name="userEmail"
+								id="email"
+								name="email"
 								label="Email"
 								placeholder="Email"
 								variant="filled"
 								size="small"
 								margin="dense"
 								fullWidth
-								value={formik.values.userEmail}
+								value={formik.values.email}
 								onChange={formik.handleChange}
 								onBlur={formik.handleBlur}
-								error={formik.touched.userEmail && Boolean(formik.errors.userEmail)}
-								helperText={formik.touched.userEmail && formik.errors.userEmail}
+								error={formik.touched.email && Boolean(formik.errors.email)}
+								helperText={formik.touched.email && formik.errors.email}
 								required
 							/>
 						</div>
-
 						<div className={classes.form_section}>
 							<Button
 								variant="contained"
@@ -131,13 +126,17 @@ const UserCreate: FC<UserCreateProps> = () => {
 							</Button>
 						</div>
 					</Stack>
-
 				</form>
 				{
-					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
+					alertOptions.notify &&
+					<AlertMessage
+						alertType={alertOptions.type}
+						message={alertOptions.message}
+						isOpen={isOpen}
+						notify={alertOptions.notify}
+					/>
 				}
 			</div>
-
 		</div>
 	);
 };

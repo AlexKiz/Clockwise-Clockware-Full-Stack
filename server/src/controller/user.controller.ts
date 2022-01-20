@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {Response, Request} from 'express';
 import db from '../models';
 import bcrypt from 'bcrypt';
@@ -14,7 +13,7 @@ export const userRegistration = async (req: Request, res: Response) => {
 		const hashForVerification = bcrypt.hashSync(`${name}${email}`, salt);
 		const hashVerify = hashForVerification.replace(/\//g, 'i');
 
-		const user = rolesMappingCreate[role](name, email, hashPassword, hashVerify, citiesId);
+		const user = await rolesMappingCreate[role](name, email, hashPassword, hashVerify, citiesId);
 
 		res.status(201).json(user);
 	} catch (error) {

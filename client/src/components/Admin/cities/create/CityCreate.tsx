@@ -1,7 +1,5 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable max-len */
 import axios from 'axios';
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
 import classes from './city-create-form.module.css';
 import {AlertNotification, City, Params} from '../../../../data/types/types';
@@ -15,12 +13,13 @@ import {
 	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
+import AdminHeader from '../../../Headers/PrivateHeader';
 
 
 const CityCreate: FC<CityCreateProps> = () => {
 	const history = useHistory();
 
-	const {cityIdParam, cityNameParam} = useParams<Params>();
+	const {cityNameParam} = useParams<Params>();
 
 	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
 		notify: false,
@@ -35,44 +34,58 @@ const CityCreate: FC<CityCreateProps> = () => {
 
 	const formik = useFormik({
 		initialValues: {
-			cityName: cityNameParam || '',
-			cityId: Number(cityIdParam || 0),
+			name: cityNameParam || '',
+			id: 0,
 		},
 		validate,
 		onSubmit: async (values) => {
-			if (!cityIdParam) {
+			if (!cityNameParam) {
 				await axios.post<City>(URL.CITY,
 					{
-						id: values.cityId,
-						name: values.cityName,
+						name: values.name,
 					}).then(() => {
 					setAlertOptions({message: 'City has been created', type: 'success', notify: true});
 					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`);
 				}).catch((error) => {
 					if (Number(error.response.status) === 400) {
 						setAlertOptions({message: error.response.data, type: 'error', notify: true});
-						values.cityName = '';
+						values.name = '';
 					}
 				});
 			} else {
 				await axios.put<City>(URL.CITY, {
-					id: values.cityId,
-					name: values.cityName,
+					id: values.id,
+					name: values.name,
 				}).then(() => {
 					setAlertOptions({message: 'City has been updated', type: 'success', notify: true});
 					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`);
 				}).catch((error) => {
 					setAlertOptions({message: error.response.data, type: 'error', notify: true});
-					values.cityName = cityNameParam;
+					values.name = cityNameParam;
 				});
 			}
 		},
 	});
 
 
+	useEffect(() => {
+		const readCityForUpdate = async () => {
+			const {data} = await axios.get<City>(URL.CITY_FOR_UPDATE, {
+				params: {
+					name: cityNameParam,
+				},
+			});
+
+			formik.values.id = data.id;
+		};
+
+		readCityForUpdate();
+	}, []);
+
+
 	return (
 		<div>
-
+			<AdminHeader/>
 			<div className={classes.container_form}>
 
 				<form className={classes.form} onSubmit = {formik.handleSubmit}>
@@ -89,19 +102,19 @@ const CityCreate: FC<CityCreateProps> = () => {
 								</Typography>
 							</div>
 							<TextField
-								id="cityName"
-								name="cityName"
+								id="name"
+								name="name"
 								label="City name"
 								placeholder="Name"
 								variant="filled"
 								size="small"
 								margin="dense"
 								fullWidth
-								value={formik.values.cityName}
+								value={formik.values.name}
 								onChange={formik.handleChange}
 								onBlur={formik.handleBlur}
-								error={formik.touched.cityName && Boolean(formik.errors.cityName)}
-								helperText={formik.touched.cityName && formik.errors.cityName}
+								error={formik.touched.name && Boolean(formik.errors.name)}
+								helperText={formik.touched.name && formik.errors.name}
 								required
 							/>
 						</div>
@@ -120,7 +133,13 @@ const CityCreate: FC<CityCreateProps> = () => {
 
 				</form>
 				{
-					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
+					alertOptions.notify &&
+					<AlertMessage
+						alertType={alertOptions.type}
+						message={alertOptions.message}
+						isOpen={isOpen}
+						notify={alertOptions.notify}
+					/>
 				}
 			</div>
 

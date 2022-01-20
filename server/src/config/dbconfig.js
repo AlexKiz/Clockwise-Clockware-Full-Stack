@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 require('dotenv').config();
 
-module.exports = {
+export default {
 	'development': {
 		'username': process.env.DB_USER_DEV,
 		'password': process.env.DB_PASSWORD_DEV,

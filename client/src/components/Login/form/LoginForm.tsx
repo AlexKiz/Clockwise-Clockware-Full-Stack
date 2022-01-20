@@ -3,9 +3,9 @@ import {RESOURCE, URL} from '../../../data/constants/routeConstants';
 import React, {useState, useEffect, FC} from 'react';
 import {useHistory} from 'react-router-dom';
 import PublicHeader from '../../Headers/PublicHeader';
-import classes from '../login/login-form.module.css';
+import classes from './login-form.module.css';
 import {LoginFormProps, validate} from './componentConstants';
-import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
+import {ACCESS_TOKEN, ROLE} from 'src/data/constants/systemConstants';
 import {useFormik} from 'formik';
 import {
 	Button,
@@ -20,6 +20,8 @@ import {
 } from '@mui/material';
 import {Visibility, VisibilityOff} from '@mui/icons-material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
+import jwtDecode from 'jwt-decode';
+import {BearerParser} from 'bearer-token-parser';
 
 
 const LoginForm:FC<LoginFormProps> = () => {
@@ -34,20 +36,24 @@ const LoginForm:FC<LoginFormProps> = () => {
 
 	const formik = useFormik({
 		initialValues: {
-			adminLogin: '',
-			adminPassword: '',
+			login: '',
+			password: '',
 		},
 		validate,
 		onSubmit: async (values) => {
-			const payload = {
-				adminLogin: values.adminLogin,
-				adminPassword: values.adminPassword,
-			};
-
 			try {
-				const {headers: {authorization: accessToken}} = await axios.post(URL.LOGIN, payload);
-				localStorage.setItem(ACCESS_TOKEN, accessToken.split(' ')[1]);
-				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
+				const login = await axios.post(URL.LOGIN, {
+					login: values.login,
+					password: values.password,
+				});
+				const token = BearerParser.parseBearerToken(login.headers);
+				localStorage.setItem(ACCESS_TOKEN, token);
+
+				if (login.data.role === ROLE.ADMIN) {
+					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
+				} else if (login.data.role === ROLE.MASTER) {
+					history.push(`/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`);
+				}
 			} catch (e) {
 				setNotify(true);
 			}
@@ -57,8 +63,15 @@ const LoginForm:FC<LoginFormProps> = () => {
 
 
 	useEffect(() => {
-		if (localStorage.getItem(ACCESS_TOKEN)) {
-			history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
+		const token = localStorage.getItem(ACCESS_TOKEN);
+		if (token) {
+			const {role} = jwtDecode<{role: string}>(token);
+
+			if (role === ROLE.ADMIN) {
+				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
+			} else if (role === ROLE.MASTER) {
+				history.push(`/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`);
+			}
 		}
 	}, []);
 
@@ -66,7 +79,6 @@ const LoginForm:FC<LoginFormProps> = () => {
 	return (
 		<div>
 			<PublicHeader/>
-
 			<div className={classes.conteiner}>
 				<div className={classes.container_form}>
 					<form className={classes.form} onSubmit={formik.handleSubmit}>
@@ -81,21 +93,20 @@ const LoginForm:FC<LoginFormProps> = () => {
 										Enter Admin Login:
 									</Typography>
 								</div>
-
 								<TextField
-									id="adminLogin"
-									name='adminLogin'
+									id="login"
+									name='login'
 									label="Email"
 									placeholder="example@mail.com"
 									variant="filled"
 									size="small"
 									margin="dense"
 									fullWidth
-									value={formik.values.adminLogin}
+									value={formik.values.login}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
-									error={formik.touched.adminLogin && Boolean(formik.errors.adminLogin)}
-									helperText={formik.touched.adminLogin && formik.errors.adminLogin}
+									error={formik.touched.login && Boolean(formik.errors.login)}
+									helperText={formik.touched.login && formik.errors.login}
 									required
 								/>
 							</div>
@@ -106,7 +117,7 @@ const LoginForm:FC<LoginFormProps> = () => {
 										gutterBottom
 										component="label"
 									>
-									Enter Admin Password:
+										Enter Admin Password:
 									</Typography>
 								</div>
 								<FormControl fullWidth variant="filled">
@@ -114,8 +125,8 @@ const LoginForm:FC<LoginFormProps> = () => {
 									<FilledInput
 										id="filled-adornment-password"
 										type={showPassword ? 'text' : 'password'}
-										value={formik.values.adminPassword}
-										onChange={formik.handleChange('adminPassword')}
+										value={formik.values.password}
+										onChange={formik.handleChange('password')}
 										endAdornment={
 											<InputAdornment position="end">
 												<IconButton
@@ -137,14 +148,20 @@ const LoginForm:FC<LoginFormProps> = () => {
 									className={classes.form_btn}
 									style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
 								>
-										Sign In
+									Sign In
 								</Button>
 							</div>
 						</Stack>
 					</form>
 				</div>
 				{
-					notify && <AlertMessage alertType='error' message='Incorrect logging data' isOpen={isOpen} notify={notify}/>
+					notify &&
+					<AlertMessage
+						alertType='error'
+						message='Incorrect logging data'
+						isOpen={isOpen}
+						notify={notify}
+					/>
 				}
 			</div>
 		</div>

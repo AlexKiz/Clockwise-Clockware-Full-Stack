@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-key */
-/* eslint-disable max-len */
 import React from 'react';
 import {Link} from 'react-router-dom';
 import classes from './header.module.css';
@@ -33,7 +31,14 @@ const PublicHeader = () => {
 					<ul className={classes.nav__links}>
 						{
 							MENU_LINKS.map((link) => (
-								<li className={splitLocation[0] === link.name ? classes.active : ''}><Link to={link.path}>{`${link.title}`}</Link></li>
+								<li
+									className={splitLocation[0] === link.name ? classes.active : ''}
+									key={link.path}
+								>
+									<Link to={link.path}>
+										{`${link.title}`}
+									</Link>
+								</li>
 							))
 						}
 					</ul>

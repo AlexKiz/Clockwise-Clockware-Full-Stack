@@ -21,6 +21,16 @@ export const getCities = async (req: Request, res: Response) => {
 	res.status(200).json(cities);
 };
 
+export const getCityForUpdate = async (req: Request, res: Response) => {
+	const {name} = req.query;
+
+	const city = await db.City.findOne({
+		where: {name},
+	});
+
+	res.status(200).json(city);
+};
+
 
 export const getCitiesForOrder = async (req: Request, res: Response) => {
 	const citiesForOrder = await db.City.findAll({

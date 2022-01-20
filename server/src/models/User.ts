@@ -7,7 +7,7 @@ import {
 } from 'sequelize';
 import {UserAttributes} from './modelsConstants';
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+type UserCreationAttributes = Optional<UserAttributes, 'id'>
 
 export default (sequelize: any, DataTypes: any) => {
 	class User extends Model<UserAttributes, UserCreationAttributes>
@@ -20,6 +20,7 @@ export default (sequelize: any, DataTypes: any) => {
 		public masterId!: string;
 		public hashVerify!: string;
 		public isVerified!: boolean;
+		public token!: string;
 
 
 		static findById(entityId: string) {
@@ -46,7 +47,7 @@ export default (sequelize: any, DataTypes: any) => {
 				onUpdate: 'CASCADE',
 			});
 		}
-	};
+	}
 
 	User.init(
 		{
@@ -92,6 +93,11 @@ export default (sequelize: any, DataTypes: any) => {
 
 			masterId: {
 				type: DataTypes.UUID,
+				allowNull: true,
+			},
+
+			token: {
+				type: DataTypes.STRING(250),
 				allowNull: true,
 			},
 		}, {

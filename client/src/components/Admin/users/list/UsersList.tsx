@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-key */
-/* eslint-disable max-len */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
@@ -20,6 +18,8 @@ import {
 	tableCellClasses,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
+import AdminHeader from 'src/components/Headers/PrivateHeader';
+
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -78,59 +78,60 @@ const UserList: FC<UserListProps> = () => {
 
 
 	return (
-
-		<div className={classes.conteiner}>
-
-			<TableContainer component={Paper} sx={{width: '57%'}} className={classes.conteiner_table}>
-
-				<Table sx={{minWidth: 350}} aria-label="customized table">
-					<TableHead>
-						<TableRow>
-							<StyledTableCell sx={{width: '10%'}}>Id</StyledTableCell>
-							<StyledTableCell sx={{width: '25%'}} align="center">User name</StyledTableCell>
-							<StyledTableCell sx={{width: '30%'}} align="center">Email</StyledTableCell>
-							<StyledTableCell sx={{width: '35%'}} align="center"></StyledTableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{users.map((user) => (
-							<StyledTableRow>
-
-								<StyledTableCell component="th" scope="row"> {user.id.slice(0, 4)} </StyledTableCell>
-
-								<StyledTableCell align="center"> {user.name} </StyledTableCell>
-
-								<StyledTableCell align="center"> {user.email} </StyledTableCell>
-
-								<StyledTableCell align="center">
-									<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.USER_CREATE}/${user.id}/${user.name}/${user.email}`}>
+		<div>
+			<AdminHeader/>
+			<div className={classes.conteiner}>
+				<TableContainer component={Paper} sx={{width: '57%'}} className={classes.conteiner_table}>
+					<Table sx={{minWidth: 350}} aria-label="customized table">
+						<TableHead>
+							<TableRow>
+								<StyledTableCell sx={{width: '10%'}}>Id</StyledTableCell>
+								<StyledTableCell sx={{width: '25%'}} align="center">User name</StyledTableCell>
+								<StyledTableCell sx={{width: '30%'}} align="center">Email</StyledTableCell>
+								<StyledTableCell sx={{width: '35%'}} align="center"></StyledTableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{users.map((user) => (
+								<StyledTableRow key={user.id}>
+									<StyledTableCell component="th" scope="row"> {user.id.slice(0, 4)} </StyledTableCell>
+									<StyledTableCell align="center"> {user.name} </StyledTableCell>
+									<StyledTableCell align="center"> {user.email} </StyledTableCell>
+									<StyledTableCell align="center">
+										<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.USER_CREATE}/${user.id}/${user.name}/${user.email}`}>
+											<Button
+												variant="contained"
+												sx={{width: '50%', fontSize: 14, borderRadius: 15}}
+											>
+												Update
+											</Button>
+										</Link>
 										<Button
 											variant="contained"
+											color='error'
 											sx={{width: '50%', fontSize: 14, borderRadius: 15}}
+											onClick={() => {
+												onDelete(user.id);
+											}}
 										>
-											Update
+											Delete
 										</Button>
-									</Link>
-									<Button
-										variant="contained"
-										color='error'
-										sx={{width: '50%', fontSize: 14, borderRadius: 15}}
-										onClick={() => {
-											onDelete(user.id);
-										}}
-									>
-										Delete
-									</Button>
-								</StyledTableCell>
-							</StyledTableRow>
-						))}
-					</TableBody>
-				</Table>
-
-			</TableContainer>
-			{
-				notify && <AlertMessage alertType='success' message='User has been deleted' isOpen={isOpen} notify={notify}/>
-			}
+									</StyledTableCell>
+								</StyledTableRow>
+							))}
+						</TableBody>
+					</Table>
+				</TableContainer>
+				{
+					notify &&
+					<AlertMessage
+						alertType='success'
+						message='User has been deleted'
+						isOpen={isOpen}
+						notify={notify}
+					/>
+				}
+			</div>
 		</div>
 	);
 };

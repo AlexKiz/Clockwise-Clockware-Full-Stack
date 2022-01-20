@@ -10,14 +10,18 @@ export enum URL {
     AVAILABLE_MASTER = '/availableMasters',
     CITY_FOR_ORDER = '/cityForOrder',
     ORDER_FOR_RATE = '/orderForRate',
+	ORDER_FOR_UPDATE = '/orderForUpdate',
+	CITY_FOR_UPDATE = '/cityForupdate',
     RATED_ORDER = '/ratedOrder',
     ORDERS_RATING = '/ordersRating',
 	REGISTRATION = '/user/registration',
-	VERIFY = '/user/verify'
+	VERIFY = '/user/verify',
+	COMPLETE_ORDER = '/completeOrder'
 }
 
 export enum RESOURCE {
     ADMIN = 'admin',
+	MASTER = 'master',
     CITY_CREATE = 'city-create',
     CITIES_LIST = 'cities-list',
     ORDER_CREATE = 'order-create',
@@ -29,7 +33,7 @@ export enum RESOURCE {
     LOGIN = 'login',
     RATE = 'rate',
     REGISTRATION = 'registration-form',
-	VERIFICATION = 'email-verification'
+	VERIFICATION = 'email-verification',
 }
 
 export enum PARAM {
@@ -72,15 +76,18 @@ export const ROUTES = {
 		path: `/${RESOURCE.ADMIN}/${RESOURCE.CITIES_LIST}`,
 	},
 	ADMIN_CITY_CREATE: {
-		path: `/${RESOURCE.ADMIN}/${RESOURCE.CITY_CREATE}/:${PARAM.CITY_ID}?/:${PARAM.CITY_NAME}?`,
+		path: `/${RESOURCE.ADMIN}/${RESOURCE.CITY_CREATE}/:${PARAM.CITY_NAME}?`,
 	},
 	ADMIN_ORDERS_LIST: {
 		path: `/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`,
 	},
-	ADMIN_ORDER_CREATE: {
-		path: `/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CREATE}/:${PARAM.ORDER_ID}?/:${PARAM.USER_ID}?/:${PARAM.CLOCK_ID}?/:${PARAM.CITY_ID}?/:${PARAM.ORDER_DATE}?/:${PARAM.ORDER_TIME}?/:${PARAM.MASTER_ID}?`,
+	MASTER_ORDERS_LIST: {
+		path: `/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`,
 	},
-	ADMIN_LOGIN: {
+	ADMIN_ORDER_CREATE: {
+		path: `/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CREATE}/:${PARAM.ORDER_ID}?`,
+	},
+	LOGIN: {
 		path: `/${RESOURCE.LOGIN}`,
 	},
 	RATE_ORDER: {

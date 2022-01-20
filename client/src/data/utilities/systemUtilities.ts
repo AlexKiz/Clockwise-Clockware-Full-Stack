@@ -1,7 +1,6 @@
-/* eslint-disable require-jsdoc */
 import {Clock} from './../types/types';
 
-export function getOrderDates(clocks: Clock[], orderDate: string, orderTime:string, clockId: number) {
+export const getOrderDates = (clocks: Clock[], orderDate: string, orderTime:string, clockId: number) => {
 	const currentClock = clocks.filter((clock) => clock.id === clockId);
 
 	const {installationTime} = currentClock[0];
@@ -19,4 +18,4 @@ export function getOrderDates(clocks: Clock[], orderDate: string, orderTime:stri
 	orderDates.push(endDate.toISOString());
 
 	return orderDates;
-}
+};

@@ -1,13 +1,10 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable camelcase */
-/* eslint-disable react/react-in-jsx-scope */
-import {useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {Route, Redirect, useHistory} from 'react-router-dom';
-import jwt_decode from 'jwt-decode';
-import PrivateHeader from '../Headers/PrivateHeader';
+import jwtDecode from 'jwt-decode';
 import {RESOURCE} from '../../data/constants/routeConstants';
 import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
 
+// eslint-disable-next-line react/prop-types
 const PrivateRoute = ({component: Component, ...rest}) => {
 	const history = useHistory();
 
@@ -15,7 +12,7 @@ const PrivateRoute = ({component: Component, ...rest}) => {
 		if (!localStorage.getItem(ACCESS_TOKEN)) {
 			alert('You must be authorizated');
 			history.push(`/${RESOURCE.LOGIN}`);
-		} else if ((jwt_decode(localStorage.getItem(ACCESS_TOKEN))).exp < Number((Date.now()/1000).toFixed())) {
+		} else if ((jwtDecode(localStorage.getItem(ACCESS_TOKEN))).exp < Number((Date.now()/1000).toFixed())) {
 			localStorage.removeItem(ACCESS_TOKEN);
 			history.push(`/${RESOURCE.LOGIN}`);
 		}
@@ -26,7 +23,6 @@ const PrivateRoute = ({component: Component, ...rest}) => {
 		<Route {...rest}
 			render = {(props) => localStorage.getItem(ACCESS_TOKEN) ? (
 				<>
-					<PrivateHeader/>
 					<Component {...props}/>
 				</>
 			) : (

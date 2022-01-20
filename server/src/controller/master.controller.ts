@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import {Response, Request} from 'express';
 import db from '../models';
 import {Op} from 'sequelize';
@@ -10,7 +9,7 @@ export const postMaster = async (req: Request, res: Response) => {
 
 		const master = await db.Master.create({name});
 
-		const cities = await master.setCities(citiesId);
+		await master.setCities(citiesId);
 
 		res.status(201).json(master);
 	} catch (error) {
@@ -110,7 +109,7 @@ export const putMaster = async (req: Request, res: Response) => {
 		const [, master] = await db.Master.updateById(id, {name}, {returning: true});
 
 		if (master.length) {
-			const updateCitiesOfMaster = await master[0].setCities(citiesId);
+			await master[0].setCities(citiesId);
 
 			res.status(200).json(master);
 		}

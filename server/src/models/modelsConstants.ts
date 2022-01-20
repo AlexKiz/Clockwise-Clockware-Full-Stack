@@ -43,6 +43,7 @@ export interface OrderAttributes {
     endWorkOn: string,
     ratingIdentificator: string,
     orderRating: number
+    isCompleted: boolean
 }
 
 export interface UserAttributes {
@@ -53,5 +54,6 @@ export interface UserAttributes {
     role: string,
     masterId: string,
     hashVerify: string,
-    isVerified: boolean
+    isVerified: boolean,
+    token: string
 }

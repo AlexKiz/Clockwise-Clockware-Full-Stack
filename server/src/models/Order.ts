@@ -7,7 +7,7 @@ import {
 } from 'sequelize';
 import {OrderAttributes} from './modelsConstants';
 
-interface OrderCreationAttributes extends Optional<OrderAttributes, 'id' | 'orderRating'> {}
+type OrderCreationAttributes = Optional<OrderAttributes, 'id' | 'orderRating'>
 
 export = (sequelize: any, DataTypes: any) => {
 	class Order extends Model<OrderAttributes, OrderCreationAttributes>
@@ -21,6 +21,7 @@ export = (sequelize: any, DataTypes: any) => {
 		public endWorkOn!: string;
 		public ratingIdentificator!: string;
 		public orderRating!: number;
+		public isCompleted!: boolean;
 
 		static findById(entityId: string | string[]) {
 			return this.findAll({where: {id: entityId}});
@@ -55,7 +56,7 @@ export = (sequelize: any, DataTypes: any) => {
 				onUpdate: 'CASCADE',
 			});
 		}
-	};
+	}
 
 	Order.init(
 		{
@@ -106,6 +107,11 @@ export = (sequelize: any, DataTypes: any) => {
 			orderRating: {
 				type: DataTypes.REAL,
 				defaultValue: 0,
+			},
+
+			isCompleted: {
+				type: DataTypes.BOOLEAN,
+				defaultValue: false,
 			},
 		}, {
 			sequelize,

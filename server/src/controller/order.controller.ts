@@ -1,16 +1,19 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable max-len */
+import {rolesMappingGetOrders} from './../../data/utilities/systemUtilities';
 import {Response, Request} from 'express';
 import {sendMail} from '../services/nodemailer';
 import {v4 as uuidv4} from 'uuid';
 import db from '../models';
+import {BearerParser} from 'bearer-token-parser';
 
 
 export const postOrder = async (req: Request, res: Response) => {
 	try {
 		const {name, email, clockId, cityId, masterId, startWorkOn, endWorkOn} = req.body;
 
-		const [user, isUserCreated] = await db.User.findOrCreate({where: {email}, defaults: {email, name, role: 'client'}});
+		const [user, isUserCreated] = await db.User.findOrCreate({
+			where: {email},
+			defaults: {email, name, role: 'client'},
+		});
 
 		const {id: userId} = user;
 
@@ -26,8 +29,6 @@ export const postOrder = async (req: Request, res: Response) => {
 			ratingIdentificator,
 		});
 
-		await sendMail(email, ratingIdentificator);
-
 		res.status(201).json(order);
 	} catch (error) {
 		res.status(500).send();
@@ -36,8 +37,24 @@ export const postOrder = async (req: Request, res: Response) => {
 
 
 export const getOrders = async (req: Request, res: Response) => {
-	const orders = await db.Order.findAll({
-		attributes: ['id', 'startWorkOn', 'endWorkOn'],
+	try {
+		const token = BearerParser.parseBearerToken(req.headers);
+
+		const {role, masterId} = await db.User.findOne({where: {token}});
+
+		const orders = await rolesMappingGetOrders[role](masterId);
+
+		res.status(200).json(orders);
+	} catch (e) {
+		res.status(500).send();
+	}
+};
+
+export const getOrderForUpdate = async (req: Request, res: Response) => {
+	const {id} = req.query;
+
+	const order = await db.Order.findOne({
+		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
 		include: [
 			{
 				model: db.Clock,
@@ -60,9 +77,10 @@ export const getOrders = async (req: Request, res: Response) => {
 				required: true,
 			},
 		],
+		where: {id},
 	});
 
-	res.status(200).json(orders);
+	return res.status(200).json(order);
 };
 
 export const getOrderForRate = async (req: Request, res: Response) => {
@@ -126,7 +144,7 @@ export const putRatedOrder = async (req: Request, res: Response) => {
 		if (averageRating.length) {
 			const {newRating: rating} = averageRating[0];
 
-			const masterRating = await db.Master.updateById(masterId, {rating});
+			await db.Master.updateById(masterId, {rating});
 		}
 
 		res.status(200).json(ratedOrder);
@@ -158,6 +176,20 @@ export const putOrder = async (req: Request, res: Response) => {
 
 		res.status(200).json(order);
 	} catch (error) {
+		res.status(500).send();
+	}
+};
+
+export const completeOrder = async (req: Request, res: Response) => {
+	try {
+		const {id, clientEmail, ratingIdentificator} = req.body;
+
+		const order = await db.Order.updateById(id, {isCompleted: true});
+
+		await sendMail(clientEmail, ratingIdentificator);
+
+		res.status(200).json(order);
+	} catch (e) {
 		res.status(500).send();
 	}
 };

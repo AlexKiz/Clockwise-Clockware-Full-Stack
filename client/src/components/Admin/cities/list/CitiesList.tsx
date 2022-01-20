@@ -1,9 +1,7 @@
-/* eslint-disable react/jsx-key */
-/* eslint-disable max-len */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
-import classes from '../list/cities-list.module.css';
+import classes from './cities-list.module.css';
 import {City} from '../../../../data/types/types';
 import {CitiesListProps} from './componentConstants';
 import {URL, RESOURCE} from '../../../../data/constants/routeConstants';
@@ -20,6 +18,7 @@ import {
 	tableCellClasses,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
+import AdminHeader from '../../../Headers/PrivateHeader';
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -73,61 +72,68 @@ const CitiesList: FC<CitiesListProps> = () => {
 
 
 	return (
-
-		<div className={classes.conteiner}>
-
-			<TableContainer component={Paper} sx={{width: '40%'}} className={classes.conteiner_table}>
-				<Table sx={{minWidth: 350}} aria-label="customized table">
-					<TableHead>
-						<TableRow>
-							<StyledTableCell sx={{width: '10%'}}>Id</StyledTableCell>
-							<StyledTableCell sx={{width: '25%'}} align="center">Name</StyledTableCell>
-							<StyledTableCell sx={{width: '30%'}} align="center">
-								<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.CITY_CREATE}`}>
-									<Button
-										variant="contained"
-										sx={{width: `100%`, fontSize: 14, borderRadius: 15}}
-										color='success'
-									>
-									Create city
-									</Button>
-								</Link>
-							</StyledTableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{cities.map((city) => (
-							<StyledTableRow>
-								<StyledTableCell component="th" scope="row"> {city.id} </StyledTableCell>
-								<StyledTableCell align="center"> {city.name} </StyledTableCell>
-								<StyledTableCell align="center">
-									<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.CITY_CREATE}/${city.id}/${city.name}`}>
+		<div>
+			<AdminHeader/>
+			<div className={classes.conteiner}>
+				<TableContainer component={Paper} sx={{width: '40%'}} className={classes.conteiner_table}>
+					<Table sx={{minWidth: 350}} aria-label="customized table">
+						<TableHead>
+							<TableRow>
+								<StyledTableCell sx={{width: '10%'}}>Id</StyledTableCell>
+								<StyledTableCell sx={{width: '25%'}} align="center">Name</StyledTableCell>
+								<StyledTableCell sx={{width: '30%'}} align="center">
+									<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.CITY_CREATE}`}>
 										<Button
 											variant="contained"
-											sx={{width: '50%', fontSize: 14, borderRadius: 15}}
+											sx={{width: `100%`, fontSize: 14, borderRadius: 15}}
+											color='success'
 										>
-											Update
+											Create city
 										</Button>
 									</Link>
-									<Button
-										variant="contained"
-										color='error'
-										sx={{width: '50%', fontSize: 14, borderRadius: 15}}
-										onClick={() => {
-											onDelete(city.id);
-										}}
-									>
-										Delete
-									</Button>
 								</StyledTableCell>
-							</StyledTableRow>
-						))}
-					</TableBody>
-				</Table>
-			</TableContainer>
-			{
-				notify && <AlertMessage alertType='success' message='City has been deleted' isOpen={isOpen} notify={notify}/>
-			}
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{cities.map((city) => (
+								<StyledTableRow key={city.id}>
+									<StyledTableCell component="th" scope="row"> {city.id} </StyledTableCell>
+									<StyledTableCell align="center"> {city.name} </StyledTableCell>
+									<StyledTableCell align="center">
+										<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.CITY_CREATE}/${city.name}`}>
+											<Button
+												variant="contained"
+												sx={{width: '50%', fontSize: 14, borderRadius: 15}}
+											>
+												Update
+											</Button>
+										</Link>
+										<Button
+											variant="contained"
+											color='error'
+											sx={{width: '50%', fontSize: 14, borderRadius: 15}}
+											onClick={() => {
+												onDelete(city.id);
+											}}
+										>
+										Delete
+										</Button>
+									</StyledTableCell>
+								</StyledTableRow>
+							))}
+						</TableBody>
+					</Table>
+				</TableContainer>
+				{
+					notify &&
+					<AlertMessage
+						alertType='success'
+						message='City has been deleted'
+						isOpen={isOpen}
+						notify={notify}
+					/>
+				}
+			</div>
 		</div>
 	);
 };

@@ -1,10 +1,8 @@
-/* eslint-disable max-len */
-/* eslint-disable react/jsx-key */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
 import classes from './order-create-form.module.css';
-import {Params, User, Clock, City, Master, AlertNotification} from '../../../../data/types/types';
+import {Params, User, Clock, City, Master, AlertNotification, Order} from '../../../../data/types/types';
 import {OPENING_HOURS} from '../../../../data/constants/systemConstants';
 import {OrderCreateProps, validate} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
@@ -23,12 +21,13 @@ import {
 	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
+import AdminHeader from 'src/components/Headers/PrivateHeader';
 
 
 const OrderCreate: FC<OrderCreateProps> = () => {
 	const history = useHistory();
 
-	const {orderIdParam, userIdParam, clockIdParam, cityIdParam, orderDateParam, orderTimeParam, masterIdParam} = useParams<Params>();
+	const {orderIdParam} = useParams<Params>();
 
 	const [users, setUsers] = useState<User[]>([]);
 	const [clocks, setClocks] = useState<Clock[]>([]);
@@ -49,12 +48,12 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 	const formik = useFormik({
 		initialValues: {
 			orderId: orderIdParam,
-			userId: userIdParam,
-			cityId: Number(cityIdParam),
-			clockId: Number(clockIdParam),
-			orderDate: orderDateParam,
-			orderTime: orderTimeParam.slice(0, 5),
-			masterId: masterIdParam,
+			userId: '',
+			cityId: 0,
+			clockId: 0,
+			orderDate: '',
+			orderTime: '',
+			masterId: '',
 		},
 		validate,
 		onSubmit: async (values) => {
@@ -83,11 +82,28 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 	});
 
 	useEffect(() => {
+		const readCurrentOrder = async () => {
+			const {data} = await axios.get<Order>(URL.ORDER_FOR_UPDATE, {
+				params: {
+					id: orderIdParam,
+				},
+			});
+			formik.values.userId = data.user.id;
+			formik.values.cityId = data.city.id;
+			formik.values.clockId = data.clock.id;
+			formik.values.orderDate = data.startWorkOn.slice(0, 10);
+			formik.values.orderTime = data. startWorkOn.slice(11, 16);
+			formik.values.masterId = data.master.id;
+		};
+
+		readCurrentOrder();
+	}, []);
+
+	useEffect(() => {
 		const readUsersData = async () => {
 			const {data} = await axios.get<User[]>(URL.USER);
 
 			setUsers(data);
-			formik.values.orderTime = orderTimeParam.slice(0, 5);
 		};
 
 		readUsersData();
@@ -124,7 +140,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 				const {data} = await axios.get<Master[]>(URL.AVAILABLE_MASTER, {
 					params: {
 						currentOrderId: orderIdParam,
-						cityId: cityIdParam,
+						cityId: formik.values.cityId,
 						startWorkOn: startDate,
 						endWorkOn: endDate,
 					},
@@ -148,15 +164,11 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 
 	return (
 		<div>
-
+			<AdminHeader/>
 			<div className={classes.conteiner}>
-
 				<div className={classes.container_form}>
-
 					<form className={classes.form} onSubmit={formik.handleSubmit}>
-
 						<Stack direction="column" justifyContent="center" spacing={1.5}>
-
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -167,7 +179,6 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 										Choose user:
 									</Typography>
 								</div>
-
 								<FormControl
 									fullWidth
 									error={formik.touched.userId && Boolean(formik.errors.userId)}
@@ -186,8 +197,8 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 									>
 										{
 											users.map((user) => (
-												<MenuItem value={user.id}>
-													{` user: ${user.name} | email: ${user.email}`}
+												<MenuItem key={user.id} value={user.id}>
+													{`user: ${user.name} | email: ${user.email}`}
 												</MenuItem>
 											))
 										}
@@ -195,8 +206,6 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 									<FormHelperText> {formik.touched.userId && formik.errors.userId} </FormHelperText>
 								</FormControl>
 							</div>
-
-
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -207,7 +216,6 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 										Choose clock size:
 									</Typography>
 								</div>
-
 								<FormControl
 									fullWidth
 									error={formik.touched.clockId && Boolean(formik.errors.clockId)}
@@ -226,7 +234,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 									>
 										{
 											clocks.map((clock) => (
-												<MenuItem value={clock.id}>
+												<MenuItem key={clock.id} value={clock.id}>
 													{`${clock.size}`}
 												</MenuItem>
 											))
@@ -235,8 +243,6 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 									<FormHelperText> {formik.touched.clockId && formik.errors.clockId} </FormHelperText>
 								</FormControl>
 							</div>
-
-
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -247,7 +253,6 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 										Choose city:
 									</Typography>
 								</div>
-
 								<FormControl
 									fullWidth
 									error={formik.touched.cityId && Boolean(formik.errors.cityId)}
@@ -266,7 +271,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 									>
 										{
 											cities.map((city) => (
-												<MenuItem value={city.id}>
+												<MenuItem key={city.id} value={city.id}>
 													{`${city.name}`}
 												</MenuItem>
 											))
@@ -275,7 +280,6 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 									<FormHelperText> {formik.touched.cityId && formik.errors.cityId} </FormHelperText>
 								</FormControl>
 							</div>
-
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -286,7 +290,6 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 										Choose date:
 									</Typography>
 								</div>
-
 								<TextField
 									id="orderDate"
 									name='orderDate'
@@ -301,7 +304,6 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 									required
 								/>
 							</div>
-
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -312,7 +314,6 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 										Choose order time:
 									</Typography>
 								</div>
-
 								<FormControl
 									fullWidth
 									error={formik.touched.orderTime && Boolean(formik.errors.orderTime)}
@@ -330,7 +331,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 									>
 										{
 											OPENING_HOURS.map((elem) => (
-												<MenuItem value={elem}>
+												<MenuItem key={elem} value={elem}>
 													{`${elem}`}
 												</MenuItem>
 											))
@@ -339,7 +340,6 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 									<FormHelperText> {formik.touched.orderTime && formik.errors.orderTime} </FormHelperText>
 								</FormControl>
 							</div>
-
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -350,7 +350,6 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 										Available masters:
 									</Typography>
 								</div>
-
 								<FormControl
 									fullWidth
 									error={formik.touched.masterId && Boolean(formik.errors.masterId)}
@@ -368,7 +367,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 									>
 										{
 											masters.map((master) => (
-												<MenuItem value={master.id}>
+												<MenuItem key={master.id} value={master.id}>
 													{`${master.name} | Rating:${master.rating.toFixed(2)}`}
 												</MenuItem>
 											))
@@ -377,7 +376,6 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 									<FormHelperText> {formik.touched.masterId && formik.errors.masterId} </FormHelperText>
 								</FormControl>
 							</div>
-
 							<div className={classes.form_section}>
 								<Button
 									variant="contained"
@@ -389,12 +387,16 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 								</Button>
 							</div>
 						</Stack>
-
 					</form>
-
 				</div>
 				{
-					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
+					alertOptions.notify &&
+					<AlertMessage
+						alertType={alertOptions.type}
+						message={alertOptions.message}
+						isOpen={isOpen}
+						notify={alertOptions.notify}
+					/>
 				}
 			</div>
 		</div>
