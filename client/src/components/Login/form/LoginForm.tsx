@@ -1,11 +1,11 @@
 import axios from 'axios';
-import {RESOURCE, URL} from '../../../data/constants/routeConstants';
+import {URL} from '../../../data/constants/routeConstants';
 import React, {useState, useEffect, FC} from 'react';
 import {useHistory} from 'react-router-dom';
 import PublicHeader from '../../Headers/PublicHeader';
 import classes from './login-form.module.css';
-import {LoginFormProps, validate} from './componentConstants';
-import {ACCESS_TOKEN, ROLE} from 'src/data/constants/systemConstants';
+import {LoginFormProps, roleMappingLoginPaths, validate} from './componentConstants';
+import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
 import {useFormik} from 'formik';
 import {
 	Button,
@@ -52,13 +52,7 @@ const LoginForm:FC<LoginFormProps> = () => {
 				const token = BearerParser.parseBearerToken(login.headers);
 				localStorage.setItem(ACCESS_TOKEN, token);
 
-				if (login.data.role === ROLE.ADMIN) {
-					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
-				} else if (login.data.role === ROLE.MASTER) {
-					history.push(`/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`);
-				} else if (login.data.role === ROLE.CLIENT) {
-					history.push(`/${RESOURCE.CLIENT}/${RESOURCE.ORDERS_LIST}`);
-				}
+				history.push(roleMappingLoginPaths[login.data.role]);
 			} catch (e) {
 				setLoading(false);
 				setNotify(true);
@@ -73,13 +67,7 @@ const LoginForm:FC<LoginFormProps> = () => {
 		if (token) {
 			const {role} = jwtDecode<{role: string}>(token);
 
-			if (role === ROLE.ADMIN) {
-				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
-			} else if (role === ROLE.MASTER) {
-				history.push(`/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`);
-			} else if (role === ROLE.CLIENT) {
-				history.push(`/${RESOURCE.CLIENT}/${RESOURCE.ORDERS_LIST}`);
-			}
+			history.push(roleMappingLoginPaths[role]);
 		}
 	}, []);
 

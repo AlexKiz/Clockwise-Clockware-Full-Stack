@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable react/jsx-key */
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import classes from './client-orders-list.module.css';
@@ -8,7 +6,8 @@ import {ClientOrdersListProps} from './componentConstants';
 import {URL, RESOURCE} from '../../../../data/constants/routeConstants';
 import {useHistory} from 'react-router-dom';
 import {styled} from '@mui/material/styles';
-import {Table,
+import {
+	Table,
 	TableBody,
 	TableCell,
 	TableContainer,
@@ -16,8 +15,9 @@ import {Table,
 	TableRow,
 	Button,
 	Paper,
-	tableCellClasses} from '@mui/material';
-import ClientHeader from '../../../Headers/ClientHeader';
+	tableCellClasses,
+} from '@mui/material';
+import PrivateHeader from '../../../Headers/PrivateHeader';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -61,11 +61,9 @@ const ClientOrdersList: FC<ClientOrdersListProps> = () => {
 
 	return (
 		<div>
-			<ClientHeader/>
+			<PrivateHeader/>
 			<div className={classes.conteiner}>
-
 				<TableContainer component={Paper} sx={{width: '80%'}} className={classes.conteiner_table}>
-
 					<Table sx={{minWidth: 650}} aria-label="customized table">
 						<TableHead>
 							<TableRow>
@@ -79,8 +77,7 @@ const ClientOrdersList: FC<ClientOrdersListProps> = () => {
 						</TableHead>
 						<TableBody>
 							{orders.map((order) => (
-								<StyledTableRow>
-
+								<StyledTableRow key={order.id}>
 									<StyledTableCell
 										component="th"
 										scope="row"
@@ -92,26 +89,22 @@ const ClientOrdersList: FC<ClientOrdersListProps> = () => {
 									<StyledTableCell align="center"> {order.startWorkOn.split('T').join(' ')} </StyledTableCell>
 									<StyledTableCell align="center"> {order.endWorkOn.split('T').join(' ')} </StyledTableCell>
 									<StyledTableCell align="center"> {order.clock.price} </StyledTableCell>
-
 									<StyledTableCell align="center">
 										{ order.ratingIdentificator ?
-
 											<Button
 												disabled={!order.isCompleted}
 												variant="contained"
 												sx={{width: '100%', fontSize: 14, borderRadius: 15}}
 												onClick={() => rateOrder(order.ratingIdentificator)}
 											>
-                                                    Rate Order
+                                                Rate Order
 											</Button> : order.orderRating
-
 										}
 									</StyledTableCell>
 								</StyledTableRow>
 							))}
 						</TableBody>
 					</Table>
-
 				</TableContainer>
 			</div>
 		</div>

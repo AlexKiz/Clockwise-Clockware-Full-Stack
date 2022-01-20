@@ -72,7 +72,7 @@ const getAdminOrders = async () => {
 	return orders;
 };
 
-const getMasterOrders = async (masterId: string) => {
+const getMasterOrders = async (params: {masterId: string, id: string}) => {
 	const orders = await db.Order.findAll({
 		order: [['startWorkOn', 'DESC']],
 		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
@@ -94,14 +94,14 @@ const getMasterOrders = async (masterId: string) => {
 			},
 		],
 		where: {
-			masterId,
+			masterId: params.masterId,
 		},
 	});
 
 	return orders;
 };
 
-const getClientOrders = async (masterId:string, id: string) => {
+const getClientOrders = async (params: {masterId: string, id: string}) => {
 	const orders = await db.Order.findAll({
 		order: [['startWorkOn', 'DESC']],
 		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
@@ -117,7 +117,9 @@ const getClientOrders = async (masterId:string, id: string) => {
 				required: true,
 			},
 		],
-		where: {id},
+		where: {
+			id: params.id,
+		},
 	});
 
 	return orders;

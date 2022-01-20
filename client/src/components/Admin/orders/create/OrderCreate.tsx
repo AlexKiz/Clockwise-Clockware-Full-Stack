@@ -21,7 +21,7 @@ import {
 	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
-import AdminHeader from 'src/components/Headers/PrivateHeader';
+import PrivateHeader from 'src/components/Headers/PrivateHeader';
 
 
 const OrderCreate: FC<OrderCreateProps> = () => {
@@ -81,6 +81,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 		},
 	});
 
+
 	useEffect(() => {
 		const readCurrentOrder = async () => {
 			const {data} = await axios.get<Order>(URL.ORDER_FOR_UPDATE, {
@@ -98,6 +99,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 
 		readCurrentOrder();
 	}, []);
+
 
 	useEffect(() => {
 		const readUsersData = async () => {
@@ -164,7 +166,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 
 	return (
 		<div>
-			<AdminHeader/>
+			<PrivateHeader/>
 			<div className={classes.conteiner}>
 				<div className={classes.container_form}>
 					<form className={classes.form} onSubmit={formik.handleSubmit}>

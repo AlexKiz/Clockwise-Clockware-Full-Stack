@@ -18,7 +18,7 @@ import {
 	tableCellClasses,
 } from '@mui/material';
 import AlertMessage from '../../../Notification/AlertMessage';
-import AdminHeader from '../../../Headers/PrivateHeader';
+import PrivateHeader from '../../../Headers/PrivateHeader';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -79,7 +79,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 
 	return (
 		<div>
-			<AdminHeader/>
+			<PrivateHeader/>
 			<div className={classes.conteiner}>
 				<TableContainer component={Paper} sx={{width: '100%'}} className={classes.conteiner_table}>
 					<Table sx={{minWidth: 650}} aria-label="customized table">

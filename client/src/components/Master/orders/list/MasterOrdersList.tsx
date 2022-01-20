@@ -17,7 +17,7 @@ import {
 	tableCellClasses,
 } from '@mui/material';
 import AlertMessage from '../../../Notification/AlertMessage';
-import MasterHeader from '../../../Headers/PrivateHeader';
+import PrivateHeader from '../../../Headers/PrivateHeader';
 import jwtDecode from 'jwt-decode';
 import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
 
@@ -99,7 +99,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 
 	return (
 		<div>
-			<MasterHeader/>
+			<PrivateHeader/>
 			<div className={classes.conteiner}>
 				<TableContainer component={Paper} sx={{width: '80%'}} className={classes.conteiner_table}>
 					<Table sx={{minWidth: 650}} aria-label="customized table">

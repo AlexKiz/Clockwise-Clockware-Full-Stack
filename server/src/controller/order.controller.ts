@@ -52,7 +52,7 @@ export const getOrders = async (req: Request, res: Response) => {
 
 		const {role, masterId, id} = await db.User.findOne({where: {token}});
 
-		const orders = await rolesMappingGetOrders[role](masterId, id);
+		const orders = await rolesMappingGetOrders[role]({masterId, id});
 
 		res.status(200).json(orders);
 	} catch (e) {
@@ -60,10 +60,11 @@ export const getOrders = async (req: Request, res: Response) => {
 	}
 };
 
+
 export const getOrderForUpdate = async (req: Request, res: Response) => {
 	const {id} = req.query;
 
-	const order = await db.Order.findOne({
+	const order = await db.Order.findById(id, {
 		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
 		include: [
 			{
@@ -87,11 +88,11 @@ export const getOrderForUpdate = async (req: Request, res: Response) => {
 				required: true,
 			},
 		],
-		where: {id},
 	});
 
 	return res.status(200).json(order);
 };
+
 
 export const getOrderForRate = async (req: Request, res: Response) => {
 	try {

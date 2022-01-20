@@ -13,7 +13,7 @@ import {
 	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
-import AdminHeader from '../../../Headers/PrivateHeader';
+import PrivateHeader from '../../../Headers/PrivateHeader';
 
 
 const CityCreate: FC<CityCreateProps> = () => {
@@ -85,7 +85,7 @@ const CityCreate: FC<CityCreateProps> = () => {
 
 	return (
 		<div>
-			<AdminHeader/>
+			<PrivateHeader/>
 			<div className={classes.container_form}>
 
 				<form className={classes.form} onSubmit = {formik.handleSubmit}>
