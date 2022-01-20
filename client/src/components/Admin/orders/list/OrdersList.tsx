@@ -670,9 +670,11 @@ const OrdersList: FC<OrdersListProps> = () => {
 								<TableCell colSpan={6}>
 									<Stack direction='row' spacing={1.5}>
 										<a href={
-											`${process.env.REACT_APP_API_URL}/exportXLSX?sortedField=${sortedField}&sortingOrder=${sortingOrder}
-											&masterFilteredId=${masterFilteredId}&cityFilteredId=${cityFilteredId}&clockFilteredId=${clockFilteredId}
-											&isCompletedFilter=${isCompletedFilter}&startDateFilter=${startDateFilter}&endDateFilter=${endDateFilter}`
+											`${process.env.REACT_APP_API_URL}/exportXLSX?sortedField=${sortedField}
+											&sortingOrder=${sortingOrder}&masterFilteredId=${masterFilteredId}
+											&cityFilteredId=${cityFilteredId}&clockFilteredId=${clockFilteredId}
+											&isCompletedFilter=${isCompletedFilter}&startDateFilter=${startDateFilter}
+											&endDateFilter=${endDateFilter}`
 										}>
 											<Button
 												variant="contained"
