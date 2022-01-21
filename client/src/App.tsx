@@ -36,6 +36,7 @@ const App = () => (
 			<PrivateRoute component={OrdersList} {...ROUTES.ADMIN_ORDERS_LIST}/>
 			<PrivateRoute component={OrderCreate} {...ROUTES.ADMIN_ORDER_CREATE}/>
 			<PrivateRoute component={MasterOrdersList} {...ROUTES.MASTER_ORDERS_LIST}/>
+			<PrivateRoute component={ClientOrdersList} {...ROUTES.CLIENT_ORDERS_LIST}/>
 		</Switch>
 	</BrowserRouter>
 );
