@@ -66,7 +66,7 @@ const RateOrder: FC<RateOrderProps> = () => {
 				type: 'success',
 				notify: true,
 			});
-			history.push('/');
+			history.push(URL.LOGIN);
 		});
 	};
 

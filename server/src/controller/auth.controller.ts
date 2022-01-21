@@ -34,7 +34,7 @@ export const auth = async (req: Request, res: Response) => {
 
 		res.set({
 			Authorization: `Bearer ${accessToken}`,
-		}).status(200).json({message: 'Successfully authorizated!', role, name});
+		}).status(200).json({message: 'Successfully authorizated!', role});
 	} catch (e) {
 		res.status(400).json({message: 'Login error'});
 	}

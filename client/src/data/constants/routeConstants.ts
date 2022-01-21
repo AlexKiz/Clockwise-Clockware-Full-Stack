@@ -11,7 +11,7 @@ export enum URL {
     CITY_FOR_ORDER = '/cityForOrder',
     ORDER_FOR_RATE = '/orderForRate',
 	ORDER_FOR_UPDATE = '/orderForUpdate',
-	CITY_FOR_UPDATE = '/cityForupdate',
+	CITY_FOR_UPDATE = '/cityForUpdate',
     RATED_ORDER = '/ratedOrder',
     ORDERS_RATING = '/ordersRating',
 	REGISTRATION = '/user/registration',

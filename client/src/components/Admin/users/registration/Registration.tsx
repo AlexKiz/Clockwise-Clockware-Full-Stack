@@ -301,6 +301,7 @@ const Registration:FC<RegistrationProps> = () => {
 							<div className={classes.form_section}>
 								<Button
 									disabled={!(formik.isValid && formik.dirty && !loading)}
+									color='success'
 									variant="contained"
 									type="submit"
 									className={classes.form_btn}

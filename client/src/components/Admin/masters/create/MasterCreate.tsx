@@ -158,7 +158,7 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 								fullWidth
 								error={formik.touched.citiesId && Boolean(formik.errors.citiesId)}
 							>
-								<InputLabel id="cities">Cities</InputLabel>
+								<InputLabel shrink={Boolean(formik.values.citiesId.length)} id="cities">Cities</InputLabel>
 								<Select
 									id='citiesId'
 									name='citiesId'
@@ -168,7 +168,7 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 									onChange={formik.handleChange}
 									value={formik.values.citiesId}
 									onBlur={formik.handleBlur}
-									input={<OutlinedInput label="Cities" />}
+									input={<OutlinedInput notched={Boolean(formik.values.citiesId.length)} label="Cities" />}
 								>
 									{cities.map((city) => (
 										<MenuItem

@@ -64,7 +64,7 @@ export const getOrders = async (req: Request, res: Response) => {
 export const getOrderForUpdate = async (req: Request, res: Response) => {
 	const {id} = req.query;
 
-	const order = await db.Order.findById(id, {
+	const order = await db.Order.findByPk(id, {
 		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
 		include: [
 			{

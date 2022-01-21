@@ -104,7 +104,7 @@ const getMasterOrders = async (params: {masterId: string, id: string}) => {
 const getClientOrders = async (params: {masterId: string, id: string}) => {
 	const orders = await db.Order.findAll({
 		order: [['startWorkOn', 'DESC']],
-		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
+		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted', 'orderRating'],
 		include: [
 			{
 				model: db.Clock,
@@ -118,7 +118,7 @@ const getClientOrders = async (params: {masterId: string, id: string}) => {
 			},
 		],
 		where: {
-			id: params.id,
+			userId: params.id,
 		},
 	});
 
