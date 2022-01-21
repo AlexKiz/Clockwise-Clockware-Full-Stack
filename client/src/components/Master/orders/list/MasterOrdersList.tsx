@@ -15,6 +15,7 @@ import {
 	Button,
 	Paper,
 	tableCellClasses,
+	Typography,
 } from '@mui/material';
 import AlertMessage from '../../../Notification/AlertMessage';
 import PrivateHeader from '../../../Headers/PrivateHeader';
@@ -135,6 +136,21 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 									</StyledTableCell>
 								</StyledTableRow>
 							))}
+							{ !orders.length &&
+								<TableRow>
+									<TableCell
+										colSpan={9}
+										sx={{height: 365, p: 0}}
+										align='center'>
+										<Typography
+											variant='h3'
+											component='label'
+										>
+											There are no orders yet!
+										</Typography>
+									</TableCell>
+								</TableRow>
+							}
 						</TableBody>
 					</Table>
 				</TableContainer>

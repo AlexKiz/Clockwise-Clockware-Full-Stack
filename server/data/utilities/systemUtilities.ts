@@ -118,7 +118,7 @@ const getClientOrders = async (params: {masterId: string, id: string}) => {
 			},
 		],
 		where: {
-			id: params.id,
+			userId: params.id,
 		},
 	});
 
