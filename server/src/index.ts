@@ -15,7 +15,6 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({exposedHeaders: 'Authorization'}));
-app.use(express.static(`../client/build`));
 app.use(express.json());
 
 
