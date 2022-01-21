@@ -22,6 +22,7 @@ export enum URL {
 export enum RESOURCE {
     ADMIN = 'admin',
 	MASTER = 'master',
+	CLIENT = 'client',
     CITY_CREATE = 'city-create',
     CITIES_LIST = 'cities-list',
     ORDER_CREATE = 'order-create',
@@ -49,7 +50,8 @@ export enum PARAM {
     ORDER_TIME = 'orderTimeParam',
     CLOCK_ID = 'clockIdParam',
     RATING_ID = 'ratingIdentificatorParam',
-	HASH_VERIFY = 'hashVerify'
+	HASH_VERIFY = 'hashVerify',
+	GENERATED = 'generated'
 }
 
 export const ROUTES = {
@@ -84,6 +86,9 @@ export const ROUTES = {
 	MASTER_ORDERS_LIST: {
 		path: `/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`,
 	},
+	CLIENT_ORDERS_LIST: {
+		path: `/${RESOURCE.CLIENT}/${RESOURCE.ORDERS_LIST}`,
+	},
 	ADMIN_ORDER_CREATE: {
 		path: `/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CREATE}/:${PARAM.ORDER_ID}?`,
 	},
@@ -94,6 +99,6 @@ export const ROUTES = {
 		path: `/${RESOURCE.RATE}/:${PARAM.RATING_ID}?`,
 	},
 	USER_VERIFY: {
-		path: `/${RESOURCE.VERIFICATION}/:${PARAM.HASH_VERIFY}?`,
+		path: `/${RESOURCE.VERIFICATION}/:${PARAM.HASH_VERIFY}?/:${PARAM.GENERATED}?`,
 	},
 };

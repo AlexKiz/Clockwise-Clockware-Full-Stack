@@ -1,3 +1,4 @@
+import {RESOURCE} from 'src/data/constants/routeConstants';
 import {VALID} from '../../../data/constants/systemConstants';
 
 export interface LoginFormProps {}
@@ -20,4 +21,10 @@ export const validate = (values: LoginFormValues) => {
 		errors.login = 'Email should match the example: myemail@mail.com';
 	}
 	return errors;
+};
+
+export const roleMappingLoginPaths = {
+	'admin': `/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`,
+	'master': `/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`,
+	'client': `/${RESOURCE.CLIENT}/${RESOURCE.ORDERS_LIST}`,
 };

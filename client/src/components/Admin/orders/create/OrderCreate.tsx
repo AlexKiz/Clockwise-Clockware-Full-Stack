@@ -6,7 +6,7 @@ import {Params, User, Clock, City, Master, AlertNotification, Order} from '../..
 import {OPENING_HOURS} from '../../../../data/constants/systemConstants';
 import {OrderCreateProps, validate} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
-import {format} from 'date-fns';
+import {format, isBefore} from 'date-fns';
 import {getOrderDates} from 'src/data/utilities/systemUtilities';
 import {useFormik} from 'formik';
 import {
@@ -21,7 +21,7 @@ import {
 	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
-import AdminHeader from 'src/components/Headers/PrivateHeader';
+import PrivateHeader from 'src/components/Headers/PrivateHeader';
 
 
 const OrderCreate: FC<OrderCreateProps> = () => {
@@ -81,6 +81,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 		},
 	});
 
+
 	useEffect(() => {
 		const readCurrentOrder = async () => {
 			const {data} = await axios.get<Order>(URL.ORDER_FOR_UPDATE, {
@@ -98,6 +99,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 
 		readCurrentOrder();
 	}, []);
+
 
 	useEffect(() => {
 		const readUsersData = async () => {
@@ -164,7 +166,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 
 	return (
 		<div>
-			<AdminHeader/>
+			<PrivateHeader/>
 			<div className={classes.conteiner}>
 				<div className={classes.container_form}>
 					<form className={classes.form} onSubmit={formik.handleSubmit}>
@@ -331,7 +333,11 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 									>
 										{
 											OPENING_HOURS.map((elem) => (
-												<MenuItem key={elem} value={elem}>
+												<MenuItem
+													key={elem}
+													value={elem}
+													disabled={isBefore(new Date(`${formik.values.orderDate} ${elem}`), new Date())}
+												>
 													{`${elem}`}
 												</MenuItem>
 											))

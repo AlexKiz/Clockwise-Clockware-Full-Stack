@@ -1,11 +1,11 @@
 import axios from 'axios';
-import {RESOURCE, URL} from '../../../data/constants/routeConstants';
+import {URL} from '../../../data/constants/routeConstants';
 import React, {useState, useEffect, FC} from 'react';
 import {useHistory} from 'react-router-dom';
 import PublicHeader from '../../Headers/PublicHeader';
 import classes from './login-form.module.css';
-import {LoginFormProps, validate} from './componentConstants';
-import {ACCESS_TOKEN, ROLE} from 'src/data/constants/systemConstants';
+import {LoginFormProps, roleMappingLoginPaths, validate} from './componentConstants';
+import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
 import {useFormik} from 'formik';
 import {
 	Button,
@@ -17,6 +17,7 @@ import {
 	Stack,
 	TextField,
 	Typography,
+	CircularProgress,
 } from '@mui/material';
 import {Visibility, VisibilityOff} from '@mui/icons-material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
@@ -29,6 +30,7 @@ const LoginForm:FC<LoginFormProps> = () => {
 
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [notify, setNotify] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const isOpen = (value:boolean) => {
 		setNotify(value);
@@ -42,6 +44,7 @@ const LoginForm:FC<LoginFormProps> = () => {
 		validate,
 		onSubmit: async (values) => {
 			try {
+				setLoading(true);
 				const login = await axios.post(URL.LOGIN, {
 					login: values.login,
 					password: values.password,
@@ -49,12 +52,9 @@ const LoginForm:FC<LoginFormProps> = () => {
 				const token = BearerParser.parseBearerToken(login.headers);
 				localStorage.setItem(ACCESS_TOKEN, token);
 
-				if (login.data.role === ROLE.ADMIN) {
-					history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
-				} else if (login.data.role === ROLE.MASTER) {
-					history.push(`/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`);
-				}
+				history.push(roleMappingLoginPaths[login.data.role]);
 			} catch (e) {
+				setLoading(false);
 				setNotify(true);
 			}
 			formik.resetForm();
@@ -67,11 +67,7 @@ const LoginForm:FC<LoginFormProps> = () => {
 		if (token) {
 			const {role} = jwtDecode<{role: string}>(token);
 
-			if (role === ROLE.ADMIN) {
-				history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`);
-			} else if (role === ROLE.MASTER) {
-				history.push(`/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`);
-			}
+			history.push(roleMappingLoginPaths[role]);
 		}
 	}, []);
 
@@ -145,10 +141,23 @@ const LoginForm:FC<LoginFormProps> = () => {
 								<Button
 									variant="contained"
 									type="submit"
+									color='success'
 									className={classes.form_btn}
-									style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
+									style={ {fontSize: 18, borderRadius: 15} }
+									disabled={loading}
 								>
 									Sign In
+									{loading && <CircularProgress
+										size={56}
+										color="success"
+										sx={{
+											position: 'absolute',
+											top: '50%',
+											left: '50%',
+											marginTop: '-28px',
+											marginLeft: '-28px',
+										}}
+									/>}
 								</Button>
 							</div>
 						</Stack>

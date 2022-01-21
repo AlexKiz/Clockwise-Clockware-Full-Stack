@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import {InputLabel} from '@mui/material';
-import AdminHeader from '../../../Headers/PrivateHeader';
+import PrivateHeader from '../../../Headers/PrivateHeader';
 
 
 const MasterCreate: FC<MasterCreateProps> = () => {
@@ -109,7 +109,7 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 
 	return (
 		<div>
-			<AdminHeader/>
+			<PrivateHeader/>
 			<div className={classes.container_form}>
 
 				<form className={classes.form} onSubmit = {formik.handleSubmit}>

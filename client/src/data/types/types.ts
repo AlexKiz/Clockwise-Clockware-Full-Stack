@@ -15,6 +15,7 @@ export type Params = {
     masterNameParam: string
     ratingIdentificatorParam: string
     hashVerify: string
+    generated: string
 }
 
 export type City = {
@@ -51,6 +52,7 @@ export type Order = {
     master: Master
     startWorkOn: string
     endWorkOn: string
+    orderRating: number
     ratingIdentificator: string
     isCompleted: boolean
 }

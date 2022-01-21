@@ -5,7 +5,7 @@ import {Master, City, Clock, AlertNotification} from '../../../data/types/types'
 import {OPENING_HOURS} from '../../../data/constants/systemConstants';
 import {OrderFormProps, validate} from './componentConstants';
 import {URL} from '../../../data/constants/routeConstants';
-import {format} from 'date-fns';
+import {format, isBefore} from 'date-fns';
 import {
 	Button,
 	Stack,
@@ -16,6 +16,7 @@ import {
 	FormControl,
 	FormHelperText,
 	Typography,
+	CircularProgress,
 } from '@mui/material';
 import PublicHeader from '../../Headers/PublicHeader';
 import {useFormik} from 'formik';
@@ -33,6 +34,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 		type: 'success',
 		message: '',
 	});
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const isOpen = (value:boolean) => {
 		setAlertOptions({...alertOptions, notify: value});
@@ -52,7 +54,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 		onSubmit: async (values) => {
 			if (clocks.length) {
 				const [startDate, endDate] = getOrderDates(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
-
+				setLoading(true);
 				await axios.post(URL.ORDER,
 					{
 						name: values.name,
@@ -63,6 +65,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 						startWorkOn: startDate,
 						endWorkOn: endDate,
 					}).then(() => {
+					setLoading(false);
 					setAlertOptions({
 						message: 'Your order has been created! Please rate the master afterwards!',
 						type: 'success',
@@ -317,7 +320,11 @@ const OrderForm: FC<OrderFormProps> = () => {
 									>
 										{
 											OPENING_HOURS.map((elem) => (
-												<MenuItem key={elem} value={elem}>
+												<MenuItem
+													key={elem}
+													value={elem}
+													disabled={isBefore(new Date(`${formik.values.orderDate} ${elem}`), new Date())}
+												>
 													{`${elem}`}
 												</MenuItem>
 											))
@@ -366,10 +373,24 @@ const OrderForm: FC<OrderFormProps> = () => {
 								<Button
 									variant="contained"
 									type="submit"
+									color='success'
 									className={classes.form_btn}
-									style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
+									style={ {fontSize: 18, borderRadius: 15} }
+									disabled={loading}
+
 								>
 										Create order
+									{loading && <CircularProgress
+										size={56}
+										color="success"
+										sx={{
+											position: 'absolute',
+											top: '50%',
+											left: '50%',
+											marginTop: '-28px',
+											marginLeft: '-28px',
+										}}
+									/>}
 								</Button>
 							</div>
 						</Stack>

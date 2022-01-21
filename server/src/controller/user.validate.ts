@@ -60,6 +60,18 @@ export const putUserValidate = async (req: Request, res: Response, next: NextFun
 	}
 };
 
+export const userVerifyChecking = async (req: Request, res: Response, next: NextFunction) => {
+	const {hashVerify} = req.body;
+
+	const user = await db.User.findOne({where: {hashVerify}});
+
+	if (user) {
+		return next();
+	} else {
+		res.status(404).send();
+	}
+};
+
 
 export const deleteUserValidate = async (req: Request, res: Response, next: NextFunction) => {
 	const {id} = req.body;

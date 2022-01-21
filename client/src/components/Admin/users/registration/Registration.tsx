@@ -22,6 +22,7 @@ import {
 	Stack,
 	TextField,
 	Typography,
+	CircularProgress,
 } from '@mui/material';
 import {Visibility, VisibilityOff} from '@mui/icons-material';
 import {City} from 'src/data/types/types';
@@ -33,7 +34,7 @@ const Registration:FC<RegistrationProps> = () => {
 
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [notify, setNotify] = useState<boolean>(false);
-	const [isDisabled, setIsDisabled] = useState<boolean>(true);
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const isOpen = (value:boolean) => {
 		setNotify(value);
@@ -53,6 +54,7 @@ const Registration:FC<RegistrationProps> = () => {
 		},
 		validate,
 		onSubmit: async (values) => {
+			setLoading(true);
 			await axios.post(URL.REGISTRATION,
 				{
 					email: values.email,
@@ -60,8 +62,11 @@ const Registration:FC<RegistrationProps> = () => {
 					password: values.password,
 					citiesId: values.citiesId,
 					role: values.isMaster ? 'master' : 'client',
-				}).then(() =>{
+				}).then(() => {
+				setLoading(false);
 				setNotify(true);
+				values.licenseAcception = false,
+				values.isMaster = false,
 				formik.resetForm();
 			});
 		},
@@ -78,19 +83,6 @@ const Registration:FC<RegistrationProps> = () => {
 
 		readCitiesData();
 	}, []);
-
-
-	useEffect(() => {
-		const disableSubmit = () => {
-			if (formik.errors.email || formik.errors.password || formik.errors.checkPassword || !formik.errors.licenseAcception) {
-				setIsDisabled(true);
-			} else if (formik.values.email && formik.values.password && formik.values.checkPassword && formik.values.licenseAcception) {
-				setIsDisabled(false);
-			}
-		};
-
-		disableSubmit();
-	}, [formik.values.email, formik.values.password, formik.values.checkPassword, formik.values.licenseAcception]);
 
 
 	return (
@@ -242,6 +234,7 @@ const Registration:FC<RegistrationProps> = () => {
 											control={
 												<Checkbox
 													onChange={formik.handleChange('licenseAcception')}
+													checked={formik.values.licenseAcception}
 													required
 												/>
 											}
@@ -251,6 +244,7 @@ const Registration:FC<RegistrationProps> = () => {
 											control={
 												<Checkbox
 													onChange={formik.handleChange('isMaster')}
+													checked={formik.values.isMaster}
 													value=''
 												/>
 											}
@@ -262,7 +256,8 @@ const Registration:FC<RegistrationProps> = () => {
 									</FormHelperText>
 								</FormControl>
 							</div>
-							{ formik.values.isMaster ?
+
+							{ formik.values.isMaster &&
 								<div className={classes.form_section}>
 									<div className={classes.form_input__label}>
 										<Typography
@@ -301,17 +296,28 @@ const Registration:FC<RegistrationProps> = () => {
 										</Select>
 										<FormHelperText> {formik.touched.citiesId && formik.errors.citiesId} </FormHelperText>
 									</FormControl>
-								</div> : ''
+								</div>
 							}
 							<div className={classes.form_section}>
 								<Button
-									disabled={isDisabled}
+									disabled={!(formik.isValid && formik.dirty && !loading)}
 									variant="contained"
 									type="submit"
 									className={classes.form_btn}
-									style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
+									style={ {fontSize: 18, borderRadius: 15} }
 								>
 								Submit
+									{loading && <CircularProgress
+										size={56}
+										color="success"
+										sx={{
+											position: 'absolute',
+											top: '50%',
+											left: '50%',
+											marginTop: '-28px',
+											marginLeft: '-28px',
+										}}
+									/>}
 								</Button>
 							</div>
 						</Stack>

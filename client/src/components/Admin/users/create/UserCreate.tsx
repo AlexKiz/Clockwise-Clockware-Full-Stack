@@ -13,7 +13,7 @@ import {
 	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
-import AdminHeader from '../../../Headers/PrivateHeader';
+import PrivateHeader from '../../../Headers/PrivateHeader';
 
 
 const UserCreate: FC<UserCreateProps> = () => {
@@ -57,7 +57,7 @@ const UserCreate: FC<UserCreateProps> = () => {
 
 	return (
 		<div>
-			<AdminHeader/>
+			<PrivateHeader/>
 			<div className={classes.container_form}>
 				<form className={classes.form} onSubmit = {formik.handleSubmit}>
 					<Stack direction="column" justifyContent="center" spacing={1.5}>

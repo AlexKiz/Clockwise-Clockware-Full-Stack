@@ -1,19 +1,29 @@
 import {rolesMappingGetOrders} from './../../data/utilities/systemUtilities';
 import {Response, Request} from 'express';
-import {sendMail} from '../services/nodemailer';
+import {sendMail, sendVerificationMail} from '../services/nodemailer';
 import {v4 as uuidv4} from 'uuid';
 import db from '../models';
 import {BearerParser} from 'bearer-token-parser';
+import bcrypt from 'bcrypt';
 
 
 export const postOrder = async (req: Request, res: Response) => {
 	try {
 		const {name, email, clockId, cityId, masterId, startWorkOn, endWorkOn} = req.body;
 
+		const generatedPassword = uuidv4();
+		const salt = bcrypt.genSaltSync(10);
+		const hashForVerification = bcrypt.hashSync(`${name}${email}`, salt);
+		const hashVerify = hashForVerification.replace(/\//g, 'i');
+
 		const [user, isUserCreated] = await db.User.findOrCreate({
 			where: {email},
-			defaults: {email, name, role: 'client'},
+			defaults: {name, email, password: generatedPassword, role: 'client', hashVerify},
 		});
+
+		if (isUserCreated) {
+			await sendVerificationMail(email, hashVerify, generatedPassword);
+		}
 
 		const {id: userId} = user;
 
@@ -40,9 +50,9 @@ export const getOrders = async (req: Request, res: Response) => {
 	try {
 		const token = BearerParser.parseBearerToken(req.headers);
 
-		const {role, masterId} = await db.User.findOne({where: {token}});
+		const {role, masterId, id} = await db.User.findOne({where: {token}});
 
-		const orders = await rolesMappingGetOrders[role](masterId);
+		const orders = await rolesMappingGetOrders[role]({masterId, id});
 
 		res.status(200).json(orders);
 	} catch (e) {
@@ -50,10 +60,11 @@ export const getOrders = async (req: Request, res: Response) => {
 	}
 };
 
+
 export const getOrderForUpdate = async (req: Request, res: Response) => {
 	const {id} = req.query;
 
-	const order = await db.Order.findOne({
+	const order = await db.Order.findById(id, {
 		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
 		include: [
 			{
@@ -77,11 +88,11 @@ export const getOrderForUpdate = async (req: Request, res: Response) => {
 				required: true,
 			},
 		],
-		where: {id},
 	});
 
 	return res.status(200).json(order);
 };
+
 
 export const getOrderForRate = async (req: Request, res: Response) => {
 	try {
