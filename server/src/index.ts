@@ -27,10 +27,6 @@ app.use(URL.API, adminRouter);
 app.use(URL.API, login);
 
 
-app.get('/*', function(req: Request, res: Response) {
-	res.sendFile(path.resolve('../', 'client', 'build', 'index.html'));
-});
-
 const start = async () => {
 	try {
 		await db.sequelize.authenticate();
