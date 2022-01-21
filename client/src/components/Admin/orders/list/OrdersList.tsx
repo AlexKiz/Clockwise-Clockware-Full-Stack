@@ -420,8 +420,8 @@ const OrdersList: FC<OrdersListProps> = () => {
 									value={dateFilteringArray}
 									onChange={(value) => {
 										dispatch(setDateFilteringArray(value));
-										dispatch(setStartDateFilter(value[0]));
-										dispatch(setEndDateFilter(value[1]));
+										dispatch(setStartDateFilter(null)); // value[0]
+										dispatch(setEndDateFilter(null)); // value[1]
 										dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 									}}
 									renderInput={(startProps, endProps) => (

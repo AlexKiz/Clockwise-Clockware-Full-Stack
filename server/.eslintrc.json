@@ -24,7 +24,7 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "linebreak-style":  ["error", "unix"],
+        "linebreak-style":  0,// ["error", "unix"],
         "indent": ["error", "tab"],
         "no-tabs": ["error", { "allowIndentationTabs": true }],
         "max-len": ["error", { "code": 120 }],

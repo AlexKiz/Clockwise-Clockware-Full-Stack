@@ -13,7 +13,7 @@ import {
 	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
-import PrivateHeader from '../../../Headers/PrivateHeader';
+import PrivateHeader from '../../../Headers/PublicHeader';
 
 
 const CityCreate: FC<CityCreateProps> = () => {

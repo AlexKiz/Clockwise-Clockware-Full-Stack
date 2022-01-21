@@ -11,6 +11,7 @@ import path from 'path';
 import {URL} from '../data/constants/routeConstants';
 import db from './models';
 import {nearOrderNotification} from './services/cron';
+import {stripe} from './services/stripe';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -28,6 +29,55 @@ app.use(URL.API, userRouter);
 app.use(URL.API, adminRouter);
 app.use(URL.API, login);
 
+app.post('/webhook', express.raw({type: 'application/json'}), (req: Request, res: Response) => {
+	/*  const {
+		name,
+		email,
+		clockId,
+		cityId,
+		masterId,
+		startWorkOn,
+		endWorkOn,
+		orderPhotos,
+	} = req.body;*/
+	const testpayload = req.body;
+
+	console.log(testpayload);
+	res.status(200).end();
+}); /*
+	const payload: any = {name, email, clockId, cityId, masterId, startWorkOn, endWorkOn};
+
+	const sig = req.headers['stripe-signature'];
+
+	const endpointSecret = 'whsec_nKu9ir2FCaWE9DUjjt0UW7Z3N2Fz5zgB';
+
+	let event;
+
+	try {
+		if (sig) {
+			event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+		}
+	} catch (err) {
+		return res.status(400).send();
+	}
+
+	if (event?.type === 'checkout.session.completed') {
+		const session = event.data.object;
+
+		const successPayment = async () => {
+			const createdOrder = await createOrder(session, orderPhotos);
+
+			await sendPaymentEmail();
+
+			return res.status(200);
+		};
+
+		successPayment();
+	} else {
+		res.status(500).send({message: 'Something went wrong while payment!'});
+	}
+});
+*/
 
 app.get('/*', function(req: Request, res: Response) {
 	res.sendFile(path.resolve('../', 'client', 'build', 'index.html'));

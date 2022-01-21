@@ -30,8 +30,11 @@ import PublicHeader from '../../Headers/PublicHeader';
 import {useFormik} from 'formik';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import {getBinaryImages, getOrderDates} from 'src/data/utilities/systemUtilities';
+import {useHistory} from 'react-router-dom';
+
 
 const OrderForm: FC<OrderFormProps> = () => {
+	const history = useHistory();
 	const [masters, setMasters] = useState<Master[]>([]);
 	const [cities, setCities] = useState<City[]>([]);
 	const [clocks, setClocks] = useState<Clock[]>([]);
@@ -519,6 +522,17 @@ const OrderForm: FC<OrderFormProps> = () => {
 							</div>
 						</Stack>
 					</form>
+					<button
+						onClick={async () => {
+							await axios.post('/stripe').then((response) => {
+								const url: any = response.data;
+								console.log(response.data);
+								history.push(url);
+							});
+						}}
+					>
+						Stripe  Test
+					</button>
 				</div>
 				{
 					alertOptions.notify &&

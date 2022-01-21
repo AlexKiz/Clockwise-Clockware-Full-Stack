@@ -11,6 +11,7 @@ import {
 	completeOrder,
 } from '../controller/order.controller';
 import {postOrderValidate, putRatedOrderValidate} from '../controller/order.validate';
+import {createStripeCheckoutSession} from '../controller/stripe.controller';
 
 const router = Router();
 
@@ -20,5 +21,6 @@ router.get(URL.ORDER_FOR_RATE, getOrderForRate);
 router.get(URL.CLOCKS, getClocks);
 router.put(URL.RATED_ORDER, [putRatedOrderValidate], putRatedOrder);
 router.put(URL.COMPLETE_ORDER, [isAuth, checkRole(['master'])], completeOrder);
+router.post('/stripe', createStripeCheckoutSession);
 
 export default router;
