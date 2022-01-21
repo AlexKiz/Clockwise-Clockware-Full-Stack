@@ -9,7 +9,7 @@ import MasterCities from './MasterCities';
 import Order from './Order';
 import User from './User';
 const env = process.env.MODE || 'development';
-const config = require('../config/config')[env];
+const config = require('../config/dbconfig')[env];
 
 const sequelize = new Sequelize(`${config.database}`, `${config.username}`, `${config.password}`, {...config});
 
