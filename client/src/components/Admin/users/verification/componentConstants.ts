@@ -1,6 +1,6 @@
 import {VALID} from 'src/data/constants/systemConstants';
 
-export interface VerificationProps {};
+export interface VerificationProps {}
 
 export interface RegistrationFormValues {
     password: string
