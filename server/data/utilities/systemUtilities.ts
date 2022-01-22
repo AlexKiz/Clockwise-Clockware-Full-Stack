@@ -1,4 +1,4 @@
-import {Op} from 'sequelize/types';
+import {Op} from 'sequelize';
 import db from '../../src/models';
 import {sendVerificationMail} from '../../src/services/nodemailer';
 
@@ -45,7 +45,7 @@ const createClient = async (name: string, email: string, password: string, hashV
 
 export type filtersOptions = {
 	clockId?: number,
-	isCompleted?: any,
+	isCompleted?: boolean,
 	masterId?: string,
 	cityId?: number,
 	startWorkOn?: {[Op.gte]:string},
@@ -63,9 +63,9 @@ type roleMappingOrderGetParams = {
 }
 
 const getAdminOrders = async (params: roleMappingOrderGetParams) => {
-	const orders = await db.Order.findAll({
+	const orders = await db.Order.findAndCountAll({
 		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
-		order: [[`${params.sortedField}`, `${params.sortingOrder}`]],
+		order: [[db.sequelize.col(`${params.sortedField}`), `${params.sortingOrder}`]],
 		include: [
 			{
 				model: db.Clock,

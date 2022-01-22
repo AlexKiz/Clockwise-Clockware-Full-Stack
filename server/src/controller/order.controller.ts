@@ -5,7 +5,7 @@ import {v4 as uuidv4} from 'uuid';
 import db from '../models';
 import {BearerParser} from 'bearer-token-parser';
 import bcrypt from 'bcrypt';
-import Op from 'sequelize/types/lib/operators';
+import {Op} from 'sequelize';
 
 
 export const postOrder = async (req: Request, res: Response) => {
@@ -64,7 +64,7 @@ export const getOrders = async (req: Request, res: Response) => {
 
 		const filterOptions: filtersOptions = {};
 
-		if (isCompletedFilter !== undefined) {
+		if (typeof isCompletedFilter === 'boolean') {
 			filterOptions.isCompleted = isCompletedFilter;
 		}
 
@@ -96,7 +96,15 @@ export const getOrders = async (req: Request, res: Response) => {
 
 		const {role, masterId, id} = await db.User.findOne({where: {token}});
 
-		const orders = await rolesMappingGetOrders[role]({masterId, id, limit, offset, sortedField, sortingOrder});
+		const orders = await rolesMappingGetOrders[role]({
+			masterId,
+			id,
+			limit,
+			offset,
+			sortedField,
+			sortingOrder,
+			filterOptions,
+		});
 
 		res.status(200).json(orders);
 	} catch (e) {
@@ -210,9 +218,21 @@ export const putRatedOrder = async (req: Request, res: Response) => {
 
 
 export const getClocks = async (req: Request, res: Response) => {
-	const clocks = await db.Clock.findAll();
+	const {clockSize} =req.query;
 
-	res.status(200).json(clocks);
+	if (clockSize !== undefined || null) {
+		const clocks = await db.Clock.findAll({
+			where: {
+				size: {[Op.iLike]: `%${clockSize}%`},
+			},
+		});
+
+		res.status(200).json(clocks);
+	} else {
+		const clocks = await db.Clock.findAll();
+
+		res.status(200).json(clocks);
+	}
 };
 
 

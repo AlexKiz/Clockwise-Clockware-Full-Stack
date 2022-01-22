@@ -1,5 +1,6 @@
 import {Request, Response} from 'express';
 import db from '../models';
+import {Op} from 'sequelize';
 
 
 export const postCity = async (req: Request, res: Response) => {
@@ -16,17 +17,20 @@ export const postCity = async (req: Request, res: Response) => {
 
 
 export const getCities = async (req: Request, res: Response) => {
-	const {limit, offset, sortedField, sortingOrder} = req.query;
+	const {limit, offset, sortedField, sortingOrder, cityName} = req.query;
 
-	if (limit && offset && sortedField && sortingOrder) {
+	if (sortedField && sortingOrder) {
 		const cities = await db.City.findAndCountAll({
 			order: [[db.sequelize.col(`${sortedField}`), `${sortingOrder}`]],
+			where: {
+				name: {[Op.iLike]: `%${cityName}%`},
+			},
 			limit,
 			offset,
 		});
 		return res.status(200).json(cities);
-	} else if (limit && offset) {
-		const cities = await db.City.findAndCountAll({
+	} else if (cityName !== undefined || null) {
+		const cities = await db.City.findAll({
 			limit,
 			offset,
 		});

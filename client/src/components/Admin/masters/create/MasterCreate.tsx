@@ -150,7 +150,7 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 									gutterBottom
 									component="label"
 								>
-									Choose masters сity:
+									Choose masters city:
 								</Typography>
 							</div>
 

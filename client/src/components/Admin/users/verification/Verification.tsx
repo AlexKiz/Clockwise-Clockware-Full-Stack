@@ -83,7 +83,7 @@ const Verification: FC<VerificationProps> = () => {
 									className={classes.btn}
 									style={ {fontSize: 22, backgroundColor: 'green', borderRadius: 15} }
 								>
-								GO TO MAIN PAGE
+									GO TO MAIN PAGE
 								</Button>
 							</div>
 						</Stack> :
@@ -154,7 +154,7 @@ const Verification: FC<VerificationProps> = () => {
 										className={classes.form_btn}
 										style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
 									>
-												Submit and verify
+										Submit and verify
 									</Button>
 								</div>
 							</Stack>

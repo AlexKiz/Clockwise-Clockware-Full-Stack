@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
 import classes from './orders-list.module.css';
-import {Order, City, Master, Clock, AlertNotification} from '../../../../data/types/types';
+import {Order, City, Master, Clock, AlertNotification, FiltersList, FilterInstances} from '../../../../data/types/types';
 import {OrdersListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {styled} from '@mui/material/styles';
@@ -31,7 +31,6 @@ import {
 } from '@mui/material';
 import {
 	DesktopDateRangePicker,
-	DateRange,
 	LocalizationProvider,
 } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
@@ -70,30 +69,25 @@ const OrdersList: FC<OrdersListProps> = () => {
 	const [clocks, setClocks] = useState<Clock[]>([]);
 
 	const [masterName, setMasterName] = useState<string>('');
-	const [masterFilter, setMasterFilter] = useState<Master | null>(null);
-
 	const [cityName, setCityName] = useState<string>('');
-	const [cityFilter, setCityFilter] = useState<City | null>(null);
-
 	const [clockSize, setClockSize] = useState<string>('');
-	const [clockFilter, setClockFilter] = useState<Clock | null>(null);
 
-	const [dateFilter, setDateFilter] = useState<DateRange<Date>>([null, null]);
+	const [filterInstances, setFilterInstances] = useState<FilterInstances>({
+		city: null,
+		master: null,
+		clock: null,
+		date: [null, null],
+	});
 
-	const [isCompletedFilter, setIsCompletedFilter] = useState<boolean | null>(null);
+	const [filtersList, setFiltersList] = useState<FiltersList>({});
+
+	const [isFilterListOpen, setIsFilterListOpen] = useState<boolean>(false);
 
 	const [isFilterButtonsDisabled, setIsFilterButtonsDisabled] = useState<{accept: boolean, reset: boolean}>({
 		accept: false,
 		reset: true,
 	});
 
-	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
-		notify: false,
-		type: 'success',
-		message: '',
-	});
-
-	const [isFilterListOpen, setIsFilterListOpen] = useState<boolean>(false);
 	const [page, setPage] = useState<number>(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
 	const [totalOrders, setTotalOrders] = useState<number>(0);
@@ -101,6 +95,12 @@ const OrdersList: FC<OrdersListProps> = () => {
 	const [sortingOrder, setSortingOrder] = useState<'asc' | 'desc'>('asc');
 
 	const [loading, setLoading] = useState<boolean>(false);
+
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
 
 	useEffect(() => {
 		const readOrdersData = async () => {
@@ -111,12 +111,12 @@ const OrdersList: FC<OrdersListProps> = () => {
 					offset: rowsPerPage * page,
 					sortedField,
 					sortingOrder,
-					masterFilteredId: masterFilter?.id,
-					cityFilteredId: cityFilter?.id,
-					clockFilteredId: clockFilter?.id,
-					isCompletedFilter,
-					startDateFilter: dateFilter[0],
-					endDateFilter: dateFilter[1],
+					masterFilteredId: filtersList.masterId,
+					cityFilteredId: filtersList.cityId,
+					clockFilteredId: filtersList.clockId,
+					isCompletedFilter: filtersList.isCompleted,
+					startDateFilter: filtersList.startWorkOn,
+					endDateFilter: filtersList.endWorkOn,
 				},
 			}).then((response) => {
 				setOrders(response.data.rows);
@@ -165,7 +165,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 
 
 	const readMasterData = debouncer(async () => {
-		const {data} = await axios.get<{count: number, rows: Master[]}>(URL.MASTER, {
+		const {data} = await axios.get<Master[]>(URL.MASTER, {
 			params: {
 				limit: 5,
 				offset: 0,
@@ -173,13 +173,13 @@ const OrdersList: FC<OrdersListProps> = () => {
 			},
 		});
 
-		if (data.rows.length) {
-			setMasters(data.rows);
+		if (data.length) {
+			setMasters(data);
 		}
 	}, 200);
 
 	const readCityData = debouncer(async () => {
-		const {data} = await axios.get<{count: number, rows: City[]}>(URL.CITY, {
+		const {data} = await axios.get<City[]>(URL.CITY, {
 			params: {
 				limit: 5,
 				offset: 0,
@@ -187,8 +187,8 @@ const OrdersList: FC<OrdersListProps> = () => {
 			},
 		});
 
-		if (data.rows.length) {
-			setCities(data.rows);
+		if (data.length) {
+			setCities(data);
 		}
 	}, 200);
 
@@ -258,12 +258,12 @@ const OrdersList: FC<OrdersListProps> = () => {
 				offset: rowsPerPage * page,
 				sortedField,
 				sortingOrder,
-				masterFilteredId: masterFilter?.id,
-				cityFilteredId: cityFilter?.id,
-				clockFilteredId: clockFilter?.id,
-				isCompletedFilter,
-				startDateFilter: dateFilter[0],
-				endDateFilter: dateFilter[1],
+				masterFilteredId: filtersList.masterId,
+				cityFilteredId: filtersList.cityId,
+				clockFilteredId: filtersList.clockId,
+				isCompletedFilter: filtersList.isCompleted,
+				startDateFilter: filtersList.startWorkOn,
+				endDateFilter: filtersList.endWorkOn,
 			},
 		});
 		setOrders(data.rows);
@@ -288,11 +288,20 @@ const OrdersList: FC<OrdersListProps> = () => {
 		});
 		setOrders(data.rows);
 		setTotalOrders(data.count);
-		setMasterFilter(null);
-		setCityFilter(null);
-		setClockFilter(null);
-		setIsCompletedFilter(null);
-		setDateFilter([null, null]);
+		setFilterInstances({
+			master: null,
+			city: null,
+			clock: null,
+			date: [null, null],
+		});
+		setFiltersList({
+			masterId: null,
+			clockId: null,
+			cityId: null,
+			isCompleted: null,
+			startWorkOn: null,
+			endWorkOn: null,
+		});
 		setIsFilterButtonsDisabled({
 			accept: false,
 			reset: true,
@@ -324,10 +333,17 @@ const OrdersList: FC<OrdersListProps> = () => {
 								disablePortal
 								id="combo-box-demo"
 								options={masters}
-								value={masterFilter}
+								value={filterInstances.master}
 								getOptionLabel={(option) => option.name}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: Master | null) => {
-									setMasterFilter(value);
+									setFilterInstances({
+										...filterInstances,
+										master: value,
+									});
+									setFiltersList({
+										...filtersList,
+										masterId: value?.id,
+									});
 									setIsFilterButtonsDisabled({
 										...isFilterButtonsDisabled,
 										accept: false,
@@ -346,10 +362,17 @@ const OrdersList: FC<OrdersListProps> = () => {
 								disablePortal
 								id="combo-box-demo"
 								options={cities}
-								value={cityFilter}
+								value={filterInstances.city}
 								getOptionLabel={(option) => option.name}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: City | null) => {
-									setCityFilter(value);
+									setFilterInstances({
+										...filterInstances,
+										city: value,
+									});
+									setFiltersList({
+										...filtersList,
+										cityId: value?.id,
+									});
 									setIsFilterButtonsDisabled({
 										...isFilterButtonsDisabled,
 										accept: false,
@@ -372,10 +395,17 @@ const OrdersList: FC<OrdersListProps> = () => {
 								disablePortal
 								id="combo-box-demo"
 								options={clocks}
-								value={clockFilter}
+								value={filterInstances.clock}
 								getOptionLabel={(option) => option.size}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: Clock | null) => {
-									setClockFilter(value);
+									setFilterInstances({
+										...filterInstances,
+										clock: value,
+									});
+									setFiltersList({
+										...filtersList,
+										clockId: value?.id,
+									});
 									setIsFilterButtonsDisabled({
 										...isFilterButtonsDisabled,
 										accept: false,
@@ -393,7 +423,10 @@ const OrdersList: FC<OrdersListProps> = () => {
 									<Checkbox
 										name="isCompleted"
 										onChange={() => {
-											setIsCompletedFilter((prev) => !prev);
+											setFiltersList({
+												...filtersList,
+												isCompleted: !filtersList.isCompleted,
+											});
 											setIsFilterButtonsDisabled({
 												...isFilterButtonsDisabled,
 												accept: false,
@@ -407,9 +440,17 @@ const OrdersList: FC<OrdersListProps> = () => {
 								<DesktopDateRangePicker
 									startText='Sort on start date'
 									endText='Sort on end date'
-									value={dateFilter}
+									value={filterInstances.date}
 									onChange={(value) => {
-										setDateFilter(value);
+										setFilterInstances({
+											...filterInstances,
+											date: value,
+										});
+										setFiltersList({
+											...filtersList,
+											startWorkOn: value[0],
+											endWorkOn: value[1],
+										});
 										setIsFilterButtonsDisabled({
 											...isFilterButtonsDisabled,
 											accept: false,
@@ -685,7 +726,13 @@ const OrdersList: FC<OrdersListProps> = () => {
 					</Table>
 				</TableContainer>
 				{
-					alertOptions.notify && <AlertMessage alertType={alertOptions.type} message={alertOptions.message} isOpen={isOpen} notify={alertOptions.notify}/>
+					alertOptions.notify &&
+					<AlertMessage
+						alertType={alertOptions.type}
+						message={alertOptions.message}
+						isOpen={isOpen}
+						notify={alertOptions.notify}
+					/>
 				}
 			</div>
 		</div>
