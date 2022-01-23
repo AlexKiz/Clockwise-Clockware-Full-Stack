@@ -1,9 +1,8 @@
-/* eslint-disable no-unused-vars */
 import {CronJob} from 'cron';
 import db from '../models';
 import {sendNearOrderMailNotification} from './nodemailer';
 
-export const nearOrderNotification = new CronJob('* * 1 * * *', async function() {
+export const nearOrderNotification = new CronJob('* * 1 * * *', async () => {
 	const currentDate = new Date();
 	currentDate.setUTCHours(currentDate.getHours() + 1);
 	const nearOrderDate = currentDate.toISOString();
@@ -31,5 +30,7 @@ export const nearOrderNotification = new CronJob('* * 1 * * *', async function()
 			await sendNearOrderMailNotification(elem.email);
 		});
 	};
+
+	sendNotificationMail();
 } );
 
