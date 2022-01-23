@@ -22,15 +22,15 @@ export const getCities = async (req: Request, res: Response) => {
 	if (sortedField && sortingOrder) {
 		const cities = await db.City.findAndCountAll({
 			order: [[db.sequelize.col(`${sortedField}`), `${sortingOrder}`]],
-			where: {
-				name: {[Op.iLike]: `%${cityName}%`},
-			},
 			limit,
 			offset,
 		});
 		return res.status(200).json(cities);
 	} else if (cityName !== undefined || null) {
 		const cities = await db.City.findAll({
+			where: {
+				name: {[Op.iLike]: `%${cityName}%`},
+			},
 			limit,
 			offset,
 		});
