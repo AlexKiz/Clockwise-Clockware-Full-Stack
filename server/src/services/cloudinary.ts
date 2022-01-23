@@ -1,14 +1,13 @@
 /* eslint-disable require-jsdoc */
 import dotenv from 'dotenv';
 import * as cloudinary from 'cloudinary';
-import {resolve} from 'path/posix';
 
 dotenv.config();
 
 interface IConfig {
-	cloud_name: string;
-	api_key: string;
-	api_secret: string;
+	cloud_name?: string;
+	api_key?: string;
+	api_secret?: string;
 }
 
 interface IData {
@@ -25,7 +24,7 @@ export class CloudinaryService {
 			photos.map((photo) => {
 				return cloudinary.v2.uploader.upload(photo)
 					.then((data: IData) => {
-						resolve(data.url);
+						return data.url;
 					});
 			}),
 		);
