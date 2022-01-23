@@ -13,5 +13,5 @@ export const modalReducer = (state = initialState, action: ModalAction): ModalSt
 		return {...state, modalImg: action.payload};
 	default:
 		return state;
-	};
+	}
 };

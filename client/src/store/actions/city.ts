@@ -7,7 +7,7 @@ import {City} from 'src/data/types/types';
 
 export const getCities = (cityName = '') => {
 	return async (dispatch: Dispatch<CityAction>) => {
-		const {data} = await axios.get<{count: number, rows: City[]}>(URL.CITY, {
+		const {data} = await axios.get<City[]>(URL.CITY, {
 			params: {
 				limit: 5,
 				offset: 0,
@@ -15,7 +15,7 @@ export const getCities = (cityName = '') => {
 			},
 		});
 
-		dispatch({type: CityActionTypes.GET, payload: data.rows}); ;
+		dispatch({type: CityActionTypes.GET, payload: data});
 	};
 };
 

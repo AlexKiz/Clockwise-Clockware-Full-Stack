@@ -5,9 +5,9 @@ import {URL} from '../../data/constants/routeConstants';
 import {Master} from 'src/data/types/types';
 
 
-export const getMasters = (masterName: string = '') => {
+export const getMasters = (masterName = '') => {
 	return async (dispatch: Dispatch<MasterAction>) => {
-		const {data} = await axios.get<{count: number, rows: Master[]}>(URL.MASTER, {
+		const {data} = await axios.get<Master[]>(URL.MASTER, {
 			params: {
 				limit: 5,
 				offset: 0,
@@ -15,7 +15,7 @@ export const getMasters = (masterName: string = '') => {
 			},
 		});
 
-		dispatch({type: MasterActionTypes.GET, payload: data.rows});
+		dispatch({type: MasterActionTypes.GET, payload: data});
 	};
 };
 

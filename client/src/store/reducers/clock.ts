@@ -17,5 +17,5 @@ export const clockReducer = (state = initialState, action: ClockAction): ClockSt
 		return {...state, clockFilteringInstance: action.payload};
 	default:
 		return state;
-	};
+	}
 };

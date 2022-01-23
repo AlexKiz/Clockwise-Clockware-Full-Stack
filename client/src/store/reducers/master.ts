@@ -17,5 +17,5 @@ export const masterReducer = (state = initialState, action: MasterAction): Maste
 		return {...state, masterFilteringInstance: action.payload};
 	default:
 		return state;
-	};
+	}
 };

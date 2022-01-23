@@ -4,7 +4,7 @@ import axios from 'axios';
 import {URL} from '../../data/constants/routeConstants';
 import {Clock} from 'src/data/types/types';
 
-export const getClocks = (clockSize: string = '') => {
+export const getClocks = (clockSize = '') => {
 	return async (dispatch: Dispatch<ClockAction>) => {
 		const {data} = await axios.get<Clock[]>(URL.CLOCK, {
 			params: {

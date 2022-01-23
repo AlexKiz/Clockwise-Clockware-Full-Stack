@@ -76,8 +76,8 @@ export const getOrders = async (req: Request, res: Response) => {
 
 		const filterOptions: filtersOptions = {};
 
-		if (typeof isCompletedFilter === 'boolean') {
-			filterOptions.isCompleted = isCompletedFilter;
+		if (isCompletedFilter !== null || undefined) {
+			filterOptions.isCompleted = Boolean(isCompletedFilter);
 		}
 
 		if (clockFilteredId) {

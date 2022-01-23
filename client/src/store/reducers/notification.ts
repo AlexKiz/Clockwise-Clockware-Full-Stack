@@ -15,5 +15,5 @@ export const notificationReducer = (state = initialState, action: NotificationAc
 		return {...state, alertOptions: action.payload};
 	default:
 		return state;
-	};
+	}
 };

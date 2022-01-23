@@ -1,15 +1,11 @@
 import axios from 'axios';
-import React, {useState, useEffect, FC} from 'react';
+import React, {useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
 import classes from './orders-list.module.css';
 import {
-	Order,
 	City,
 	Master,
 	Clock,
-	AlertNotification,
-	FiltersList,
-	FilterInstances,
 } from '../../../../data/types/types';
 import {OrdersListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
@@ -38,6 +34,8 @@ import {
 	Modal,
 	ImageList,
 	ImageListItem,
+	TableFooter,
+	TablePagination,
 } from '@mui/material';
 import {
 	DesktopDateRangePicker,
@@ -160,37 +158,21 @@ const OrdersList: FC<OrdersListProps> = () => {
 
 
 	useEffect(() => {
-		const readOrdersData = async () => {
-			setLoading(true);
-			await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
-				params: {
-					limit: rowsPerPage,
-					offset: rowsPerPage * page,
-					sortedField,
-					sortingOrder,
-					masterFilteredId: filtersList.masterId,
-					cityFilteredId: filtersList.cityId,
-					clockFilteredId: filtersList.clockId,
-					isCompletedFilter: filtersList.isCompleted,
-					startDateFilter: filtersList.startWorkOn,
-					endDateFilter: filtersList.endWorkOn,
-				},
-			}).then((response) => {
-				setOrders(response.data.rows);
-				setTotalOrders(response.data.count);
-				setLoading(false);
-			}).catch(() => {
-				setLoading(false);
-				setAlertOptions({
-					type: 'warning',
-					message: 'There is an error occurred while fetching data!',
-					notify: true,
-				});
-			});
-		};
+		dispatch(getOrders(
+			page,
+			limit,
+			sortedField,
+			sortingOrder,
+			masterFilteredId,
+			cityFilteredId,
+			clockFilteredId,
+			isCompletedFilter,
+			startDateFilter,
+			endDateFilter,
+		));
+		dispatch(setOrdersQuantity(totalQuantity));
+	}, [limit, page, sortedField, sortingOrder]);
 
-		readOrdersData();
-	}, [rowsPerPage, page, sortedField, sortingOrder]);
 
 	const getDebouncedCities = debouncer(() => {
 		dispatch(getCities(cityName));
@@ -332,6 +314,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 								value={masterFilteringInstance}
 								getOptionLabel={(option) => option.name}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: Master | null) => {
+									dispatch(setMasterFilteringInstance(value));
 									dispatch(setMasterFilter(value ? value.id : value));
 									dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 								}}
@@ -351,6 +334,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 								value={cityFilteringInstance}
 								getOptionLabel={(option) => option.name}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: City | null) => {
+									dispatch(setCityFilteringInstance(value));
 									dispatch(setCityFilter(value ? value.id : value));
 									dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 								}}
@@ -370,6 +354,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 								value={clockFilteringInstance}
 								getOptionLabel={(option) => option.size}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: Clock | null) => {
+									dispatch(setClockFilteringInstance(value));
 									dispatch(setClockFilter(value ? value.id : value));
 									dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 								}}
@@ -387,8 +372,10 @@ const OrdersList: FC<OrdersListProps> = () => {
 									<Checkbox
 										name="isCompleted"
 										onChange={() => {
+											dispatch(setIsCompletedFilter(!isCompletedFilter));
 											dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 										}}
+										checked={Boolean(isCompletedFilter)}
 									/>
 								}
 								label="Completed orders"
