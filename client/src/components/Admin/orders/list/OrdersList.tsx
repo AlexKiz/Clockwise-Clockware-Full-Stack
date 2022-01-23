@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useEffect, FC} from 'react';
+import React, {useEffect, FC, useMemo} from 'react';
 import {Link} from 'react-router-dom';
 import classes from './orders-list.module.css';
 import {
@@ -200,6 +200,25 @@ const OrdersList: FC<OrdersListProps> = () => {
 	useEffect(() => {
 		getDebouncedClocks();
 	}, [clockSize]);
+
+
+	const ordersCSVShape = useMemo(() => {
+		const ordersCSV = orders.map((order) => {
+			return {
+				'Order Id': order.id,
+				'Clock Size': order.clock.size,
+				'User Name': order.user.name,
+				'User Email': order.user.email,
+				'City': order.city.name,
+				'Master Name': order.master.name,
+				'Start On': order.startWorkOn,
+				'End On': order.endWorkOn,
+				'Completed': order.isCompleted,
+				'Rating': order.orderRating,
+			};
+		});
+		return ordersCSV;
+	}, [orders]);
 
 
 	const onDelete = (id: string) => {
@@ -681,25 +700,13 @@ const OrdersList: FC<OrdersListProps> = () => {
 												sx={{width: '100%', fontSize: 12, borderRadius: 8}}
 												color='success'
 												startIcon={<DescriptionOutlinedIcon fontSize='medium'/>}
+												disabled={!orders.length}
 											>
 											Download all pages
 											</Button>
 										</a>
 										<CSVLink
-											data={orders.map((order) => {
-												return {
-													'Order Id': order.id,
-													'Clock Size': order.clock.size,
-													'User Name': order.user.name,
-													'User Email': order.user.email,
-													'City': order.city.name,
-													'Master Name': order.master.name,
-													'Start On': order.startWorkOn,
-													'End On': order.endWorkOn,
-													'Completed': order.isCompleted,
-													'Rating': order.orderRating,
-												};
-											})}
+											data={ordersCSVShape}
 											separator={';'}
 											filename={'orderPage.csv'}
 										>
@@ -708,6 +715,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 												sx={{width: '100%', fontSize: 12, borderRadius: 8}}
 												color='success'
 												startIcon={<DescriptionOutlinedIcon fontSize='medium'/>}
+												disabled={!orders.length}
 											>
 											Download current page
 											</Button>

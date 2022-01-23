@@ -50,11 +50,3 @@ export const sendNearOrderMailNotification = (email: string) => transporter.send
 	text: 'Please, pay attention!',
 	html: `<p>You have order/orders that will have started in an hour</p>`,
 });
-
-export const sendNearOrderMailNotification = (email: string) => transporter.sendMail({
-	from: `"Clockwise Clockware" <${process.env.CONFIRMATION_EMAIL}>`,
-	to: email,
-	subject: 'Near Order',
-	text: 'Please, pay attention!',
-	html: `<p>You have order/orders that will have started in an hour</p>`,
-});
