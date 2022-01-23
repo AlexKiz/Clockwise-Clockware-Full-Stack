@@ -33,5 +33,5 @@ export const orderFilteringReducer = (state = initialState, action: OrderFilteri
 		return {...state, isFiltersButtonsDisabled: action.payload};
 	default:
 		return state;
-	};
+	}
 };

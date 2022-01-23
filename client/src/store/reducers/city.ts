@@ -16,5 +16,5 @@ export const cityReducer = (state = initialState, action: CityAction): CityState
 		return {...state, cityFilteringInstance: action.payload};
 	default:
 		return state;
-	};
+	}
 };
