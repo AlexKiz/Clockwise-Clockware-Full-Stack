@@ -209,7 +209,19 @@ const OrdersList: FC<OrdersListProps> = () => {
 						id,
 					},
 				}).then(() => {
-				// setOrders(orders.filter((order) => order.id !== id)); // ?????
+				dispatch(getOrders(
+					page,
+					limit,
+					sortedField,
+					sortingOrder,
+					masterFilteredId,
+					cityFilteredId,
+					clockFilteredId,
+					isCompletedFilter,
+					startDateFilter,
+					endDateFilter,
+				));
+				dispatch(setOrdersQuantity(totalQuantity));
 				dispatch(setAlertOptions('Order has been deleted!', true, 'success'));
 			});
 		}
