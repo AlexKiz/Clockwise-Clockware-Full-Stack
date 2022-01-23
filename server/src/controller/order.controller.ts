@@ -34,9 +34,9 @@ export const postOrder = async (req: Request, res: Response) => {
 		const ratingIdentificator = uuidv4();
 
 		const cloudinary = new CloudinaryService({
-			cloud_name: process.env.CLOUD_NAME || '',
-			api_key: process.env.CLOUD_API_KEY || '',
-			api_secret: process.env.CLOUD_API_SECRET || '',
+			cloud_name: process.env.CLOUD_NAME,
+			api_key: process.env.CLOUD_API_KEY,
+			api_secret: process.env.CLOUD_API_SECRET,
 		});
 
 		const orderImagesURL = await cloudinary.uploadPhotos(orderPhotos);
