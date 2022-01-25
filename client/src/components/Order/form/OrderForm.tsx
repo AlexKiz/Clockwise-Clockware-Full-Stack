@@ -29,8 +29,7 @@ import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import PublicHeader from '../../Headers/PublicHeader';
 import {useFormik} from 'formik';
 import AlertMessage from 'src/components/Notification/AlertMessage';
-import {getOrderDates} from 'src/data/utilities/systemUtilities';
-
+import {getBinaryImages, getOrderDates} from 'src/data/utilities/systemUtilities';
 
 const OrderForm: FC<OrderFormProps> = () => {
 	const [masters, setMasters] = useState<Master[]>([]);
@@ -61,7 +60,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 			orderDate: '',
 			orderTime: '',
 			masterId: '',
-			orderPhotos: [] as string[],
+			orderPhotos: [] as (string | ArrayBuffer | null)[],
 		},
 		validate,
 		onSubmit: async (values) => {
@@ -160,18 +159,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 	}, [images]);
 
 	const readFiles = useCallback(async () => {
-		const binaryImages = await Promise.all<any>(
-			images.map(async (file) => {
-				return new Promise((resolve) => {
-					const reader = new FileReader();
-					reader.readAsDataURL(file);
-					reader.onload = () => {
-						const result = reader.result;
-						resolve(result);
-					};
-				});
-			}));
-
+		const binaryImages = await getBinaryImages(images);
 		formik.values.orderPhotos = binaryImages;
 	}, [images]);
 
