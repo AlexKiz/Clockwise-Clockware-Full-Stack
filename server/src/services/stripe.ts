@@ -1,7 +1,21 @@
-/* eslint-disable max-len */
+/* eslint-disable require-jsdoc */
 import Stripe from 'stripe';
 
-export const stripe = new Stripe('sk_test_51KK2t7A4g8Ny8RSg448CfvwZh8psuELJe4toLPeldhxK90sl1ZKvtRCBOCWQIojLE3zRoeFyyW76R6JWUnA5OOa200AnNhYvB0', {
-	apiVersion: '2020-08-27',
-});
 
+export class StripeService extends Stripe {
+	constructor(apiKey: string, config: Stripe.StripeConfig) {
+		super(apiKey, config);
+	}
+
+	public createSession = (
+		params: Stripe.Checkout.SessionCreateParams,
+		options?: Stripe.RequestOptions,
+	) => {
+		const session = this.checkout.sessions.create(params, options);
+		return session;
+	};
+
+	public createEvent = (payload: string | Buffer, header: string | Buffer | string[], secret: string) => {
+		return this.webhooks.constructEvent(payload, header, secret);
+	};
+}

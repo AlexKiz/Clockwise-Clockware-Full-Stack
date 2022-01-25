@@ -23,6 +23,7 @@ export = (sequelize: any, DataTypes: any) => {
 		public orderRating!: number;
 		public isCompleted!: boolean;
 		public orderImages!: string;
+		public paymentDate!: string | Date;
 
 		static findById(entityId: string | string[]) {
 			return this.findAll({where: {id: entityId}});
@@ -118,6 +119,11 @@ export = (sequelize: any, DataTypes: any) => {
 			orderImages: {
 				type: DataTypes.STRING,
 				defaultValue: '',
+			},
+
+			paymentDate: {
+				type: DataTypes.DATE,
+				allowNull: false,
 			},
 		}, {
 			sequelize,

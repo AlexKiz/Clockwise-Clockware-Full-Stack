@@ -1,3 +1,4 @@
+import {StripeService} from './services/stripe';
 import express from 'express';
 import {Request, Response} from 'express';
 import cityRouter from './routes/city.router';
@@ -11,13 +12,47 @@ import path from 'path';
 import {URL} from '../data/constants/routeConstants';
 import db from './models';
 import {nearOrderNotification} from './services/cron';
-import {stripe} from './services/stripe';
+import {postOrder} from '../data/utilities/systemUtilities';
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({exposedHeaders: 'Authorization'}));
 app.use(express.static(`../client/build`));
+
+app.post('/webhook', express.raw({type: 'application/json'}), (req: Request, res: Response) => {
+	const payload = req.body;
+	const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+	const stripe = new StripeService(<string>process.env.STRIPE_API_KEY, {
+		apiVersion: '2020-08-27',
+	});
+
+	let event;
+
+	if (endpointSecret) {
+		const sig = req.headers['stripe-signature'];
+
+		try {
+			if (sig) {
+				event = stripe.createEvent(payload, sig, endpointSecret);
+			}
+		} catch (err) {
+			return res.status(400).send();
+		}
+	}
+
+	if (event?.type === 'checkout.session.completed') {
+		const session = event.data.object;
+
+		postOrder(session);
+
+		return res.status(200);
+	} else {
+		res.send();
+	}
+});
+
 app.use(express.json({limit: '5mb'}));
 app.use(express.urlencoded({limit: '5mb', extended: true}));
 
@@ -29,55 +64,6 @@ app.use(URL.API, userRouter);
 app.use(URL.API, adminRouter);
 app.use(URL.API, login);
 
-app.post('/webhook', express.raw({type: 'application/json'}), (req: Request, res: Response) => {
-	/*  const {
-		name,
-		email,
-		clockId,
-		cityId,
-		masterId,
-		startWorkOn,
-		endWorkOn,
-		orderPhotos,
-	} = req.body;*/
-	const testpayload = req.body;
-
-	console.log(testpayload);
-	res.status(200).end();
-}); /*
-	const payload: any = {name, email, clockId, cityId, masterId, startWorkOn, endWorkOn};
-
-	const sig = req.headers['stripe-signature'];
-
-	const endpointSecret = 'whsec_nKu9ir2FCaWE9DUjjt0UW7Z3N2Fz5zgB';
-
-	let event;
-
-	try {
-		if (sig) {
-			event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
-		}
-	} catch (err) {
-		return res.status(400).send();
-	}
-
-	if (event?.type === 'checkout.session.completed') {
-		const session = event.data.object;
-
-		const successPayment = async () => {
-			const createdOrder = await createOrder(session, orderPhotos);
-
-			await sendPaymentEmail();
-
-			return res.status(200);
-		};
-
-		successPayment();
-	} else {
-		res.status(500).send({message: 'Something went wrong while payment!'});
-	}
-});
-*/
 
 app.get('/*', function(req: Request, res: Response) {
 	res.sendFile(path.resolve('../', 'client', 'build', 'index.html'));

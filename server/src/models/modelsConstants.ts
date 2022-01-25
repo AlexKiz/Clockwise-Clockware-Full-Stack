@@ -45,6 +45,7 @@ export interface OrderAttributes {
     orderRating: number
     isCompleted: boolean
     orderImages: string
+    paymentDate: Date | string
 }
 
 export interface UserAttributes {

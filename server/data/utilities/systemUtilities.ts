@@ -1,6 +1,9 @@
 import {Op} from 'sequelize';
 import db from '../../src/models';
 import {sendVerificationMail} from '../../src/services/nodemailer';
+import bcrypt from 'bcrypt';
+import {v4 as uuidv4} from 'uuid';
+import Stripe from 'stripe';
 
 
 const createMaster = async (name: string, email: string, password: string, hashVerify: string, citiesId: number[]) => {
@@ -65,12 +68,20 @@ type roleMappingOrderGetParams = {
 
 const getAdminOrders = async (params: roleMappingOrderGetParams) => {
 	const orders = await db.Order.findAndCountAll({
-		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted', ['orderImages', 'images']],
+		attributes: [
+			'id',
+			'startWorkOn',
+			'endWorkOn',
+			'ratingIdentificator',
+			'isCompleted',
+			['orderImages', 'images'],
+			'paymentDate',
+		],
 		order: [[db.sequelize.col(`${params.sortedField}`), `${params.sortingOrder}`]],
 		include: [
 			{
 				model: db.Clock,
-				attributes: ['id', 'size'],
+				attributes: ['id', 'size', 'price'],
 				required: true,
 			},
 			{
@@ -100,7 +111,15 @@ const getAdminOrders = async (params: roleMappingOrderGetParams) => {
 const getMasterOrders = async (params: roleMappingOrderGetParams) => {
 	const orders = await db.Order.findAll({
 		order: [['startWorkOn', 'DESC']],
-		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted', ['orderImages', 'images']],
+		attributes: [
+			'id',
+			'startWorkOn',
+			'endWorkOn',
+			'ratingIdentificator',
+			'isCompleted',
+			['orderImages', 'images'],
+			'paymentDate',
+		],
 		include: [
 			{
 				model: db.Clock,
@@ -161,58 +180,48 @@ export const rolesMappingGetOrders: any = {
 	'client': getClientOrders,
 };
 
-type OrderParams = {
-	name: string,
-	email: string,
-	clockId: number,
-	cityId: number,
-	masterId: string,
-	startWorkOn: string,
-	endWorkOn: string
-};
-
-/* export const postOrder = async (params: OrderParams, orderPhotos: string[]) => {
+export const postOrder = async (params: Stripe.Event) => {
 	try {
-		const {name, email, clockId, cityId, masterId, startWorkOn, endWorkOn} = params;
+		const {
+			metadata,
+		} = params;
 
-		const generatedPassword = uuidv4();
-		const salt = bcrypt.genSaltSync(10);
-		const hashForVerification = bcrypt.hashSync(`${name}${email}`, salt);
-		const hashVerify = hashForVerification.replace(/\//g, 'i');
+		if (metadata) {
+			const {name, email, clockId, cityId, masterId, startWorkOn, endWorkOn} = metadata;
+			const generatedPassword = uuidv4();
+			const salt = bcrypt.genSaltSync(10);
+			const hashForVerification = bcrypt.hashSync(`${name}${email}`, salt);
+			const hashVerify = hashForVerification.replace(/\//g, 'i');
 
-		const [user, isUserCreated] = await db.User.findOrCreate({
-			where: {email},
-			defaults: {name, email, password: generatedPassword, role: 'client', hashVerify},
-		});
+			const [user, isUserCreated] = await db.User.findOrCreate({
+				where: {email},
+				defaults: {name, email, password: generatedPassword, role: 'client', hashVerify},
+			});
 
-		if (isUserCreated) {
-			await sendVerificationMail(email, hashVerify, generatedPassword);
+			if (isUserCreated) {
+				await sendVerificationMail(email, hashVerify, generatedPassword);
+			}
+
+			const {id: userId} = user;
+
+			const paymentDate = new Date().toISOString();
+
+			const ratingIdentificator = uuidv4();
+
+			const order = await db.Order.create({
+				clockId,
+				userId,
+				cityId,
+				masterId,
+				startWorkOn,
+				endWorkOn,
+				ratingIdentificator,
+				paymentDate,
+			});
+
+			return order;
 		}
-
-		const {id: userId} = user;
-
-		const ratingIdentificator = uuidv4();
-
-		const orderImagesURL = await Promise.all<string[]>(
-			orderPhotos.map(async (photo: string) => {
-				return await cloudinary.v2.uploader.upload(photo).then((result: { url: any; }) => result.url);
-			}),
-		);
-
-		const order = await db.Order.create({
-			clockId,
-			userId,
-			cityId,
-			masterId,
-			startWorkOn,
-			endWorkOn,
-			ratingIdentificator,
-			orderImages: orderImagesURL?.join(','),
-		});
-
-		return order;
 	} catch (error) {
 		return error;
 	}
 };
-*/
