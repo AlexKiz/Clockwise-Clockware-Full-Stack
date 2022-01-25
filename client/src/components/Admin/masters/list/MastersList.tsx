@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
 import classes from './masters-list.module.css';
-import {Master} from '../../../../data/types/types';
+import {AlertNotification, Master} from '../../../../data/types/types';
 import {MasterListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {styled} from '@mui/material/styles';
@@ -16,9 +16,19 @@ import {
 	Button,
 	Paper,
 	tableCellClasses,
+	TableFooter,
+	TablePagination,
+	TableSortLabel,
+	Box,
+	LinearProgress,
+	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import PrivateHeader from 'src/components/Headers/PrivateHeader';
+import TablePaginationActions from '../../../Pagination/TablePaginationActions';
+import {visuallyHidden} from '@mui/utils';
+import {SORTED_FIELD, SORTING_ORDER} from 'src/data/constants/systemConstants';
+
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -39,25 +49,48 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 	},
 }));
 
+
 const MastersList: FC<MasterListProps> = () => {
 	const [masters, setMasters] = useState<Master[]>([]);
-
-	const [notify, setNotify] = useState<boolean>(false);
-
-	const isOpen = (value:boolean) => {
-		setNotify(value);
-	};
+	const [page, setPage] = useState<number>(0);
+	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+	const [totalMasters, setTotalMasters] = useState<number>(0);
+	const [sortedField, setSortField] = useState<string>('id');
+	const [sortingOrder, setSortingOrder] = useState<'asc' | 'desc'>('asc');
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
+	const [loading, setLoading] = useState<boolean>(false);
 
 
 	useEffect(() => {
 		const readMastersData = async () => {
-			const {data} = await axios.get<Master[]>(URL.MASTER);
-
-			setMasters(data);
+			setLoading(true);
+			axios.get<{count: number, rows: Master[]}>(URL.MASTER, {
+				params: {
+					limit: rowsPerPage,
+					offset: rowsPerPage * page,
+					sortedField,
+					sortingOrder,
+				},
+			}).then((response) => {
+				setMasters(response.data.rows);
+				setTotalMasters(response.data.count);
+				setLoading(false);
+			}).catch(() => {
+				setLoading(false);
+				setAlertOptions({
+					type: 'warning',
+					message: 'There is an error occurred while fetching data!',
+					notify: true,
+				});
+			});
 		};
 
 		readMastersData();
-	}, []);
+	}, [rowsPerPage, page, sortedField, sortingOrder]);
 
 
 	const onDelete = (id: string) => {
@@ -69,9 +102,37 @@ const MastersList: FC<MasterListProps> = () => {
 					},
 				}).then(() => {
 				setMasters(masters.filter((master) => master.id !== id));
-				setNotify(true);
+				setAlertOptions({
+					type: 'success',
+					message: 'Master has been deleted!',
+					notify: true,
+				});
 			});
 		}
+	};
+
+	const isOpen = (value:boolean) => {
+		setAlertOptions({...alertOptions, notify: value});
+	};
+
+	const handleChangePage = (
+		event: React.MouseEvent<HTMLButtonElement> | null,
+		newPage: number,
+	) => {
+		setPage(newPage);
+	};
+
+	const handleChangeRowsPerPage = (
+		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+	) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
+	};
+
+	const handleRequestSort = (field: string) => {
+		const isAsc = sortedField === field && sortingOrder === SORTING_ORDER.ASC;
+		setSortingOrder(isAsc ? SORTING_ORDER.DESC : SORTING_ORDER.ASC);
+		setSortField(field);
 	};
 
 
@@ -83,10 +144,58 @@ const MastersList: FC<MasterListProps> = () => {
 					<Table sx={{minWidth: 350}} aria-label="customized table">
 						<TableHead>
 							<TableRow>
-								<StyledTableCell sx={{width: '10%'}}>Id</StyledTableCell>
-								<StyledTableCell sx={{width: '20%'}} align="center">Master name</StyledTableCell>
+								<StyledTableCell sx={{width: '10%'}}>
+									<TableSortLabel
+										active={sortedField === SORTED_FIELD.ID}
+										direction={sortedField === SORTED_FIELD.ID ? sortingOrder : SORTING_ORDER.ASC}
+										onClick={() => {
+											handleRequestSort(SORTED_FIELD.ID);
+										}}
+									>
+										Id
+										{sortedField === SORTED_FIELD.ID ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
+								</StyledTableCell>
+								<StyledTableCell sx={{width: '20%'}} align="center">
+									<TableSortLabel
+										active={sortedField === SORTED_FIELD.NAME}
+										direction={sortedField === SORTED_FIELD.NAME ? sortingOrder : SORTING_ORDER.ASC}
+										onClick={() => {
+											handleRequestSort(SORTED_FIELD.NAME);
+										}}
+									>
+										Master name
+										{sortedField === SORTED_FIELD.NAME ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
+								</StyledTableCell>
 								<StyledTableCell sx={{width: '25%'}} align="center">Cities</StyledTableCell>
-								<StyledTableCell sx={{width: '25%'}} align="center">Rating</StyledTableCell>
+								<StyledTableCell sx={{width: '25%'}} align="center">
+									<TableSortLabel
+										active={sortedField === SORTED_FIELD.RATING}
+										direction={sortedField === SORTED_FIELD.RATING ? sortingOrder : SORTING_ORDER.ASC}
+										onClick={() => {
+											handleRequestSort(SORTED_FIELD.RATING);
+										}}
+									>
+										Rating
+										{sortedField === SORTED_FIELD.RATING ? (
+											<Box
+												component="span"
+												sx={visuallyHidden}
+											/>
+										) : null}
+									</TableSortLabel>
+								</StyledTableCell>
 								<StyledTableCell sx={{width: '20%'}} align="center">
 									<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.MASTER_CREATE}`}>
 										<Button
@@ -133,11 +242,57 @@ const MastersList: FC<MasterListProps> = () => {
 									</StyledTableCell>
 								</StyledTableRow>
 							))}
+							{ !masters.length &&
+								<TableRow>
+									<TableCell
+										colSpan={9}
+										sx={{height: 365, p: 0}}
+										align='center'>
+										<Typography
+											variant='h3'
+											component='label'
+										>
+											{loading ? 'Loading...' : 'There are no data matching the fetch!'}
+										</Typography>
+									</TableCell>
+								</TableRow>
+							}
 						</TableBody>
+						<TableFooter>
+							<TableRow>
+								<TablePagination
+									rowsPerPageOptions={[5, 10, 25, {label: 'All', value: totalMasters}]}
+									colSpan={5}
+									count={totalMasters}
+									rowsPerPage={rowsPerPage}
+									page={page}
+									SelectProps={{
+										inputProps: {
+											'aria-label': 'rows per page',
+										},
+										native: true,
+									}}
+									onPageChange={handleChangePage}
+									onRowsPerPageChange={handleChangeRowsPerPage}
+									ActionsComponent={TablePaginationActions}
+								/>
+							</TableRow>
+							<TableRow>
+								{ loading && <TableCell colSpan={5}>
+									<LinearProgress />
+								</TableCell>}
+							</TableRow>
+						</TableFooter>
 					</Table>
 				</TableContainer>
 				{
-					notify && <AlertMessage alertType='success' message='Master has been deleted' isOpen={isOpen} notify={notify}/>
+					alertOptions.notify &&
+					<AlertMessage
+						alertType={alertOptions.type}
+						message={alertOptions.message}
+						isOpen={isOpen}
+						notify={alertOptions.notify}
+					/>
 				}
 			</div>
 		</div>

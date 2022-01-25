@@ -4,7 +4,16 @@ import {useHistory, useParams} from 'react-router-dom';
 import classes from './verification.module.css';
 import {URL} from '../../../../data/constants/routeConstants';
 import {Params} from 'src/data/types/types';
-import {Button, FilledInput, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, Stack} from '@mui/material';
+import {
+	Button,
+	FilledInput,
+	FormControl,
+	FormHelperText,
+	IconButton,
+	InputAdornment,
+	InputLabel,
+	Stack,
+} from '@mui/material';
 import {VerificationProps, validate} from './componentConstants';
 import {useFormik} from 'formik';
 import {Visibility, VisibilityOff} from '@mui/icons-material';
@@ -74,7 +83,7 @@ const Verification: FC<VerificationProps> = () => {
 									className={classes.btn}
 									style={ {fontSize: 22, backgroundColor: 'green', borderRadius: 15} }
 								>
-								GO TO MAIN PAGE
+									GO TO MAIN PAGE
 								</Button>
 							</div>
 						</Stack> :
@@ -145,7 +154,7 @@ const Verification: FC<VerificationProps> = () => {
 										className={classes.form_btn}
 										style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
 									>
-												Submit and verify
+										Submit and verify
 									</Button>
 								</div>
 							</Stack>

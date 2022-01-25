@@ -19,16 +19,54 @@ export const postMaster = async (req: Request, res: Response) => {
 
 
 export const getMasters = async (req: Request, res: Response) => {
-	const masters = await db.Master.findAll({
-		attributes: ['id', 'name', 'rating'],
-		include: {
-			model: db.City,
-			attributes: ['id', 'name'],
-			through: {attributes: []},
-		},
-	});
+	const {limit, offset, sortedField, sortingOrder, masterName} = req.query;
 
-	res.status(200).json(masters);
+	if (sortedField && sortingOrder) {
+		const masters = await db.Master.findAndCountAll({
+			attributes: ['id', 'name', 'rating'],
+			order: [[db.sequelize.col(`${sortedField}`), `${sortingOrder}`]],
+			include: {
+				model: db.City,
+				attributes: ['id', 'name'],
+				require: true,
+				through: {attributes: []},
+			},
+			distinct: true,
+			limit,
+			offset,
+		});
+
+		return res.status(200).json(masters);
+	} else if (typeof masterName === 'string') {
+		const masters = await db.Master.findAll({
+			attributes: ['id', 'name', 'rating'],
+			include: {
+				model: db.City,
+				attributes: ['id', 'name'],
+				require: true,
+				through: {attributes: []},
+			},
+			distinct: true,
+			where: {
+				name: {[Op.iLike]: `%${masterName}%`},
+			},
+			limit,
+			offset,
+		});
+
+		return res.status(200).json(masters);
+	} else {
+		const masters = await db.Master.findAll({
+			attributes: ['id', 'name', 'rating'],
+			include: {
+				model: db.City,
+				attributes: ['id', 'name'],
+				through: {attributes: []},
+			},
+		});
+
+		res.status(200).json(masters);
+	}
 };
 
 

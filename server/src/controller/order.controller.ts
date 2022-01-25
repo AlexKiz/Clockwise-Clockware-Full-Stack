@@ -1,10 +1,11 @@
-import {rolesMappingGetOrders} from './../../data/utilities/systemUtilities';
+import {filtersOptions, rolesMappingGetOrders} from './../../data/utilities/systemUtilities';
 import {Response, Request} from 'express';
 import {sendMail, sendVerificationMail} from '../services/nodemailer';
 import {v4 as uuidv4} from 'uuid';
 import db from '../models';
 import {BearerParser} from 'bearer-token-parser';
 import bcrypt from 'bcrypt';
+import {Op} from 'sequelize';
 
 
 export const postOrder = async (req: Request, res: Response) => {
@@ -48,11 +49,62 @@ export const postOrder = async (req: Request, res: Response) => {
 
 export const getOrders = async (req: Request, res: Response) => {
 	try {
+		const {
+			limit,
+			offset,
+			sortedField,
+			sortingOrder,
+			masterFilteredId,
+			cityFilteredId,
+			clockFilteredId,
+			isCompletedFilter,
+			startDateFilter,
+			endDateFilter,
+		} = req.query;
+
+		const filterOptions: filtersOptions = {};
+
+		if (isCompletedFilter) {
+			filterOptions.isCompleted = String(isCompletedFilter);
+		}
+
+		if (clockFilteredId) {
+			filterOptions.clockId = Number(clockFilteredId);
+		}
+
+		if (masterFilteredId) {
+			filterOptions.masterId = String(masterFilteredId);
+		}
+
+		if (cityFilteredId) {
+			filterOptions.cityId = Number(cityFilteredId);
+		}
+
+		if (startDateFilter) {
+			filterOptions.startWorkOn = {
+				[Op.gte]: String(startDateFilter).split('T')[0],
+			};
+		}
+
+		if (endDateFilter) {
+			filterOptions.endWorkOn = {
+				[Op.lte]: String(endDateFilter).split('T')[0],
+			};
+		}
+
 		const token = BearerParser.parseBearerToken(req.headers);
 
 		const {role, masterId, id} = await db.User.findOne({where: {token}});
 
-		const orders = await rolesMappingGetOrders[role]({masterId, id});
+		const orders = await rolesMappingGetOrders[role]({
+			masterId,
+			id,
+			limit,
+			offset,
+			sortedField,
+			sortingOrder,
+			filterOptions,
+		});
 
 		res.status(200).json(orders);
 	} catch (e) {
@@ -166,9 +218,21 @@ export const putRatedOrder = async (req: Request, res: Response) => {
 
 
 export const getClocks = async (req: Request, res: Response) => {
-	const clocks = await db.Clock.findAll();
+	const {clockSize} =req.query;
 
-	res.status(200).json(clocks);
+	if (clockSize === 'string') {
+		const clocks = await db.Clock.findAll({
+			where: {
+				size: {[Op.iLike]: `%${clockSize}%`},
+			},
+		});
+
+		res.status(200).json(clocks);
+	} else {
+		const clocks = await db.Clock.findAll();
+
+		res.status(200).json(clocks);
+	}
 };
 
 

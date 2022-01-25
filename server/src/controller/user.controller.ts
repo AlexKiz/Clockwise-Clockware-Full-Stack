@@ -23,9 +23,23 @@ export const userRegistration = async (req: Request, res: Response) => {
 
 
 export const getUsers = async (req: Request, res: Response) => {
-	const users = await db.User.findAll({where: {role: 'client'}});
+	const {limit, offset, sortedField, sortingOrder} = req.query;
+	if (sortedField && sortingOrder) {
+		const users = await db.User.findAndCountAll({
+			order: [[`${sortedField}`, `${sortingOrder}`]],
+			where: {role: 'client'},
+			limit,
+			offset,
+		});
 
-	res.status(200).json(users);
+		res.status(200).json(users);
+	} else {
+		const users = await db.User.findAll({
+			where: {role: 'client'},
+		});
+
+		res.status(200).json(users);
+	}
 };
 
 
@@ -58,7 +72,10 @@ export const userVerification = async (req: Request, res: Response) => {
 		if (password) {
 			const salt = bcrypt.genSaltSync(10);
 			const hashPassword = bcrypt.hashSync(password, salt);
-			const userVerify = await db.User.update({hashVerify: '', isVerified: true, password: hashPassword}, {where: {hashVerify}});
+			const userVerify = await db.User.update(
+				{hashVerify: '', isVerified: true, password: hashPassword},
+				{where: {hashVerify}},
+			);
 			return res.status(200).json(userVerify);
 		}
 

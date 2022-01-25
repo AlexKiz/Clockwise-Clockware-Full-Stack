@@ -1,3 +1,4 @@
+import {DateRange} from '@mui/lab/DateRangePicker/RangeTypes';
 import {AlertColor} from '@mui/material/Alert';
 
 
@@ -62,3 +63,19 @@ export type AlertNotification = {
     type: AlertColor
     notify: boolean
 }
+
+export type FiltersList = {
+    masterId?: string | null
+    clockId?: number | null
+    cityId?: number | null
+    isCompleted?: boolean | null
+    startWorkOn?: Date | null
+    endWorkOn?: Date | null
+}
+
+export type FilterInstances = {
+    city: City | null
+    master: Master | null
+    clock: Clock | null
+    date: DateRange<Date>
+};

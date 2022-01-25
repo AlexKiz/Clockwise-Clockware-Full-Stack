@@ -265,7 +265,7 @@ const Registration:FC<RegistrationProps> = () => {
 											gutterBottom
 											component="label"
 										>
-											Choose сities:
+											Choose cities:
 										</Typography>
 									</div>
 									<FormControl

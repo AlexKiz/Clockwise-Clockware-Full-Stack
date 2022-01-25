@@ -15,3 +15,21 @@ export enum ROLE {
 	CLIENT = 'client',
 }
 
+export enum SORTED_FIELD {
+	ID = 'id',
+	NAME = 'name',
+	EMAIL = 'email',
+	RATING = 'rating',
+	CLOCK_SIZE = 'clock.size',
+	USER_NAME = 'user.name',
+	USER_EMAIL = 'user.email',
+	CITY_NAME = 'city.name',
+	MASTER_NAME = 'master.name',
+	START_WORK_ON = 'startWorkOn',
+	END_WORK_ON = 'endWorkOn',
+}
+
+export enum SORTING_ORDER {
+	ASC = 'asc',
+	DESC = 'desc'
+}

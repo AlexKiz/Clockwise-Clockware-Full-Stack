@@ -1,3 +1,4 @@
+import {Op} from 'sequelize';
 import db from '../../src/models';
 import {sendVerificationMail} from '../../src/services/nodemailer';
 
@@ -42,9 +43,29 @@ const createClient = async (name: string, email: string, password: string, hashV
 	}
 };
 
-const getAdminOrders = async () => {
-	const orders = await db.Order.findAll({
+export type filtersOptions = {
+	clockId?: number,
+	isCompleted?: string,
+	masterId?: string,
+	cityId?: number,
+	startWorkOn?: {[Op.gte]:string},
+	endWorkOn?: {[Op.lte]:string}
+};
+
+type roleMappingOrderGetParams = {
+	limit: number,
+	offset: number,
+	masterId: string,
+	id: string,
+	sortedField: string,
+	sortingOrder: string,
+	filterOptions: filtersOptions,
+}
+
+const getAdminOrders = async (params: roleMappingOrderGetParams) => {
+	const orders = await db.Order.findAndCountAll({
 		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
+		order: [[db.sequelize.col(`${params.sortedField}`), `${params.sortingOrder}`]],
 		include: [
 			{
 				model: db.Clock,
@@ -67,12 +88,15 @@ const getAdminOrders = async () => {
 				required: true,
 			},
 		],
+		limit: params.limit,
+		offset: params.offset,
+		where: params.filterOptions,
 	});
 
 	return orders;
 };
 
-const getMasterOrders = async (params: {masterId: string, id: string}) => {
+const getMasterOrders = async (params: roleMappingOrderGetParams) => {
 	const orders = await db.Order.findAll({
 		order: [['startWorkOn', 'DESC']],
 		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted'],
@@ -101,7 +125,7 @@ const getMasterOrders = async (params: {masterId: string, id: string}) => {
 	return orders;
 };
 
-const getClientOrders = async (params: {masterId: string, id: string}) => {
+const getClientOrders = async (params: roleMappingOrderGetParams) => {
 	const orders = await db.Order.findAll({
 		order: [['startWorkOn', 'DESC']],
 		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted', 'orderRating'],

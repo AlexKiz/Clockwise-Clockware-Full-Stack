@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {Router} from 'express';
 import {checkRole, isAuth} from '../controller/auth.controller';
 import {URL} from '../../data/constants/routeConstants';

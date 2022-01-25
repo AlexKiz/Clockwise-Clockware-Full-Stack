@@ -95,7 +95,6 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 			formik.values.orderDate = data.startWorkOn.slice(0, 10);
 			formik.values.orderTime = data. startWorkOn.slice(11, 16);
 			formik.values.masterId = data.master.id;
-			console.log(formik.values);
 		};
 
 		readCurrentOrder();
