@@ -248,8 +248,8 @@ const OrdersList: FC<OrdersListProps> = () => {
 
 	const handleRequestSort = (field: string) => {
 		const isAsc = sortedField === field && sortingOrder === SORTING_ORDER.ASC;
-		setSortingOrder(isAsc ? SORTING_ORDER.DESC : SORTING_ORDER.ASC);
-		setSortField(field);
+		dispatch(setOrdersSortingOrder(isAsc ? SORTING_ORDER.DESC : SORTING_ORDER.ASC));
+		dispatch(setOrdersSortingField(field));
 	};
 
 	const handleFilterList = () => {
