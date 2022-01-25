@@ -26,7 +26,7 @@ export const getCities = async (req: Request, res: Response) => {
 			offset,
 		});
 		return res.status(200).json(cities);
-	} else if (cityName !== undefined || null) {
+	} else if (typeof cityName === 'string') {
 		const cities = await db.City.findAll({
 			where: {
 				name: {[Op.iLike]: `%${cityName}%`},

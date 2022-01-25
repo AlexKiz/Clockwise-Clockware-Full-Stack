@@ -40,6 +40,7 @@ import PrivateHeader from '../../../Headers/PrivateHeader';
 import TablePaginationActions from '../../../Pagination/TablePaginationActions';
 import {visuallyHidden} from '@mui/utils';
 import {debouncer} from 'src/data/constants/systemUtilities';
+import {SORTED_FIELD, SORTING_ORDER} from 'src/data/constants/systemConstants';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -105,7 +106,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 	useEffect(() => {
 		const readOrdersData = async () => {
 			setLoading(true);
-			await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
+			axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
 				params: {
 					limit: rowsPerPage,
 					offset: rowsPerPage * page,
@@ -241,8 +242,8 @@ const OrdersList: FC<OrdersListProps> = () => {
 	};
 
 	const handleRequestSort = (field: string) => {
-		const isAsc = sortedField === field && sortingOrder === 'asc';
-		setSortingOrder(isAsc ? 'desc' : 'asc');
+		const isAsc = sortedField === field && sortingOrder === SORTING_ORDER.ASC;
+		setSortingOrder(isAsc ? SORTING_ORDER.DESC : SORTING_ORDER.ASC);
 		setSortField(field);
 	};
 
@@ -492,14 +493,14 @@ const OrdersList: FC<OrdersListProps> = () => {
 							<TableRow>
 								<StyledTableCell sx={{width: '6%'}}>
 									<TableSortLabel
-										active={sortedField === 'id' ? true : false}
-										direction={sortedField === 'id' ? sortingOrder : 'asc'}
+										active={sortedField === SORTED_FIELD.ID}
+										direction={sortedField === SORTED_FIELD.ID ? sortingOrder : SORTING_ORDER.ASC}
 										onClick={() => {
-											handleRequestSort('id');
+											handleRequestSort(SORTED_FIELD.ID);
 										}}
 									>
 										Id
-										{sortedField === 'id' ? (
+										{sortedField === SORTED_FIELD.ID ? (
 											<Box
 												component="span"
 												sx={visuallyHidden}
@@ -509,14 +510,14 @@ const OrdersList: FC<OrdersListProps> = () => {
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '8%'}} align="center">
 									<TableSortLabel
-										active={sortedField === 'clock.size' ? true : false}
-										direction={sortedField === 'clock.size' ? sortingOrder : 'asc'}
+										active={sortedField === SORTED_FIELD.CLOCK_SIZE}
+										direction={sortedField === SORTED_FIELD.CLOCK_SIZE ? sortingOrder : SORTING_ORDER.ASC}
 										onClick={() => {
-											handleRequestSort('clock.size');
+											handleRequestSort(SORTED_FIELD.CLOCK_SIZE);
 										}}
 									>
 										Clock size
-										{sortedField === 'clock.size' ? (
+										{sortedField === SORTED_FIELD.CLOCK_SIZE ? (
 											<Box
 												component="span"
 												sx={visuallyHidden}
@@ -526,14 +527,14 @@ const OrdersList: FC<OrdersListProps> = () => {
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '11%'}} align="center">
 									<TableSortLabel
-										active={sortedField === 'user.name' ? true : false}
-										direction={sortedField === 'user.name' ? sortingOrder : 'asc'}
+										active={sortedField === SORTED_FIELD.USER_NAME}
+										direction={sortedField === SORTED_FIELD.USER_NAME ? sortingOrder : SORTING_ORDER.ASC}
 										onClick={() => {
-											handleRequestSort('user.name');
+											handleRequestSort(SORTED_FIELD.USER_NAME);
 										}}
 									>
 										User name
-										{sortedField === 'user.name' ? (
+										{sortedField === SORTED_FIELD.USER_NAME ? (
 											<Box
 												component="span"
 												sx={visuallyHidden}
@@ -543,14 +544,14 @@ const OrdersList: FC<OrdersListProps> = () => {
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '18%'}} align="center">
 									<TableSortLabel
-										active={sortedField === 'user.email' ? true : false}
-										direction={sortedField === 'user.email' ? sortingOrder : 'asc'}
+										active={sortedField === SORTED_FIELD.USER_EMAIL}
+										direction={sortedField === SORTED_FIELD.USER_EMAIL ? sortingOrder : SORTING_ORDER.ASC}
 										onClick={() => {
-											handleRequestSort('user.email');
+											handleRequestSort(SORTED_FIELD.USER_EMAIL);
 										}}
 									>
 										User Email
-										{sortedField === 'user.email' ? (
+										{sortedField === SORTED_FIELD.USER_EMAIL ? (
 											<Box
 												component="span"
 												sx={visuallyHidden}
@@ -560,14 +561,14 @@ const OrdersList: FC<OrdersListProps> = () => {
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '8%'}} align="center">
 									<TableSortLabel
-										active={sortedField === 'city.name' ? true : false}
-										direction={sortedField === 'city.name' ? sortingOrder : 'asc'}
+										active={sortedField === SORTED_FIELD.CITY_NAME}
+										direction={sortedField === SORTED_FIELD.CITY_NAME ? sortingOrder : SORTING_ORDER.ASC}
 										onClick={() => {
-											handleRequestSort('city.name');
+											handleRequestSort(SORTED_FIELD.CITY_NAME);
 										}}
 									>
 										City
-										{sortedField === 'city.name' ? (
+										{sortedField === SORTED_FIELD.CITY_NAME ? (
 											<Box
 												component="span"
 												sx={visuallyHidden}
@@ -577,14 +578,14 @@ const OrdersList: FC<OrdersListProps> = () => {
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '11%'}} align="center">
 									<TableSortLabel
-										active={sortedField === 'master.name' ? true : false}
-										direction={sortedField === 'master.name' ? sortingOrder : 'asc'}
+										active={sortedField === SORTED_FIELD.MASTER_NAME}
+										direction={sortedField === SORTED_FIELD.MASTER_NAME ? sortingOrder : SORTING_ORDER.ASC}
 										onClick={() => {
-											handleRequestSort('master.name');
+											handleRequestSort(SORTED_FIELD.MASTER_NAME);
 										}}
 									>
 										Master Name
-										{sortedField === 'master.name' ? (
+										{sortedField === SORTED_FIELD.MASTER_NAME ? (
 											<Box
 												component="span"
 												sx={visuallyHidden}
@@ -594,14 +595,14 @@ const OrdersList: FC<OrdersListProps> = () => {
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '10%'}} align="center">
 									<TableSortLabel
-										active={sortedField === 'startWorkOn' ? true : false}
-										direction={sortedField === 'startWorkOn' ? sortingOrder : 'asc'}
+										active={sortedField === SORTED_FIELD.START_WORK_ON}
+										direction={sortedField === SORTED_FIELD.START_WORK_ON ? sortingOrder : SORTING_ORDER.ASC}
 										onClick={() => {
-											handleRequestSort('startWorkOn');
+											handleRequestSort(SORTED_FIELD.START_WORK_ON);
 										}}
 									>
 										Start On
-										{sortedField === 'startWorkOn' ? (
+										{sortedField === SORTED_FIELD.START_WORK_ON ? (
 											<Box
 												component="span"
 												sx={visuallyHidden}
@@ -611,14 +612,14 @@ const OrdersList: FC<OrdersListProps> = () => {
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '10%'}} align="center">
 									<TableSortLabel
-										active={sortedField === 'endWorkOn' ? true : false}
-										direction={sortedField === 'endWorkOn' ? sortingOrder : 'asc'}
+										active={sortedField === SORTED_FIELD.END_WORK_ON}
+										direction={sortedField === SORTED_FIELD.END_WORK_ON ? sortingOrder : SORTING_ORDER.ASC}
 										onClick={() => {
-											handleRequestSort('endWorkOn');
+											handleRequestSort(SORTED_FIELD.END_WORK_ON);
 										}}
 									>
 										Finish On
-										{sortedField === 'endWorkOn' ? (
+										{sortedField === SORTED_FIELD.END_WORK_ON ? (
 											<Box
 												component="span"
 												sx={visuallyHidden}

@@ -45,7 +45,7 @@ const createClient = async (name: string, email: string, password: string, hashV
 
 export type filtersOptions = {
 	clockId?: number,
-	isCompleted?: boolean,
+	isCompleted?: string,
 	masterId?: string,
 	cityId?: number,
 	startWorkOn?: {[Op.gte]:string},

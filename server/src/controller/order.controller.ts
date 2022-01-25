@@ -64,8 +64,8 @@ export const getOrders = async (req: Request, res: Response) => {
 
 		const filterOptions: filtersOptions = {};
 
-		if (typeof isCompletedFilter === 'boolean') {
-			filterOptions.isCompleted = isCompletedFilter;
+		if (isCompletedFilter) {
+			filterOptions.isCompleted = String(isCompletedFilter);
 		}
 
 		if (clockFilteredId) {
@@ -220,7 +220,7 @@ export const putRatedOrder = async (req: Request, res: Response) => {
 export const getClocks = async (req: Request, res: Response) => {
 	const {clockSize} =req.query;
 
-	if (clockSize !== undefined || null) {
+	if (clockSize === 'string') {
 		const clocks = await db.Clock.findAll({
 			where: {
 				size: {[Op.iLike]: `%${clockSize}%`},

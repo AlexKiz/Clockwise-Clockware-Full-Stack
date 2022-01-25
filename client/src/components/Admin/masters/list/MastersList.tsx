@@ -27,6 +27,7 @@ import AlertMessage from 'src/components/Notification/AlertMessage';
 import PrivateHeader from 'src/components/Headers/PrivateHeader';
 import TablePaginationActions from '../../../Pagination/TablePaginationActions';
 import {visuallyHidden} from '@mui/utils';
+import {SORTED_FIELD, SORTING_ORDER} from 'src/data/constants/systemConstants';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -67,7 +68,7 @@ const MastersList: FC<MasterListProps> = () => {
 	useEffect(() => {
 		const readMastersData = async () => {
 			setLoading(true);
-			await axios.get<{count: number, rows: Master[]}>(URL.MASTER, {
+			axios.get<{count: number, rows: Master[]}>(URL.MASTER, {
 				params: {
 					limit: rowsPerPage,
 					offset: rowsPerPage * page,
@@ -129,8 +130,8 @@ const MastersList: FC<MasterListProps> = () => {
 	};
 
 	const handleRequestSort = (field: string) => {
-		const isAsc = sortedField === field && sortingOrder === 'asc';
-		setSortingOrder(isAsc ? 'desc' : 'asc');
+		const isAsc = sortedField === field && sortingOrder === SORTING_ORDER.ASC;
+		setSortingOrder(isAsc ? SORTING_ORDER.DESC : SORTING_ORDER.ASC);
 		setSortField(field);
 	};
 
@@ -145,14 +146,14 @@ const MastersList: FC<MasterListProps> = () => {
 							<TableRow>
 								<StyledTableCell sx={{width: '10%'}}>
 									<TableSortLabel
-										active={sortedField === 'id' ? true : false}
-										direction={sortedField === 'id' ? sortingOrder : 'asc'}
+										active={sortedField === SORTED_FIELD.ID}
+										direction={sortedField === SORTED_FIELD.ID ? sortingOrder : SORTING_ORDER.ASC}
 										onClick={() => {
-											handleRequestSort('id');
+											handleRequestSort(SORTED_FIELD.ID);
 										}}
 									>
 										Id
-										{sortedField === 'id' ? (
+										{sortedField === SORTED_FIELD.ID ? (
 											<Box
 												component="span"
 												sx={visuallyHidden}
@@ -162,14 +163,14 @@ const MastersList: FC<MasterListProps> = () => {
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '20%'}} align="center">
 									<TableSortLabel
-										active={sortedField === 'name' ? true : false}
-										direction={sortedField === 'name' ? sortingOrder : 'asc'}
+										active={sortedField === SORTED_FIELD.NAME}
+										direction={sortedField === SORTED_FIELD.NAME ? sortingOrder : SORTING_ORDER.ASC}
 										onClick={() => {
-											handleRequestSort('name');
+											handleRequestSort(SORTED_FIELD.NAME);
 										}}
 									>
 										Master name
-										{sortedField === 'name' ? (
+										{sortedField === SORTED_FIELD.NAME ? (
 											<Box
 												component="span"
 												sx={visuallyHidden}
@@ -180,14 +181,14 @@ const MastersList: FC<MasterListProps> = () => {
 								<StyledTableCell sx={{width: '25%'}} align="center">Cities</StyledTableCell>
 								<StyledTableCell sx={{width: '25%'}} align="center">
 									<TableSortLabel
-										active={sortedField === 'rating' ? true : false}
-										direction={sortedField === 'rating' ? sortingOrder : 'asc'}
+										active={sortedField === SORTED_FIELD.RATING}
+										direction={sortedField === SORTED_FIELD.RATING ? sortingOrder : SORTING_ORDER.ASC}
 										onClick={() => {
-											handleRequestSort('rating');
+											handleRequestSort(SORTED_FIELD.RATING);
 										}}
 									>
 										Rating
-										{sortedField === 'rating' ? (
+										{sortedField === SORTED_FIELD.RATING ? (
 											<Box
 												component="span"
 												sx={visuallyHidden}
