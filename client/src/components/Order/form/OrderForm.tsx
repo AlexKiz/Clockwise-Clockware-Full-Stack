@@ -29,12 +29,10 @@ import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import PublicHeader from '../../Headers/PublicHeader';
 import {useFormik} from 'formik';
 import AlertMessage from 'src/components/Notification/AlertMessage';
-import {getBinaryImages, getOrderDates} from 'src/data/utilities/systemUtilities';
-import {useHistory} from 'react-router-dom';
+import {getBinaryImages, getOrderOptions} from 'src/data/utilities/systemUtilities';
 
 
 const OrderForm: FC<OrderFormProps> = () => {
-	const history = useHistory();
 	const [masters, setMasters] = useState<Master[]>([]);
 	const [cities, setCities] = useState<City[]>([]);
 	const [clocks, setClocks] = useState<Clock[]>([]);
@@ -68,27 +66,35 @@ const OrderForm: FC<OrderFormProps> = () => {
 		validate,
 		onSubmit: async (values) => {
 			if (clocks.length) {
-				const [startDate, endDate] = getOrderDates(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
+				const [
+					startDate,
+					endDate,
+					price,
+					clockSize,
+				] = getOrderOptions(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
 				setLoading(true);
-				await axios.post(URLS.ORDER,
+				await axios.post(URLS.STRIPE,
 					{
 						name: values.name,
 						email: values.email,
 						clockId: values.clockId,
+						clockSize,
+						price,
 						cityId: values.cityId,
 						masterId: values. masterId,
 						startWorkOn: startDate,
 						endWorkOn: endDate,
 						orderPhotos: values.orderPhotos,
-					}).then(() => {
+					}).then((response) => {
 					setLoading(false);
-					setAlertOptions({
+					/* setAlertOptions({
 						message: 'Your order has been created! Please rate the master afterwards!',
 						type: 'success',
 						notify: true,
-					});
+					});*/
 					setImages([]);
 					formik.resetForm();
+					window.location.href = response.data;
 				});
 			}
 		},
@@ -123,7 +129,10 @@ const OrderForm: FC<OrderFormProps> = () => {
 	useEffect(() => {
 		const readAvailableMastersData = async () => {
 			if (clocks.length) {
-				const [startDate, endDate] = getOrderDates(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
+				const [
+					startDate,
+					endDate,
+				] = getOrderOptions(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
 
 				if (formik.values.cityId && formik.values.orderDate && formik.values.orderTime && formik.values.clockId) {
 					const {data} = await axios.get<Master[]>(URLS.AVAILABLE_MASTER, {
@@ -522,17 +531,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 							</div>
 						</Stack>
 					</form>
-					<button
-						onClick={async () => {
-							await axios.post('/stripe').then((response) => {
-								const url: any = response.data;
-								console.log(response.data);
-								history.push(url);
-							});
-						}}
-					>
-						Stripe  Test
-					</button>
 				</div>
 				{
 					alertOptions.notify &&

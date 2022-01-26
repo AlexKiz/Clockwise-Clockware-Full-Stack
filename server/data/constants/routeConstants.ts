@@ -15,6 +15,8 @@ export enum URL {
     VERIFY = '/user/verify',
     COMPLETE_ORDER = '/completeOrder',
     EXPORT_XLSX = '/exportXLSX',
+    STRIPE = '/stripe',
+    PAYMENT_HANDLER = '/paymentHandler'
 }
 
 export enum RESOURCE {

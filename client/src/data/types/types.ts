@@ -95,3 +95,9 @@ export type csvOrderShape = {
     'Rating': number,
 }
 
+export type InfoOptions = {
+    name: string,
+    price: number,
+    date: string,
+    isInfoOpen: boolean,
+}

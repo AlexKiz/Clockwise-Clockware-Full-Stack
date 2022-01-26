@@ -5,9 +5,8 @@ module.exports = {
 		const transaction = await queryInterface.sequelize.transaction();
 		try {
 			await queryInterface.addColumn('orders', 'paymentDate', {
-				type: Sequelize.DataTypes.Date,
+				type: Sequelize.DataTypes.DATE,
 				allowNull: true,
-				defaultValue: '',
 			}, {transaction});
 
 			await transaction.commit();

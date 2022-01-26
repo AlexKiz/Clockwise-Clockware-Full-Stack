@@ -1,5 +1,6 @@
 import {StripeService} from '../services/stripe';
 import {Response, Request} from 'express';
+import {CloudinaryService} from '../services/cloudinary';
 
 
 export const createStripeCheckoutSession = async (req: Request, res: Response) => {
@@ -20,13 +21,20 @@ export const createStripeCheckoutSession = async (req: Request, res: Response) =
 		apiVersion: '2020-08-27',
 	});
 
+	const cloudinary = new CloudinaryService({
+		cloud_name: process.env.CLOUD_NAME,
+		api_key: process.env.CLOUD_API_KEY,
+		api_secret: process.env.CLOUD_API_SECRET,
+	});
+
+	const orderImagesURL = await cloudinary.uploadPhotos(orderPhotos);
+
 	const session = await stripe.createSession({
 		line_items: [
 			{
 				price_data: {
 					currency: 'usd',
 					product_data: {
-						images: orderPhotos,
 						name: `Repair clock with ${clockSize} size`,
 					},
 					unit_amount: price * 1000,
@@ -42,6 +50,7 @@ export const createStripeCheckoutSession = async (req: Request, res: Response) =
 			masterId,
 			startWorkOn,
 			endWorkOn,
+			orderImages: orderImagesURL?.join(','),
 			price,
 		},
 		mode: 'payment',

@@ -7,7 +7,7 @@ import {OPENING_HOURS} from '../../../../data/constants/systemConstants';
 import {OrderCreateProps, validate} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
 import {format, isBefore} from 'date-fns';
-import {getOrderDates} from 'src/data/utilities/systemUtilities';
+import {getOrderOptions} from 'src/data/utilities/systemUtilities';
 import {useFormik} from 'formik';
 import {
 	Button,
@@ -137,7 +137,10 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 	useEffect(() => {
 		const readAvailableMastersData = async () => {
 			if (clocks.length) {
-				const [startDate, endDate] = getOrderDates(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
+				const [
+					startDate,
+					endDate,
+				] = getOrderOptions(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
 
 				const {data} = await axios.get<Master[]>(URL.AVAILABLE_MASTER, {
 					params: {

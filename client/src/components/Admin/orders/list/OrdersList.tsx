@@ -36,6 +36,8 @@ import {
 	Modal,
 	ImageList,
 	ImageListItem,
+	Dialog,
+	DialogTitle,
 } from '@mui/material';
 import {
 	DesktopDateRangePicker,
@@ -74,6 +76,7 @@ import {
 	setDateFilteringArray,
 } from 'src/store/actions/orderFiltering';
 import {setModalImg, setIsModalOpen} from 'src/store/actions/modal';
+import {setOrderInfoOptions} from 'src/store/actions/infoModal';
 import {setAlertOptions} from 'src/store/actions/notification';
 import {CombinedState} from 'redux';
 import {NotificationState} from 'src/store/types/notification';
@@ -85,6 +88,8 @@ import {ModalState} from 'src/store/types/modal';
 import {MasterState} from 'src/store/types/master';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import {CSVLink} from 'react-csv';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import {InfoModalState} from 'src/store/types/infoModal';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -156,6 +161,10 @@ const OrdersList: FC<OrdersListProps> = () => {
 		modalImg,
 		isModalOpen,
 	} = useSelector((state: CombinedState<{modal: ModalState}>) => state.modal);
+
+	const {
+		infoOptions,
+	} = useSelector((state: CombinedState<{infoModal: InfoModalState}>) => state.infoModal);
 
 	const dispatch = useDispatch();
 
@@ -319,6 +328,13 @@ const OrdersList: FC<OrdersListProps> = () => {
 		dispatch(setIsModalOpen(false));
 	};
 
+	const showOrderInfo = (name: string, price: number, date: string) => {
+		dispatch(setOrderInfoOptions(name, price, date, true));
+	};
+
+	const hideOrderInfo = () => {
+		dispatch(setOrderInfoOptions('', 0, '', false));
+	};
 
 	return (
 		<div>
@@ -491,7 +507,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 										) : null}
 									</TableSortLabel>
 								</StyledTableCell>
-								<StyledTableCell sx={{width: '11%'}} align="center">
+								<StyledTableCell sx={{width: '10%'}} align="center">
 									<TableSortLabel
 										active={sortedField === SORTED_FIELD.USER_NAME}
 										direction={sortedField === SORTED_FIELD.USER_NAME ? sortingOrder : SORTING_ORDER.ASC}
@@ -508,7 +524,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 										) : null}
 									</TableSortLabel>
 								</StyledTableCell>
-								<StyledTableCell sx={{width: '12%'}} align="center">
+								<StyledTableCell sx={{width: '10%'}} align="center">
 									<TableSortLabel
 										active={sortedField === SORTED_FIELD.USER_EMAIL}
 										direction={sortedField === SORTED_FIELD.USER_EMAIL ? sortingOrder : SORTING_ORDER.ASC}
@@ -542,7 +558,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 										) : null}
 									</TableSortLabel>
 								</StyledTableCell>
-								<StyledTableCell sx={{width: '11%'}} align="center">
+								<StyledTableCell sx={{width: '10%'}} align="center">
 									<TableSortLabel
 										active={sortedField === SORTED_FIELD.MASTER_NAME}
 										direction={sortedField === SORTED_FIELD.MASTER_NAME ? sortingOrder : SORTING_ORDER.ASC}
@@ -596,7 +612,10 @@ const OrdersList: FC<OrdersListProps> = () => {
 								<StyledTableCell sx={{width: '6%'}} align="center">
 									Photos
 								</StyledTableCell>
-								<StyledTableCell sx={{width: '20%'}} align="right">
+								<StyledTableCell sx={{width: '6%'}} align="center">
+									Info
+								</StyledTableCell>
+								<StyledTableCell sx={{width: '18%'}} align="right">
 									<IconButton
 										style={{marginLeft: 'auto'}}
 										color='inherit'
@@ -634,7 +653,18 @@ const OrdersList: FC<OrdersListProps> = () => {
 											<ImageOutlinedIcon />
 										</Fab>
 									</StyledTableCell>
+									<StyledTableCell align="center">
+										<Button
+											variant='contained'
+											sx={{width: '45%', borderRadius: 15}}
+											onClick={() =>
+												showOrderInfo(order.user.name, order.clock.price, order.paymentDate)
+											}
+										>
+											<InfoOutlinedIcon/>
+										</Button>
 
+									</StyledTableCell>
 									<StyledTableCell align="center">
 										{ !order.isCompleted ?
 											<Link to={
@@ -775,6 +805,47 @@ const OrdersList: FC<OrdersListProps> = () => {
 						</ImageList>
 					</Box>
 				</Modal>
+				<Dialog
+					open={infoOptions.isInfoOpen}
+					onClose={hideOrderInfo}
+				>
+					<Stack
+						direction="column"
+						justifyContent="center"
+						spacing={1}
+						sx={{p: 5}}
+					>
+						<DialogTitle>Order Info</DialogTitle>
+						<Typography
+							variant="subtitle1"
+							gutterBottom
+							component="div"
+						>
+							<b>User name: {infoOptions.name}</b>
+						</Typography>
+						<Typography
+							variant="subtitle1"
+							gutterBottom
+							component="div"
+						>
+							<b>Price paid: {infoOptions.price * 10}$</b>
+						</Typography>
+						<Typography
+							variant="subtitle1"
+							gutterBottom
+							component="div"
+						>
+							<b>Payment date: {infoOptions.date.split('T')[0]}</b>
+						</Typography>
+						<Typography
+							variant="subtitle1"
+							gutterBottom
+							component="div"
+						>
+							<b>Payment time: {infoOptions.date.split('T')[1]}</b>
+						</Typography>
+					</Stack>
+				</Dialog>
 				{
 					alertOptions.notify &&
 					<AlertMessage

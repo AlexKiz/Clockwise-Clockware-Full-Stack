@@ -180,14 +180,14 @@ export const rolesMappingGetOrders: any = {
 	'client': getClientOrders,
 };
 
-export const postOrder = async (params: Stripe.Event) => {
+export const postOrder = async (params: Stripe.Response<Stripe.Checkout.Session>) => {
 	try {
 		const {
 			metadata,
 		} = params;
 
 		if (metadata) {
-			const {name, email, clockId, cityId, masterId, startWorkOn, endWorkOn} = metadata;
+			const {name, email, clockId, cityId, masterId, startWorkOn, endWorkOn, orderImages} = metadata;
 			const generatedPassword = uuidv4();
 			const salt = bcrypt.genSaltSync(10);
 			const hashForVerification = bcrypt.hashSync(`${name}${email}`, salt);
@@ -217,6 +217,7 @@ export const postOrder = async (params: Stripe.Event) => {
 				endWorkOn,
 				ratingIdentificator,
 				paymentDate,
+				orderImages,
 			});
 
 			return order;

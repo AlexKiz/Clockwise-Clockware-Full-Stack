@@ -21,6 +21,6 @@ router.get(URL.ORDER_FOR_RATE, getOrderForRate);
 router.get(URL.CLOCKS, getClocks);
 router.put(URL.RATED_ORDER, [putRatedOrderValidate], putRatedOrder);
 router.put(URL.COMPLETE_ORDER, [isAuth, checkRole(['master'])], completeOrder);
-router.post('/stripe', createStripeCheckoutSession);
+router.post(URL.STRIPE, [postOrderValidate], createStripeCheckoutSession);
 
 export default router;
