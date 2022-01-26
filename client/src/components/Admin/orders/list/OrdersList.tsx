@@ -684,7 +684,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 											aria-label="add"
 											variant="extended"
 											sx={{width: '90%'}}
-											disabled={order.images ? false : true}
+											disabled={!order.images}
 											onClick={() => {
 												handleOpenModalImg(order.images);
 											}}

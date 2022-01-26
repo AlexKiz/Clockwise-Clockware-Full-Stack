@@ -147,6 +147,10 @@ const OrderForm: FC<OrderFormProps> = () => {
 		readAvailableMastersData();
 	}, [formik.values.cityId, formik.values.clockId, formik.values.orderDate, formik.values.orderTime]);
 
+	const readFiles = useCallback(async () => {
+		const binaryImages = await getBinaryImages(images);
+		formik.values.orderPhotos = binaryImages;
+	}, [images]);
 
 	useEffect(() => {
 		if (!images?.length) {
@@ -156,15 +160,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 		const imageUrlsList: string[] = [];
 		images?.forEach((item) => imageUrlsList.push(URL.createObjectURL(item)));
 		setImageUrls(imageUrlsList);
-	}, [images]);
-
-	const readFiles = useCallback(async () => {
-		const binaryImages = await getBinaryImages(images);
-		formik.values.orderPhotos = binaryImages;
-	}, [images]);
-
-
-	useEffect(()=>{
 		readFiles();
 	}, [images]);
 

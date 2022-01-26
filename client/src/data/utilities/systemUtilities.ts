@@ -23,9 +23,13 @@ export const getOrderDates = (clocks: Clock[], orderDate: string, orderTime:stri
 export const getBinaryImages = async (images: File[]) => {
 	const binaryImages = await Promise.all<Promise<string | ArrayBuffer | null>[]>(
 		images.map(async (file) => {
-			return new Promise((resolve) => {
+			return new Promise((resolve, reject) => {
 				const reader = new FileReader();
 				reader.readAsDataURL(file);
+				reader.onerror = () => {
+					const error = reader.error;
+					reject(error);
+				};
 				reader.onload = () => {
 					const result = reader.result;
 					resolve(result);
