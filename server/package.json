@@ -26,6 +26,7 @@
     "@types/uuid": "^8.3.3",
     "bcrypt": "^5.0.1",
     "bearer-token-parser": "^1.0.3",
+    "cloudinary": "^1.28.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",

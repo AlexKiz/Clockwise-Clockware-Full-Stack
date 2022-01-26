@@ -56,6 +56,7 @@ export type Order = {
     orderRating: number
     ratingIdentificator: string
     isCompleted: boolean
+    images: string
 }
 
 export type AlertNotification = {

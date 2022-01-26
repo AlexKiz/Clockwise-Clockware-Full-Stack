@@ -22,6 +22,7 @@ export = (sequelize: any, DataTypes: any) => {
 		public ratingIdentificator!: string;
 		public orderRating!: number;
 		public isCompleted!: boolean;
+		public orderImages!: string;
 
 		static findById(entityId: string | string[]) {
 			return this.findAll({where: {id: entityId}});
@@ -112,6 +113,11 @@ export = (sequelize: any, DataTypes: any) => {
 			isCompleted: {
 				type: DataTypes.BOOLEAN,
 				defaultValue: false,
+			},
+
+			orderImages: {
+				type: DataTypes.STRING,
+				defaultValue: '',
 			},
 		}, {
 			sequelize,

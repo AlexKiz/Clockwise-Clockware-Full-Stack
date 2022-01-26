@@ -41,6 +41,7 @@ export const getCities = async (req: Request, res: Response) => {
 	}
 };
 
+
 export const getCityForUpdate = async (req: Request, res: Response) => {
 	const {name} = req.query;
 
