@@ -1,11 +1,21 @@
-/* eslint-disable max-len */
 import {Dispatch} from 'react';
 import axios from 'axios';
 import {OrderAction, OrderActionTypes} from '../types/order';
 import {URL} from '../../data/constants/routeConstants';
 import {Order} from 'src/data/types/types';
 
-export const getOrders = (page = 0, limit = 5, sortingField = 'id', sortingOrder = 'asc', masterFilteredId?: string | null, cityFilteredId?: number | null, clockFilteredId?: number | null, isCompletedFilter?: boolean | null, startDateFilter?: Date | null, endDateFilter?: Date | null) => {
+export const getOrders = (
+	page = 0,
+	limit = 5,
+	sortingField = 'id',
+	sortingOrder = 'asc',
+	masterFilteredId?: string | null,
+	cityFilteredId?: number | null,
+	clockFilteredId?: number | null,
+	isCompletedFilter?: boolean | null,
+	startDateFilter?: Date | null,
+	endDateFilter?: Date | null,
+) => {
 	return async (dispatch: Dispatch<OrderAction>) => {
 		try {
 			dispatch({type: OrderActionTypes.GET});
