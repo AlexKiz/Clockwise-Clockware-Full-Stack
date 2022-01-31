@@ -16,7 +16,11 @@ export enum URL {
     COMPLETE_ORDER = '/completeOrder',
     EXPORT_XLSX = '/exportXLSX',
     STRIPE = '/stripe',
-    PAYMENT_HANDLER = '/paymentHandler'
+    PAYMENT_HANDLER = '/paymentHandler',
+    TOTAL_ORDERS_CHART = '/totalOrdersChart',
+    TOTAL_ORDERS_CITIES_PIE_CHART = '/totalOrdersForCitiesPieChart',
+    TOTAL_ORDERS_MASTERS_PIE_CHART = '/totalOrdersForMastersPieChart',
+    MASTERS_STATISTICS_TABLE = '/mastersStatisticsTable'
 }
 
 export enum RESOURCE {

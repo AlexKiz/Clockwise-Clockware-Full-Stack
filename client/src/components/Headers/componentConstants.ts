@@ -30,6 +30,10 @@ export const ADMIN_MENU_LINKS = [{
 	title: 'Orders List',
 	path: '/admin/orders-list',
 	name: 'orders-list',
+}, {
+	title: 'Statistics',
+	path: '/admin/statistics',
+	name: 'statistics',
 }];
 
 export const MASTER_MENU_LINKS = [{

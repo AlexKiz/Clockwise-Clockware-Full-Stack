@@ -19,6 +19,10 @@ export enum URL {
 	COMPLETE_ORDER = '/completeOrder',
 	EXPORT_XLSX = '/exportXLSX',
 	STRIPE = 'stripe',
+	TOTAL_ORDERS_CHART = 'totalOrdersChart',
+	TOTAL_ORDERS_CITIES_PIE_CHART = '/totalOrdersForCitiesPieChart',
+    TOTAL_ORDERS_MASTERS_PIE_CHART = '/totalOrdersForMastersPieChart',
+	MASTERS_STATISTICS_TABLE = '/mastersStatisticsTable',
 }
 
 export enum RESOURCE {
@@ -37,6 +41,7 @@ export enum RESOURCE {
     RATE = 'rate',
     REGISTRATION = 'registration-form',
 	VERIFICATION = 'email-verification',
+	STATISTICS = 'statistics'
 }
 
 export enum PARAM {
@@ -84,6 +89,9 @@ export const ROUTES = {
 	},
 	ADMIN_ORDERS_LIST: {
 		path: `/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`,
+	},
+	ADMIN_STATISTICS: {
+		path: `/${RESOURCE.ADMIN}/${RESOURCE.STATISTICS}`,
 	},
 	MASTER_ORDERS_LIST: {
 		path: `/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`,
