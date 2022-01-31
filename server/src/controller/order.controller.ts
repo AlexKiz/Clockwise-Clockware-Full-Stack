@@ -202,8 +202,6 @@ export const getOrderForRate = async (req: Request, res: Response) => {
 export const getXSLXOrders = async (req: Request, res: Response) => {
 	try {
 		const {
-			limit,
-			offset,
 			sortedField,
 			sortingOrder,
 			masterFilteredId,
@@ -216,8 +214,8 @@ export const getXSLXOrders = async (req: Request, res: Response) => {
 
 		const filterOptions: filtersOptions = {};
 
-		if (isCompletedFilter !== undefined) {
-			filterOptions.isCompleted = Boolean(isCompletedFilter);
+		if (isCompletedFilter !== 'null') {
+			filterOptions.isCompleted = String(isCompletedFilter);
 		}
 
 		if (clockFilteredId !== 'null') {
@@ -271,6 +269,7 @@ export const getXSLXOrders = async (req: Request, res: Response) => {
 			],
 			where: filterOptions,
 		});
+
 
 		const orderXLSXShape = orders.map((order: any) => {
 			return {
