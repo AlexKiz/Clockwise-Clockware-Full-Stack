@@ -1,8 +1,6 @@
 /* eslint-disable require-jsdoc */
-import dotenv from 'dotenv';
 import * as cloudinary from 'cloudinary';
 
-dotenv.config();
 
 interface IConfig {
 	cloud_name?: string;

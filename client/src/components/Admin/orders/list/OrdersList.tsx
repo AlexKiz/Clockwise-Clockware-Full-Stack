@@ -1,15 +1,11 @@
 import axios from 'axios';
-import React, {useState, useEffect, FC} from 'react';
+import React, {useEffect, FC} from 'react';
 import {Link} from 'react-router-dom';
 import classes from './orders-list.module.css';
 import {
-	Order,
 	City,
 	Master,
 	Clock,
-	AlertNotification,
-	FiltersList,
-	FilterInstances,
 } from '../../../../data/types/types';
 import {OrdersListProps} from './componentConstants';
 import {RESOURCE, URL} from '../../../../data/constants/routeConstants';
@@ -21,8 +17,6 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	TableFooter,
-	TablePagination,
 	Button,
 	Paper,
 	tableCellClasses,
@@ -40,6 +34,8 @@ import {
 	Modal,
 	ImageList,
 	ImageListItem,
+	TableFooter,
+	TablePagination,
 } from '@mui/material';
 import {
 	DesktopDateRangePicker,
@@ -54,6 +50,39 @@ import {visuallyHidden} from '@mui/utils';
 import {debouncer} from 'src/data/constants/systemUtilities';
 import {SORTED_FIELD, SORTING_ORDER} from 'src/data/constants/systemConstants';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
+import {useDispatch, useSelector} from 'react-redux';
+import {getCities, setCityName, setCityFilteringInstance} from 'src/store/actions/city';
+import {getClocks, setClockSize, setClockFilteringInstance} from 'src/store/actions/clock';
+import {getMasters, setMasterName, setMasterFilteringInstance} from 'src/store/actions/master';
+import {
+	getOrders,
+	setOrdersPage,
+	setOrdersLimit,
+	setOrdersQuantity,
+	setOrdersSortingField,
+	setOrdersSortingOrder,
+} from 'src/store/actions/order';
+import {
+	setMasterFilter,
+	setCityFilter,
+	setClockFilter,
+	setIsCompletedFilter,
+	setStartDateFilter,
+	setEndDateFilter,
+	setIsFiltersListOpen,
+	setIsFiltersButtonsDisabled,
+	setDateFilteringArray,
+} from 'src/store/actions/orderFiltering';
+import {setModalImg, setIsModalOpen} from 'src/store/actions/modal';
+import {setAlertOptions} from 'src/store/actions/notification';
+import {CombinedState} from 'redux';
+import {NotificationState} from 'src/store/types/notification';
+import {OrderState} from 'src/store/types/order';
+import {OrderFilteringState} from 'src/store/types/orderFiltering';
+import {CityState} from 'src/store/types/city';
+import {ClockState} from 'src/store/types/clock';
+import {ModalState} from 'src/store/types/modal';
+import {MasterState} from 'src/store/types/master';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -77,148 +106,101 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 
 
 const OrdersList: FC<OrdersListProps> = () => {
-	const [orders, setOrders] = useState<Order[]>([]);
-	const [cities, setCities] = useState<City[]>([]);
-	const [masters, setMasters] = useState<Master[]>([]);
-	const [clocks, setClocks] = useState<Clock[]>([]);
+	const {
+		orders,
+		loading,
+		page,
+		limit,
+		totalQuantity,
+		sortedField,
+		sortingOrder,
+	} = useSelector((state: CombinedState<{order: OrderState}>) => state.order);
 
-	const [masterName, setMasterName] = useState<string>('');
-	const [cityName, setCityName] = useState<string>('');
-	const [clockSize, setClockSize] = useState<string>('');
+	const {
+		cities,
+		cityName,
+		cityFilteringInstance,
+	} = useSelector((state: CombinedState<{city: CityState}>) => state.city);
 
-	const [filterInstances, setFilterInstances] = useState<FilterInstances>({
-		city: null,
-		master: null,
-		clock: null,
-		date: [null, null],
-	});
+	const {
+		masters,
+		masterName,
+		masterFilteringInstance,
+	} = useSelector((state: CombinedState<{master: MasterState}>) => state.master);
 
-	const [filtersList, setFiltersList] = useState<FiltersList>({});
+	const {
+		clocks,
+		clockSize,
+		clockFilteringInstance,
+	} = useSelector((state: CombinedState<{clock: ClockState}>) => state.clock);
 
-	const [isFilterListOpen, setIsFilterListOpen] = useState<boolean>(false);
+	const {
+		masterFilteredId,
+		cityFilteredId,
+		clockFilteredId,
+		isCompletedFilter,
+		dateFilteringArray,
+		startDateFilter,
+		endDateFilter,
+		isFiltersListOpen,
+		isFiltersButtonsDisabled,
+	} = useSelector((state: CombinedState<{orderFiltering: OrderFilteringState}>) => state.orderFiltering);
 
-	const [isFilterButtonsDisabled, setIsFilterButtonsDisabled] = useState<{accept: boolean, reset: boolean}>({
-		accept: false,
-		reset: true,
-	});
+	const {
+		alertOptions,
+	} = useSelector((state: CombinedState<{notification: NotificationState}>) => state.notification);
 
-	const [page, setPage] = useState<number>(0);
-	const [rowsPerPage, setRowsPerPage] = useState<number>(5);
-	const [totalOrders, setTotalOrders] = useState<number>(0);
-	const [sortedField, setSortField] = useState<string>('id');
-	const [sortingOrder, setSortingOrder] = useState<'asc' | 'desc'>('asc');
+	const {
+		modalImg,
+		isModalOpen,
+	} = useSelector((state: CombinedState<{modal: ModalState}>) => state.modal);
 
-	const [loading, setLoading] = useState<boolean>(false);
-	const [modalOptions, setModalOptions] = useState<{modalImg: string, isModalOpen: boolean}>({modalImg: '', isModalOpen: false});
-
-
-	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
-		notify: false,
-		type: 'success',
-		message: '',
-	});
-
-	useEffect(() => {
-		const readOrdersData = async () => {
-			setLoading(true);
-			axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
-				params: {
-					limit: rowsPerPage,
-					offset: rowsPerPage * page,
-					sortedField,
-					sortingOrder,
-					masterFilteredId: filtersList.masterId,
-					cityFilteredId: filtersList.cityId,
-					clockFilteredId: filtersList.clockId,
-					isCompletedFilter: filtersList.isCompleted,
-					startDateFilter: filtersList.startWorkOn,
-					endDateFilter: filtersList.endWorkOn,
-				},
-			}).then((response) => {
-				setOrders(response.data.rows);
-				setTotalOrders(response.data.count);
-				setLoading(false);
-			}).catch(() => {
-				setLoading(false);
-				setAlertOptions({
-					type: 'warning',
-					message: 'There is an error occurred while fetching data!',
-					notify: true,
-				});
-			});
-		};
-
-		readOrdersData();
-	}, [rowsPerPage, page, sortedField, sortingOrder]);
+	const dispatch = useDispatch();
 
 
 	useEffect(() => {
-		const readCitiesData = async () => {
-			const {data} = await axios.get<City[]>(URL.CITY);
+		dispatch(getOrders(
+			page,
+			limit,
+			sortedField,
+			sortingOrder,
+			masterFilteredId,
+			cityFilteredId,
+			clockFilteredId,
+			isCompletedFilter,
+			startDateFilter,
+			endDateFilter,
+		));
+		dispatch(setOrdersQuantity(totalQuantity));
+	}, [limit, page, sortedField, sortingOrder]);
 
-			if (data.length) {
-				setCities(data);
-			}
-		};
 
-		readCitiesData();
-	}, []);
+	const getDebouncedCities = debouncer(() => {
+		dispatch(getCities(cityName));
+	}, 200);
 
+	const getDebouncedMasters = debouncer(() => {
+		dispatch(getMasters(masterName));
+	}, 200);
+
+	const getDebouncedClocks = debouncer(() => {
+		dispatch(getClocks(clockSize));
+	}, 200);
 
 	useEffect(() => {
-		readMasterData();
+		getDebouncedMasters();
 	}, [masterName]);
 
 
 	useEffect(() => {
-		readCityData();
+		getDebouncedCities();
 	}, [cityName]);
 
 
 	useEffect(() => {
-		readClockData();
+		getDebouncedClocks();
 	}, [clockSize]);
 
-
-	const readMasterData = debouncer(async () => {
-		const {data} = await axios.get<Master[]>(URL.MASTER, {
-			params: {
-				limit: 5,
-				offset: 0,
-				masterName,
-			},
-		});
-
-		if (data.length) {
-			setMasters(data);
-		}
-	}, 200);
-
-	const readCityData = debouncer(async () => {
-		const {data} = await axios.get<City[]>(URL.CITY, {
-			params: {
-				limit: 5,
-				offset: 0,
-				cityName,
-			},
-		});
-
-		if (data.length) {
-			setCities(data);
-		}
-	}, 200);
-
-	const readClockData = debouncer(async () => {
-		const {data} = await axios.get<Clock[]>(URL.CLOCK, {
-			params: {
-				clockSize,
-			},
-		});
-
-		if (data.length) {
-			setClocks(data);
-		}
-	}, 200);
 
 	const onDelete = (id: string) => {
 		if (window.confirm(`Do you want to delete order #${id.slice(0, 4)}?`)) {
@@ -228,118 +210,102 @@ const OrdersList: FC<OrdersListProps> = () => {
 						id,
 					},
 				}).then(() => {
-				setOrders(orders.filter((order) => order.id !== id));
-				setAlertOptions({
-					type: 'success',
-					message: 'Order has been deleted!',
-					notify: true,
-				});
+				dispatch(getOrders(
+					page,
+					limit,
+					sortedField,
+					sortingOrder,
+					masterFilteredId,
+					cityFilteredId,
+					clockFilteredId,
+					isCompletedFilter,
+					startDateFilter,
+					endDateFilter,
+				));
+				dispatch(setOrdersQuantity(totalQuantity));
+				dispatch(setAlertOptions('Order has been deleted!', true, 'success'));
 			});
 		}
 	};
 
 	const isOpen = (value:boolean) => {
-		setAlertOptions({...alertOptions, notify: value});
+		dispatch(setAlertOptions(alertOptions.message, value, alertOptions.type));
 	};
 
 	const handleChangePage = (
 		event: React.MouseEvent<HTMLButtonElement> | null,
 		newPage: number,
 	) => {
-		setPage(newPage);
+		dispatch(setOrdersPage(newPage));
 	};
 
 	const handleChangeRowsPerPage = (
 		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
-		setRowsPerPage(parseInt(event.target.value, 10));
-		setPage(0);
+		dispatch(setOrdersLimit(parseInt(event.target.value, 10)));
+		dispatch(setOrdersPage(0));
 	};
 
 	const handleRequestSort = (field: string) => {
 		const isAsc = sortedField === field && sortingOrder === SORTING_ORDER.ASC;
-		setSortingOrder(isAsc ? SORTING_ORDER.DESC : SORTING_ORDER.ASC);
-		setSortField(field);
+		dispatch(setOrdersSortingOrder(isAsc ? SORTING_ORDER.DESC : SORTING_ORDER.ASC));
+		dispatch(setOrdersSortingField(field));
 	};
 
 	const handleFilterList = () => {
-		setIsFilterListOpen((prev) => !prev);
+		dispatch(setIsFiltersListOpen(!isFiltersListOpen));
 	};
 
 	const handleAcceptFilter = async () => {
-		setLoading(true);
-		const {data} = await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
-			params: {
-				limit: rowsPerPage,
-				offset: rowsPerPage * page,
-				sortedField,
-				sortingOrder,
-				masterFilteredId: filtersList.masterId,
-				cityFilteredId: filtersList.cityId,
-				clockFilteredId: filtersList.clockId,
-				isCompletedFilter: filtersList.isCompleted,
-				startDateFilter: filtersList.startWorkOn,
-				endDateFilter: filtersList.endWorkOn,
-			},
-		});
-		setOrders(data.rows);
-		setTotalOrders(data.count);
-		setIsFilterButtonsDisabled({
-			accept: true,
-			reset: false,
-		});
-		setPage(0);
-		setLoading(false);
+		dispatch(setIsFiltersButtonsDisabled(true, false));
+		dispatch(getOrders(
+			page,
+			limit,
+			sortedField,
+			sortingOrder,
+			masterFilteredId,
+			cityFilteredId,
+			clockFilteredId,
+			isCompletedFilter,
+			startDateFilter,
+			endDateFilter,
+		));
+		dispatch(setOrdersQuantity(totalQuantity));
+		dispatch(setOrdersPage(0));
 	};
 
 	const handleResetFilter = async () => {
-		setLoading(true);
-		const {data} = await axios.get<{count: number, rows: Order[]}>(URL.ORDER, {
-			params: {
-				limit: rowsPerPage,
-				offset: rowsPerPage * page,
-				sortedField,
-				sortingOrder,
-			},
-		});
-		setOrders(data.rows);
-		setTotalOrders(data.count);
-		setFilterInstances({
-			master: null,
-			city: null,
-			clock: null,
-			date: [null, null],
-		});
-		setFiltersList({
-			masterId: null,
-			clockId: null,
-			cityId: null,
-			isCompleted: null,
-			startWorkOn: null,
-			endWorkOn: null,
-		});
-		setIsFilterButtonsDisabled({
-			accept: false,
-			reset: true,
-		});
-		setLoading(false);
+		dispatch(setMasterFilter(null));
+		dispatch(setMasterFilteringInstance(null));
+		dispatch(setCityFilter(null));
+		dispatch(setCityFilteringInstance(null));
+		dispatch(setClockFilter(null));
+		dispatch(setClockFilteringInstance(null));
+		dispatch(setDateFilteringArray([null, null]));
+		dispatch(setStartDateFilter(null));
+		dispatch(setEndDateFilter(null));
+		dispatch(setIsFiltersButtonsDisabled(false, true));
+		dispatch(getOrders(page, limit, sortedField, sortingOrder));
+		dispatch(setOrdersQuantity(totalQuantity));
+		dispatch(setIsCompletedFilter(null));
 	};
 
-	const handleOpenModalImg = (img: string) => setModalOptions({
-		modalImg: img,
-		isModalOpen: true,
-	});
-	const handleCloseModalImg = () => setModalOptions({
-		modalImg: '',
-		isModalOpen: false,
-	});
+	const handleOpenModalImg = (img: string) => {
+		dispatch(setModalImg(img));
+		dispatch(setIsModalOpen(true));
+	};
+
+	const handleCloseModalImg = () => {
+		dispatch(setModalImg(''));
+		dispatch(setIsModalOpen(false));
+	};
 
 	return (
 		<div>
 			<PrivateHeader/>
 			<div className={classes.conteiner}>
 				{
-					isFilterListOpen &&
+					isFiltersListOpen &&
 					<Box
 						sx={{
 							width: '100%',
@@ -358,25 +324,16 @@ const OrdersList: FC<OrdersListProps> = () => {
 								disablePortal
 								id="combo-box-demo"
 								options={masters}
-								value={filterInstances.master}
+								value={masterFilteringInstance}
 								getOptionLabel={(option) => option.name}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: Master | null) => {
-									setFilterInstances({
-										...filterInstances,
-										master: value,
-									});
-									setFiltersList({
-										...filtersList,
-										masterId: value?.id,
-									});
-									setIsFilterButtonsDisabled({
-										...isFilterButtonsDisabled,
-										accept: false,
-									});
+									dispatch(setMasterFilteringInstance(value));
+									dispatch(setMasterFilter(value ? value.id : value));
+									dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 								}}
-								onInputChange={
-									(MasterNameEvent: React.SyntheticEvent<Element, Event>, value: string) => setMasterName(value)
-								}
+								onInputChange={(MasterNameEvent: React.SyntheticEvent<Element, Event>, value: string) => {
+									dispatch(setMasterName(value));
+								}}
 								sx={{width: 200}}
 								renderInput={(params) =>
 									<TextField {...params}
@@ -387,28 +344,15 @@ const OrdersList: FC<OrdersListProps> = () => {
 								disablePortal
 								id="combo-box-demo"
 								options={cities}
-								value={filterInstances.city}
+								value={cityFilteringInstance}
 								getOptionLabel={(option) => option.name}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: City | null) => {
-									setFilterInstances({
-										...filterInstances,
-										city: value,
-									});
-									setFiltersList({
-										...filtersList,
-										cityId: value?.id,
-									});
-									setIsFilterButtonsDisabled({
-										...isFilterButtonsDisabled,
-										accept: false,
-									});
+									dispatch(setCityFilteringInstance(value));
+									dispatch(setCityFilter(value ? value.id : value));
+									dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 								}}
 								onInputChange={(CityNameEvent: React.SyntheticEvent<Element, Event>, value: string) => {
-									setCityName(value);
-									setIsFilterButtonsDisabled({
-										...isFilterButtonsDisabled,
-										accept: false,
-									});
+									dispatch(setCityName(value));
 								}}
 								sx={{width: 200}}
 								renderInput={(params) =>
@@ -420,23 +364,16 @@ const OrdersList: FC<OrdersListProps> = () => {
 								disablePortal
 								id="combo-box-demo"
 								options={clocks}
-								value={filterInstances.clock}
+								value={clockFilteringInstance}
 								getOptionLabel={(option) => option.size}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: Clock | null) => {
-									setFilterInstances({
-										...filterInstances,
-										clock: value,
-									});
-									setFiltersList({
-										...filtersList,
-										clockId: value?.id,
-									});
-									setIsFilterButtonsDisabled({
-										...isFilterButtonsDisabled,
-										accept: false,
-									});
+									dispatch(setClockFilteringInstance(value));
+									dispatch(setClockFilter(value ? value.id : value));
+									dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 								}}
-								onInputChange={(ClockSizeEvent: React.SyntheticEvent<Element, Event>, value: string) => setClockSize(value)}
+								onInputChange={(ClockSizeEvent: React.SyntheticEvent<Element, Event>, value: string) => {
+									dispatch(setClockSize(value));
+								}}
 								sx={{width: 200}}
 								renderInput={(params) =>
 									<TextField {...params}
@@ -448,15 +385,10 @@ const OrdersList: FC<OrdersListProps> = () => {
 									<Checkbox
 										name="isCompleted"
 										onChange={() => {
-											setFiltersList({
-												...filtersList,
-												isCompleted: !filtersList.isCompleted,
-											});
-											setIsFilterButtonsDisabled({
-												...isFilterButtonsDisabled,
-												accept: false,
-											});
+											dispatch(setIsCompletedFilter(!isCompletedFilter));
+											dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 										}}
+										checked={Boolean(isCompletedFilter)}
 									/>
 								}
 								label="Completed orders"
@@ -465,21 +397,12 @@ const OrdersList: FC<OrdersListProps> = () => {
 								<DesktopDateRangePicker
 									startText='Sort on start date'
 									endText='Sort on end date'
-									value={filterInstances.date}
+									value={dateFilteringArray}
 									onChange={(value) => {
-										setFilterInstances({
-											...filterInstances,
-											date: value,
-										});
-										setFiltersList({
-											...filtersList,
-											startWorkOn: value[0],
-											endWorkOn: value[1],
-										});
-										setIsFilterButtonsDisabled({
-											...isFilterButtonsDisabled,
-											accept: false,
-										});
+										dispatch(setDateFilteringArray(value));
+										dispatch(setStartDateFilter(value[0]));
+										dispatch(setEndDateFilter(value[1]));
+										dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 									}}
 									renderInput={(startProps, endProps) => (
 										<>
@@ -495,7 +418,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 								variant="contained"
 								style={ {fontSize: 14, backgroundColor: 'green', borderRadius: 15} }
 								onClick={handleAcceptFilter}
-								disabled={isFilterButtonsDisabled.accept}
+								disabled={isFiltersButtonsDisabled.accept}
 							>
 								Accept filters
 							</Button>
@@ -503,7 +426,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 								variant="contained"
 								style={ {fontSize: 14, backgroundColor: 'red', borderRadius: 15} }
 								onClick={handleResetFilter}
-								disabled={isFilterButtonsDisabled.reset}
+								disabled={isFiltersButtonsDisabled.reset}
 							>
 								Reset filters
 							</Button>
@@ -729,7 +652,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 							{ !orders.length &&
 								<TableRow>
 									<TableCell
-										colSpan={9}
+										colSpan={10}
 										sx={{height: 365, p: 0}}
 										align='center'>
 										<Typography
@@ -745,10 +668,10 @@ const OrdersList: FC<OrdersListProps> = () => {
 						<TableFooter>
 							<TableRow>
 								<TablePagination
-									rowsPerPageOptions={[5, 10, 25, {label: 'All', value: totalOrders}]}
+									rowsPerPageOptions={[5, 10, 25, {label: 'All', value: totalQuantity}]}
 									colSpan={10}
-									count={totalOrders}
-									rowsPerPage={rowsPerPage}
+									count={totalQuantity}
+									rowsPerPage={limit}
 									page={page}
 									SelectProps={{
 										inputProps: {
@@ -762,7 +685,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 								/>
 							</TableRow>
 							<TableRow>
-								{ loading && <TableCell colSpan={9}>
+								{ loading && <TableCell colSpan={10}>
 									<LinearProgress />
 								</TableCell>}
 							</TableRow>
@@ -770,7 +693,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 					</Table>
 				</TableContainer>
 				<Modal
-					open={modalOptions.isModalOpen}
+					open={isModalOpen}
 					onClose={handleCloseModalImg}
 					aria-labelledby="modal-modal-title"
 					aria-describedby="modal-modal-description"
@@ -786,7 +709,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 						p: 4}}
 					>
 						<ImageList sx={{width: 500, height: 450, top: '50%', right: '50%'}} cols={3} rowHeight={164}>
-							{modalOptions.modalImg.split(',').map((item) => (
+							{modalImg.split(',').map((item) => (
 								<ImageListItem key={item}>
 									<img
 										src={`${item}`}

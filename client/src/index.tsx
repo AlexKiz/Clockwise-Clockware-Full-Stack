@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import axios from 'axios';
+import {Provider} from 'react-redux';
+import {store} from './store';
 
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
@@ -24,9 +26,11 @@ axios.interceptors.request.use(
 
 
 ReactDOM.render(
-	<React.StrictMode>
-		<App />
-	</React.StrictMode>,
+	<Provider store={store}>
+		<React.StrictMode>
+			<App />
+		</React.StrictMode>
+	</Provider>,
 	document.getElementById('root'),
 );
 
