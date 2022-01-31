@@ -17,6 +17,8 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
+	TableFooter,
+	TablePagination,
 	Button,
 	Paper,
 	tableCellClasses,
@@ -34,8 +36,6 @@ import {
 	Modal,
 	ImageList,
 	ImageListItem,
-	TableFooter,
-	TablePagination,
 } from '@mui/material';
 import {
 	DesktopDateRangePicker,
@@ -173,7 +173,6 @@ const OrdersList: FC<OrdersListProps> = () => {
 		));
 		dispatch(setOrdersQuantity(totalQuantity));
 	}, [limit, page, sortedField, sortingOrder]);
-
 
 	const getDebouncedCities = debouncer(() => {
 		dispatch(getCities(cityName));
@@ -669,7 +668,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 							<TableRow>
 								<TablePagination
 									rowsPerPageOptions={[5, 10, 25, {label: 'All', value: totalQuantity}]}
-									colSpan={10}
+									colSpan={9}
 									count={totalQuantity}
 									rowsPerPage={limit}
 									page={page}
