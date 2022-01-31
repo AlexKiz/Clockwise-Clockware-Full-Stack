@@ -297,6 +297,151 @@ export const getXSLXOrders = async (req: Request, res: Response) => {
 };
 
 
+export const getOrdersForChart = async (req: Request, res: Response) => {
+	const {startDate, endDate, mastersFilter, citiesFilter} = req.query;
+
+	let substring = '';
+
+	if (startDate || endDate || mastersFilter|| citiesFilter) {
+		substring = 'WHERE';
+	}
+
+	if (startDate) {
+		substring = `${substring} "startWorkOn" >= '${startDate}'`;
+	}
+
+	if (endDate && startDate) {
+		substring = `${substring} AND "endWorkOn" <= '${endDate}'`;
+	} else if (endDate) {
+		substring = `${substring} "endWorkOn" <= '${endDate}'`;
+	}
+
+	if (mastersFilter && (startDate || endDate)) {
+		substring = `${substring} AND "masterId" IN (${mastersFilter})`;
+	} else if (mastersFilter) {
+		substring = `${substring} "masterId" IN (${mastersFilter})`;
+	} else if (citiesFilter && (startDate || endDate)) {
+		substring = `${substring} AND "cityId" IN (${citiesFilter})`;
+	} else if (citiesFilter) {
+		substring = `${substring} "cityId" IN (${citiesFilter})`;
+	}
+
+	const queryString = `SELECT COUNT(*)::int AS "orders",
+	to_char("startWorkOn", 'YYYY-MM-DD') AS "date"
+	FROM "orders" ${substring}
+	GROUP BY "date" ORDER BY "date" ASC;`;
+
+	const [ordersData] = await db.sequelize.query(queryString);
+
+	res.status(200).json(ordersData);
+};
+
+
+export const getOrdersForCitiesPieChart = async (req: Request, res: Response) => {
+	const {startDate, endDate} = req.query;
+
+	let substring = '';
+
+	if (startDate || endDate) {
+		substring = 'WHERE';
+	}
+
+	if (startDate) {
+		substring = `${substring} "startWorkOn" >= '${startDate}'`;
+	}
+
+	if (endDate && startDate) {
+		substring = `${substring} AND "endWorkOn" <= '${endDate}'`;
+	} else if (endDate) {
+		substring = `${substring} "endWorkOn" <= '${endDate}'`;
+	}
+
+	const [ordersData] = await db.sequelize.query(`SELECT COUNT(*) AS "orders", cities.name AS "city" 
+	FROM orders INNER JOIN cities ON "orders"."cityId" = cities.id ${substring} GROUP BY "city"`);
+
+	res.status(200).json(ordersData);
+};
+
+
+export const getOrdersForMastersPieChart = async (req: Request, res: Response) => {
+	const {startDate, endDate} = req.query;
+
+	let substring = '';
+
+	if (startDate || endDate) {
+		substring = 'WHERE';
+	}
+
+	if (startDate) {
+		substring = `${substring} "startWorkOn" >= '${startDate}'`;
+	}
+
+	if (endDate && startDate) {
+		substring = `${substring} AND "endWorkOn" <= '${endDate}'`;
+	} else if (endDate) {
+		substring = `${substring} "endWorkOn" <= '${endDate}'`;
+	}
+
+	const [ordersData] = await db.sequelize.query(`(SELECT count(*) AS "orders", masters.name AS "master" 
+	FROM "orders" INNER JOIN "masters" ON "masterId" = masters.id ${substring} GROUP BY "name" 
+	ORDER BY "orders" DESC LIMIT 3) 
+	UNION (SELECT SUM(orders) AS "orders", 'Others' AS "master" FROM 
+	(SELECT COUNT (*) AS "orders", masters.name AS "master" FROM "orders" INNER JOIN "masters" 
+	ON "masterId" = masters.id ${substring} GROUP BY "name" ORDER BY "orders" DESC OFFSET 3) AS "otherMasters") 
+	ORDER BY "orders" DESC;`);
+
+	res.status(200).json(ordersData);
+};
+
+
+export const getOrdersForMastersTable = async (req: Request, res: Response) => {
+	const {limit, offset, sortingField, sortingOrder} = req.query;
+
+
+	const [ordersData] = await db.sequelize.query(`SELECT masters.id AS "id", masters.name AS "name", 
+	(
+		SELECT count(*) FROM "orders" 
+		INNER JOIN clocks ON "clockId" = clocks.id
+		WHERE clocks.size = 'small' AND "masterId" = masters.id
+	)::int AS "smallClocks", 
+	(
+		SELECT count(*) FROM "orders" 
+		INNER JOIN clocks ON "clockId" = clocks.id
+		WHERE clocks.size = 'medium' AND "masterId" = masters.id
+	)::int AS "mediumClocks", 
+	(
+		SELECT count(*) FROM "orders" 
+		INNER JOIN clocks ON "clockId" = clocks.id
+		WHERE clocks.size = 'large' AND "masterId" = masters.id
+	)::int AS "largeClocks",
+	"rating",
+	(
+		SELECT count(*) FROM "orders"
+		WHERE "isCompleted" = true AND "masterId" = masters.id
+	)::int AS "completed",
+	(
+		SELECT count(*) FROM "orders"
+		WHERE "isCompleted" = false AND "masterId" = masters.id
+	)::int AS "uncompleted",
+	(
+		SELECT COALESCE(sum(price), 0) FROM 
+		(
+			SELECT clocks.price AS "price" FROM "orders"
+			INNER JOIN "clocks" ON "clockId" = clocks.id
+			WHERE "isCompleted" = true AND "masterId" = masters.id
+		) AS "prices"
+	)::int AS "earnedAmount"
+		FROM "masters" 
+		GROUP BY masters.id 
+		ORDER BY "${sortingField}" ${sortingOrder}
+		LIMIT ${limit} OFFSET ${offset}`);
+
+	const {count} = await db.Master.findAndCountAll();
+
+	res.status(200).json({count, statistics: ordersData});
+};
+
+
 export const putRatedOrder = async (req: Request, res: Response) => {
 	try {
 		const {id, orderRated, masterId} = req.body;
