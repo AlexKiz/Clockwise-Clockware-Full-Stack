@@ -436,7 +436,7 @@ export const getOrdersForMastersTable = async (req: Request, res: Response) => {
 		ORDER BY "${sortingField}" ${sortingOrder}
 		LIMIT ${limit} OFFSET ${offset}`);
 
-	const {count} = await db.Master.findAndCountAll();
+	const count = await db.Master.count();
 
 	res.status(200).json({count, statistics: ordersData});
 };
