@@ -2,7 +2,7 @@ import {Dispatch} from 'react';
 import axios from 'axios';
 import {OrderAction, OrderActionTypes} from '../types/order';
 import {URL} from '../../data/constants/routeConstants';
-import {Order} from 'src/data/types/types';
+import {csvOrderShape, Order} from 'src/data/types/types';
 
 export const getOrders = (
 	page = 0,
@@ -62,4 +62,8 @@ export const setOrdersSortingField = (sortingField: string) => {
 
 export const setOrdersSortingOrder = (sortingOrder: 'asc' | 'desc') => {
 	return {type: OrderActionTypes.SET_SORTING_ORDER, payload: sortingOrder};
+};
+
+export const setCSVOrderData = (csvDataShape: csvOrderShape[] | null | any) => {
+	return {type: OrderActionTypes.SET_SORTING_ORDER, payload: csvDataShape};
 };

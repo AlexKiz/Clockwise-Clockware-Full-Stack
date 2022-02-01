@@ -61,7 +61,7 @@ const Registration:FC<RegistrationProps> = () => {
 					name: `${values.firstName} ${values.lastName}`,
 					password: values.password,
 					citiesId: values.citiesId,
-					role: values.isMaster ? 'master' : 'client',
+					role: values.isMaster ? 'master' : 'client', // to const
 				}).then(() => {
 				setLoading(false);
 				setNotify(true);

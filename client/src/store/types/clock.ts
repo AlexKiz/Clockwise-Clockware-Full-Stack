@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import {Clock} from 'src/data/types/types';
 
 export interface ClockState {

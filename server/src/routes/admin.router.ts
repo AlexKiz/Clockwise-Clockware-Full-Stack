@@ -8,7 +8,7 @@ import {postCityValidate, putCityValidate, deleteCityValidate} from '../controll
 import {postMaster, getMasters, putMaster, deleteMaster} from '../controller/master.controller';
 import {postMasterValidate, putMasterValidate, deleteMasterValidate} from '../controller/master.validate';
 
-import {getOrderForUpdate, putOrder, deleteOrder} from '../controller/order.controller';
+import {getOrderForUpdate, putOrder, deleteOrder, getXSLXOrders} from '../controller/order.controller';
 import {putOrderValidate, deleteOrderValidate} from '../controller/order.validate';
 
 import {getUsers, putUser, deleteUser} from '../controller/user.controller';
@@ -33,5 +33,6 @@ router.get(URL.USER, [isAuth, checkRole(['admin'])], getUsers);
 router.put(URL.USER, [isAuth, putUserValidate, checkRole(['admin'])], putUser);
 router.delete(URL.USER, [isAuth, deleteUserValidate, checkRole(['admin'])], deleteUser);
 
+router.get(URL.EXPORT_XLSX, /* [isAuth, checkRole(['admin'])],*/ getXSLXOrders);
 
 export default router;

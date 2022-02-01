@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useEffect, FC} from 'react';
+import React, {useEffect, FC, useMemo} from 'react';
 import {Link} from 'react-router-dom';
 import classes from './orders-list.module.css';
 import {
@@ -17,8 +17,6 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	TableFooter,
-	TablePagination,
 	Button,
 	Paper,
 	tableCellClasses,
@@ -36,6 +34,8 @@ import {
 	Modal,
 	ImageList,
 	ImageListItem,
+	TableFooter,
+	TablePagination,
 } from '@mui/material';
 import {
 	DesktopDateRangePicker,
@@ -61,6 +61,7 @@ import {
 	setOrdersQuantity,
 	setOrdersSortingField,
 	setOrdersSortingOrder,
+	setCSVOrderData,
 } from 'src/store/actions/order';
 import {
 	setMasterFilter,
@@ -83,6 +84,8 @@ import {CityState} from 'src/store/types/city';
 import {ClockState} from 'src/store/types/clock';
 import {ModalState} from 'src/store/types/modal';
 import {MasterState} from 'src/store/types/master';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import {CSVLink} from 'react-csv';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -190,7 +193,6 @@ const OrdersList: FC<OrdersListProps> = () => {
 		getDebouncedMasters();
 	}, [masterName]);
 
-
 	useEffect(() => {
 		getDebouncedCities();
 	}, [cityName]);
@@ -199,6 +201,25 @@ const OrdersList: FC<OrdersListProps> = () => {
 	useEffect(() => {
 		getDebouncedClocks();
 	}, [clockSize]);
+
+
+	const ordersCSVShape = useMemo(() => {
+		const ordersCSV = orders.map((order) => {
+			return {
+				'Order Id': order.id,
+				'Clock Size': order.clock.size,
+				'User Name': order.user.name,
+				'User Email': order.user.email,
+				'City': order.city.name,
+				'Master Name': order.master.name,
+				'Start On': order.startWorkOn,
+				'End On': order.endWorkOn,
+				'Completed': order.isCompleted,
+				'Rating': order.orderRating,
+			};
+		});
+		return ordersCSV;
+	}, [orders]);
 
 
 	const onDelete = (id: string) => {
@@ -280,13 +301,13 @@ const OrdersList: FC<OrdersListProps> = () => {
 		dispatch(setCityFilteringInstance(null));
 		dispatch(setClockFilter(null));
 		dispatch(setClockFilteringInstance(null));
+		dispatch(setIsCompletedFilter(null));
 		dispatch(setDateFilteringArray([null, null]));
 		dispatch(setStartDateFilter(null));
 		dispatch(setEndDateFilter(null));
 		dispatch(setIsFiltersButtonsDisabled(false, true));
 		dispatch(getOrders(page, limit, sortedField, sortingOrder));
 		dispatch(setOrdersQuantity(totalQuantity));
-		dispatch(setIsCompletedFilter(null));
 	};
 
 	const handleOpenModalImg = (img: string) => {
@@ -298,6 +319,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 		dispatch(setModalImg(''));
 		dispatch(setIsModalOpen(false));
 	};
+
 
 	return (
 		<div>
@@ -321,10 +343,10 @@ const OrdersList: FC<OrdersListProps> = () => {
 						>
 							<Autocomplete
 								disablePortal
-								id="combo-box-demo"
+								id="masterFilter"
 								options={masters}
 								value={masterFilteringInstance}
-								getOptionLabel={(option) => option.name}
+								getOptionLabel={(master) => master.name}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: Master | null) => {
 									dispatch(setMasterFilteringInstance(value));
 									dispatch(setMasterFilter(value ? value.id : value));
@@ -341,10 +363,10 @@ const OrdersList: FC<OrdersListProps> = () => {
 							/>
 							<Autocomplete
 								disablePortal
-								id="combo-box-demo"
+								id="cityFilter"
 								options={cities}
 								value={cityFilteringInstance}
-								getOptionLabel={(option) => option.name}
+								getOptionLabel={(city) => city.name}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: City | null) => {
 									dispatch(setCityFilteringInstance(value));
 									dispatch(setCityFilter(value ? value.id : value));
@@ -361,10 +383,10 @@ const OrdersList: FC<OrdersListProps> = () => {
 							/>
 							<Autocomplete
 								disablePortal
-								id="combo-box-demo"
+								id="clockFilter"
 								options={clocks}
 								value={clockFilteringInstance}
-								getOptionLabel={(option) => option.size}
+								getOptionLabel={(clock) => clock.size}
 								onChange={(e: React.SyntheticEvent<Element, Event>, value: Clock | null) => {
 									dispatch(setClockFilteringInstance(value));
 									dispatch(setClockFilter(value ? value.id : value));
@@ -412,7 +434,6 @@ const OrdersList: FC<OrdersListProps> = () => {
 									)}
 								/>
 							</LocalizationProvider>
-
 							<Button
 								variant="contained"
 								style={ {fontSize: 14, backgroundColor: 'green', borderRadius: 15} }
@@ -666,9 +687,45 @@ const OrdersList: FC<OrdersListProps> = () => {
 						</TableBody>
 						<TableFooter>
 							<TableRow>
+								<TableCell colSpan={6}>
+									<Stack direction='row' spacing={1.5}>
+										<a href={
+											`${process.env.REACT_APP_API_URL}/exportXLSX?sortedField=${sortedField}
+											&sortingOrder=${sortingOrder}&masterFilteredId=${masterFilteredId}
+											&cityFilteredId=${cityFilteredId}&clockFilteredId=${clockFilteredId}
+											&isCompletedFilter=${isCompletedFilter}&startDateFilter=${startDateFilter}
+											&endDateFilter=${endDateFilter}`
+										}>
+											<Button
+												variant="contained"
+												sx={{width: '100%', fontSize: 12, borderRadius: 8}}
+												color='success'
+												startIcon={<DescriptionOutlinedIcon fontSize='medium'/>}
+												disabled={!orders.length}
+											>
+											Download all pages
+											</Button>
+										</a>
+										<CSVLink
+											data={ordersCSVShape}
+											separator={';'}
+											filename={'orderPage.csv'}
+										>
+											<Button
+												variant="contained"
+												sx={{width: '100%', fontSize: 12, borderRadius: 8}}
+												color='success'
+												startIcon={<DescriptionOutlinedIcon fontSize='medium'/>}
+												disabled={!orders.length}
+											>
+											Download current page
+											</Button>
+										</CSVLink>
+									</Stack>
+								</TableCell>
 								<TablePagination
 									rowsPerPageOptions={[5, 10, 25, {label: 'All', value: totalQuantity}]}
-									colSpan={9}
+									colSpan={10}
 									count={totalQuantity}
 									rowsPerPage={limit}
 									page={page}
@@ -734,5 +791,3 @@ const OrdersList: FC<OrdersListProps> = () => {
 };
 
 export default OrdersList;
-
-
