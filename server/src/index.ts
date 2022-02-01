@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {StripeService} from './services/stripe';
 import express from 'express';
 import {Request, Response} from 'express';
@@ -15,13 +14,11 @@ import db from './models';
 import {nearOrderNotification} from './services/cron';
 import {postOrder} from '../data/utilities/systemUtilities';
 import Stripe from 'stripe';
-// @ts-ignore
-// import SlackNotify from 'slack-notify';
 
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-// const slack = SlackNotify(process.env.SLACK_WEBHOOK);
+
 
 app.use(cors({exposedHeaders: 'Authorization'}));
 app.use(express.static(`../client/build`));
@@ -50,7 +47,6 @@ app.post(URL.PAYMENT_HANDLER, express.raw({type: 'application/json'}), (req: Req
 	if (event?.type === 'checkout.session.completed') {
 		const session = event.data.object as Stripe.Response<Stripe.Checkout.Session>;
 		postOrder(session);
-		// slack.send(`New order just have paid!`);
 		return res.status(200);
 	} else {
 		res.send();
