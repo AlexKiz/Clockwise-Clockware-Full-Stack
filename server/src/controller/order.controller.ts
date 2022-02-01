@@ -1,5 +1,6 @@
+import {QUERY_PARAMS} from './../../data/constants/routeConstants';
 import {filtersOptions, rolesMappingGetOrders} from './../../data/utilities/systemUtilities';
-import {Response, Request} from 'express';
+import e, {Response, Request} from 'express';
 import {sendMail, sendVerificationMail} from '../services/nodemailer';
 import {v4 as uuidv4} from 'uuid';
 import db from '../models';
@@ -204,39 +205,28 @@ export const getXSLXOrders = async (req: Request, res: Response) => {
 		const {
 			sortedField,
 			sortingOrder,
-			masterFilteredId,
-			cityFilteredId,
-			clockFilteredId,
-			isCompletedFilter,
 			startDateFilter,
 			endDateFilter,
 		} = req.query;
 
-		const filterOptions: filtersOptions = {};
+		const filtersQuery = ['isCompletedFilter', 'clockFilteredId', 'masterFilteredId', 'cityFilteredId'];
+		const filtersName = ['isCompleted', 'clockId', 'masterId', 'cityId'];
 
-		if (isCompletedFilter !== 'null') {
-			filterOptions.isCompleted = String(isCompletedFilter);
-		}
+		const filterOptions:{[key: string]: any} = {};
 
-		if (clockFilteredId !== 'null') {
-			filterOptions.clockId = Number(clockFilteredId);
-		}
+		filtersQuery.forEach((elem, index) => {
+			if (req.query[elem] !== QUERY_PARAMS.NULL) {
+				filterOptions[filtersName[index]] = req.query[elem];
+			}
+		});
 
-		if (masterFilteredId !== 'null') {
-			filterOptions.masterId = String(masterFilteredId);
-		}
-
-		if (cityFilteredId !== 'null') {
-			filterOptions.cityId = Number(cityFilteredId);
-		}
-
-		if (startDateFilter !== 'null') {
+		if (startDateFilter !== QUERY_PARAMS.NULL) {
 			filterOptions.startWorkOn = {
 				[Op.gte]: (<string>startDateFilter),
 			};
 		}
 
-		if (endDateFilter !== 'null') {
+		if (endDateFilter !== QUERY_PARAMS.NULL) {
 			filterOptions.endWorkOn = {
 				[Op.lte]: (<string>endDateFilter),
 			};

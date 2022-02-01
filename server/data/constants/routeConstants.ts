@@ -21,3 +21,7 @@ export enum RESOURCE {
     RATE = 'rate',
     VERIFICATION = 'email-verification'
 }
+
+export enum QUERY_PARAMS {
+    NULL = 'null'
+}
