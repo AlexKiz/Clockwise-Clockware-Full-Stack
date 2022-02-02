@@ -1,5 +1,6 @@
+import {FONTS} from './../../data/constants/systemConstants';
 import {QUERY_PARAMS} from './../../data/constants/routeConstants';
-import {filtersOptions, rolesMappingGetOrders} from './../../data/utilities/systemUtilities';
+import {filtersOptions, rolesMappingGetOrders, createReceiptBody} from './../../data/utilities/systemUtilities';
 import {Response, Request} from 'express';
 import {sendMail, sendVerificationMail} from '../services/nodemailer';
 import {v4 as uuidv4} from 'uuid';
@@ -11,8 +12,9 @@ import {Op} from 'sequelize';
 import dotenv from 'dotenv';
 import XLSX from 'xlsx';
 import stream from 'stream';
-
+import PdfPrinter from 'pdfmake';
 dotenv.config();
+
 
 export const postOrder = async (req: Request, res: Response) => {
 	try {
@@ -515,16 +517,97 @@ export const putOrder = async (req: Request, res: Response) => {
 
 export const completeOrder = async (req: Request, res: Response) => {
 	try {
-		const {id, clientEmail, ratingIdentificator} = req.body;
+		const {
+			id,
+			clientEmail,
+			ratingIdentificator,
+			clockSize,
+			masterName,
+			masterId,
+			startWorkOn,
+			endWorkOn,
+			price,
+			clientName,
+		} = req.body;
 
 		const order = await db.Order.updateById(id, {isCompleted: true});
 
-		await sendMail(clientEmail, ratingIdentificator);
+		const {email: masterEmail} = await db.User.findOne({where: {masterId: masterId}});
+		const printer = new PdfPrinter(FONTS);
+		const docDefenition = createReceiptBody(
+			clockSize,
+			masterName,
+			masterEmail,
+			startWorkOn,
+			endWorkOn,
+			price,
+			clientName,
+			clientEmail,
+		);
+		const pdfDoc = printer.createPdfKitDocument(docDefenition);
+
+		const chunks: Uint8Array[] = [];
+		let result;
+
+		pdfDoc.on('data', (chunk) => {
+			chunks.push(chunk);
+		});
+		pdfDoc.on('end', () => {
+			result = Buffer.concat(chunks);
+			sendMail(clientEmail, ratingIdentificator, result);
+		});
+		pdfDoc.end();
+
 
 		res.status(200).json(order);
 	} catch (e) {
 		res.status(500).send();
 	}
+};
+
+
+export const downloadPDFReceipt = async (req: Request, res: Response) => {
+	const {
+		clockSize,
+		masterName,
+		masterId,
+		startWorkOn,
+		endWorkOn,
+		price,
+		clientName,
+		clientEmail,
+	} = req.query;
+
+	const printer = new PdfPrinter(FONTS);
+	const {email: masterEmail} = await db.User.findOne({where: {masterId: masterId}});
+
+	const docDefenition = createReceiptBody(
+		String(clockSize),
+		String(masterName),
+		String(masterEmail),
+		String(startWorkOn),
+		String(endWorkOn),
+		Number(price),
+		String(clientName),
+		String(clientEmail),
+	);
+
+	const pdfDoc = printer.createPdfKitDocument(docDefenition);
+
+	const chunks: Uint8Array[] = [];
+	let result;
+
+	pdfDoc.on('data', (chunk) => {
+		chunks.push(chunk);
+	});
+	pdfDoc.on('end', () => {
+		result = Buffer.concat(chunks);
+		res.setHeader('Content-Type', 'application/pdf');
+		res.setHeader('Content-disposition', 'attachment; filename=orderCheck.pdf');
+		res.send(result);
+	});
+
+	pdfDoc.end();
 };
 
 

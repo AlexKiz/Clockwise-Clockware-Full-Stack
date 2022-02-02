@@ -9,3 +9,12 @@ export const VALID = {
 };
 
 export const METHOD = 'OPTIONS';
+
+export const FONTS = {
+	Times: {
+		normal: 'Times-Roman',
+		bold: 'Times-Bold',
+		italics: 'Times-Italic',
+		bolditalics: 'Times-BoldItalic',
+	},
+};

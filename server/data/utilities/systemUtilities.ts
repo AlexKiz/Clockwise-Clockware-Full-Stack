@@ -136,6 +136,11 @@ const getMasterOrders = async (params: roleMappingOrderGetParams) => {
 				attributes: ['id', 'name'],
 				required: true,
 			},
+			{
+				model: db.Master,
+				attributes: ['id', 'name'],
+				require: true,
+			},
 		],
 		where: {
 			masterId: params.masterId,
@@ -226,3 +231,142 @@ export const postOrder = async (params: Stripe.Response<Stripe.Checkout.Session>
 		return error;
 	}
 };
+
+
+export const createReceiptBody = (
+	clockSize: string,
+	masterName: string,
+	masterEmail: string,
+	startWorkOn: string,
+	endWorkOn: string,
+	price: number,
+	clientName: string,
+	clientEmail: string) => {
+	return {
+		content: [
+			{
+				style: 'header',
+				text: 'Order Receipt',
+			},
+			{
+				style: 'defaultStyle',
+				columns: [{width: 'auto', text: 'Service:'},
+					{width: 'auto', text: `Repair clock with ${clockSize} size`}],
+				columnGap: 76,
+			},
+			{
+				style: 'defaultStyle',
+				columns: [{width: 'auto', text: 'Master name:'},
+					{width: 'auto', text: `${masterName}`}],
+				columnGap: 34,
+			},
+			{
+				style: 'defaultStyle',
+				columns: [{width: 'auto', text: 'Master email:'},
+					{width: 'auto', text: `${masterEmail}`}],
+				columnGap: 34,
+			},
+			{
+				style: 'defaultStyle',
+				columns: [{width: 'auto', text: 'Starting date:'},
+					{width: 'auto', text: `${startWorkOn}`}],
+				columnGap: 35,
+			},
+			{
+				style: 'defaultStyle',
+				columns: [{width: 'auto', text: 'Completed date:'},
+					{width: 'auto', text: `${endWorkOn}`}],
+				columnGap: 14,
+			},
+			{
+				style: 'defaultStyle',
+				columns: [{width: 'auto', text: 'Paid amount:'}, {width: 'auto', text: `${price*10} $`}],
+				columnGap: 38,
+			},
+			{
+				style: 'defaultStyle',
+				columns: [{width: 'auto', text: 'Client full name:'},
+					{width: 'auto', text: `${clientName}`}],
+				columnGap: 16,
+			},
+			{
+				style: 'defaultStyle',
+				columns: [{width: 'auto', text: 'Client email:'},
+					{width: 'auto', text: `${clientEmail}`}],
+				columnGap: 42,
+			},
+		],
+		styles: {
+			header: {
+				fontSize: 24,
+				bold: true,
+				lineHeight: 2,
+			},
+		},
+		defaultStyle: {
+			font: 'Times',
+			fontSize: 16,
+			lineHeight: 1.8,
+		},
+	};
+};
+
+/* content: [
+		{
+			style: 'header',
+			columns: [{width: '*', text: 'Order Receipt'}],
+		},
+		{
+			style: 'defaultStyle',
+			columns: [{width: 'auto', text: 'Service:'},
+				{width: 'auto', text: `Repair clock with ${clockSize} size`}],
+		},
+		{
+			style: 'defaultStyle',
+			columns: [{width: 'auto', text: 'Master name:'},
+				{width: 'auto', text: `${masterName}`}],
+		},
+		{
+			style: 'defaultStyle',
+			columns: [{width: 'auto', text: 'Master email:'},
+				{width: 'auto', text: `${masterEmail}`}],
+		},
+		{
+			style: 'defaultStyle',
+			columns: [{width: 'auto', text: 'Starting date:'},
+				{width: 'auto', text: `${startWorkOn}`}],
+		},
+		{
+			style: 'defaultStyle',
+			columns: [{width: 'auto', text: 'Completed date:'},
+				{width: 'auto', text: `${endWorkOn}`}],
+		},
+		{
+			style: 'defaultStyle',
+			columns: [{width: 'auto', text: 'Paid amount:'}, {width: 'auto', text: `${price*10} $`}],
+		},
+		{
+			style: 'defaultStyle',
+			columns: [{width: 'auto', text: 'Client full name:'},
+				{width: 'auto', text: `${clientName}`}],
+		},
+		{
+			style: 'defaultStyle',
+			columns: [{width: 'auto', text: 'Client email:'},
+				{width: 'auto', text: `${clientEmail}`}],
+		},
+	],
+	styles: {
+		header: {
+			fontSize: 24,
+			bold: true,
+			alignment: 'center',
+			lineHeight: 2,
+		},
+		defaultStyle: {
+			fontSize: 16,
+			alignment: 'center',
+			lineHeight: 1.8,
+		},
+	},
+*/
