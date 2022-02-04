@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import axios from 'axios';
 import {Provider} from 'react-redux';
 import {store} from './store';
+import 'src/i18n/i18n';
 
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;

@@ -5,6 +5,7 @@ import classes from './registration-form.module.css';
 import {RegistrationProps, validate} from './componentConstants';
 import {useFormik} from 'formik';
 import {URL} from '../../../../data/constants/routeConstants';
+import {ROLE} from '../../../../data/constants/systemConstants';
 import {
 	Button,
 	Checkbox,
@@ -27,9 +28,11 @@ import {
 import {Visibility, VisibilityOff} from '@mui/icons-material';
 import {City} from 'src/data/types/types';
 import AlertMessage from 'src/components/Notification/AlertMessage';
+import {useTranslation} from 'react-i18next';
 
 
 const Registration:FC<RegistrationProps> = () => {
+	const {t} = useTranslation();
 	const [cities, setCities] = useState<City[]>([]);
 
 	const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -61,7 +64,7 @@ const Registration:FC<RegistrationProps> = () => {
 					name: `${values.firstName} ${values.lastName}`,
 					password: values.password,
 					citiesId: values.citiesId,
-					role: values.isMaster ? 'master' : 'client', // to const
+					role: values.isMaster ? ROLE.MASTER : ROLE.CLIENT,
 				}).then(() => {
 				setLoading(false);
 				setNotify(true);
@@ -99,13 +102,13 @@ const Registration:FC<RegistrationProps> = () => {
 										gutterBottom
 										component="label"
 									>
-										Enter Email:
+										{t('registration.email')}
 									</Typography>
 								</div>
 								<TextField
 									id="email"
 									name='email'
-									label="Email"
+									label={t('labels.email')}
 									placeholder="example@mail.com"
 									variant="filled"
 									size="small"
@@ -126,11 +129,11 @@ const Registration:FC<RegistrationProps> = () => {
 										gutterBottom
 										component="label"
 									>
-										Enter Password:
+										{t('registration.password')}
 									</Typography>
 								</div>
 								<FormControl fullWidth variant="filled">
-									<InputLabel>Password</InputLabel>
+									<InputLabel>{t('labels.password')}</InputLabel>
 									<FilledInput
 										id="filled-adornment-password"
 										type={showPassword ? 'text' : 'password'}
@@ -154,7 +157,7 @@ const Registration:FC<RegistrationProps> = () => {
 									<FormHelperText error> {formik.touched.password && formik.errors.password} </FormHelperText>
 								</FormControl>
 								<FormControl fullWidth variant="filled">
-									<InputLabel>Confirm password</InputLabel>
+									<InputLabel>{t('labels.confirmPassword')}</InputLabel>
 									<FilledInput
 										id="filled-adornment-password"
 										type={showPassword ? 'text' : 'password'}
@@ -185,13 +188,13 @@ const Registration:FC<RegistrationProps> = () => {
 										gutterBottom
 										component="label"
 									>
-										Enter your name:
+										{t('registration.name')}
 									</Typography>
 								</div>
 								<TextField
 									id="firstName"
 									name='firstName'
-									label="First Name"
+									label={t('labels.firstName')}
 									placeholder="First Name"
 									variant="filled"
 									size="small"
@@ -207,7 +210,7 @@ const Registration:FC<RegistrationProps> = () => {
 								<TextField
 									id="lastName"
 									name='lastName'
-									label="Last Name"
+									label={t('labels.lastName')}
 									placeholder="Last Name"
 									variant="filled"
 									size="small"
@@ -238,7 +241,7 @@ const Registration:FC<RegistrationProps> = () => {
 													required
 												/>
 											}
-											label="*Accept the license terms"
+											label={String(t('labels.licenseTerm'))}
 										/>
 										<FormControlLabel
 											control={
@@ -248,7 +251,7 @@ const Registration:FC<RegistrationProps> = () => {
 													value=''
 												/>
 											}
-											label="Sign up as master"
+											label={String(t('labels.asMaster'))}
 										/>
 									</FormGroup>
 									<FormHelperText error>
@@ -265,14 +268,14 @@ const Registration:FC<RegistrationProps> = () => {
 											gutterBottom
 											component="label"
 										>
-											Choose cities:
+											{t('registration.city')}
 										</Typography>
 									</div>
 									<FormControl
 										fullWidth
 										error={formik.touched.citiesId && Boolean(formik.errors.citiesId)}
 									>
-										<InputLabel id="cities">Cities</InputLabel>
+										<InputLabel id="cities">{t('labels.cities')}</InputLabel>
 										<Select
 											id='citiesId'
 											name='citiesId'
@@ -307,7 +310,7 @@ const Registration:FC<RegistrationProps> = () => {
 									className={classes.form_btn}
 									style={ {fontSize: 18, borderRadius: 15} }
 								>
-								Submit
+									{t('buttons.submit')}
 									{loading && <CircularProgress
 										size={56}
 										color="success"

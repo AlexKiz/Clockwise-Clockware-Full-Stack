@@ -2,13 +2,22 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import classes from './header.module.css';
 import {useLocation} from 'react-router-dom';
-import {MENU_LINKS} from './componentConstants';
+import {languageSelect, MENU_LINKS} from './componentConstants';
+import Select, {SelectChangeEvent} from '@mui/material/Select';
+import {MenuItem} from '@mui/material';
+import i18n from 'src/i18n/i18n';
+import {useTranslation} from 'react-i18next';
+
 
 const PublicHeader = () => {
 	const location = useLocation();
 	const {pathname} = location;
 	const splitLocation = pathname.split('/').reverse();
+	const {t} = useTranslation();
 
+	const handleChangeLanguage = (event: SelectChangeEvent) => {
+		i18n.changeLanguage(event.target.value);
+	};
 
 	return (
 		<header>
@@ -36,11 +45,24 @@ const PublicHeader = () => {
 									key={link.path}
 								>
 									<Link to={link.path}>
-										{`${link.title}`}
+										{t(`${link.title}`)}
 									</Link>
 								</li>
 							))
 						}
+						<li>
+							<Select
+								sx={{height: 29}}
+								value={i18n.resolvedLanguage}
+								onChange={handleChangeLanguage}
+							>
+								{
+									languageSelect.map((elem) => (
+										<MenuItem key={elem.code} value={elem.code}>{elem.name}</MenuItem>
+									))
+								}
+							</Select>
+						</li>
 					</ul>
 				</nav>
 			</div>

@@ -30,9 +30,11 @@ import PublicHeader from '../../Headers/PublicHeader';
 import {useFormik} from 'formik';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import {getBinaryImages, getOrderOptions} from 'src/data/utilities/systemUtilities';
+import {useTranslation} from 'react-i18next';
 
 
 const OrderForm: FC<OrderFormProps> = () => {
+	const {t} = useTranslation();
 	const [masters, setMasters] = useState<Master[]>([]);
 	const [cities, setCities] = useState<City[]>([]);
 	const [clocks, setClocks] = useState<Clock[]>([]);
@@ -201,7 +203,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 	const handleOpenModalImg = () => setOpenModalImg(true);
 	const handleCloseModalImg = () => setOpenModalImg(false);
 
-
 	return (
 		<div>
 			<PublicHeader/>
@@ -216,13 +217,13 @@ const OrderForm: FC<OrderFormProps> = () => {
 										gutterBottom
 										component="label"
 									>
-										Enter your name:
+										{t('form.name')}
 									</Typography>
 								</div>
 								<TextField
 									id="name"
 									name="name"
-									label="Full name"
+									label={t('labels.name')}
 									placeholder="Ivan Ivanov"
 									variant="filled"
 									size="small"
@@ -243,13 +244,13 @@ const OrderForm: FC<OrderFormProps> = () => {
 										gutterBottom
 										component="label"
 									>
-										Enter your email:
+										{t('form.email')}
 									</Typography>
 								</div>
 								<TextField
 									id="email"
 									name='email'
-									label="Email"
+									label={t('labels.email')}
 									placeholder="example@mail.com"
 									variant="filled"
 									size="small"
@@ -270,14 +271,14 @@ const OrderForm: FC<OrderFormProps> = () => {
 										gutterBottom
 										component="label"
 									>
-										Choose clock size:
+										{t('form.clock')}
 									</Typography>
 								</div>
 								<FormControl
 									fullWidth
 									error={formik.touched.clockId && Boolean(formik.errors.clockId)}
 								>
-									<InputLabel id="clockId">Size</InputLabel>
+									<InputLabel id="clockId">{t('labels.size')}</InputLabel>
 									<Select
 										id='clockId'
 										name='clockId'
@@ -285,7 +286,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 										displayEmpty
 										onChange={formik.handleChange}
 										value={formik.values.clockId || ''}
-										label="Size"
+										label={t('labels.size')}
 										onBlur={formik.handleBlur}
 										required
 									>
@@ -307,14 +308,14 @@ const OrderForm: FC<OrderFormProps> = () => {
 										gutterBottom
 										component="label"
 									>
-										Choose your city:
+										{t('form.city')}
 									</Typography>
 								</div>
 								<FormControl
 									fullWidth
 									error={formik.touched.cityId && Boolean(formik.errors.cityId)}
 								>
-									<InputLabel id="cityId">City</InputLabel>
+									<InputLabel id="cityId">{t('labels.city')}</InputLabel>
 									<Select
 										id='cityId'
 										name='cityId'
@@ -322,7 +323,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 										onChange={formik.handleChange}
 										displayEmpty
 										value={formik.values.cityId || ''}
-										label="City"
+										label={t('labels.city')}
 										onBlur={formik.handleBlur}
 										required
 									>
@@ -344,7 +345,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 										gutterBottom
 										component="label"
 									>
-										Choose the date:
+										{t('form.date')}
 									</Typography>
 								</div>
 								<TextField
@@ -368,21 +369,21 @@ const OrderForm: FC<OrderFormProps> = () => {
 										gutterBottom
 										component="label"
 									>
-										Choose the time:
+										{t('form.time')}
 									</Typography>
 								</div>
 								<FormControl
 									fullWidth
 									error={formik.touched.orderTime && Boolean(formik.errors.orderTime)}
 								>
-									<InputLabel id="orderTime">Time</InputLabel>
+									<InputLabel id="orderTime">{t('labels.time')}</InputLabel>
 									<Select
 										id='orderTime'
 										name='orderTime'
 										labelId="orderTime"
 										onChange={formik.handleChange}
 										value={formik.values.orderTime}
-										label="Time"
+										label={t('labels.time')}
 										onBlur={formik.handleBlur}
 										required
 									>
@@ -408,21 +409,21 @@ const OrderForm: FC<OrderFormProps> = () => {
 										gutterBottom
 										component="label"
 									>
-										Available masters:
+										{t('form.master')}
 									</Typography>
 								</div>
 								<FormControl
 									fullWidth
 									error={formik.touched.masterId && Boolean(formik.errors.masterId)}
 								>
-									<InputLabel id="masterId">Choose the master</InputLabel>
+									<InputLabel id="masterId">{t('labels.master')}</InputLabel>
 									<Select
 										id='masterId'
 										name='masterId'
 										labelId="masterId"
 										onChange={formik.handleChange}
 										value={formik.values.masterId}
-										label="Choose the master"
+										label={t('labels.master')}
 										onBlur={formik.handleBlur}
 										required
 									>
@@ -460,7 +461,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 												aria-label="add"
 												variant="extended"
 											>
-												<AddIcon /> Upload photo
+												<AddIcon /> {t('buttons.upload')}
 											</Fab>
 										</Badge>
 									</Typography>
@@ -472,7 +473,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 										disabled={images?.length ? false : true}
 										onClick={handleOpenModalImg}
 									>
-										<ImageOutlinedIcon /> Uploaded photos
+										<ImageOutlinedIcon /> {t('buttons.show')}
 									</Fab>
 								</Stack>
 							</div>
@@ -515,7 +516,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 									disabled={loading}
 
 								>
-										Create order
+									{t('buttons.create')}
 									{loading && <CircularProgress
 										size={56}
 										color="success"
