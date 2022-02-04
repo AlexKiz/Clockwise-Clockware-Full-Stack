@@ -127,6 +127,41 @@ export const getOrders = async (req: Request, res: Response) => {
 	}
 };
 
+export const getOrdersForCalendar = async (req: Request, res: Response) => {
+	const token = BearerParser.parseBearerToken(req.headers);
+
+	const {masterId} = await db.User.findOne({where: {token}});
+
+	const orders = await db.Order.findAll({
+		attributes: [
+			'id',
+			'startWorkOn',
+			'endWorkOn',
+		],
+		include:
+			{
+				model: db.Clock,
+				attributes: ['size'],
+			},
+		where: {masterId},
+	});
+
+	const ordersForCalendar = orders.map((order: {
+		id: string,
+		startWorkOn: string,
+		endWorkOn: string,
+		clock: {size: string}
+	}) => {
+		return {
+			id: order.id,
+			title: `Repair clock with ${order.clock.size} size`,
+			start: order.startWorkOn,
+			end: order.endWorkOn,
+		};
+	});
+
+	res.status(200).json(ordersForCalendar);
+};
 
 export const getOrderForUpdate = async (req: Request, res: Response) => {
 	const {id} = req.query;

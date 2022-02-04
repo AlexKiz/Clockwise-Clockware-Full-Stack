@@ -18,6 +18,7 @@ import Verification from './components/Admin/users/verification/Verification';
 import MasterOrdersList from './components/Master/orders/list/MasterOrdersList';
 import ClientOrdersList from './components/Client/order/list/ClientOrdersList';
 import Statistics from './components/Admin/statistics/Statistics';
+import Calendar from './components/Master/calendar/Calendar';
 
 
 const App = () => (
@@ -38,6 +39,7 @@ const App = () => (
 			<PrivateRoute component={OrderCreate} {...ROUTES.ADMIN_ORDER_CREATE}/>
 			<PrivateRoute component={Statistics} {...ROUTES.ADMIN_STATISTICS}/>
 			<PrivateRoute component={MasterOrdersList} {...ROUTES.MASTER_ORDERS_LIST}/>
+			<PrivateRoute component={Calendar} {...ROUTES.MASTER_CALENDAR}/>
 			<PrivateRoute component={ClientOrdersList} {...ROUTES.CLIENT_ORDERS_LIST}/>
 		</Switch>
 	</BrowserRouter>
