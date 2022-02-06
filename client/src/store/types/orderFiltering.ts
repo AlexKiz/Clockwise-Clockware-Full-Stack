@@ -69,26 +69,6 @@ interface SetIsFiltersButtonsDisabled {
     payload: {accept: boolean, reset: boolean}
 }
 
-interface SetIsFiltersListOpen {
-    type: OrderFilteringActionTypes.SET_IS_FILTERS_LIST_OPEN,
-    payload: boolean
-}
-
-interface SetIsFiltersButtonsDisabled {
-    type: OrderFilteringActionTypes.SET_IS_FILTERS_BUTTONS_DISABLED,
-    payload: {accept: boolean, reset: boolean}
-}
-
-interface SetIsFiltersListOpen {
-    type: OrderFilteringActionTypes.SET_IS_FILTERS_LIST_OPEN,
-    payload: boolean
-}
-
-interface SetIsFiltersButtonsDisabled {
-    type: OrderFilteringActionTypes.SET_IS_FILTERS_BUTTONS_DISABLED,
-    payload: {accept: boolean, reset: boolean}
-}
-
 export type OrderFilteringAction =
 SetMasterFilterAction |
 SetCityFilterAction |

@@ -57,6 +57,7 @@ export type Order = {
     ratingIdentificator: string
     isCompleted: boolean
     images: string
+    paymentDate: string
 }
 
 export type AlertNotification = {
@@ -80,6 +81,7 @@ export type FilterInstances = {
     clock: Clock | null
     date: DateRange<Date>
 };
+
 export type csvOrderShape = {
     'Order Id': string,
     'Clock Size': string,
@@ -91,4 +93,11 @@ export type csvOrderShape = {
     'End On': string,
     'Completed': boolean,
     'Rating': number,
+}
+
+export type InfoOptions = {
+    name: string,
+    price: number,
+    date: string,
+    isInfoOpen: boolean,
 }

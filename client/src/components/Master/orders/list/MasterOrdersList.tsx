@@ -21,12 +21,16 @@ import {
 	Box,
 	ImageList,
 	ImageListItem,
+	Dialog,
+	DialogTitle,
+	Stack,
 } from '@mui/material';
 import AlertMessage from '../../../Notification/AlertMessage';
 import PrivateHeader from '../../../Headers/PrivateHeader';
 import jwtDecode from 'jwt-decode';
 import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -58,6 +62,12 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 	});
 
 	const [modalOptions, setModalOptions] = useState<{modalImg: string, isModalOpen: boolean}>({modalImg: '', isModalOpen: false});
+	const [orderInfoOption, setOrderInfoOption] = useState<{
+		name: string,
+		price: number,
+		date:string,
+		isInfoOpen: boolean
+	}>({name: '', price: 0, date: '', isInfoOpen: false});
 
 	const isOpen = (value:boolean) => {
 		setAlertOptions({...alertOptions, notify: value});
@@ -101,6 +111,16 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 		isModalOpen: false,
 	});
 
+	const showOrderInfo = (name: string, price: number, date: string) => setOrderInfoOption({
+		name, price, date, isInfoOpen: true,
+	});
+
+	const hideOrderInfo = () => setOrderInfoOption({
+		name: '',
+		price: 0,
+		date: '',
+		isInfoOpen: false,
+	});
 
 	useEffect(() => {
 		const token = localStorage.getItem(ACCESS_TOKEN);
@@ -119,17 +139,19 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 		<div>
 			<PrivateHeader/>
 			<div className={classes.conteiner}>
-				<TableContainer component={Paper} sx={{width: '80%'}} className={classes.conteiner_table}>
+				<TableContainer component={Paper} sx={{width: '90%'}} className={classes.conteiner_table}>
 					<Table sx={{minWidth: 650}} aria-label="customized table">
 						<TableHead>
 							<TableRow>
-								<StyledTableCell sx={{width: '16%'}} align="center">Client name</StyledTableCell>
-								<StyledTableCell sx={{width: '16%'}} align="center">Clock size</StyledTableCell>
-								<StyledTableCell sx={{width: '18%'}} align="center">City</StyledTableCell>
+								<StyledTableCell sx={{width: '12%'}} align="center">Client name</StyledTableCell>
+								<StyledTableCell sx={{width: '12%'}} align="center">Clock size</StyledTableCell>
+								<StyledTableCell sx={{width: '12%'}} align="center">City</StyledTableCell>
 								<StyledTableCell sx={{width: '10%'}} align="center">Start on</StyledTableCell>
 								<StyledTableCell sx={{width: '10%'}} align="center">Finish on</StyledTableCell>
-								<StyledTableCell sx={{width: '10%'}} align="center">Total price</StyledTableCell>
-								<StyledTableCell sx={{width: '20%'}} align="center"></StyledTableCell>
+								<StyledTableCell sx={{width: '8%'}} align="center">Total price</StyledTableCell>
+								<StyledTableCell sx={{width: '8%'}} align="center">Photos</StyledTableCell>
+								<StyledTableCell sx={{width: '10%'}} align="center">Order Info</StyledTableCell>
+								<StyledTableCell sx={{width: '18%'}} align="center"></StyledTableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -159,8 +181,21 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 
 									<StyledTableCell align="center">
 										<Button
+											variant='contained'
+											sx={{width: '45%', borderRadius: 15}}
+											onClick={() =>
+												showOrderInfo(order.user.name, order.clock.price, order.paymentDate)
+											}
+										>
+											<InfoOutlinedIcon/>
+										</Button>
+
+									</StyledTableCell>
+									<StyledTableCell align="center">
+										<Button
 											disabled={order.isCompleted}
 											variant="contained"
+											color='success'
 											sx={{width: '100%', fontSize: 14, borderRadius: 15}}
 											onClick={() => completeOrder(order)}
 										>
@@ -215,6 +250,47 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 						</ImageList>
 					</Box>
 				</Modal>
+				<Dialog
+					open={orderInfoOption.isInfoOpen}
+					onClose={hideOrderInfo}
+				>
+					<Stack
+						direction="column"
+						justifyContent="center"
+						spacing={1}
+						sx={{p: 5}}
+					>
+						<DialogTitle>Order Info</DialogTitle>
+						<Typography
+							variant="subtitle1"
+							gutterBottom
+							component="div"
+						>
+							<b>User name: {orderInfoOption.name}</b>
+						</Typography>
+						<Typography
+							variant="subtitle1"
+							gutterBottom
+							component="div"
+						>
+							<b>Price paid: {orderInfoOption.price * 10}$</b>
+						</Typography>
+						<Typography
+							variant="subtitle1"
+							gutterBottom
+							component="div"
+						>
+							<b>Payment date: {orderInfoOption.date.split('T')[0]}</b>
+						</Typography>
+						<Typography
+							variant="subtitle1"
+							gutterBottom
+							component="div"
+						>
+							<b>Payment time: {orderInfoOption.date.split('T')[1]}</b>
+						</Typography>
+					</Stack>
+				</Dialog>
 				{
 					alertOptions.notify &&
 					<AlertMessage

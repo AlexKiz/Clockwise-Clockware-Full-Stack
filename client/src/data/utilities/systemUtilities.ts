@@ -1,9 +1,9 @@
 import {Clock} from './../types/types';
 
-export const getOrderDates = (clocks: Clock[], orderDate: string, orderTime:string, clockId: number) => {
+export const getOrderOptions = (clocks: Clock[], orderDate: string, orderTime:string, clockId: number) => {
 	const currentClock = clocks.filter((clock) => clock.id === clockId);
 
-	const {installationTime} = currentClock[0];
+	const {installationTime, price, size} = currentClock[0];
 
 	const startDate = new Date(`${orderDate} ${orderTime}`);
 
@@ -12,12 +12,12 @@ export const getOrderDates = (clocks: Clock[], orderDate: string, orderTime:stri
 	startDate.setUTCHours(startDate.getHours());
 	endDate.setUTCHours(endDate.getHours() + installationTime);
 
-	const orderDates: string[] = [];
-
-	orderDates.push(startDate.toISOString());
-	orderDates.push(endDate.toISOString());
-
-	return orderDates;
+	return {
+		startDate: startDate.toISOString(),
+		endDate: endDate.toISOString(),
+		price,
+		clockSize: size,
+	};
 };
 
 export const getBinaryImages = async (images: File[]) => {
