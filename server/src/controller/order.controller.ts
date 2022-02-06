@@ -1,6 +1,6 @@
 import {QUERY_PARAMS} from './../../data/constants/routeConstants';
 import {filtersOptions, rolesMappingGetOrders} from './../../data/utilities/systemUtilities';
-import e, {Response, Request} from 'express';
+import {Response, Request} from 'express';
 import {sendMail, sendVerificationMail} from '../services/nodemailer';
 import {v4 as uuidv4} from 'uuid';
 import db from '../models';

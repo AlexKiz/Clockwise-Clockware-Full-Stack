@@ -137,10 +137,10 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 	useEffect(() => {
 		const readAvailableMastersData = async () => {
 			if (clocks.length) {
-				const [
+				const {
 					startDate,
 					endDate,
-				] = getOrderOptions(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
+				} = getOrderOptions(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
 
 				const {data} = await axios.get<Master[]>(URL.AVAILABLE_MASTER, {
 					params: {

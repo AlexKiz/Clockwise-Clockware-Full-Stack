@@ -12,14 +12,12 @@ export const getOrderOptions = (clocks: Clock[], orderDate: string, orderTime:st
 	startDate.setUTCHours(startDate.getHours());
 	endDate.setUTCHours(endDate.getHours() + installationTime);
 
-	const orderOptions: Array<string | number> = [];
-
-	orderOptions.push(endDate.toISOString());
-	orderOptions.push(startDate.toISOString());
-	orderOptions.push(price);
-	orderOptions.push(size);
-
-	return orderOptions;
+	return {
+		startDate: startDate.toISOString(),
+		endDate: endDate.toISOString(),
+		price,
+		clockSize: size,
+	};
 };
 
 export const getBinaryImages = async (images: File[]) => {

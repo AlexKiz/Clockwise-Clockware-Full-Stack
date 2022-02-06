@@ -66,12 +66,12 @@ const OrderForm: FC<OrderFormProps> = () => {
 		validate,
 		onSubmit: async (values) => {
 			if (clocks.length) {
-				const [
+				const {
 					startDate,
 					endDate,
 					price,
 					clockSize,
-				] = getOrderOptions(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
+				} = getOrderOptions(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
 				setLoading(true);
 				await axios.post(URLS.STRIPE,
 					{
@@ -87,11 +87,11 @@ const OrderForm: FC<OrderFormProps> = () => {
 						orderPhotos: values.orderPhotos,
 					}).then((response) => {
 					setLoading(false);
-					/* setAlertOptions({
+					setAlertOptions({
 						message: 'Your order has been created! Please rate the master afterwards!',
 						type: 'success',
 						notify: true,
-					});*/
+					});
 					setImages([]);
 					formik.resetForm();
 					window.location.href = response.data;
@@ -129,10 +129,10 @@ const OrderForm: FC<OrderFormProps> = () => {
 	useEffect(() => {
 		const readAvailableMastersData = async () => {
 			if (clocks.length) {
-				const [
+				const {
 					startDate,
 					endDate,
-				] = getOrderOptions(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
+				} = getOrderOptions(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
 
 				if (formik.values.cityId && formik.values.orderDate && formik.values.orderTime && formik.values.clockId) {
 					const {data} = await axios.get<Master[]>(URLS.AVAILABLE_MASTER, {

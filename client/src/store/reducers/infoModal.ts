@@ -11,10 +11,9 @@ const initialState: InfoModalState = {
 };
 
 export const infoModalReducer = (state = initialState, action: InfoModalAction): InfoModalState => {
-	switch (action.type) {
-	case InfoModalActionsTypes.SET_INFO_OPTIONS:
+	if ( action.type === InfoModalActionsTypes.SET_INFO_OPTIONS) {
 		return {infoOptions: action.payload};
-	default:
+	} else {
 		return state;
 	}
 };

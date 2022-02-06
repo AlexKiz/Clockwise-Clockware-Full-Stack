@@ -1,7 +1,8 @@
 import {StripeService} from '../services/stripe';
 import {Response, Request} from 'express';
 import {CloudinaryService} from '../services/cloudinary';
-
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const createStripeCheckoutSession = async (req: Request, res: Response) => {
 	const {
@@ -54,8 +55,8 @@ export const createStripeCheckoutSession = async (req: Request, res: Response) =
 			price,
 		},
 		mode: 'payment',
-		success_url: 'http://localhost:5000',
-		cancel_url: 'http://localhost:5000',
+		success_url: `${process.env.FRONT_MAIN_PAGE}`,
+		cancel_url: `${process.env.FRONT_MAIN_PAGE}`,
 	});
 
 	res.status(200).json(session.url);
