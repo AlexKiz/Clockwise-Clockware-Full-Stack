@@ -18,6 +18,7 @@ import Verification from './components/Admin/users/verification/Verification';
 import MasterOrdersList from './components/Master/orders/list/MasterOrdersList';
 import ClientOrdersList from './components/Client/order/list/ClientOrdersList';
 import Statistics from './components/Admin/statistics/Statistics';
+import Blog from './components/Blog/Blog';
 
 
 const App = () => (
@@ -28,6 +29,7 @@ const App = () => (
 			<Route component={RateOrder} {...ROUTES.RATE_ORDER}/>
 			<Route component={Registration} {...ROUTES.REGISTRATION}/>
 			<Route component={Verification} {...ROUTES.USER_VERIFY}/>
+			<Route component={Blog} {...ROUTES.BLOG}/>
 			<PrivateRoute component={MastersList} {...ROUTES.ADMIN_MASTERS_LIST}/>
 			<PrivateRoute component={MasterCreate} {...ROUTES.ADMIN_MASTER_CREATE}/>
 			<PrivateRoute component={UsersList} {...ROUTES.ADMIN_USERS_LIST}/>

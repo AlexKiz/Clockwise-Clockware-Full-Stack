@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@devexpress/dx-react-chart-material-ui": "^3.0.1",
+    "@devexpress/dx-react-chart": "^3.0.0",
     "@mui/icons-material": "^5.2.4",
     "@mui/lab": "^5.0.0-alpha.60",
     "@mui/material": "^5.2.4",

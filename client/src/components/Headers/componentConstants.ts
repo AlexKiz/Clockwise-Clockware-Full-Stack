@@ -12,6 +12,10 @@ export const MENU_LINKS = [{
 	title: 'header.signUp',
 	path: '/registration-form',
 	name: 'registration-form',
+}, {
+	title: 'header.blog',
+	path: '/blog',
+	name: 'blog',
 }];
 
 export const ADMIN_MENU_LINKS = [{

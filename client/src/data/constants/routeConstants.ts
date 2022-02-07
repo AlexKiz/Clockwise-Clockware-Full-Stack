@@ -41,7 +41,8 @@ export enum RESOURCE {
     RATE = 'rate',
     REGISTRATION = 'registration-form',
 	VERIFICATION = 'email-verification',
-	STATISTICS = 'statistics'
+	STATISTICS = 'statistics',
+	BLOG = 'blog',
 }
 
 export enum PARAM {
@@ -68,6 +69,9 @@ export const ROUTES = {
 	},
 	REGISTRATION: {
 		path: `/${RESOURCE.REGISTRATION}`,
+	},
+	BLOG: {
+		path: `/${RESOURCE.BLOG}`,
 	},
 	ADMIN_MASTERS_LIST: {
 		path: `/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`,
