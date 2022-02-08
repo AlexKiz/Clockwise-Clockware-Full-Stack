@@ -12,7 +12,7 @@ module.exports = {
 			},
 
 			title: {
-				type: Sequelize.DataTypes.STRING(75),
+				type: Sequelize.DataTypes.STRING(40),
 				allowNull: false,
 			},
 
