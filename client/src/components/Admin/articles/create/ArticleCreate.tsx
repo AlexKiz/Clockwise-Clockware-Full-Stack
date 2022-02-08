@@ -4,7 +4,8 @@ import {useParams, useHistory} from 'react-router-dom';
 import classes from './article-create.module.css';
 import PrivateHeader from '../../../Headers/PrivateHeader';
 import {ArticleCreateProps} from './componentConstants';
-import {Params} from 'src/data/types/types';
+import {Params} from '../../../../data/types/types';
+import {Editor} from '@tinymce/tinymce-react';
 
 
 const ArticleCreate: FC<ArticleCreateProps> = () => {
@@ -29,7 +30,7 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 		<div>
 			<PrivateHeader/>
 			<div className={classes.conteiner}>
-                
+        
 			</div>
 		</div>
 

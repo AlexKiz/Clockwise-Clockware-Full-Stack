@@ -44,7 +44,7 @@ export enum RESOURCE {
 	STATISTICS = 'statistics',
 	BLOG = 'blog',
 	ARTICLES_LIST = 'articles-list',
-	ARTICLES_CREATE = 'articles-create',
+	ARTICLE_CREATE = 'articles-create',
 }
 
 export enum PARAM {
@@ -102,8 +102,8 @@ export const ROUTES = {
 	ADMIN_ARTICLES_LIST: {
 		path: `/${RESOURCE.ADMIN}/${RESOURCE.ARTICLES_LIST}`,
 	},
-	ADMIN_ARTICLES_CREATE: {
-		path: `/${RESOURCE.ADMIN}/${RESOURCE.ARTICLES_CREATE}`,
+	ADMIN_ARTICLE_CREATE: {
+		path: `/${RESOURCE.ADMIN}/${RESOURCE.ARTICLE_CREATE}`,
 	},
 	MASTER_ORDERS_LIST: {
 		path: `/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`,

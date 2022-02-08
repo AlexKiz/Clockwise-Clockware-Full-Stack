@@ -20,6 +20,7 @@ import ClientOrdersList from './components/Client/order/list/ClientOrdersList';
 import Statistics from './components/Admin/statistics/Statistics';
 import Blog from './components/Blog/Blog';
 import ArticlesList from './components/Admin/articles/list/ArticlesList';
+import ArticleCreate from './components/Admin/articles/create/ArticleCreate';
 
 
 const App = () => (
@@ -41,6 +42,7 @@ const App = () => (
 			<PrivateRoute component={OrderCreate} {...ROUTES.ADMIN_ORDER_CREATE}/>
 			<PrivateRoute component={Statistics} {...ROUTES.ADMIN_STATISTICS}/>
 			<PrivateRoute component={ArticlesList} {...ROUTES.ADMIN_ARTICLES_LIST}/>
+			<PrivateRoute component={ArticleCreate} {...ROUTES.ADMIN_ARTICLE_CREATE}/>
 			<PrivateRoute component={MasterOrdersList} {...ROUTES.MASTER_ORDERS_LIST}/>
 			<PrivateRoute component={ClientOrdersList} {...ROUTES.CLIENT_ORDERS_LIST}/>
 		</Switch>

@@ -1,14 +1,18 @@
 import axios from 'axios';
 import React, {useState, useEffect, FC} from 'react';
+import {Link} from 'react-router-dom';
 import {AlertNotification, Article} from 'src/data/types/types';
 import classes from './articles-list.module.css';
 import {ArticlesProps} from './componentConstants';
 import {
+	Box,
 	Button,
 	Card,
 	CardActions,
 	CardContent,
 	CardMedia,
+	Pagination,
+	Paper,
 	Stack,
 	Typography,
 } from '@mui/material';
@@ -16,6 +20,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PrivateHeader from 'src/components/Headers/PrivateHeader';
 import AlertMessage from 'src/components/Notification/AlertMessage';
+import AddIcon from '@mui/icons-material/Add';
+import {RESOURCE} from 'src/data/constants/routeConstants';
 
 
 const ArticlesList: FC<ArticlesProps> = () => {
@@ -57,6 +63,31 @@ const ArticlesList: FC<ArticlesProps> = () => {
 		body: 'Some articles content with some strange text inside 4. And then other text...',
 	}, {
 		id: '5',
+		title: 'Article 4',
+		pictures: 'https://mui.com/static/images/cards/contemplative-reptile.jpg',
+		background: '',
+		description: `sdfasdfasdfafasdf 
+        sadfasdfafasdfasdfsdfasdfasdfafasdf 
+        sadfasdfafasdfasdfsdfasdfasdfafasdf sadfasdfafasdfasdfsdfasdfasdfafasdf sadfasdfafasdfasdf123434 1234567899 12345678`,
+		body: 'Some articles content with some strange text inside 4. And then other text...',
+	}, {
+		id: '6',
+		title: 'sdfasdfasdfafasdf sadfasdfafasdfasd88990',
+		pictures: 'https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg',
+		background: '',
+		description: `sdfasdfasdfafasdf fasdfasdf123434 1234567899 12345678`,
+		body: 'Some articles content with some strange text inside 5. And then other text...',
+	}, {
+		id: '7',
+		title: 'Article 4',
+		pictures: 'https://mui.com/static/images/cards/contemplative-reptile.jpg',
+		background: '',
+		description: `sdfasdfasdfafasdf 
+        sadfasdfafasdfasdfsdfasdfasdfafasdf 
+        sadfasdfafasdfasdfsdfasdfasdfafasdf sadfasdfafasdfasdfsdfasdfasdfafasdf sadfasdfafasdfasdf123434 1234567899 12345678`,
+		body: 'Some articles content with some strange text inside 4. And then other text...',
+	}, {
+		id: '8',
 		title: 'sdfasdfasdfafasdf sadfasdfafasdfasd88990',
 		pictures: 'https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg',
 		background: '',
@@ -88,7 +119,7 @@ const ArticlesList: FC<ArticlesProps> = () => {
 		/* axios.delete('someUrl', {
 			data: {id},
 		}).then(() => {*/
-			setArticles(articles.filter((article) => article.id !== id));
+			setArticles(articles?.filter((article) => article.id !== id));
 			setAlertOptions({
 				type: 'success',
 				message: 'Article has been deleted!',
@@ -106,10 +137,22 @@ const ArticlesList: FC<ArticlesProps> = () => {
 		<div>
 			<PrivateHeader/>
 			<div className={classes.conteiner}>
-				<Stack direction="row" flexWrap='wrap' justifyContent='center'>
-					{
-						articles.map((article) => (
-							<Card sx={{maxWidth: 400, mb: 2, mr: 2}} key={article.id}>
+				<Paper sx={{width: '100%', minHeight: 800, background: 'grey', justifyContent: 'center'}} elevation={4}>
+					<Box sx={{width: '40%', m: '0 auto', p: 2}} className={classes.conteiner_box}>
+						<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ARTICLE_CREATE}`}>
+							<Button
+								variant="contained"
+								color='error'
+								sx={{width: '100%', fontSize: 14, borderRadius: 10}}
+								startIcon={<AddIcon fontSize='medium'/>}
+							>
+                            Create new article
+							</Button>
+						</Link>
+					</Box>
+					<Stack direction="row" flexWrap='wrap' justifyContent='center'>
+						{articles?.length ? articles.map((article) => (
+							<Card sx={{maxWidth: 400, m: 1}} key={article.id}>
 								<CardMedia
 									component="img"
 									height={200}
@@ -146,9 +189,25 @@ const ArticlesList: FC<ArticlesProps> = () => {
 									</Button>
 								</CardActions>
 							</Card>
-						))
-					}
-				</Stack>
+						)) : <Box>
+							<Typography
+								variant='h3'
+								component='label'
+							>
+								{loading ? 'Loading...' : 'There are no articles left!'}
+							</Typography>
+						</Box>}
+					</Stack>
+					<Box sx={{m: '0 auto', p: 2}}>
+						<Pagination
+							color='primary'
+							count={5}
+							size="large"
+							sx={{width: '100%', justifyContent: 'center', display: 'flex'}}
+						/>
+					</Box>
+				</Paper>
+
 				{
 					alertOptions.notify &&
 					<AlertMessage
