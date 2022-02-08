@@ -59,3 +59,12 @@ export interface UserAttributes {
     isVerified: boolean,
     token: string
 }
+
+export interface BlogAttributes {
+    id: string,
+    title: string,
+    pictures: string,
+    background: string,
+    description: string,
+    body: string,
+}

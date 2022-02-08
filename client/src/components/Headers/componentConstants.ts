@@ -38,6 +38,10 @@ export const ADMIN_MENU_LINKS = [{
 	title: 'Statistics',
 	path: '/admin/statistics',
 	name: 'statistics',
+}, {
+	title: 'Articles List',
+	path: '/admin/articles-list',
+	name: 'articles-list',
 }];
 
 export const MASTER_MENU_LINKS = [{

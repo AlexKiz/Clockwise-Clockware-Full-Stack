@@ -113,3 +113,12 @@ export type MastersStatisticsData = {
     uncompleted: number,
     earnedAmount: number
 }
+
+export type Article = {
+    id: string,
+    title: string,
+    pictures: string,
+    background: string,
+    description: string,
+    body: string,
+}

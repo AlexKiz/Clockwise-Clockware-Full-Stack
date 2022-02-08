@@ -43,6 +43,8 @@ export enum RESOURCE {
 	VERIFICATION = 'email-verification',
 	STATISTICS = 'statistics',
 	BLOG = 'blog',
+	ARTICLES_LIST = 'articles-list',
+	ARTICLES_CREATE = 'articles-create',
 }
 
 export enum PARAM {
@@ -96,6 +98,12 @@ export const ROUTES = {
 	},
 	ADMIN_STATISTICS: {
 		path: `/${RESOURCE.ADMIN}/${RESOURCE.STATISTICS}`,
+	},
+	ADMIN_ARTICLES_LIST: {
+		path: `/${RESOURCE.ADMIN}/${RESOURCE.ARTICLES_LIST}`,
+	},
+	ADMIN_ARTICLES_CREATE: {
+		path: `/${RESOURCE.ADMIN}/${RESOURCE.ARTICLES_CREATE}`,
 	},
 	MASTER_ORDERS_LIST: {
 		path: `/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`,

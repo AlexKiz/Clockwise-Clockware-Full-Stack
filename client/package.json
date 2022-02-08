@@ -8,6 +8,7 @@
     "@mui/icons-material": "^5.2.4",
     "@mui/lab": "^5.0.0-alpha.60",
     "@mui/material": "^5.2.4",
+    "@tinymce/tinymce-react": "^3.13.0",
     "axios": "^0.21.1",
     "bearer-token-parser": "^1.0.3",
     "d3-scale-chromatic": "^3.0.0",

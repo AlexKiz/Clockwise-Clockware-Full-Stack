@@ -9,6 +9,7 @@ const Blog: FC<BlogProps> = () => {
 		<div>
 			<PublicHeader/>
 			<div className={classes.conteiner}>
+
 			</div>
 		</div>
 	);
