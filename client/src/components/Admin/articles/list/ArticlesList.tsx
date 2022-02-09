@@ -63,7 +63,7 @@ const ArticlesList: FC<ArticlesProps> = () => {
 		body: 'Some articles content with some strange text inside 4. And then other text...',
 	}, {
 		id: '5',
-		title: 'Article 4',
+		title: 'Article 5',
 		pictures: 'https://mui.com/static/images/cards/contemplative-reptile.jpg',
 		background: '',
 		description: `sdfasdfasdfafasdf 
@@ -88,6 +88,22 @@ const ArticlesList: FC<ArticlesProps> = () => {
 		body: 'Some articles content with some strange text inside 4. And then other text...',
 	}, {
 		id: '8',
+		title: 'sdfasdfasdfafasdf sadfasdfafasdfasd88990',
+		pictures: 'https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg',
+		background: '',
+		description: `sdfasdfasdfafasdf fasdfasdf123434 1234567899 12345678`,
+		body: 'Some articles content with some strange text inside 5. And then other text...',
+	}, {
+		id: '9',
+		title: 'Article 9',
+		pictures: 'https://mui.com/static/images/cards/contemplative-reptile.jpg',
+		background: '',
+		description: `sdfasdfasdfafasdf 
+        sadfasdfafasdfasdfsdfasdfasdfafasdf 
+        sadfasdfafasdfasdfsdfasdfasdfafasdf sadfasdfafasdfasdfsdfasdfasdfafasdf sadfasdfafasdfasdf123434 1234567899 12345678`,
+		body: 'Some articles content with some strange text inside 4. And then other text...',
+	}, {
+		id: '10',
 		title: 'sdfasdfasdfafasdf sadfasdfafasdfasd88990',
 		pictures: 'https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg',
 		background: '',
@@ -137,13 +153,13 @@ const ArticlesList: FC<ArticlesProps> = () => {
 		<div>
 			<PrivateHeader/>
 			<div className={classes.conteiner}>
-				<Paper sx={{width: '100%', minHeight: 800, background: 'grey', justifyContent: 'center'}} elevation={4}>
+				<div className={classes.container_form}>
 					<Box sx={{width: '40%', m: '0 auto', p: 2}} className={classes.conteiner_box}>
 						<Link to={`/${RESOURCE.ADMIN}/${RESOURCE.ARTICLE_CREATE}`}>
 							<Button
 								variant="contained"
-								color='error'
-								sx={{width: '100%', fontSize: 14, borderRadius: 10}}
+								color='success'
+								sx={{width: '100%', fontSize: 18, borderRadius: 5}}
 								startIcon={<AddIcon fontSize='medium'/>}
 							>
                             Create new article
@@ -152,15 +168,15 @@ const ArticlesList: FC<ArticlesProps> = () => {
 					</Box>
 					<Stack direction="row" flexWrap='wrap' justifyContent='center'>
 						{articles?.length ? articles.map((article) => (
-							<Card sx={{maxWidth: 400, m: 1}} key={article.id}>
+							<Card sx={{maxWidth: 300, m: 1}} key={article.id}>
 								<CardMedia
 									component="img"
-									height={200}
+									height={220}
 									image={article.pictures}
 									alt="pic"
 								/>
 								<CardContent
-									sx={{height: 160}}
+									sx={{height: 180}}
 								>
 									<Typography gutterBottom variant="h5" component="div">
 										{article.title}
@@ -206,8 +222,7 @@ const ArticlesList: FC<ArticlesProps> = () => {
 							sx={{width: '100%', justifyContent: 'center', display: 'flex'}}
 						/>
 					</Box>
-				</Paper>
-
+				</div>
 				{
 					alertOptions.notify &&
 					<AlertMessage

@@ -701,7 +701,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 							{ !orders.length &&
 								<TableRow>
 									<TableCell
-										colSpan={10}
+										colSpan={11}
 										sx={{height: 365, p: 0}}
 										align='center'>
 										<Typography
@@ -754,7 +754,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 								</TableCell>
 								<TablePagination
 									rowsPerPageOptions={[5, 10, 25, {label: 'All', value: totalQuantity}]}
-									colSpan={10}
+									colSpan={11}
 									count={totalQuantity}
 									rowsPerPage={limit}
 									page={page}
@@ -770,7 +770,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 								/>
 							</TableRow>
 							<TableRow>
-								{ loading && <TableCell colSpan={10}>
+								{ loading && <TableCell colSpan={11}>
 									<LinearProgress />
 								</TableCell>}
 							</TableRow>
