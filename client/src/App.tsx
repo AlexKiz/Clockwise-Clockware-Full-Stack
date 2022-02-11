@@ -21,6 +21,7 @@ import Statistics from './components/Admin/statistics/Statistics';
 import Blog from './components/Blog/Blog';
 import ArticlesList from './components/Admin/articles/list/ArticlesList';
 import ArticleCreate from './components/Admin/articles/create/ArticleCreate';
+import Article from './components/Blog/articleContent/Article';
 
 
 const App = () => (
@@ -32,6 +33,7 @@ const App = () => (
 			<Route component={Registration} {...ROUTES.REGISTRATION}/>
 			<Route component={Verification} {...ROUTES.USER_VERIFY}/>
 			<Route component={Blog} {...ROUTES.BLOG}/>
+			<Route component={Article} {...ROUTES.ARTICLE}/>
 			<PrivateRoute component={MastersList} {...ROUTES.ADMIN_MASTERS_LIST}/>
 			<PrivateRoute component={MasterCreate} {...ROUTES.ADMIN_MASTER_CREATE}/>
 			<PrivateRoute component={UsersList} {...ROUTES.ADMIN_USERS_LIST}/>

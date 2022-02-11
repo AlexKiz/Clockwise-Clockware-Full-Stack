@@ -20,7 +20,9 @@ export enum URL {
     TOTAL_ORDERS_CHART = '/totalOrdersChart',
     TOTAL_ORDERS_CITIES_PIE_CHART = '/totalOrdersForCitiesPieChart',
     TOTAL_ORDERS_MASTERS_PIE_CHART = '/totalOrdersForMastersPieChart',
-    MASTERS_STATISTICS_TABLE = '/mastersStatisticsTable'
+    MASTERS_STATISTICS_TABLE = '/mastersStatisticsTable',
+    BLOG = '/blog',
+    ARTICLE_FOR_UPDATE = '/articleForUpdate'
 }
 
 export enum RESOURCE {
