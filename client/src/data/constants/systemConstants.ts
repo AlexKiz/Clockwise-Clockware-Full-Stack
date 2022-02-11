@@ -27,6 +27,12 @@ export enum SORTED_FIELD {
 	MASTER_NAME = 'master.name',
 	START_WORK_ON = 'startWorkOn',
 	END_WORK_ON = 'endWorkOn',
+	SMALL_CLOCKS = 'smallClocks',
+	MEDIUM_CLOCKS = 'mediumClocks',
+	LARGE_CLOCKS = 'largeClocks',
+	COMPLETED = 'completed',
+	UNCOMPLETED = 'uncompleted',
+	EARNED_AMOUNT = 'earnedAmount'
 }
 
 export enum SORTING_ORDER {

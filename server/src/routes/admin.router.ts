@@ -8,7 +8,16 @@ import {postCityValidate, putCityValidate, deleteCityValidate} from '../controll
 import {postMaster, getMasters, putMaster, deleteMaster} from '../controller/master.controller';
 import {postMasterValidate, putMasterValidate, deleteMasterValidate} from '../controller/master.validate';
 
-import {getOrderForUpdate, putOrder, deleteOrder, getXSLXOrders} from '../controller/order.controller';
+import {
+	getOrderForUpdate,
+	putOrder,
+	deleteOrder,
+	getXSLXOrders,
+	getOrdersForChart,
+	getOrdersForCitiesPieChart,
+	getOrdersForMastersPieChart,
+	getOrdersForMastersTable,
+} from '../controller/order.controller';
 import {putOrderValidate, deleteOrderValidate} from '../controller/order.validate';
 
 import {getUsers, putUser, deleteUser} from '../controller/user.controller';
@@ -33,6 +42,11 @@ router.get(URL.USER, [isAuth, checkRole(['admin'])], getUsers);
 router.put(URL.USER, [isAuth, putUserValidate, checkRole(['admin'])], putUser);
 router.delete(URL.USER, [isAuth, deleteUserValidate, checkRole(['admin'])], deleteUser);
 
-router.get(URL.EXPORT_XLSX, /* [isAuth, checkRole(['admin'])],*/ getXSLXOrders);
+router.get(URL.EXPORT_XLSX, [isAuth, checkRole(['admin'])], getXSLXOrders);
+
+router.get(URL.TOTAL_ORDERS_CHART, [isAuth, checkRole(['admin'])], getOrdersForChart);
+router.get(URL.TOTAL_ORDERS_CITIES_PIE_CHART, [isAuth, checkRole(['admin'])], getOrdersForCitiesPieChart);
+router.get(URL.TOTAL_ORDERS_MASTERS_PIE_CHART, [isAuth, checkRole(['admin'])], getOrdersForMastersPieChart);
+router.get(URL.MASTERS_STATISTICS_TABLE, [isAuth, checkRole(['admin'])], getOrdersForMastersTable);
 
 export default router;
