@@ -339,7 +339,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 	return (
 		<div>
 			<PrivateHeader/>
-			<div className={classes.conteiner}>
+			<div className={classes.container}>
 				{
 					isFiltersListOpen &&
 					<Box
@@ -436,8 +436,8 @@ const OrdersList: FC<OrdersListProps> = () => {
 									value={dateFilteringArray}
 									onChange={(value) => {
 										dispatch(setDateFilteringArray(value));
-										dispatch(setStartDateFilter(null)); // value[0]
-										dispatch(setEndDateFilter(null)); // value[1]
+										dispatch(setStartDateFilter(null));
+										dispatch(setEndDateFilter(null));
 										dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 									}}
 									renderInput={(startProps, endProps) => (
@@ -468,7 +468,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 						</Stack>
 					</Box>
 				}
-				<TableContainer component={Paper} sx={{width: '100%'}} className={classes.conteiner_table}>
+				<TableContainer component={Paper} sx={{width: '100%'}} className={classes.container_table}>
 					<Table sx={{minWidth: 650}} aria-label="customized table">
 
 						<TableHead>

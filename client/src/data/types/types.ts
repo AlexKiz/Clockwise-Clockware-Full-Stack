@@ -101,3 +101,15 @@ export type InfoOptions = {
     date: string,
     isInfoOpen: boolean,
 }
+
+export type MastersStatisticsData = {
+    id: string,
+    name: string,
+    smallClocks: number,
+    mediumClocks: number,
+    largeClocks: number,
+    rating: number,
+    completed: number,
+    uncompleted: number,
+    earnedAmount: number
+}
