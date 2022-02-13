@@ -118,7 +118,6 @@ export type MastersStatisticsData = {
 export type Article = {
     id: string,
     title: string,
-    pictures: string,
     background: string,
     description: string,
     body: string,

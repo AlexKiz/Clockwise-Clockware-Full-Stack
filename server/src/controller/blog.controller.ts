@@ -1,12 +1,13 @@
 import {Request, Response} from 'express';
 import db from '../models';
-import {Op, where} from 'sequelize';
 import {CloudinaryService} from './../services/cloudinary';
+import dotenv from 'dotenv';
+dotenv.config();
 
 
 export const postArticle = async (req: Request, res: Response) => {
 	try {
-		const {title, description, background, pictures, body} = req.body;
+		const {title, description, background, body} = req.body;
 
 		const cloudinary = new CloudinaryService({
 			cloud_name: process.env.CLOUD_NAME,
@@ -16,13 +17,10 @@ export const postArticle = async (req: Request, res: Response) => {
 
 		const backgroundPhoto = await cloudinary.uploadPhotos(background);
 
-		const contentPhotosURL = await cloudinary.uploadPhotos(pictures);
-
 		const article = await db.Blog.create({
 			title,
 			description,
 			background: backgroundPhoto,
-			pictures: contentPhotosURL?.join(','),
 			body,
 		});
 
@@ -34,9 +32,29 @@ export const postArticle = async (req: Request, res: Response) => {
 
 
 export const getArtices = async (req: Request, res: Response) => {
-	const articles = await db.Blog.findAndCountAll();
+	const {limit, offset} = req.query;
+
+	const articles = await db.Blog.findAndCountAll({
+		limit,
+		offset,
+	});
 
 	res.status(200).json(articles);
+};
+
+
+export const getCloudinaryUrls = async (req: Request, res: Response) => {
+	const {picture} = req.body;
+
+	const cloudinary = new CloudinaryService({
+		cloud_name: process.env.CLOUD_NAME,
+		api_key: process.env.CLOUD_API_KEY,
+		api_secret: process.env.CLOUD_API_SECRET,
+	});
+
+	const url = await cloudinary.getUploadPhotoUrl(picture);
+
+	res.status(200).json(url);
 };
 
 

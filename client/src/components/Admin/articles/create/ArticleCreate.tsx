@@ -7,18 +7,28 @@ import PrivateHeader from '../../../Headers/PrivateHeader';
 import {ArticleCreateProps} from './componentConstants';
 import {AlertNotification, Params} from '../../../../data/types/types';
 import {Editor} from '@tinymce/tinymce-react';
-import {Badge, Box, Button, Card, CardActions, CardContent, CardMedia, Fab, Modal, Stack, TextField, Typography} from '@mui/material';
+import {
+	Badge,
+	Box,
+	Button,
+	Card,
+	CardActions,
+	CardContent,
+	CardMedia,
+	Fab,
+	Modal,
+	Stack,
+	TextField,
+	Typography,
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import PreviewIcon from '@mui/icons-material/Preview';
 import AlertMessage from '../../../Notification/AlertMessage';
-import {getBinaryImages} from '../../../../data/utilities/systemUtilities';
+import {getBinaryFromBlob, getBinaryImages} from '../../../../data/utilities/systemUtilities';
+import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// TODO: setContent from Editor
-// TODO: getImage from Editor
-// TODO: handle Editor content(image text separate)
-// TODO: wrap form
 
 const ArticleCreate: FC<ArticleCreateProps> = () => {
 	const history = useHistory();
@@ -27,11 +37,10 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 	const [title, setTitle] = useState<string>('');
 	const [description, setDescription] = useState<string>('');
 	const [articlePhoto, setArticlePhoto] = useState<File[]>([]);
-	const [articleMainPhoto, setArticleMainPhoto] = useState<(string | ArrayBuffer)[]>([] as string[] | ArrayBuffer[]);
+	const [articleMainPhoto, setArticleMainPhoto] = useState<(string | ArrayBuffer | null)[]>([] as string[] | ArrayBuffer[] | null[]);
 	const [articlePhotoPreview, setArticlePhotoPreview] = useState<string>('');
 	const [content, setContent] = useState<string>('');
-	const [contentPhotos, setContentPhotos] = useState<(string | ArrayBuffer)[]>([] as string[] | ArrayBuffer[]);
-	const [innerPhotos, setInnerPhotos] = useState<File[]>([]);
+	const [articleUpdateContent, setArticleUpdateContent] = useState<string>('');
 
 	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
 		notify: false,
@@ -41,12 +50,10 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [openPreviewArticleCard, setOpenPreviewArticleCard] = useState<boolean>(false);
 
-	const handleEditorChange = (event) => {
-		setContent(event.target.value);
-	};
-	/* useEffect(() => {
+
+	useEffect(() => {
 		const getArticles = async () => {
-			axios.get('/articleForUpdate', {
+			axios.get(URLS.ARTICLE_FOR_UPDATE, {
 				params: {
 					title: articleTitle,
 				},
@@ -54,54 +61,59 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 				setTitle(response.data.title);
 				setDescription(response.data.description);
 				setArticlePhotoPreview(response.data.background);
-				setArticleMainPhoto()
+				setArticleMainPhoto(response.data.background);
+				setArticleUpdateContent(response.data.body);
 			});
 		};
+		if (articleTitle) {
+			getArticles();
+		}
+	}, []);
 
-		getArticles();
-	}, []);*/
+	const readFile = useCallback(async () => {
+		const binaryImages = await getBinaryImages(articlePhoto);
+		setArticleMainPhoto(binaryImages);
+	}, [articlePhoto]);
 
 	useEffect(() => {
 		if (articlePhoto.length) {
 			const previewPhoto: string[] = [];
 			articlePhoto.forEach((item) => previewPhoto.push(URL.createObjectURL(item)));
 			setArticlePhotoPreview(previewPhoto[0]);
+			readFile();
 		} else {
 			setArticlePhotoPreview('');
 		}
 	}, [articlePhoto]);
 
+
 	const handleSubmitArticle = async () => {
 		if (!articleTitle) {
 			setLoading(true);
 			await axios.post(URLS.BLOG, {
-				params: {
-					title,
-					description,
-					background: articleMainPhoto,
-					pictures: contentPhotos,
-					body: content,
-				},
+				title,
+				description,
+				background: articleMainPhoto,
+				body: content,
 			});
 			setLoading(false);
 			history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ARTICLES_LIST}`);
 		} else {
 			setLoading(true);
 			await axios.put(URLS.BLOG, {
-				params: {
-					title,
-					description,
-					background: articleMainPhoto,
-					pictures: contentPhotos,
-					body: content,
-				},
+				title,
+				description,
+				background: articleMainPhoto,
+				body: content,
 			});
 			setLoading(false);
 			history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ARTICLES_LIST}`);
 		}
 	};
 
+
 	const handlePhotoUpload = (event) => {
+		console.log(event.currentTarget.files);
 		if (event.currentTarget.files && event.currentTarget.files.length > 1) {
 			setArticlePhoto([]);
 			setAlertOptions({
@@ -123,19 +135,13 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 		}
 	};
 
+	const handleEditorChange = (event) => {
+		setContent(event.target.getContent());
+	};
+
 	const isOpen = (value:boolean) => {
 		setAlertOptions({...alertOptions, notify: value});
 	};
-
-	/* const handlerContentPhotos = (event) => {
-		const file = event.currentTarget.files[0];
-		const reader = new FileReader();
-		reader.onload = function(e) {
-			console.log('name', e.target.result);
-			setContentPhotos([...contentPhotos, e.target.result]);
-		};
-		reader.readAsDataURL(file);
-	};*/
 
 	const handleOpenPreviewArticleCard = () => setOpenPreviewArticleCard(true);
 	const handleClosePreviewArticleCard = () => setOpenPreviewArticleCard(false);
@@ -237,15 +243,8 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 						>
 							Enter article content:
 						</Typography>
-						<input
-							id="TyniMCE-file"
-							type="file"
-							name="TyniMCE-file"
-							accept=".PNG, .JPG, .JPEG"
-							style={{display: 'none'}}
-						/>
 						<Editor
-							initialValue={``}
+							initialValue={articleUpdateContent}
 							apiKey= {process.env.REACT_APP_TINY_MCE_API_KEY}
 							init={{
 								height: 500,
@@ -254,8 +253,17 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 								automatic_uploads: true,
 								file_picker_types: 'image',
 								images_file_types: 'jpeg,jpg,png',
-								file_picker_callback: (cb) => {
-									return;
+								images_upload_handler: async (blobInfo, success, failure) => {
+									const image = blobInfo.blob();
+									if (image.size > 1024 * 1024) {
+										failure('File is too large');
+									}
+									const binaryImage = await getBinaryFromBlob(image);
+									axios.post(URLS.IMAGE, {
+										picture: binaryImage,
+									}).then((response) => {
+										success(response.data);
+									});
 								},
 								plugins: [
 									'advlist autolink lists link image',
@@ -271,7 +279,6 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 								image preview | \
 								bullist numlist outdent indent | help`,
 							}}
-							value={content}
 							onChange={handleEditorChange}
 						/>
 						<Stack direction='row' justifyContent='center'>
@@ -326,6 +333,7 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 								<Button
 									size="small"
 									color='info'
+									startIcon={<ReadMoreIcon fontSize='large'/>}
 								>
                                     Read more...
 								</Button>

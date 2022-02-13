@@ -7,12 +7,14 @@ import {
 	getArticleForUpdate,
 	putArticle,
 	deleteArticle,
+	getCloudinaryUrls,
 } from '../controller/blog.controller';
 import {postArticleValidate, putArticleValidate, deleteArticleValidate} from '../controller/blog.validate';
 
 const router = Router();
 
 router.post(URL.BLOG, [isAuth, postArticleValidate, checkRole(['admin'])], postArticle);
+router.post(URL.IMAGE, [isAuth, checkRole(['admin'])], getCloudinaryUrls);
 router.get(URL.BLOG, getArtices);
 router.get(URL.ARTICLE_FOR_UPDATE, [isAuth, putArticleValidate, checkRole(['admin'])], getArticleForUpdate);
 router.put(URL.BLOG, [isAuth, putArticleValidate, checkRole(['admin'])], putArticle);

@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 const Sequelize = require('sequelize');
+import Blog from './Blog';
 import City from './City';
 import Clock from './Clock';
 import Master from './Master';
@@ -22,6 +23,7 @@ const db: any = {
 	MasterCities: MasterCities(sequelize, Sequelize.DataTypes),
 	Order: Order(sequelize, Sequelize.DataTypes),
 	User: User(sequelize, Sequelize.DataTypes),
+	Blog: Blog(sequelize, Sequelize.DataTypes),
 };
 
 Object.keys(db).forEach((modelName) => {

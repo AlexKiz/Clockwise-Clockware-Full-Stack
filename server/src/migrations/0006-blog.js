@@ -16,11 +16,6 @@ module.exports = {
 				allowNull: false,
 			},
 
-			pictures: {
-				type: Sequelize.DataTypes.STRING,
-				allowNull: false,
-			},
-
 			background: {
 				type: Sequelize.DataTypes.STRING,
 				allowNull: false,
@@ -32,13 +27,23 @@ module.exports = {
 			},
 
 			body: {
-				type: Sequelize.DataTypes.STRING(3350),
+				type: Sequelize.DataTypes.STRING(5000),
+				allowNull: false,
+			},
+
+			createdAt: {
+				type: Sequelize.DataTypes.DATE,
+				allowNull: false,
+			},
+
+			updatedAt: {
+				type: Sequelize.DataTypes.DATE,
 				allowNull: false,
 			},
 		});
 	},
 
-	down: async (queryInterface, Sequelize) => {
+	down: async (queryInterface) => {
 		await queryInterface.dropTable('blog');
 	},
 };

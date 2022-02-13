@@ -11,7 +11,6 @@ import {Op} from 'sequelize';
 import dotenv from 'dotenv';
 import XLSX from 'xlsx';
 import stream from 'stream';
-
 dotenv.config();
 
 export const postOrder = async (req: Request, res: Response) => {

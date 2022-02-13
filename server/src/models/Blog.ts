@@ -14,7 +14,6 @@ export default (sequelize: any, DataTypes: any) => {
 		implements BlogAttributes {
 		public id!: string;
 		public title!: string;
-		public pictures!: string;
 		public background!: string;
 		public description!: string;
 		public body!: string;
@@ -42,11 +41,6 @@ export default (sequelize: any, DataTypes: any) => {
 
 			title: {
 				type: DataTypes.STRING(75),
-				allowNull: false,
-			},
-
-			pictures: {
-				type: DataTypes.STRING,
 				allowNull: false,
 			},
 
