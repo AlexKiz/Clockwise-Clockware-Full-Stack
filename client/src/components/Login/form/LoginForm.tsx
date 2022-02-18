@@ -23,11 +23,13 @@ import {Visibility, VisibilityOff} from '@mui/icons-material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import jwtDecode from 'jwt-decode';
 import {BearerParser} from 'bearer-token-parser';
+import {useTranslation} from 'react-i18next';
 
 
 const LoginForm:FC<LoginFormProps> = () => {
 	const history = useHistory();
 
+	const {t} = useTranslation();
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [notify, setNotify] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -86,13 +88,13 @@ const LoginForm:FC<LoginFormProps> = () => {
 										gutterBottom
 										component="label"
 									>
-										Enter Admin Login:
+										{t('login.userLogin')}
 									</Typography>
 								</div>
 								<TextField
 									id="login"
 									name='login'
-									label="Email"
+									label={t('labels.email')}
 									placeholder="example@mail.com"
 									variant="filled"
 									size="small"
@@ -113,11 +115,11 @@ const LoginForm:FC<LoginFormProps> = () => {
 										gutterBottom
 										component="label"
 									>
-										Enter Admin Password:
+										{t('login.userPassword')}
 									</Typography>
 								</div>
 								<FormControl fullWidth variant="filled">
-									<InputLabel>Password</InputLabel>
+									<InputLabel>{t('labels.password')}</InputLabel>
 									<FilledInput
 										id="filled-adornment-password"
 										type={showPassword ? 'text' : 'password'}
@@ -146,7 +148,7 @@ const LoginForm:FC<LoginFormProps> = () => {
 									style={ {fontSize: 18, borderRadius: 15} }
 									disabled={loading}
 								>
-									Sign In
+									{t('buttons.signIn')}
 									{loading && <CircularProgress
 										size={56}
 										color="success"

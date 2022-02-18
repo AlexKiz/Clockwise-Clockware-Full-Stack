@@ -1,15 +1,15 @@
 import {RESOURCE} from 'src/data/constants/routeConstants';
 
 export const MENU_LINKS = [{
-	title: 'Make order',
+	title: 'header.make',
 	path: '/',
 	name: '',
 }, {
-	title: 'Log in',
+	title: 'header.login',
 	path: '/login',
 	name: 'login',
 }, {
-	title: 'Sign up',
+	title: 'header.signUp',
 	path: '/registration-form',
 	name: 'registration-form',
 }];
@@ -64,3 +64,8 @@ export const roleMappingHeaderLogo = {
 	'client': `/${RESOURCE.CLIENT}/${RESOURCE.ORDERS_LIST}`,
 };
 
+export const languageSelect = [
+	{code: 'en', name: 'English'},
+	{code: 'ru', name: 'Russian'},
+	{code: 'ukr', name: 'Ukrainian'},
+];
