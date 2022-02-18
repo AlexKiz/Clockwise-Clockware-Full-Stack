@@ -9,6 +9,7 @@ import {
 	getOrders,
 	completeOrder,
 	getOrdersForCalendar,
+	downloadPDFReceipt,
 } from '../controller/order.controller';
 import {postOrderValidate, putRatedOrderValidate} from '../controller/order.validate';
 import {createStripeCheckoutSession} from '../controller/stripe.controller';
@@ -23,5 +24,6 @@ router.put(URL.RATED_ORDER, [putRatedOrderValidate], putRatedOrder);
 router.put(URL.COMPLETE_ORDER, [isAuth, checkRole(['master'])], completeOrder);
 router.post(URL.STRIPE, [postOrderValidate], createStripeCheckoutSession);
 router.get(URL.ORDERS_FOR_CALENDAR, [isAuth, checkRole(['master'])], getOrdersForCalendar);
+router.get(URL.DOWNLOAD_ORDER_RECEIPT, [isAuth, checkRole(['master'])], downloadPDFReceipt);
 
 export default router;
