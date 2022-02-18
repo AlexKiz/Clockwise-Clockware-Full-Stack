@@ -11,33 +11,11 @@ import {URL} from 'src/data/constants/routeConstants';
 import {AlertNotification, OrderForCalendar} from 'src/data/types/types';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 
-const resourceCalendar = [{
-	id: 'abc1',
-	title: 'Event 1',
-	start: '2022-02-02T14:00:00',
-	end: '2022-02-02T16:00:00',
-	color: 'green',
-}, {
-	id: 'abc2',
-	title: 'Event 2',
-	start: '2022-02-03T14:00:00',
-	end: '2022-02-03T16:00:00',
-}, {
-	id: 'adc3',
-	title: 'Event 3',
-	start: '2022-02-04T14:00:00',
-	end: '2022-02-04T16:00:00',
-}, {
-	id: 'abc4',
-	title: 'Event 4',
-	start: '2022-02-04T16:00:00.000Z',
-	end: '2022-02-04T18:00:00.000Z',
-}];
 
 const Calendar: FC<CalendarProps> = () => {
 	const [orders, setOrders] = useState<OrderForCalendar[]>([]);
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-	const [calendarEvent, setCalendarEvent] = useState<EventClickArg>();
+	const [calendarEvent, setCalendarEvent] = useState<EventClickArg>({} as EventClickArg);
 	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
 		notify: false,
 		type: 'success',
@@ -67,7 +45,7 @@ const Calendar: FC<CalendarProps> = () => {
 		setAlertOptions({...alertOptions, notify: value});
 	};
 
-	const handleCompleteOrder = async (id?: string, clientEmail?: string, ratingIdentificator?: string) => {
+	const handleCompleteOrder = async (id: string, clientEmail: string, ratingIdentificator: string) => {
 		setLoading(true);
 		await axios.put(URL.COMPLETE_ORDER, {
 			id,
@@ -132,7 +110,7 @@ const Calendar: FC<CalendarProps> = () => {
 								component="div"
 								align='center'
 							>
-								<b>Clock type: {calendarEvent?.event._def.extendedProps.clockSize}</b>
+								<b>Clock type: {calendarEvent.event._def.extendedProps.clockSize}</b>
 							</Typography>
 							<Typography
 								variant="subtitle1"
@@ -140,7 +118,7 @@ const Calendar: FC<CalendarProps> = () => {
 								component="div"
 								align='center'
 							>
-								<b>Client name: {calendarEvent?.event._def.extendedProps.clientName}</b>
+								<b>Client name: {calendarEvent.event._def.extendedProps.clientName}</b>
 							</Typography>
 							<Typography
 								variant="subtitle1"
@@ -148,7 +126,7 @@ const Calendar: FC<CalendarProps> = () => {
 								component="div"
 								align='center'
 							>
-								<b>Price paid: {calendarEvent?.event._def.extendedProps.price}</b>
+								<b>Price paid: {calendarEvent.event._def.extendedProps.price}</b>
 							</Typography>
 							<Typography
 								variant="subtitle1"
@@ -156,7 +134,7 @@ const Calendar: FC<CalendarProps> = () => {
 								component="div"
 								align='center'
 							>
-								<b>Status: {calendarEvent?.event._def.extendedProps.isCompleted ? 'Done' : 'In progress'}</b>
+								<b>Status: {calendarEvent.event._def.extendedProps.isCompleted ? 'Done' : 'In progress'}</b>
 							</Typography>
 							<Button
 								variant="contained"
@@ -164,12 +142,12 @@ const Calendar: FC<CalendarProps> = () => {
 								color='info'
 								disabled={calendarEvent?.event._def.extendedProps.isCompleted || loading}
 								onClick={() => handleCompleteOrder(
-									calendarEvent?.event._def.publicId,
-									calendarEvent?.event._def.extendedProps.clientEmail,
-									calendarEvent?.event._def.extendedProps.ratingIdentificator,
+									calendarEvent.event._def.publicId,
+									calendarEvent.event._def.extendedProps.clientEmail,
+									calendarEvent.event._def.extendedProps.ratingIdentificator,
 								)}
 							>
-								{calendarEvent?.event._def.extendedProps.isCompleted ? 'Done' : 'Complete order'}
+								{calendarEvent.event._def.extendedProps.isCompleted ? 'Done' : 'Complete order'}
 								{loading && <CircularProgress
 									size={22}
 									color="success"
