@@ -127,6 +127,58 @@ export const getOrders = async (req: Request, res: Response) => {
 	}
 };
 
+export const getOrdersForCalendar = async (req: Request, res: Response) => {
+	const token = BearerParser.parseBearerToken(req.headers);
+
+	const {masterId} = await db.User.findOne({where: {token}});
+
+	const orders = await db.Order.findAll({
+		attributes: [
+			'id',
+			'startWorkOn',
+			'endWorkOn',
+			'isCompleted',
+			'ratingIdentificator',
+		],
+		include:
+			[{
+				model: db.Clock,
+				attributes: ['size', 'price'],
+			},
+			{
+				model: db.User,
+				attributes: ['name', 'email'],
+			}],
+		where: {masterId},
+	});
+
+	const ordersForCalendar = orders.map((order: {
+		id: string,
+		startWorkOn: string,
+		endWorkOn: string,
+		clock: {size: string, price: number},
+		user: {name: string, email: string},
+		color: 'blue' | 'green',
+		ratingIdentificator: string,
+		isCompleted: boolean,
+	}) => {
+		return {
+			id: order.id,
+			title: `Repair clock with ${order.clock.size} size. Client: ${order.user.name}`,
+			start: order.startWorkOn,
+			end: order.endWorkOn,
+			clockSize: order.clock.size,
+			isCompleted: order.isCompleted,
+			clientName: order.user.name,
+			clientEmail: order.user.email,
+			price: `${order.clock.price * 10} $`,
+			ratingIdentificator: order.ratingIdentificator,
+			color: order.isCompleted ? 'green' : 'blue',
+		};
+	});
+
+	res.status(200).json(ordersForCalendar);
+};
 
 export const getOrderForUpdate = async (req: Request, res: Response) => {
 	const {id} = req.query;

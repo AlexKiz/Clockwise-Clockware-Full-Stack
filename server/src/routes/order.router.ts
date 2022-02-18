@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {Router} from 'express';
 import {checkRole, isAuth} from '../controller/auth.controller';
 import {URL} from '../../data/constants/routeConstants';
@@ -9,6 +8,7 @@ import {
 	getOrderForRate,
 	getOrders,
 	completeOrder,
+	getOrdersForCalendar,
 } from '../controller/order.controller';
 import {postOrderValidate, putRatedOrderValidate} from '../controller/order.validate';
 import {createStripeCheckoutSession} from '../controller/stripe.controller';
@@ -22,5 +22,6 @@ router.get(URL.CLOCKS, getClocks);
 router.put(URL.RATED_ORDER, [putRatedOrderValidate], putRatedOrder);
 router.put(URL.COMPLETE_ORDER, [isAuth, checkRole(['master'])], completeOrder);
 router.post(URL.STRIPE, [postOrderValidate], createStripeCheckoutSession);
+router.get(URL.ORDERS_FOR_CALENDAR, [isAuth, checkRole(['master'])], getOrdersForCalendar);
 
 export default router;

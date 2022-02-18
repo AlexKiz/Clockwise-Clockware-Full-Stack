@@ -113,3 +113,17 @@ export type MastersStatisticsData = {
     uncompleted: number,
     earnedAmount: number
 }
+
+export type OrderForCalendar = {
+    id: string,
+    title: string,
+    start: string,
+    end: string,
+    clockSize: string,
+    isCompleted: boolean,
+    clientName: string,
+    clientEmail: string,
+    price: string,
+    ratingIdentificator: string,
+    color: string,
+}
