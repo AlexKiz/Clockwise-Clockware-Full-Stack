@@ -23,6 +23,7 @@ export enum URL {
 	TOTAL_ORDERS_CITIES_PIE_CHART = '/totalOrdersForCitiesPieChart',
     TOTAL_ORDERS_MASTERS_PIE_CHART = '/totalOrdersForMastersPieChart',
 	MASTERS_STATISTICS_TABLE = '/mastersStatisticsTable',
+	ORDERS_FOR_CALENDAR = '/ordersForCalendar',
 }
 
 export enum RESOURCE {
@@ -41,7 +42,8 @@ export enum RESOURCE {
     RATE = 'rate',
     REGISTRATION = 'registration-form',
 	VERIFICATION = 'email-verification',
-	STATISTICS = 'statistics'
+	STATISTICS = 'statistics',
+	CALENDAR = 'calendar',
 }
 
 export enum PARAM {
@@ -95,6 +97,9 @@ export const ROUTES = {
 	},
 	MASTER_ORDERS_LIST: {
 		path: `/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`,
+	},
+	MASTER_CALENDAR: {
+		path: `/${RESOURCE.MASTER}/${RESOURCE.CALENDAR}`,
 	},
 	CLIENT_ORDERS_LIST: {
 		path: `/${RESOURCE.CLIENT}/${RESOURCE.ORDERS_LIST}`,

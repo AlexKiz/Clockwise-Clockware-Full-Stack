@@ -40,6 +40,10 @@ export const MASTER_MENU_LINKS = [{
 	title: 'Orders',
 	path: '/master/orders-list',
 	name: 'orders-list',
+}, {
+	title: 'Calendar',
+	path: '/master/calendar',
+	name: 'calendar',
 }];
 
 export const CLIENT_MENU_LINKS = [{
