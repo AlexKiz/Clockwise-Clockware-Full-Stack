@@ -1,1 +1,1 @@
-export interface MasterOrdersListProps {};
+export interface MasterOrdersListProps {}
