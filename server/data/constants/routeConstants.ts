@@ -21,7 +21,8 @@ export enum URL {
     TOTAL_ORDERS_CITIES_PIE_CHART = '/totalOrdersForCitiesPieChart',
     TOTAL_ORDERS_MASTERS_PIE_CHART = '/totalOrdersForMastersPieChart',
     MASTERS_STATISTICS_TABLE = '/mastersStatisticsTable',
-    ORDERS_FOR_CALENDAR = '/ordersForCalendar'
+    DOWNLOAD_ORDER_RECEIPT = '/downloadOrderReceipt',
+    ORDERS_FOR_CALENDAR = '/ordersForCalendar',
 }
 
 export enum RESOURCE {

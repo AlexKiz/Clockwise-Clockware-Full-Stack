@@ -79,6 +79,13 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 				id: order.id,
 				clientEmail: order.user.email,
 				ratingIdentificator: order.ratingIdentificator,
+				clockSize: order.clock.size,
+				masterName: order.master.name,
+				masterId: order.master.id,
+				startWorkOn: order.startWorkOn,
+				endWorkOn: order.endWorkOn,
+				price: order.clock.price,
+				clientName: order.user.name,
 			}).then(async () => {
 				const {data} = await axios.get<Order[]>(URL.ORDER);
 				setOrders(data);
@@ -139,19 +146,20 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 		<div>
 			<PrivateHeader/>
 			<div className={classes.conteiner}>
-				<TableContainer component={Paper} sx={{width: '90%'}} className={classes.conteiner_table}>
+				<TableContainer component={Paper} sx={{width: '100%'}} className={classes.conteiner_table}>
 					<Table sx={{minWidth: 650}} aria-label="customized table">
 						<TableHead>
 							<TableRow>
-								<StyledTableCell sx={{width: '12%'}} align="center">Client name</StyledTableCell>
-								<StyledTableCell sx={{width: '12%'}} align="center">Clock size</StyledTableCell>
-								<StyledTableCell sx={{width: '12%'}} align="center">City</StyledTableCell>
+								<StyledTableCell sx={{width: '10%'}} align="center">Client name</StyledTableCell>
+								<StyledTableCell sx={{width: '10%'}} align="center">Clock size</StyledTableCell>
+								<StyledTableCell sx={{width: '10%'}} align="center">City</StyledTableCell>
 								<StyledTableCell sx={{width: '10%'}} align="center">Start on</StyledTableCell>
 								<StyledTableCell sx={{width: '10%'}} align="center">Finish on</StyledTableCell>
 								<StyledTableCell sx={{width: '8%'}} align="center">Total price</StyledTableCell>
 								<StyledTableCell sx={{width: '8%'}} align="center">Photos</StyledTableCell>
-								<StyledTableCell sx={{width: '10%'}} align="center">Order Info</StyledTableCell>
-								<StyledTableCell sx={{width: '18%'}} align="center"></StyledTableCell>
+								<StyledTableCell sx={{width: '8%'}} align="center">Order Info</StyledTableCell>
+								<StyledTableCell sx={{width: '12%'}} align="center"></StyledTableCell>
+								<StyledTableCell sx={{width: '14%'}} align="center"></StyledTableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -178,7 +186,6 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 											<ImageOutlinedIcon />
 										</Fab>
 									</StyledTableCell>
-
 									<StyledTableCell align="center">
 										<Button
 											variant='contained'
@@ -189,7 +196,6 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 										>
 											<InfoOutlinedIcon/>
 										</Button>
-
 									</StyledTableCell>
 									<StyledTableCell align="center">
 										<Button
@@ -202,12 +208,32 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 											{order.isCompleted ? 'Done!' : 'Complete Order'}
 										</Button>
 									</StyledTableCell>
+									<StyledTableCell align="center">
+										<Button
+											disabled={!order.isCompleted}
+											variant="contained"
+											color='error'
+											sx={{width: '100%', fontSize: 14, borderRadius: 15}}
+											onClick={() => {
+												window.open(
+													`${process.env.REACT_APP_API_URL}/downloadOrderReceipt?clockSize=${order.clock.size}
+													&masterName=${order.master.name}&masterId=${order.master.id}
+													&startWorkOn=${order.startWorkOn}&endWorkOn=${order.endWorkOn}
+													&price=${order.clock.price}&clientName=${order.user.name}
+													&clientEmail=${order.user.email}`,
+													'_blank',
+												);
+											}}
+										>
+											Download Receipt
+										</Button>
+									</StyledTableCell>
 								</StyledTableRow>
 							))}
 							{ !orders.length &&
 								<TableRow>
 									<TableCell
-										colSpan={9}
+										colSpan={10}
 										sx={{height: 365, p: 0}}
 										align='center'>
 										<Typography
