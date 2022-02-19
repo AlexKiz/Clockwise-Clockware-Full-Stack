@@ -179,7 +179,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 
 	const handlePhotoUpload = (event) => {
-		console.log(event.currentTarget.files);
 		if (event.currentTarget.files && event.currentTarget.files.length > 5) {
 			setImages([]);
 			setAlertOptions({
