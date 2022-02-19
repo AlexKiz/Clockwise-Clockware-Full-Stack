@@ -394,7 +394,10 @@ const OrderForm: FC<OrderFormProps> = () => {
 												<MenuItem
 													key={elem}
 													value={elem}
-													disabled={isBefore(new Date(`${formik.values.orderDate} ${elem}`), new Date())}
+													disabled={
+														!formik.values.orderDate ||
+														isBefore(new Date(`${formik.values.orderDate} ${elem}`), new Date())
+													}
 												>
 													{`${elem}`}
 												</MenuItem>
