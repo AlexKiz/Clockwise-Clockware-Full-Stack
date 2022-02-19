@@ -113,7 +113,6 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 
 
 	const handlePhotoUpload = (event) => {
-		console.log(event.currentTarget.files);
 		if (event.currentTarget.files && event.currentTarget.files.length > 1) {
 			setArticlePhoto([]);
 			setAlertOptions({
