@@ -179,6 +179,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 
 	const handlePhotoUpload = (event) => {
+		console.log(event.currentTarget.files);
 		if (event.currentTarget.files && event.currentTarget.files.length > 5) {
 			setImages([]);
 			setAlertOptions({
@@ -187,7 +188,9 @@ const OrderForm: FC<OrderFormProps> = () => {
 				notify: true,
 			});
 			return;
-		} else if (images?.length && images.some((file) => file.size > 1024 * 1024)) {
+		} else if (
+			event.currentTarget.files && Array.from<File>(event.currentTarget.files).some((file) => file.size > 1024 * 1024)
+		) {
 			setImages([]);
 			setAlertOptions({
 				message: 'Photo must be 1 MB size or less',
