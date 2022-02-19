@@ -244,6 +244,7 @@ const Statistics: FC<StatisticsProps> = () => {
 									<DesktopDateRangePicker
 										startText='Sort on start date'
 										endText='Sort on end date'
+										maxDate={new Date()}
 										value={dateRangeChart}
 										onChange={(value) => {
 											setDateRangeChart(value);
@@ -352,6 +353,7 @@ const Statistics: FC<StatisticsProps> = () => {
 										<DesktopDateRangePicker
 											startText='Sort on start date'
 											endText='Sort on end date'
+											maxDate={new Date()}
 											value={dateRangeCitiesPieChart}
 											onChange={(value) => {
 												setDateRangeCitiesPieChart(value);
@@ -388,6 +390,7 @@ const Statistics: FC<StatisticsProps> = () => {
 										<DesktopDateRangePicker
 											startText='Sort on start date'
 											endText='Sort on end date'
+											maxDate={new Date()}
 											value={dateRangeMastersPieChart}
 											onChange={(value) => {
 												setDateRangeMastersPieChart(value);
