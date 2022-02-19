@@ -162,7 +162,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 									<StyledTableCell align="center"> {order.city.name} </StyledTableCell>
 									<StyledTableCell align="center"> {order.startWorkOn.split('T').join(' ')} </StyledTableCell>
 									<StyledTableCell align="center"> {order.endWorkOn.split('T').join(' ')} </StyledTableCell>
-									<StyledTableCell align="center"> {order.clock.price} </StyledTableCell>
+									<StyledTableCell align="center"> {`${order.clock.price * 10} $`} </StyledTableCell>
 									<StyledTableCell align="center">
 										<Fab
 											size="small"
