@@ -24,6 +24,9 @@ import {
 	Dialog,
 	DialogTitle,
 	Stack,
+	Divider,
+	Chip,
+	IconButton,
 } from '@mui/material';
 import AlertMessage from '../../../Notification/AlertMessage';
 import PrivateHeader from '../../../Headers/PrivateHeader';
@@ -31,6 +34,7 @@ import jwtDecode from 'jwt-decode';
 import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -228,20 +232,46 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 					aria-labelledby="modal-modal-title"
 					aria-describedby="modal-modal-description"
 				>
-					<Box sx={{top: '50%',
+					<Box sx={{
+						top: '50%',
 						position: 'absolute',
 						left: '50%',
 						transform: 'translate(-50%, -50%)',
-						width: 500,
+						width: 800,
 						bgcolor: 'background.paper',
 						border: '2px solid #000',
 						boxShadow: 24,
-						p: 4}}
-					>
-						<ImageList sx={{width: 500, height: 450, top: '50%', right: '50%'}} cols={3} rowHeight={164}>
-							{modalOptions.modalImg.split(',').map((item) => (
+						p: 4,
+					}}>
+						<HighlightOffIcon
+							fontSize='large'
+							sx={{
+								position: 'absolute',
+								left: '100%',
+								top: '-50px',
+								color: 'red',
+								height: '50px',
+								width: '50px',
+								cursor: 'pointer',
+							}}
+							onClick={handleCloseModalImg}
+						/>
+						<ImageList sx={{maxWidth: 1200, maxHeight: 800, top: '50%', right: '50%'}} cols={1}>
+							{modalOptions.modalImg.split(',').map((item, index) => (
 								<ImageListItem key={item}>
+									<div>
+										<Divider sx={{m: '40px 0px'}}>
+											<Chip
+												sx={{fontSize: '16px', lineHeight: 1}}
+												label={`Photo #${index + 1}`}
+												variant="outlined"
+												color="info"
+												icon={<ImageOutlinedIcon />}
+											/>
+										</Divider>
+									</div>
 									<img
+										style={{objectFit: 'contain'}}
 										src={`${item}`}
 										loading="lazy"
 									/>
@@ -258,9 +288,23 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 						direction="column"
 						justifyContent="center"
 						spacing={1}
-						sx={{p: 5}}
+						sx={{p: 5, width: '300px'}}
 					>
-						<DialogTitle>Order Info</DialogTitle>
+						<DialogTitle>
+							Order Info
+							<IconButton
+								aria-label="close"
+								onClick={hideOrderInfo}
+								sx={{
+									position: 'absolute',
+									right: 8,
+									top: 8,
+									color: 'red',
+								}}
+							>
+								<HighlightOffIcon fontSize='large' />
+							</IconButton>
+						</DialogTitle>
 						<Typography
 							variant="subtitle1"
 							gutterBottom

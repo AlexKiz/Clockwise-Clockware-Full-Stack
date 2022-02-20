@@ -38,6 +38,8 @@ import {
 	ImageListItem,
 	Dialog,
 	DialogTitle,
+	Divider,
+	Chip,
 } from '@mui/material';
 import {
 	DesktopDateRangePicker,
@@ -90,6 +92,7 @@ import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import {CSVLink} from 'react-csv';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {InfoModalState} from 'src/store/types/infoModal';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
@@ -783,20 +786,46 @@ const OrdersList: FC<OrdersListProps> = () => {
 					aria-labelledby="modal-modal-title"
 					aria-describedby="modal-modal-description"
 				>
-					<Box sx={{top: '50%',
+					<Box sx={{
+						top: '50%',
 						position: 'absolute',
 						left: '50%',
 						transform: 'translate(-50%, -50%)',
-						width: 500,
+						width: 800,
 						bgcolor: 'background.paper',
 						border: '2px solid #000',
 						boxShadow: 24,
-						p: 4}}
-					>
-						<ImageList sx={{width: 500, height: 450, top: '50%', right: '50%'}} cols={3} rowHeight={164}>
-							{modalImg.split(',').map((item) => (
+						p: 4,
+					}}>
+						<HighlightOffIcon
+							fontSize='large'
+							sx={{
+								position: 'absolute',
+								left: '100%',
+								top: '-50px',
+								color: 'red',
+								height: '50px',
+								width: '50px',
+								cursor: 'pointer',
+							}}
+							onClick={handleCloseModalImg}
+						/>
+						<ImageList sx={{maxWidth: 1200, maxHeight: 800, top: '50%', right: '50%'}} cols={1}>
+							{modalImg.split(',').map((item, index) => (
 								<ImageListItem key={item}>
+									<div>
+										<Divider sx={{m: '40px 0px'}}>
+											<Chip
+												sx={{fontSize: '16px', lineHeight: 1}}
+												label={`Photo #${index + 1}`}
+												variant="outlined"
+												color="info"
+												icon={<ImageOutlinedIcon />}
+											/>
+										</Divider>
+									</div>
 									<img
+										style={{objectFit: 'contain'}}
 										src={`${item}`}
 										loading="lazy"
 									/>
@@ -812,10 +841,25 @@ const OrdersList: FC<OrdersListProps> = () => {
 					<Stack
 						direction="column"
 						justifyContent="center"
+						alignItems='center'
 						spacing={1}
-						sx={{p: 5}}
+						sx={{p: 5, width: '400px'}}
 					>
-						<DialogTitle>Order Info</DialogTitle>
+						<DialogTitle>
+							Order Info
+							<IconButton
+								aria-label="close"
+								onClick={hideOrderInfo}
+								sx={{
+									position: 'absolute',
+									right: 8,
+									top: 8,
+									color: 'red',
+								}}
+							>
+								<HighlightOffIcon fontSize='large' />
+							</IconButton>
+						</DialogTitle>
 						<Typography
 							variant="subtitle1"
 							gutterBottom
