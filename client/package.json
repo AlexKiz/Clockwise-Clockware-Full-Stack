@@ -17,6 +17,7 @@
     "d3-scale-chromatic": "^3.0.0",
     "date-fns": "^2.27.0",
     "formik": "^2.2.9",
+    "html-parse-stringify": "^3.0.1",
     "i18next": "^21.6.10",
     "i18next-browser-languagedetector": "^6.1.3",
     "jsonwebtoken": "^8.5.1",
