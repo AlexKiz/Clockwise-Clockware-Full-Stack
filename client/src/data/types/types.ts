@@ -17,6 +17,7 @@ export type Params = {
     ratingIdentificatorParam: string
     hashVerify: string
     generated: string
+    articleTitle: string
 }
 
 export type City = {
@@ -126,4 +127,12 @@ export type OrderForCalendar = {
     price: string,
     ratingIdentificator: string,
     color: string,
+}
+
+export type Article = {
+    id: string,
+    title: string,
+    background: string,
+    description: string,
+    body: string,
 }

@@ -108,7 +108,7 @@ const CitiesList: FC<CitiesListProps> = () => {
 		}
 	};
 
-	const isOpen = (value:boolean) => {
+	const isOpen = (value: boolean) => {
 		setAlertOptions({...alertOptions, notify: value});
 	};
 

@@ -39,3 +39,18 @@ export const getBinaryImages = async (images: File[]) => {
 
 	return binaryImages;
 };
+
+
+export const getBinaryFromBlob = async (blob: Blob) => {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.readAsDataURL(blob);
+		reader.onerror = () => {
+			const error = reader.error;
+			reject(error);
+		};
+		reader.onload = () => {
+			resolve(reader.result);
+		};
+	});
+};

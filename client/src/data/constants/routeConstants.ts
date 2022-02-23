@@ -24,6 +24,9 @@ export enum URL {
     TOTAL_ORDERS_MASTERS_PIE_CHART = '/totalOrdersForMastersPieChart',
 	MASTERS_STATISTICS_TABLE = '/mastersStatisticsTable',
 	ORDERS_FOR_CALENDAR = '/ordersForCalendar',
+	BLOG = '/blog',
+	IMAGE = '/image',
+	ARTICLE_FOR_UPDATE = '/articleForUpdate'
 }
 
 export enum RESOURCE {
@@ -44,6 +47,10 @@ export enum RESOURCE {
 	VERIFICATION = 'email-verification',
 	STATISTICS = 'statistics',
 	CALENDAR = 'calendar',
+	BLOG = 'blog',
+	ARTICLE = 'article',
+	ARTICLES_LIST = 'articles-list',
+	ARTICLE_CREATE = 'articles-create',
 }
 
 export enum PARAM {
@@ -60,7 +67,8 @@ export enum PARAM {
     CLOCK_ID = 'clockIdParam',
     RATING_ID = 'ratingIdentificatorParam',
 	HASH_VERIFY = 'hashVerify',
-	GENERATED = 'generated'
+	GENERATED = 'generated',
+	ARTICLE_TITLE = 'articleTitle'
 }
 
 export const ROUTES = {
@@ -70,6 +78,12 @@ export const ROUTES = {
 	},
 	REGISTRATION: {
 		path: `/${RESOURCE.REGISTRATION}`,
+	},
+	BLOG: {
+		path: `/${RESOURCE.BLOG}`,
+	},
+	ARTICLE: {
+		path: `/${RESOURCE.ARTICLE}/:${PARAM.ARTICLE_TITLE}`,
 	},
 	ADMIN_MASTERS_LIST: {
 		path: `/${RESOURCE.ADMIN}/${RESOURCE.MASTERS_LIST}`,
@@ -94,6 +108,12 @@ export const ROUTES = {
 	},
 	ADMIN_STATISTICS: {
 		path: `/${RESOURCE.ADMIN}/${RESOURCE.STATISTICS}`,
+	},
+	ADMIN_ARTICLES_LIST: {
+		path: `/${RESOURCE.ADMIN}/${RESOURCE.ARTICLES_LIST}`,
+	},
+	ADMIN_ARTICLE_CREATE: {
+		path: `/${RESOURCE.ADMIN}/${RESOURCE.ARTICLE_CREATE}`,
 	},
 	MASTER_ORDERS_LIST: {
 		path: `/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`,

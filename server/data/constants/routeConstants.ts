@@ -23,6 +23,9 @@ export enum URL {
     MASTERS_STATISTICS_TABLE = '/mastersStatisticsTable',
     DOWNLOAD_ORDER_RECEIPT = '/downloadOrderReceipt',
     ORDERS_FOR_CALENDAR = '/ordersForCalendar',
+    BLOG = '/blog',
+    ARTICLE_FOR_UPDATE = '/articleForUpdate',
+    IMAGE = '/image',
 }
 
 export enum RESOURCE {

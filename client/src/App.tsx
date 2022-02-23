@@ -19,6 +19,10 @@ import MasterOrdersList from './components/Master/orders/list/MasterOrdersList';
 import ClientOrdersList from './components/Client/order/list/ClientOrdersList';
 import Statistics from './components/Admin/statistics/Statistics';
 import Calendar from './components/Master/calendar/Calendar';
+import Blog from './components/Blog/Blog';
+import ArticlesList from './components/Admin/articles/list/ArticlesList';
+import ArticleCreate from './components/Admin/articles/create/ArticleCreate';
+import Article from './components/Blog/articleContent/Article';
 
 
 const App = () => (
@@ -29,6 +33,8 @@ const App = () => (
 			<Route component={RateOrder} {...ROUTES.RATE_ORDER}/>
 			<Route component={Registration} {...ROUTES.REGISTRATION}/>
 			<Route component={Verification} {...ROUTES.USER_VERIFY}/>
+			<Route component={Blog} {...ROUTES.BLOG}/>
+			<Route component={Article} {...ROUTES.ARTICLE}/>
 			<PrivateRoute component={MastersList} {...ROUTES.ADMIN_MASTERS_LIST}/>
 			<PrivateRoute component={MasterCreate} {...ROUTES.ADMIN_MASTER_CREATE}/>
 			<PrivateRoute component={UsersList} {...ROUTES.ADMIN_USERS_LIST}/>
@@ -38,6 +44,8 @@ const App = () => (
 			<PrivateRoute component={OrdersList} {...ROUTES.ADMIN_ORDERS_LIST}/>
 			<PrivateRoute component={OrderCreate} {...ROUTES.ADMIN_ORDER_CREATE}/>
 			<PrivateRoute component={Statistics} {...ROUTES.ADMIN_STATISTICS}/>
+			<PrivateRoute component={ArticlesList} {...ROUTES.ADMIN_ARTICLES_LIST}/>
+			<PrivateRoute component={ArticleCreate} {...ROUTES.ADMIN_ARTICLE_CREATE}/>
 			<PrivateRoute component={MasterOrdersList} {...ROUTES.MASTER_ORDERS_LIST}/>
 			<PrivateRoute component={Calendar} {...ROUTES.MASTER_CALENDAR}/>
 			<PrivateRoute component={ClientOrdersList} {...ROUTES.CLIENT_ORDERS_LIST}/>

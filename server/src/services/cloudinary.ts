@@ -29,4 +29,13 @@ export class CloudinaryService {
 			}),
 		);
 	};
+
+	public getUploadPhotoUrl = (picture: string) => {
+		return cloudinary.v2.uploader.upload(picture)
+			.then((data: IData) => {
+				return data.url;
+			}).catch((error)=> {
+				throw new Error(error);
+			});
+	};
 }
