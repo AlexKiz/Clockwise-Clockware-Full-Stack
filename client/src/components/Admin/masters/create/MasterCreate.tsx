@@ -168,6 +168,13 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
 									input={<OutlinedInput notched={Boolean(formik.values.citiesId.length)} label="Cities" />}
+									MenuProps={{
+										sx: {
+											'&& .Mui-selected': {
+												backgroundColor: '#0094fd5c',
+											},
+										},
+									}}
 								>
 									{cities.map((city) => (
 										<MenuItem

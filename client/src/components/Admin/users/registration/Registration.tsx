@@ -287,6 +287,13 @@ const Registration:FC<RegistrationProps> = () => {
 											value={formik.values.citiesId}
 											onBlur={formik.handleBlur}
 											input={<OutlinedInput label="Cities" />}
+											MenuProps={{
+												sx: {
+													'&& .Mui-selected': {
+														backgroundColor: '#0094fd5c',
+													},
+												},
+											}}
 										>
 											{cities.map((city) => (
 												<MenuItem
