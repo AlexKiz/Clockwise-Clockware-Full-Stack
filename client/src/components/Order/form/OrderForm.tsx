@@ -23,9 +23,12 @@ import {
 	ImageList,
 	ImageListItem,
 	Box,
+	Divider,
+	Chip,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import PublicHeader from '../../Headers/PublicHeader';
 import {useFormik} from 'formik';
 import AlertMessage from 'src/components/Notification/AlertMessage';
@@ -187,7 +190,9 @@ const OrderForm: FC<OrderFormProps> = () => {
 				notify: true,
 			});
 			return;
-		} else if (images?.length && images.some((file) => file.size > 1024 * 1024)) {
+		} else if (
+			event.currentTarget.files && Array.from<File>(event.currentTarget.files).some((file) => file.size > 1024 * 1024)
+		) {
 			setImages([]);
 			setAlertOptions({
 				message: 'Photo must be 1 MB size or less',
@@ -392,7 +397,10 @@ const OrderForm: FC<OrderFormProps> = () => {
 												<MenuItem
 													key={elem}
 													value={elem}
-													disabled={isBefore(new Date(`${formik.values.orderDate} ${elem}`), new Date())}
+													disabled={
+														!formik.values.orderDate ||
+														isBefore(new Date(`${formik.values.orderDate} ${elem}`), new Date())
+													}
 												>
 													{`${elem}`}
 												</MenuItem>
@@ -484,20 +492,46 @@ const OrderForm: FC<OrderFormProps> = () => {
 								aria-labelledby="modal-modal-title"
 								aria-describedby="modal-modal-description"
 							>
-								<Box sx={{top: '50%',
+								<Box sx={{
+									top: '50%',
 									position: 'absolute',
 									left: '50%',
 									transform: 'translate(-50%, -50%)',
-									width: 500,
+									width: 800,
 									bgcolor: 'background.paper',
 									border: '2px solid #000',
 									boxShadow: 24,
-									p: 4}}
-								>
-									<ImageList sx={{width: 500, height: 450, top: '50%', right: '50%'}} cols={3} rowHeight={164}>
-										{imageUrls.map((item) => (
+									p: 4,
+								}}>
+									<HighlightOffIcon
+										fontSize='large'
+										sx={{
+											position: 'absolute',
+											left: '100%',
+											top: '-50px',
+											color: 'red',
+											height: '50px',
+											width: '50px',
+											cursor: 'pointer',
+										}}
+										onClick={handleCloseModalImg}
+									/>
+									<ImageList sx={{maxWidth: 1200, maxHeight: 800, top: '50%', right: '50%'}} cols={1}>
+										{imageUrls.map((item, index) => (
 											<ImageListItem key={item}>
+												<div>
+													<Divider sx={{m: '40px 0px'}}>
+														<Chip
+															sx={{fontSize: '16px', lineHeight: 1}}
+															label={`Photo #${index + 1}`}
+															variant="outlined"
+															color="info"
+															icon={<ImageOutlinedIcon />}
+														/>
+													</Divider>
+												</div>
 												<img
+													style={{objectFit: 'contain'}}
 													src={`${item}`}
 													loading="lazy"
 												/>
