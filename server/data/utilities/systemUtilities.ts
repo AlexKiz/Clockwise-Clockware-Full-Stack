@@ -12,7 +12,9 @@ const createMaster = async (name: string, email: string, password: string, hashV
 		const master = await db.Master.create({name}, {transaction});
 		master.setCities(citiesId, {transaction});
 
-		const user = await db.User.create({
+		const userCheck = await db.User.findOne({where: {email}});
+
+		const user = await db.User.create({ // TODO: user does not create(unique Email)
 			name,
 			email,
 			password,

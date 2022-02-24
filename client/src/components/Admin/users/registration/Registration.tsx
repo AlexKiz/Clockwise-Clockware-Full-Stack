@@ -26,7 +26,7 @@ import {
 	CircularProgress,
 } from '@mui/material';
 import {Visibility, VisibilityOff} from '@mui/icons-material';
-import {City} from 'src/data/types/types';
+import {AlertNotification, City} from 'src/data/types/types';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import {useTranslation} from 'react-i18next';
 
@@ -36,11 +36,15 @@ const Registration:FC<RegistrationProps> = () => {
 	const [cities, setCities] = useState<City[]>([]);
 
 	const [showPassword, setShowPassword] = useState<boolean>(false);
-	const [notify, setNotify] = useState<boolean>(false);
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		notify: false,
+		type: 'success',
+		message: '',
+	});
 	const [loading, setLoading] = useState<boolean>(false);
 
-	const isOpen = (value:boolean) => {
-		setNotify(value);
+	const isOpen = (value: boolean) => {
+		setAlertOptions({...alertOptions, notify: value});
 	};
 
 	const formik = useFormik({
@@ -67,10 +71,30 @@ const Registration:FC<RegistrationProps> = () => {
 					role: values.isMaster ? ROLE.MASTER : ROLE.CLIENT,
 				}).then(() => {
 				setLoading(false);
-				setNotify(true);
+				setAlertOptions({
+					message: 'Check your email to verify account',
+					type: 'success',
+					notify: true,
+				});
 				values.licenseAcception = false,
 				values.isMaster = false,
 				formik.resetForm();
+			}).catch((error) => {
+				setLoading(false);
+				if (error.message.includes('status code 400')) {
+					setAlertOptions({
+						message: 'User with current email already exists',
+						type: 'error',
+						notify: true,
+					});
+					values.email = '';
+				} else {
+					setAlertOptions({
+						message: 'Something went wrong',
+						type: 'error',
+						notify: true,
+					});
+				}
 			});
 		},
 	});
@@ -334,12 +358,12 @@ const Registration:FC<RegistrationProps> = () => {
 						</Stack>
 					</form>
 					{
-						notify &&
+						alertOptions.notify &&
 						<AlertMessage
-							alertType='success'
-							message='Check your email to verify account'
+							alertType={alertOptions.type}
+							message={alertOptions.message}
 							isOpen={isOpen}
-							notify={notify}
+							notify={alertOptions.notify}
 						/>
 					}
 				</div>

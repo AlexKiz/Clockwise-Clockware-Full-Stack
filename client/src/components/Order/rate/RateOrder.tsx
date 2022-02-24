@@ -102,8 +102,9 @@ const RateOrder: FC<RateOrderProps> = () => {
 												variant="subtitle1"
 												gutterBottom
 												component="div"
+												align='center'
 											>
-												<b>Order #{order.id}</b>
+												<b>Order #{order.id.slice(0, 4)}</b>
 											</Typography>
 											<Typography
 												variant="subtitle1"
@@ -170,7 +171,7 @@ const RateOrder: FC<RateOrderProps> = () => {
 									className={classes.form_btn}
 									style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
 								>
-										Create order
+										Rate order
 								</Button>
 							</div>
 

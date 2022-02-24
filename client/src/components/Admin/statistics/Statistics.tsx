@@ -174,11 +174,12 @@ const Statistics: FC<StatisticsProps> = () => {
 					endDate: dateRangeMastersPieChart[1],
 				},
 			}).then((response) => {
-				if (!response.data.length) {
+				const filteredOrders = response.data?.filter((elem) => elem.orders !== null);
+				if (!filteredOrders?.length) {
 					setDateRangeMastersPieChart([null, null]);
 					setAlertOptions({...alertOptions, notify: true});
 				} else {
-					setOrdersForMastersPieChart(response.data);
+					setOrdersForMastersPieChart(filteredOrders);
 				}
 			});
 		};

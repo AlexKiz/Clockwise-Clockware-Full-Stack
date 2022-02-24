@@ -90,7 +90,7 @@ const Blog: FC<BlogProps> = () => {
 									variant='h3'
 									component='label'
 								>
-									{loading ? 'Loading...' : 'There are no articles left!'}
+									{loading ? 'Loading...' : 'There are no articles!'}
 								</Typography>
 							</Box>}
 						</Stack>
@@ -98,9 +98,9 @@ const Blog: FC<BlogProps> = () => {
 					<Box sx={{m: '0 auto', p: 2}}>
 						<Pagination
 							color='primary'
-							count={totalArticles / 10}
+							count={Math.ceil(totalArticles / 10)}
 							size="large"
-							shape='rounded'
+							shape='circular'
 							showFirstButton={true}
 							showLastButton={true}
 							page={page}

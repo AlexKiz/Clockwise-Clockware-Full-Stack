@@ -6,10 +6,11 @@ import PrivateHeader from 'src/components/Headers/PrivateHeader';
 import FullCalendar, {EventClickArg} from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import {Box, Button, CircularProgress, Modal, Paper, Stack, Typography} from '@mui/material';
+import {Box, Button, CircularProgress, IconButton, Modal, Paper, Stack, Typography} from '@mui/material';
 import {URL} from 'src/data/constants/routeConstants';
 import {AlertNotification, OrderForCalendar} from 'src/data/types/types';
 import AlertMessage from 'src/components/Notification/AlertMessage';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 
 const Calendar: FC<CalendarProps> = () => {
@@ -97,6 +98,18 @@ const Calendar: FC<CalendarProps> = () => {
 						border: '2px solid #000',
 						boxShadow: 24}}
 					>
+						<IconButton
+							aria-label="close"
+							onClick={handleModalClose}
+							sx={{
+								position: 'absolute',
+								right: 8,
+								top: 8,
+								color: 'red',
+							}}
+						>
+							<HighlightOffIcon fontSize='large' />
+						</IconButton>
 						<Stack
 							direction="column"
 							justifyContent="center"
@@ -110,7 +123,7 @@ const Calendar: FC<CalendarProps> = () => {
 								component="div"
 								align='center'
 							>
-								<b>Clock type: {calendarEvent.event._def.extendedProps.clockSize}</b>
+								<b>Clock type: {calendarEvent?.event?._def.extendedProps.clockSize}</b>
 							</Typography>
 							<Typography
 								variant="subtitle1"
@@ -118,7 +131,7 @@ const Calendar: FC<CalendarProps> = () => {
 								component="div"
 								align='center'
 							>
-								<b>Client name: {calendarEvent.event._def.extendedProps.clientName}</b>
+								<b>Client name: {calendarEvent?.event?._def.extendedProps.clientName}</b>
 							</Typography>
 							<Typography
 								variant="subtitle1"
@@ -126,7 +139,7 @@ const Calendar: FC<CalendarProps> = () => {
 								component="div"
 								align='center'
 							>
-								<b>Price paid: {calendarEvent.event._def.extendedProps.price}</b>
+								<b>Price paid: {calendarEvent?.event?._def.extendedProps.price}</b>
 							</Typography>
 							<Typography
 								variant="subtitle1"
@@ -134,20 +147,20 @@ const Calendar: FC<CalendarProps> = () => {
 								component="div"
 								align='center'
 							>
-								<b>Status: {calendarEvent.event._def.extendedProps.isCompleted ? 'Done' : 'In progress'}</b>
+								<b>Status: {calendarEvent?.event?._def.extendedProps.isCompleted ? 'Done' : 'In progress'}</b>
 							</Typography>
 							<Button
 								variant="contained"
 								sx={{width: '60%', fontSize: 12, borderRadius: 8}}
 								color='info'
-								disabled={calendarEvent?.event._def.extendedProps.isCompleted || loading}
+								disabled={calendarEvent?.event?._def.extendedProps.isCompleted || loading}
 								onClick={() => handleCompleteOrder(
-									calendarEvent.event._def.publicId,
-									calendarEvent.event._def.extendedProps.clientEmail,
-									calendarEvent.event._def.extendedProps.ratingIdentificator,
+									calendarEvent?.event?._def.publicId,
+									calendarEvent?.event?._def.extendedProps.clientEmail,
+									calendarEvent?.event?._def.extendedProps.ratingIdentificator,
 								)}
 							>
-								{calendarEvent.event._def.extendedProps.isCompleted ? 'Done' : 'Complete order'}
+								{calendarEvent?.event?._def.extendedProps.isCompleted ? 'Done' : 'Complete order'}
 								{loading && <CircularProgress
 									size={22}
 									color="success"

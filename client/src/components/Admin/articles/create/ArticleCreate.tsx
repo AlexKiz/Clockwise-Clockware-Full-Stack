@@ -34,6 +34,7 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 	const history = useHistory();
 
 	const {articleTitle} = useParams<Params>();
+	const [articleId, setArticleId] = useState<string>('');
 	const [title, setTitle] = useState<string>('');
 	const [description, setDescription] = useState<string>('');
 	const [articlePhoto, setArticlePhoto] = useState<File[]>([]);
@@ -58,6 +59,7 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 					title: articleTitle,
 				},
 			}).then((response) => {
+				setArticleId(response.data.id);
 				setTitle(response.data.title);
 				setDescription(response.data.description);
 				setArticlePhotoPreview(response.data.background);
@@ -88,7 +90,7 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 
 
 	const handleSubmitArticle = async () => {
-		if (!articleTitle) {
+		if (!articleId) {
 			setLoading(true);
 			await axios.post(URLS.BLOG, {
 				title,
@@ -101,10 +103,11 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 		} else {
 			setLoading(true);
 			await axios.put(URLS.BLOG, {
+				id: articleId,
 				title,
 				description,
-				background: articleMainPhoto,
-				body: content,
+				background: articleMainPhoto || articlePhotoPreview,
+				body: articleUpdateContent,
 			});
 			setLoading(false);
 			history.push(`/${RESOURCE.ADMIN}/${RESOURCE.ARTICLES_LIST}`);
@@ -286,7 +289,7 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 								color='success'
 								style={{fontSize: 18, borderRadius: 15}}
 								sx={{width: '50%'}}
-								disabled={Boolean(!title || !description || !articleMainPhoto.length || !content)}
+								disabled={!articleTitle && Boolean(!title || !description || !articlePhotoPreview || !content)}
 								onClick={handleSubmitArticle}
 							>
 								Sumbit

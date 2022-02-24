@@ -31,11 +31,9 @@ export const postCityValidate = async (req: Request, res: Response, next: NextFu
 
 
 export const putCityValidate = async (req: Request, res: Response, next: NextFunction) => {
-	const {id, name} = req.body;
+	const {name} = req.body;
 
 	const validationErrors: string[] = [];
-
-	const validCity = await db.City.findById(id);
 
 	const allCitiesName = await db.City.findAll({attributes: ['name']});
 
@@ -45,10 +43,6 @@ export const putCityValidate = async (req: Request, res: Response, next: NextFun
 				validationErrors.push('City with same name already exists');
 			}
 		});
-	}
-
-	if (!validCity.length) {
-		validationErrors.push('City with current id does not exist');
 	}
 
 	if (!VALID.CITY_NAME.test(name)) {

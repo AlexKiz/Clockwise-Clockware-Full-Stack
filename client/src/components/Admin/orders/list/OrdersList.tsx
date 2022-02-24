@@ -439,8 +439,8 @@ const OrdersList: FC<OrdersListProps> = () => {
 									value={dateFilteringArray}
 									onChange={(value) => {
 										dispatch(setDateFilteringArray(value));
-										dispatch(setStartDateFilter(null));
-										dispatch(setEndDateFilter(null));
+										dispatch(setStartDateFilter(value[0]));
+										dispatch(setEndDateFilter(value[1]));
 										dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 									}}
 									renderInput={(startProps, endProps) => (
@@ -578,7 +578,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 										) : null}
 									</TableSortLabel>
 								</StyledTableCell>
-								<StyledTableCell sx={{width: '10%'}} align="center">
+								<StyledTableCell sx={{width: '8%'}} align="center">
 									<TableSortLabel
 										active={sortedField === SORTED_FIELD.START_WORK_ON}
 										direction={sortedField === SORTED_FIELD.START_WORK_ON ? sortingOrder : SORTING_ORDER.ASC}
@@ -595,7 +595,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 										) : null}
 									</TableSortLabel>
 								</StyledTableCell>
-								<StyledTableCell sx={{width: '10%'}} align="center">
+								<StyledTableCell sx={{width: '8%'}} align="center">
 									<TableSortLabel
 										active={sortedField === SORTED_FIELD.END_WORK_ON}
 										direction={sortedField === SORTED_FIELD.END_WORK_ON ? sortingOrder : SORTING_ORDER.ASC}
@@ -612,13 +612,13 @@ const OrdersList: FC<OrdersListProps> = () => {
 										) : null}
 									</TableSortLabel>
 								</StyledTableCell>
-								<StyledTableCell sx={{width: '6%'}} align="center">
+								<StyledTableCell sx={{width: '8%'}} align="center">
 									Photos
 								</StyledTableCell>
 								<StyledTableCell sx={{width: '6%'}} align="center">
 									Info
 								</StyledTableCell>
-								<StyledTableCell sx={{width: '18%'}} align="right">
+								<StyledTableCell sx={{width: '20%'}} align="right">
 									<IconButton
 										style={{marginLeft: 'auto'}}
 										color='inherit'
@@ -639,8 +639,8 @@ const OrdersList: FC<OrdersListProps> = () => {
 									<StyledTableCell align="center"> {order.user.email} </StyledTableCell>
 									<StyledTableCell align="center"> {order.city.name} </StyledTableCell>
 									<StyledTableCell align="center"> {order.master.name} </StyledTableCell>
-									<StyledTableCell align="center"> {order.startWorkOn.split('T').join(' ')} </StyledTableCell>
-									<StyledTableCell align="center"> {order.endWorkOn.split('T').join(' ')} </StyledTableCell>
+									<StyledTableCell align="center"> {order.startWorkOn.split('T').join(' ').slice(0, 19)}</StyledTableCell>
+									<StyledTableCell align="center"> {order.endWorkOn.split('T').join(' ').slice(0, 19)}</StyledTableCell>
 									<StyledTableCell align="center">
 										<Fab
 											size="small"
@@ -727,7 +727,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 											&cityFilteredId=${cityFilteredId}&clockFilteredId=${clockFilteredId}
 											&isCompletedFilter=${isCompletedFilter}&startDateFilter=${startDateFilter}
 											&endDateFilter=${endDateFilter}`
-										}>
+										} download>
 											<Button
 												variant="contained"
 												sx={{width: '100%', fontSize: 12, borderRadius: 8}}
@@ -886,7 +886,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 							gutterBottom
 							component="div"
 						>
-							<b>Payment time: {infoOptions.date.split('T')[1]}</b>
+							<b>Payment time: {infoOptions.date.split('T')[1]?.slice(0, 5)}</b>
 						</Typography>
 					</Stack>
 				</Dialog>

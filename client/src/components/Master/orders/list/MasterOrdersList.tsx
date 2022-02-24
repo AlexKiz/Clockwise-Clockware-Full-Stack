@@ -154,15 +154,15 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 					<Table sx={{minWidth: 650}} aria-label="customized table">
 						<TableHead>
 							<TableRow>
-								<StyledTableCell sx={{width: '10%'}} align="center">Client name</StyledTableCell>
+								<StyledTableCell sx={{width: '12%'}} align="center">Client name</StyledTableCell>
 								<StyledTableCell sx={{width: '10%'}} align="center">Clock size</StyledTableCell>
 								<StyledTableCell sx={{width: '10%'}} align="center">City</StyledTableCell>
-								<StyledTableCell sx={{width: '10%'}} align="center">Start on</StyledTableCell>
-								<StyledTableCell sx={{width: '10%'}} align="center">Finish on</StyledTableCell>
+								<StyledTableCell sx={{width: '8%'}} align="center">Start on</StyledTableCell>
+								<StyledTableCell sx={{width: '8%'}} align="center">Finish on</StyledTableCell>
 								<StyledTableCell sx={{width: '8%'}} align="center">Total price</StyledTableCell>
 								<StyledTableCell sx={{width: '8%'}} align="center">Photos</StyledTableCell>
 								<StyledTableCell sx={{width: '8%'}} align="center">Order Info</StyledTableCell>
-								<StyledTableCell sx={{width: '12%'}} align="center"></StyledTableCell>
+								<StyledTableCell sx={{width: '14%'}} align="center"></StyledTableCell>
 								<StyledTableCell sx={{width: '14%'}} align="center"></StyledTableCell>
 							</TableRow>
 						</TableHead>
@@ -172,8 +172,8 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 									<StyledTableCell component="th" scope="row" align="center"> {order.user.name} </StyledTableCell>
 									<StyledTableCell align="center"> {order.clock.size} </StyledTableCell>
 									<StyledTableCell align="center"> {order.city.name} </StyledTableCell>
-									<StyledTableCell align="center"> {order.startWorkOn.split('T').join(' ')} </StyledTableCell>
-									<StyledTableCell align="center"> {order.endWorkOn.split('T').join(' ')} </StyledTableCell>
+									<StyledTableCell align="center"> {order.startWorkOn.split('T').join(' ').slice(0, 19)}</StyledTableCell>
+									<StyledTableCell align="center"> {order.endWorkOn.split('T').join(' ').slice(0, 19)}</StyledTableCell>
 									<StyledTableCell align="center"> {`${order.clock.price * 10} $`} </StyledTableCell>
 									<StyledTableCell align="center">
 										<Fab
@@ -328,7 +328,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 									color: 'red',
 								}}
 							>
-								<HighlightOffIcon fontSize='large' />
+								<HighlightOffIcon fontSize='large'/>
 							</IconButton>
 						</DialogTitle>
 						<Typography
@@ -357,7 +357,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 							gutterBottom
 							component="div"
 						>
-							<b>Payment time: {orderInfoOption.date.split('T')[1]}</b>
+							<b>Payment time: {orderInfoOption.date.split('T')[1]?.slice(0, 5)}</b>
 						</Typography>
 					</Stack>
 				</Dialog>

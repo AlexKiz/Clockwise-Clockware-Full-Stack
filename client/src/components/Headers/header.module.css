@@ -13,7 +13,7 @@ header li, header a, header button {
     margin: 0px 0px 40px 0px;
 }
 
-.wrapper_logo a, img {
+.wrapper_logo {
     height: 81px;
     width: 331px; 
 }

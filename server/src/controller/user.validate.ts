@@ -12,6 +12,12 @@ export const userRegistrationValidate = async (req: Request, res: Response, next
 		validationErrors.push('Invalid user name');
 	}
 
+	const userEmailCheck = await db.User.findOne({where: {email}});
+
+	if (userEmailCheck) {
+		validationErrors.push('User with this email already exists');
+	}
+
 	if (!VALID.USER_EMAIL.test(email)) {
 		validationErrors.push('Invalid user email');
 	}
@@ -27,7 +33,7 @@ export const userRegistrationValidate = async (req: Request, res: Response, next
 	}
 
 	if (validationErrors.length) {
-		res.status(400).json(validationErrors);
+		res.status(400).send(validationErrors);
 	} else {
 		return next();
 	}

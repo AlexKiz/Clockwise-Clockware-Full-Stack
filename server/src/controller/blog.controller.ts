@@ -2,6 +2,7 @@ import {Request, Response} from 'express';
 import db from '../models';
 import {CloudinaryService} from './../services/cloudinary';
 import dotenv from 'dotenv';
+import {Op} from 'sequelize';
 dotenv.config();
 
 
@@ -20,7 +21,7 @@ export const postArticle = async (req: Request, res: Response) => {
 		const article = await db.Blog.create({
 			title,
 			description,
-			background: backgroundPhoto,
+			background: backgroundPhoto.join(','),
 			body,
 		});
 
@@ -61,7 +62,7 @@ export const getCloudinaryUrls = async (req: Request, res: Response) => {
 export const getArticleForUpdate = async (req: Request, res: Response) => {
 	const {title} = req.query;
 
-	const article = await db.Blog.findOne({where: {title}});
+	const article = await db.Blog.findOne({where: {title: {[Op.iLike]: `%${title}%`}}});
 
 	res.status(200).json(article);
 };
@@ -69,7 +70,7 @@ export const getArticleForUpdate = async (req: Request, res: Response) => {
 
 export const putArticle = async (req: Request, res: Response) => {
 	try {
-		const {id, title, description, background, pictures, body} = req.body;
+		const {id, title, description, background, body} = req.body;
 
 		const cloudinary = new CloudinaryService({
 			cloud_name: process.env.CLOUD_NAME,
@@ -77,15 +78,18 @@ export const putArticle = async (req: Request, res: Response) => {
 			api_secret: process.env.CLOUD_API_SECRET,
 		});
 
-		const backgroundPhoto = await cloudinary.uploadPhotos(background);
+		let backgroundPhoto;
 
-		const contentPhotosURL = await cloudinary.uploadPhotos(pictures);
+		if (background.includes('res.cloudinary.com')) {
+			backgroundPhoto = background;
+		} else {
+			backgroundPhoto = await cloudinary.uploadPhotos(background);
+		}
 
 		const article = await db.Blog.updateById(id, {
 			title,
 			description,
 			background: backgroundPhoto,
-			pictures: contentPhotosURL?.join(','),
 			body,
 		});
 
@@ -100,7 +104,7 @@ export const deleteArticle = async (req: Request, res: Response) => {
 	try {
 		const {id} = req.body;
 
-		const article = await db.City.deleteById(id);
+		const article = await db.Blog.deleteById(id);
 
 		res.status(204).json(article);
 	} catch (error) {

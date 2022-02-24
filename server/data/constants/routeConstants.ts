@@ -7,6 +7,7 @@ export enum URL {
     ORDER = '/order',
     AVAILABLE_MASTER = '/availableMasters',
     CITY_FOR_ORDER = '/cityForOrder',
+    CITY_FOR_UPDATE = '/cityForUpdate',
     ORDER_FOR_RATE = '/orderForRate',
     ORDER_FOR_UPDATE = '/orderForUpdate',
     RATED_ORDER = '/ratedOrder',

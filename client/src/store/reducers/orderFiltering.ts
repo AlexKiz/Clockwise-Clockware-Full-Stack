@@ -23,6 +23,8 @@ export const orderFilteringReducer = (state = initialState, action: OrderFilteri
 		return {...state, clockFilteredId: action.payload};
 	case OrderFilteringActionTypes.SET_COMPLETED_FILTER:
 		return {...state, isCompletedFilter: action.payload};
+	case OrderFilteringActionTypes.SET_DATE_FILTER_ARRAY:
+		return {...state, dateFilteringArray: action.payload};
 	case OrderFilteringActionTypes.SET_START_DATE_FILTER:
 		return {...state, startDateFilter: action.payload};
 	case OrderFilteringActionTypes.SET_END_DATE_FILTER:

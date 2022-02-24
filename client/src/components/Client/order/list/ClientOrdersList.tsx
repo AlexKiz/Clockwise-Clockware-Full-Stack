@@ -87,9 +87,9 @@ const ClientOrdersList: FC<ClientOrdersListProps> = () => {
 										{order.master.name}
 									</StyledTableCell>
 									<StyledTableCell align="center"> {order.clock.size} </StyledTableCell>
-									<StyledTableCell align="center"> {order.startWorkOn.split('T').join(' ')} </StyledTableCell>
-									<StyledTableCell align="center"> {order.endWorkOn.split('T').join(' ')} </StyledTableCell>
-									<StyledTableCell align="center"> {order.clock.price} </StyledTableCell>
+									<StyledTableCell align="center"> {order.startWorkOn.split('T').join(' ').slice(0, 19)}</StyledTableCell>
+									<StyledTableCell align="center"> {order.endWorkOn.split('T').join(' ').slice(0, 19)}</StyledTableCell>
+									<StyledTableCell align="center"> {`${order.clock.price * 10} $`} </StyledTableCell>
 									<StyledTableCell align="center">
 										{ order.ratingIdentificator ?
 											<Button

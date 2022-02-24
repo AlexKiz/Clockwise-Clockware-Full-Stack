@@ -4,6 +4,7 @@
 import {
 	Model,
 	Optional,
+	UUIDV4,
 } from 'sequelize';
 import {BlogAttributes} from './modelsConstants';
 
@@ -35,6 +36,7 @@ export default (sequelize: any, DataTypes: any) => {
 				type: DataTypes.UUID,
 				allowNull: false,
 				primaryKey: true,
+				defaultValue: UUIDV4,
 				onDelete: 'CASCADE',
 				onUpdate: 'CASCADE',
 			},
