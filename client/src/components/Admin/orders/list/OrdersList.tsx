@@ -795,43 +795,45 @@ const OrdersList: FC<OrdersListProps> = () => {
 						bgcolor: 'background.paper',
 						border: '2px solid #000',
 						boxShadow: 24,
-						p: 4,
+						padding: '50px',
 					}}>
-						<HighlightOffIcon
-							fontSize='large'
-							sx={{
-								position: 'absolute',
-								left: '100%',
-								top: '-50px',
-								color: 'red',
-								height: '50px',
-								width: '50px',
-								cursor: 'pointer',
-							}}
-							onClick={handleCloseModalImg}
-						/>
-						<ImageList sx={{maxWidth: 1200, maxHeight: 800, top: '50%', right: '50%'}} cols={1}>
-							{modalImg.split(',').map((item, index) => (
-								<ImageListItem key={item}>
-									<div>
-										<Divider sx={{m: '40px 0px'}}>
-											<Chip
-												sx={{fontSize: '16px', lineHeight: 1}}
-												label={`Photo #${index + 1}`}
-												variant="outlined"
-												color="info"
-												icon={<ImageOutlinedIcon />}
-											/>
-										</Divider>
-									</div>
-									<img
-										style={{objectFit: 'contain'}}
-										src={`${item}`}
-										loading="lazy"
-									/>
-								</ImageListItem>
-							))}
-						</ImageList>
+						<div style={{position: 'relative', width: '100%'}}>
+							<HighlightOffIcon
+								fontSize='large'
+								sx={{
+									position: 'absolute',
+									right: '-6%',
+									top: '-9%',
+									color: 'red',
+									height: '50px',
+									width: '50px',
+									cursor: 'pointer',
+								}}
+								onClick={handleCloseModalImg}
+							/>
+							<ImageList sx={{maxWidth: 1000, maxHeight: 700, top: '50%', right: '50%'}} cols={1}>
+								{modalImg.split(',').map((item, index) => (
+									<ImageListItem key={item}>
+										<div>
+											<Divider sx={{m: '40px 0px'}}>
+												<Chip
+													sx={{fontSize: '16px', lineHeight: 1}}
+													label={`Photo #${index + 1}`}
+													variant="outlined"
+													color="info"
+													icon={<ImageOutlinedIcon />}
+												/>
+											</Divider>
+										</div>
+										<img
+											style={{objectFit: 'contain'}}
+											src={`${item}`}
+											loading="lazy"
+										/>
+									</ImageListItem>
+								))}
+							</ImageList>
+						</div>
 					</Box>
 				</Modal>
 				<Dialog

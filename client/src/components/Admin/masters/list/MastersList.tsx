@@ -107,6 +107,14 @@ const MastersList: FC<MasterListProps> = () => {
 					message: 'Master has been deleted!',
 					notify: true,
 				});
+			}).catch((error) => {
+				if (error.message.includes('status code 405')) {
+					setAlertOptions({
+						type: 'error',
+						message: 'Master belongs to order and could not be deleted!',
+						notify: true,
+					});
+				}
 			});
 		}
 	};

@@ -48,7 +48,11 @@ const App = () => (
 			<PrivateRoute component={ArticleCreate} {...ROUTES.ADMIN_ARTICLE_CREATE}/>
 			<PrivateRoute component={MasterOrdersList} {...ROUTES.MASTER_ORDERS_LIST}/>
 			<PrivateRoute component={Calendar} {...ROUTES.MASTER_CALENDAR}/>
+			<PrivateRoute component={Blog} {...ROUTES.MASTER_BLOG}/>
+			<PrivateRoute component={Article} {...ROUTES.MASTER_ARTICLE}/>
 			<PrivateRoute component={ClientOrdersList} {...ROUTES.CLIENT_ORDERS_LIST}/>
+			<PrivateRoute component={Blog} {...ROUTES.CLIENT_BLOG}/>
+			<PrivateRoute component={Article} {...ROUTES.CLIENT_ARTICLE}/>
 		</Switch>
 	</BrowserRouter>
 );

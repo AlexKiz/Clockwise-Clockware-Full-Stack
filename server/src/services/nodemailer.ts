@@ -29,21 +29,70 @@ export const sendMail = (email: string, ratingIdentificator: string, file: any) 
 	}],
 });
 
-export const sendVerificationMail = (email: string, hash: string, password?: string) => transporter.sendMail({
+export const sendVerificationMail = (email: string, hash: string) => transporter.sendMail({
 	from: `"Clockwise Clockware" <${process.env.CONFIRMATION_EMAIL}>`,
 	to: email,
 	subject: 'Email Verification',
 	text: 'Please verify your email on link below',
-	html: password ? `<p>Click 
-						<a href="${process.env.FRONT_URL}/${RESOURCE.VERIFICATION}/${hash}">
+	html: `<p>Click 
+				<a href="${process.env.FRONT_URL}/${RESOURCE.VERIFICATION}/${hash}">
+					here
+				</a> to confirm
+			</p>`,
+});
+
+export const sendSuccessPaymentMail = (email: string) => transporter.sendMail({
+	from: `"Clockwise Clockware" <${process.env.CONFIRMATION_EMAIL}>`,
+	to: email,
+	subject: 'Success Payment',
+	text: 'Your payment was successfully completed',
+	html: `<div style="line-height: 140%; text-align: left; word-wrap: break-word;">
+				<p style="font-size: 14px; line-height: 140%; text-align: center;">
+					<span style="font-size: 16px; line-height: 22.4px;">
+						Your order was successfully paid and created!
+					</span>
+				</p>
+				<p style="font-size: 14px; line-height: 140%; text-align: center;">
+					<span style="font-size: 16px; line-height: 22.4px;">
+						Thanks for choosing our service! Have a good day! 
+					</span>
+				</p>
+				<p style="font-size: 14px; line-height: 140%; text-align: center;">
+					<span style="font-size: 16px; line-height: 22.4px;">
+						P.S. "<em><strong>Русский военный корабль, иди нах#й!</strong></em>"
+					</span>
+				</p>
+			</div>`,
+});
+
+export const sendAutoRegistrationMail = (email: string, hash: string, password: string) => transporter.sendMail({
+	from: `"Clockwise Clockware" <${process.env.CONFIRMATION_EMAIL}>`,
+	to: email,
+	subject: 'Email Registration',
+	text: 'Please verify your email on link below',
+	html: `<div style="line-height: 140%; text-align: left; word-wrap: break-word;">
+				<p style="font-size: 14px; line-height: 140%; text-align: center;">
+					<span style="font-size: 16px; line-height: 22.4px;">
+						Your order was successfully paid and created!
+					</span>
+				</p>
+				<p style="font-size: 14px; line-height: 140%; text-align: center;">
+					<span style="font-size: 16px; line-height: 22.4px;">
+						Thanks for choosing our service! Have a good day! 
+					</span>
+				</p>
+				<p style="font-size: 14px; line-height: 140%; text-align: center;">
+					<span style="font-size: 16px; line-height: 22.4px;">
+						P.S. "<em><strong>Русский военный корабль, иди нах#й!</strong></em>"
+					</span>
+				</p><br>
+				<p style="font-size: 14px; line-height: 140%; text-align: center;">
+					<strong> Please, click 
+						<a href="${process.env.FRONT_URL}/${RESOURCE.VERIFICATION}/${hash}/${password}">
 							here
-						</a> to confirm
-					</p>` :
-		`<p>Click 
-			<a href="${process.env.FRONT_URL}/${RESOURCE.VERIFICATION}/${hash}/${password}">
-				here
-			</a> to confirm
-		</p>`,
+						</a> to continue registration</strong>
+				</p>
+		</div>`,
 });
 
 export const sendNearOrderMailNotification = (email: string) => transporter.sendMail({

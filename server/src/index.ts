@@ -48,10 +48,9 @@ app.post(URL.PAYMENT_HANDLER, express.raw({type: 'application/json'}), (req: Req
 	if (event?.type === 'checkout.session.completed') {
 		const session = event.data.object as Stripe.Response<Stripe.Checkout.Session>;
 		postOrder(session);
-		return res.status(200);
-	} else {
-		res.send();
+		res.status(200);
 	}
+	res.send();
 });
 
 app.use(express.json({limit: '5mb'}));

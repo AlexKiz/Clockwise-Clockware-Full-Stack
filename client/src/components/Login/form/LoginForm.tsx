@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {URL} from '../../../data/constants/routeConstants';
 import React, {useState, useEffect, FC} from 'react';
-import {useHistory} from 'react-router-dom';
+import {useHistory, useParams} from 'react-router-dom';
 import PublicHeader from '../../Headers/PublicHeader';
 import classes from './login-form.module.css';
 import {LoginFormProps, roleMappingLoginPaths, validate} from './componentConstants';
@@ -24,18 +24,24 @@ import AlertMessage from 'src/components/Notification/AlertMessage';
 import jwtDecode from 'jwt-decode';
 import {BearerParser} from 'bearer-token-parser';
 import {useTranslation} from 'react-i18next';
+import {AlertNotification, Params} from 'src/data/types/types';
 
 
 const LoginForm:FC<LoginFormProps> = () => {
 	const history = useHistory();
 
 	const {t} = useTranslation();
+	const {paymentMessage} = useParams<Params>();
 	const [showPassword, setShowPassword] = useState<boolean>(false);
-	const [notify, setNotify] = useState<boolean>(false);
+	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
+		message: '',
+		type: 'success',
+		notify: false,
+	});
 	const [loading, setLoading] = useState<boolean>(false);
 
 	const isOpen = (value:boolean) => {
-		setNotify(value);
+		setAlertOptions({...alertOptions, notify: value});
 	};
 
 	const formik = useFormik({
@@ -57,11 +63,32 @@ const LoginForm:FC<LoginFormProps> = () => {
 				history.push(roleMappingLoginPaths[login.data.role]);
 			} catch (e) {
 				setLoading(false);
-				setNotify(true);
+				setAlertOptions({
+					message: 'Incorrect logging data',
+					type: 'error',
+					notify: true,
+				});
 			}
 			formik.resetForm();
 		},
 	});
+
+
+	useEffect(() => {
+		if (paymentMessage === 'success') {
+			setAlertOptions({
+				message: 'Your order has been created! Please rate the master afterwards!',
+				type: 'success',
+				notify: true,
+			});
+		} else if (paymentMessage === 'error') {
+			setAlertOptions({
+				message: 'Something went wrong while payment',
+				type: 'error',
+				notify: true,
+			});
+		}
+	}, []);
 
 
 	useEffect(() => {
@@ -166,12 +193,12 @@ const LoginForm:FC<LoginFormProps> = () => {
 					</form>
 				</div>
 				{
-					notify &&
+					alertOptions.notify &&
 					<AlertMessage
-						alertType='error'
-						message='Incorrect logging data'
+						alertType={alertOptions.type}
+						message={alertOptions.message}
 						isOpen={isOpen}
-						notify={notify}
+						notify={alertOptions.notify}
 					/>
 				}
 			</div>

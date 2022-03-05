@@ -107,6 +107,14 @@ const UserList: FC<UserListProps> = () => {
 					message: 'User has been deleted!',
 					notify: true,
 				});
+			}).catch((error) => {
+				if (error.message.includes('status code 405')) {
+					setAlertOptions({
+						type: 'error',
+						message: 'User belongs to order and could not be deleted!',
+						notify: true,
+					});
+				}
 			});
 		}
 	};

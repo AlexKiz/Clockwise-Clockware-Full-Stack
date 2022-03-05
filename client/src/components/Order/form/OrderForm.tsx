@@ -34,10 +34,12 @@ import {useFormik} from 'formik';
 import AlertMessage from 'src/components/Notification/AlertMessage';
 import {getBinaryImages, getOrderOptions} from 'src/data/utilities/systemUtilities';
 import {useTranslation} from 'react-i18next';
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 
 
 const OrderForm: FC<OrderFormProps> = () => {
 	const {t} = useTranslation();
+
 	const [masters, setMasters] = useState<Master[]>([]);
 	const [cities, setCities] = useState<City[]>([]);
 	const [clocks, setClocks] = useState<Clock[]>([]);
@@ -92,11 +94,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 						orderPhotos: values.orderPhotos,
 					}).then((response) => {
 					setLoading(false);
-					setAlertOptions({
-						message: 'Your order has been created! Please rate the master afterwards!',
-						type: 'success',
-						notify: true,
-					});
 					setImages([]);
 					formik.resetForm();
 					window.location.href = response.data;
@@ -207,6 +204,12 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 	const handleOpenModalImg = () => setOpenModalImg(true);
 	const handleCloseModalImg = () => setOpenModalImg(false);
+
+	const handleFilterPhoto = (position: number) => {
+		formik.values.orderPhotos = formik.values.orderPhotos.filter((elem, index) => position != index);
+		setImageUrls(imageUrls.filter((elem, index) => position != index));
+		setImages(images.filter((elem, index) => position != index));
+	};
 
 	return (
 		<div>
@@ -501,43 +504,53 @@ const OrderForm: FC<OrderFormProps> = () => {
 									bgcolor: 'background.paper',
 									border: '2px solid #000',
 									boxShadow: 24,
-									p: 4,
+									padding: '50px',
 								}}>
-									<HighlightOffIcon
-										fontSize='large'
-										sx={{
-											position: 'absolute',
-											left: '100%',
-											top: '-50px',
-											color: 'red',
-											height: '50px',
-											width: '50px',
-											cursor: 'pointer',
-										}}
-										onClick={handleCloseModalImg}
-									/>
-									<ImageList sx={{maxWidth: 1200, maxHeight: 800, top: '50%', right: '50%'}} cols={1}>
-										{imageUrls.map((item, index) => (
-											<ImageListItem key={item}>
-												<div>
-													<Divider sx={{m: '40px 0px'}}>
-														<Chip
-															sx={{fontSize: '16px', lineHeight: 1}}
-															label={`Photo #${index + 1}`}
-															variant="outlined"
-															color="info"
-															icon={<ImageOutlinedIcon />}
-														/>
-													</Divider>
-												</div>
-												<img
-													style={{objectFit: 'contain'}}
-													src={`${item}`}
-													loading="lazy"
-												/>
-											</ImageListItem>
-										))}
-									</ImageList>
+									<div style={{position: 'relative', width: '100%'}}>
+										<HighlightOffIcon
+											fontSize='large'
+											sx={{
+												position: 'absolute',
+												right: '-6%',
+												top: '-9%',
+												color: 'red',
+												height: '50px',
+												width: '50px',
+												cursor: 'pointer',
+											}}
+											onClick={handleCloseModalImg}
+										/>
+										<ImageList sx={{maxWidth: 1000, maxHeight: 700, top: '50%', right: '50%'}} cols={1}>
+											{imageUrls.map((item, index) => (
+												<ImageListItem key={item}>
+													<div>
+														<Divider sx={{m: '40px 0px'}}>
+															<Chip
+																sx={{fontSize: '16px', lineHeight: 1}}
+																label={`Photo #${index + 1}`}
+																variant="outlined"
+																color="info"
+																icon={<ImageOutlinedIcon />}
+															/>
+															<Chip
+																sx={{fontSize: '16px', lineHeight: 1}}
+																label={`Delete`}
+																variant="outlined"
+																color="error"
+																icon={<DeleteForeverRoundedIcon />}
+																onClick={() => handleFilterPhoto(index)}
+															/>
+														</Divider>
+													</div>
+													<img
+														style={{objectFit: 'contain'}}
+														src={`${item}`}
+														loading="lazy"
+													/>
+												</ImageListItem>
+											))}
+										</ImageList>
+									</div>
 								</Box>
 							</Modal>
 							<div className={classes.form_section}>

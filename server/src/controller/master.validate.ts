@@ -72,3 +72,20 @@ export const deleteMasterValidate = async (req: Request, res: Response, next: Ne
 		return next();
 	}
 };
+
+
+export const masterBelongsCheck = async (req: Request, res: Response, next: NextFunction) => {
+	const {id} = req.body;
+
+	const masterCheck = await db.Order.findAll({
+		where: {
+			masterId: id,
+		},
+	});
+
+	if (masterCheck.length) {
+		res.status(405).send();
+	} else {
+		return next();
+	}
+};

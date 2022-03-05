@@ -44,18 +44,20 @@ const Verification: FC<VerificationProps> = () => {
 
 	useEffect(() => {
 		const verifyUser = async () => {
-			await axios.put(URL.VERIFY, {
-				hashVerify,
-			}).then((response) => {
-				const [isUserVerified] = response.data;
-				if (!isUserVerified) {
-					history.push(URL.LOGIN);
-				}
-			}).catch((error) => {
-				if (Number(error.response.status) === 404) {
-					history.push(URL.LOGIN);
-				}
-			});
+			if (!generated) {
+				await axios.put(URL.VERIFY, {
+					hashVerify,
+				}).then((response) => {
+					const [isUserVerified] = response.data;
+					if (!isUserVerified) {
+						history.push(URL.LOGIN);
+					}
+				}).catch((error) => {
+					if (Number(error.response.status) === 404) {
+						history.push(URL.LOGIN);
+					}
+				});
+			}
 		};
 
 		verifyUser();
@@ -70,7 +72,7 @@ const Verification: FC<VerificationProps> = () => {
 		<div>
 			<div className={classes.container}>
 				<div className={classes.container_notification}>
-					{generated ?
+					{!generated ?
 						<Stack direction='column' justifyContent='center' spacing={2}>
 							<div className={classes.form_label}>
 								<label>You have verified your email!</label>

@@ -18,13 +18,14 @@ export enum URL {
 	VERIFY = '/user/verify',
 	COMPLETE_ORDER = '/completeOrder',
 	EXPORT_XLSX = '/exportXLSX',
-	STRIPE = 'stripe',
+	STRIPE = '/stripe',
 	TOTAL_ORDERS_CHART = 'totalOrdersChart',
 	TOTAL_ORDERS_CITIES_PIE_CHART = '/totalOrdersForCitiesPieChart',
     TOTAL_ORDERS_MASTERS_PIE_CHART = '/totalOrdersForMastersPieChart',
 	MASTERS_STATISTICS_TABLE = '/mastersStatisticsTable',
 	ORDERS_FOR_CALENDAR = '/ordersForCalendar',
 	BLOG = '/blog',
+	ARTICLE = '/article',
 	IMAGE = '/image',
 	ARTICLE_FOR_UPDATE = '/articleForUpdate'
 }
@@ -68,12 +69,13 @@ export enum PARAM {
     RATING_ID = 'ratingIdentificatorParam',
 	HASH_VERIFY = 'hashVerify',
 	GENERATED = 'generated',
-	ARTICLE_TITLE = 'articleTitle'
+	ARTICLE_TITLE = 'articleTitle',
+	PAYMENT_MESSAGE = 'paymentMessage'
 }
 
 export const ROUTES = {
 	ORDER_FORM: {
-		path: '/',
+		path: `/`,
 		exact: true,
 	},
 	REGISTRATION: {
@@ -121,14 +123,26 @@ export const ROUTES = {
 	MASTER_CALENDAR: {
 		path: `/${RESOURCE.MASTER}/${RESOURCE.CALENDAR}`,
 	},
+	MASTER_BLOG: {
+		path: `/${RESOURCE.MASTER}/${RESOURCE.BLOG}`,
+	},
+	MASTER_ARTICLE: {
+		path: `/${RESOURCE.MASTER}/${RESOURCE.ARTICLE}/:${PARAM.ARTICLE_TITLE}`,
+	},
 	CLIENT_ORDERS_LIST: {
 		path: `/${RESOURCE.CLIENT}/${RESOURCE.ORDERS_LIST}`,
+	},
+	CLIENT_BLOG: {
+		path: `/${RESOURCE.CLIENT}/${RESOURCE.BLOG}`,
+	},
+	CLIENT_ARTICLE: {
+		path: `/${RESOURCE.CLIENT}/${RESOURCE.ARTICLE}/:${PARAM.ARTICLE_TITLE}`,
 	},
 	ADMIN_ORDER_CREATE: {
 		path: `/${RESOURCE.ADMIN}/${RESOURCE.ORDER_CREATE}/:${PARAM.ORDER_ID}?`,
 	},
 	LOGIN: {
-		path: `/${RESOURCE.LOGIN}`,
+		path: `/${RESOURCE.LOGIN}/:${PARAM.PAYMENT_MESSAGE}?`,
 	},
 	RATE_ORDER: {
 		path: `/${RESOURCE.RATE}/:${PARAM.RATING_ID}?`,

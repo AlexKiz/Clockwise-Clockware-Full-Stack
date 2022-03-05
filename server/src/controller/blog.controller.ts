@@ -32,7 +32,7 @@ export const postArticle = async (req: Request, res: Response) => {
 };
 
 
-export const getArtices = async (req: Request, res: Response) => {
+export const getArticles = async (req: Request, res: Response) => {
 	const {limit, offset} = req.query;
 
 	const articles = await db.Blog.findAndCountAll({
@@ -43,6 +43,17 @@ export const getArtices = async (req: Request, res: Response) => {
 	res.status(200).json(articles);
 };
 
+export const getArticle = async (req: Request, res: Response) => {
+	const {articleTitle} = req.query;
+
+	const article = await db.Blog.findOne({
+		where: {
+			title: {[Op.iLike]: `%${articleTitle}%`},
+		},
+	});
+
+	res.status(200).json(article);
+};
 
 export const getCloudinaryUrls = async (req: Request, res: Response) => {
 	const {picture} = req.body;

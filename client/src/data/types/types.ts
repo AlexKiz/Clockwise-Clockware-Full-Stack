@@ -18,6 +18,7 @@ export type Params = {
     hashVerify: string
     generated: string
     articleTitle: string
+    paymentMessage: 'success' | 'error'
 }
 
 export type City = {
@@ -130,6 +131,14 @@ export type OrderForCalendar = {
 }
 
 export type Article = {
+    id: string,
+    title: string,
+    background: string,
+    description: string,
+    body: string,
+}
+
+export type ArticleForRead = {
     id: string,
     title: string,
     background: string,

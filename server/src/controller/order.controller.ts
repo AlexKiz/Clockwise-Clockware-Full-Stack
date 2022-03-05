@@ -2,7 +2,7 @@ import {FONTS} from './../../data/constants/systemConstants';
 import {QUERY_PARAMS} from './../../data/constants/routeConstants';
 import {filtersOptions, rolesMappingGetOrders, createReceiptBody} from './../../data/utilities/systemUtilities';
 import {Response, Request} from 'express';
-import {sendMail, sendVerificationMail} from '../services/nodemailer';
+import {sendMail, sendAutoRegistrationMail} from '../services/nodemailer';
 import {v4 as uuidv4} from 'uuid';
 import db from '../models';
 import {BearerParser} from 'bearer-token-parser';
@@ -31,7 +31,7 @@ export const postOrder = async (req: Request, res: Response) => {
 		});
 
 		if (isUserCreated) {
-			await sendVerificationMail(email, hashVerify, generatedPassword);
+			await sendAutoRegistrationMail(email, hashVerify, generatedPassword);
 		}
 
 		const {id: userId} = user;

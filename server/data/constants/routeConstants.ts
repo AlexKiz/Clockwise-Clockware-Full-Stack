@@ -25,6 +25,7 @@ export enum URL {
     DOWNLOAD_ORDER_RECEIPT = '/downloadOrderReceipt',
     ORDERS_FOR_CALENDAR = '/ordersForCalendar',
     BLOG = '/blog',
+    ARTICLE = '/article',
     ARTICLE_FOR_UPDATE = '/articleForUpdate',
     IMAGE = '/image',
 }

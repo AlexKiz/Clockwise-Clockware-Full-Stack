@@ -76,3 +76,19 @@ export const deleteCityValidate = async (req: Request, res: Response, next: Next
 };
 
 
+export const cityBelongsCheck = async (req: Request, res: Response, next: NextFunction) => {
+	const {id} = req.body;
+
+	const cityCheck = await db.Order.findAll({
+		where: {
+			cityId: id,
+		},
+	});
+
+	if (cityCheck.length) {
+		res.status(405).send();
+	} else {
+		return next();
+	}
+};
+

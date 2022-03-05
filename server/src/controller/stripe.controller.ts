@@ -55,8 +55,8 @@ export const createStripeCheckoutSession = async (req: Request, res: Response) =
 			price,
 		},
 		mode: 'payment',
-		success_url: `${process.env.FRONT_MAIN_PAGE}`,
-		cancel_url: `${process.env.FRONT_MAIN_PAGE}`,
+		success_url: `${process.env.FRONT_MAIN_PAGE}/success`,
+		cancel_url: `${process.env.FRONT_MAIN_PAGE}/error`,
 	});
 
 	res.status(200).json(session.url);

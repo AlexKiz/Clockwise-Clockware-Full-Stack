@@ -96,3 +96,20 @@ export const deleteUserValidate = async (req: Request, res: Response, next: Next
 		return next();
 	}
 };
+
+
+export const userBelongsCheck = async (req: Request, res: Response, next: NextFunction) => {
+	const {id} = req.body;
+
+	const userCheck = await db.Order.findAll({
+		where: {
+			userId: id,
+		},
+	});
+
+	if (userCheck.length) {
+		res.status(405).send();
+	} else {
+		return next();
+	}
+};

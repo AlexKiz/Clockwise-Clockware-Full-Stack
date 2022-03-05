@@ -18,6 +18,8 @@ import {
 } from '@mui/material';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import {Article} from 'src/data/types/types';
+import {ACCESS_TOKEN} from 'src/data/constants/systemConstants';
+import PrivateHeader from '../Headers/PrivateHeader';
 
 
 const Blog: FC<BlogProps> = () => {
@@ -25,6 +27,7 @@ const Blog: FC<BlogProps> = () => {
 	const [totalArticles, setTotalArticles] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [page, setPage] = useState<number>(1);
+
 
 	useEffect(() => {
 		const readArticles = async () => {
@@ -50,7 +53,7 @@ const Blog: FC<BlogProps> = () => {
 
 	return (
 		<div>
-			<PublicHeader/>
+			{localStorage.getItem(ACCESS_TOKEN) ? <PrivateHeader/> : <PublicHeader/>}
 			<div className={classes.conteiner}>
 				<div className={classes.container_article}>
 					<Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '712px'}}>

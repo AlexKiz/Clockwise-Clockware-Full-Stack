@@ -1,6 +1,6 @@
 import {Op} from 'sequelize';
 import db from '../../src/models';
-import {sendVerificationMail} from '../../src/services/nodemailer';
+import {sendAutoRegistrationMail, sendSuccessPaymentMail, sendVerificationMail} from '../../src/services/nodemailer';
 import bcrypt from 'bcrypt';
 import {v4 as uuidv4} from 'uuid';
 import Stripe from 'stripe';
@@ -14,7 +14,7 @@ const createMaster = async (name: string, email: string, password: string, hashV
 
 		const userCheck = await db.User.findOne({where: {email}});
 
-		const user = await db.User.create({ // TODO: user does not create(unique Email)
+		const user = await db.User.create({
 			name,
 			email,
 			password,
@@ -206,7 +206,9 @@ export const postOrder = async (params: Stripe.Response<Stripe.Checkout.Session>
 			});
 
 			if (isUserCreated) {
-				await sendVerificationMail(email, hashVerify, generatedPassword);
+				await sendAutoRegistrationMail(email, hashVerify, generatedPassword);
+			} else {
+				await sendSuccessPaymentMail(email);
 			}
 
 			const {id: userId} = user;
@@ -313,62 +315,3 @@ export const createReceiptBody = (
 	};
 };
 
-/* content: [
-		{
-			style: 'header',
-			columns: [{width: '*', text: 'Order Receipt'}],
-		},
-		{
-			style: 'defaultStyle',
-			columns: [{width: 'auto', text: 'Service:'},
-				{width: 'auto', text: `Repair clock with ${clockSize} size`}],
-		},
-		{
-			style: 'defaultStyle',
-			columns: [{width: 'auto', text: 'Master name:'},
-				{width: 'auto', text: `${masterName}`}],
-		},
-		{
-			style: 'defaultStyle',
-			columns: [{width: 'auto', text: 'Master email:'},
-				{width: 'auto', text: `${masterEmail}`}],
-		},
-		{
-			style: 'defaultStyle',
-			columns: [{width: 'auto', text: 'Starting date:'},
-				{width: 'auto', text: `${startWorkOn}`}],
-		},
-		{
-			style: 'defaultStyle',
-			columns: [{width: 'auto', text: 'Completed date:'},
-				{width: 'auto', text: `${endWorkOn}`}],
-		},
-		{
-			style: 'defaultStyle',
-			columns: [{width: 'auto', text: 'Paid amount:'}, {width: 'auto', text: `${price*10} $`}],
-		},
-		{
-			style: 'defaultStyle',
-			columns: [{width: 'auto', text: 'Client full name:'},
-				{width: 'auto', text: `${clientName}`}],
-		},
-		{
-			style: 'defaultStyle',
-			columns: [{width: 'auto', text: 'Client email:'},
-				{width: 'auto', text: `${clientEmail}`}],
-		},
-	],
-	styles: {
-		header: {
-			fontSize: 24,
-			bold: true,
-			alignment: 'center',
-			lineHeight: 2,
-		},
-		defaultStyle: {
-			fontSize: 16,
-			alignment: 'center',
-			lineHeight: 1.8,
-		},
-	},
-*/

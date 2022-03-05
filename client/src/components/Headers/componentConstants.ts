@@ -52,12 +52,20 @@ export const MASTER_MENU_LINKS = [{
 	title: 'Calendar',
 	path: '/master/calendar',
 	name: 'calendar',
+}, {
+	title: 'Blog',
+	path: '/master/blog',
+	name: 'blog',
 }];
 
 export const CLIENT_MENU_LINKS = [{
 	title: 'Orders',
 	path: '/client/orders-list',
 	name: 'orders-list',
+}, {
+	title: 'Blog',
+	path: '/client/blog',
+	name: 'blog',
 }];
 
 export const roleMappingHeaderLink = {
