@@ -331,12 +331,12 @@ const OrdersList: FC<OrdersListProps> = () => {
 		dispatch(setIsModalOpen(false));
 	};
 
-	const showOrderInfo = (name: string, price: number, date: string) => {
-		dispatch(setOrderInfoOptions(name, price, date, true));
+	const showOrderInfo = (name: string, price: number, date: string, orderAddress: string | null) => {
+		dispatch(setOrderInfoOptions(name, price, date, true, orderAddress));
 	};
 
 	const hideOrderInfo = () => {
-		dispatch(setOrderInfoOptions('', 0, '', false));
+		dispatch(setOrderInfoOptions('', 0, '', false, null));
 	};
 
 	return (
@@ -661,7 +661,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 											variant='contained'
 											sx={{width: '45%', borderRadius: 15}}
 											onClick={() =>
-												showOrderInfo(order.user.name, order.clock.price, order.paymentDate)
+												showOrderInfo(order.user.name, order.clock.price, order.paymentDate, order.orderAddress)
 											}
 										>
 											<InfoOutlinedIcon/>
@@ -890,6 +890,13 @@ const OrdersList: FC<OrdersListProps> = () => {
 						>
 							<b>Payment time: {infoOptions.date.split('T')[1]?.slice(0, 5)}</b>
 						</Typography>
+						{infoOptions.orderAddress && <Typography
+							variant="subtitle1"
+							gutterBottom
+							component="div"
+						>
+							<b>Address: {infoOptions.orderAddress}</b>
+						</Typography>}
 					</Stack>
 				</Dialog>
 				{

@@ -7,6 +7,7 @@ const initialState: InfoModalState = {
 		price: 0,
 		date: '',
 		isInfoOpen: false,
+		orderAddress: null,
 	},
 };
 

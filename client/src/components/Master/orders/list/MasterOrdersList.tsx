@@ -70,8 +70,9 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 		name: string,
 		price: number,
 		date:string,
-		isInfoOpen: boolean
-	}>({name: '', price: 0, date: '', isInfoOpen: false});
+		isInfoOpen: boolean,
+		orderAddress: string | null,
+	}>({name: '', price: 0, date: '', isInfoOpen: false, orderAddress: null});
 
 	const isOpen = (value:boolean) => {
 		setAlertOptions({...alertOptions, notify: value});
@@ -122,8 +123,8 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 		isModalOpen: false,
 	});
 
-	const showOrderInfo = (name: string, price: number, date: string) => setOrderInfoOption({
-		name, price, date, isInfoOpen: true,
+	const showOrderInfo = (name: string, price: number, date: string, orderAddress: string | null) => setOrderInfoOption({
+		name, price, date, isInfoOpen: true, orderAddress,
 	});
 
 	const hideOrderInfo = () => setOrderInfoOption({
@@ -131,6 +132,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 		price: 0,
 		date: '',
 		isInfoOpen: false,
+		orderAddress: null,
 	});
 
 	useEffect(() => {
@@ -195,7 +197,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 											variant='contained'
 											sx={{width: '45%', borderRadius: 15}}
 											onClick={() =>
-												showOrderInfo(order.user.name, order.clock.price, order.paymentDate)
+												showOrderInfo(order.user.name, order.clock.price, order.paymentDate, order.orderAddress)
 											}
 										>
 											<InfoOutlinedIcon/>
@@ -361,6 +363,13 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 						>
 							<b>Payment time: {orderInfoOption.date.split('T')[1]?.slice(0, 5)}</b>
 						</Typography>
+						{orderInfoOption.orderAddress && <Typography
+							variant="subtitle1"
+							gutterBottom
+							component="div"
+						>
+							<b>Address: {orderInfoOption.orderAddress}</b>
+						</Typography>}
 					</Stack>
 				</Dialog>
 				{

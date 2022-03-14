@@ -27,7 +27,8 @@ export enum URL {
 	BLOG = '/blog',
 	ARTICLE = '/article',
 	IMAGE = '/image',
-	ARTICLE_FOR_UPDATE = '/articleForUpdate'
+	ARTICLE_FOR_UPDATE = '/articleForUpdate',
+	GEO_COORDINATES = '/geoCoordinates'
 }
 
 export enum RESOURCE {
@@ -52,6 +53,7 @@ export enum RESOURCE {
 	ARTICLE = 'article',
 	ARTICLES_LIST = 'articles-list',
 	ARTICLE_CREATE = 'articles-create',
+	GEO_SERVICE = 'geo-service',
 }
 
 export enum PARAM {
@@ -116,6 +118,9 @@ export const ROUTES = {
 	},
 	ADMIN_ARTICLE_CREATE: {
 		path: `/${RESOURCE.ADMIN}/${RESOURCE.ARTICLE_CREATE}/:${PARAM.ARTICLE_TITLE}?`,
+	},
+	ADMIN_GEO_SERVICE: {
+		path: `/${RESOURCE.ADMIN}/${RESOURCE.GEO_SERVICE}`,
 	},
 	MASTER_ORDERS_LIST: {
 		path: `/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`,

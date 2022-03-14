@@ -60,6 +60,7 @@ export type Order = {
     isCompleted: boolean
     images: string
     paymentDate: string
+    orderAddress: string | null
 }
 
 export type AlertNotification = {
@@ -101,6 +102,7 @@ export type InfoOptions = {
     name: string,
     price: number,
     date: string,
+    orderAddress: string | null,
     isInfoOpen: boolean,
 }
 

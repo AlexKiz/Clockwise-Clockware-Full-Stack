@@ -23,6 +23,7 @@ import Blog from './components/Blog/Blog';
 import ArticlesList from './components/Admin/articles/list/ArticlesList';
 import ArticleCreate from './components/Admin/articles/create/ArticleCreate';
 import Article from './components/Blog/articleContent/Article';
+import GeoService from './components/Admin/geo/geoService';
 
 
 const App = () => (
@@ -46,6 +47,7 @@ const App = () => (
 			<PrivateRoute component={Statistics} {...ROUTES.ADMIN_STATISTICS}/>
 			<PrivateRoute component={ArticlesList} {...ROUTES.ADMIN_ARTICLES_LIST}/>
 			<PrivateRoute component={ArticleCreate} {...ROUTES.ADMIN_ARTICLE_CREATE}/>
+			<PrivateRoute component={GeoService} {...ROUTES.ADMIN_GEO_SERVICE}/>
 			<PrivateRoute component={MasterOrdersList} {...ROUTES.MASTER_ORDERS_LIST}/>
 			<PrivateRoute component={Calendar} {...ROUTES.MASTER_CALENDAR}/>
 			<PrivateRoute component={Blog} {...ROUTES.MASTER_BLOG}/>
