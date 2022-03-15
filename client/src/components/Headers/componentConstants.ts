@@ -1,5 +1,3 @@
-import {RESOURCE} from 'src/data/constants/routeConstants';
-
 export const MENU_LINKS = [{
 	title: 'header.make',
 	path: '/',
@@ -75,9 +73,9 @@ export const roleMappingHeaderLink = {
 };
 
 export const roleMappingHeaderLogo = {
-	'admin': `/${RESOURCE.ADMIN}/${RESOURCE.ORDERS_LIST}`,
-	'master': `/${RESOURCE.MASTER}/${RESOURCE.ORDERS_LIST}`,
-	'client': `/${RESOURCE.CLIENT}/${RESOURCE.ORDERS_LIST}`,
+	'admin': `/`,
+	'master': `/`,
+	'client': `/`,
 };
 
 export const languageSelect = [

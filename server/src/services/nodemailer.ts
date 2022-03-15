@@ -13,12 +13,19 @@ export const transporter = nodemailer.createTransport({
 	logger: true,
 });
 
-export const sendMail = (email: string, ratingIdentificator: string, file: any) => transporter.sendMail({
+export const sendMail = (
+	email: string,
+	ratingIdentificator: string,
+	file: any,
+	masterName: string,
+	orderId: string,
+) => transporter.sendMail({
 	from: `"Clockwise Clockware" <${process.env.CONFIRMATION_EMAIL}>`,
 	to: email,
 	subject: 'Order confirmation',
 	text: 'Order has been succesfully completed!',
-	html: `<p>Please rate master's work 
+	html: `<p>Master ${masterName} marked order #${orderId.slice(0, 4)}</p>
+			<p>Please rate master's work 
 				<a href="${process.env.FRONT_URL}/${RESOURCE.RATE}/${ratingIdentificator}">
 					here
 				</a>

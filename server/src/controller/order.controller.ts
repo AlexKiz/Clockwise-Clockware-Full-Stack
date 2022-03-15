@@ -606,7 +606,7 @@ export const completeOrder = async (req: Request, res: Response) => {
 		});
 		pdfDoc.on('end', () => {
 			result = Buffer.concat(chunks);
-			sendMail(clientEmail, ratingIdentificator, result);
+			sendMail(clientEmail, ratingIdentificator, result, masterName, id);
 		});
 		pdfDoc.end();
 
