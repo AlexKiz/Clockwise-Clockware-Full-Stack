@@ -1,0 +1,205 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div>
+    <header>
+      <div
+        class="wrapper_header"
+      >
+        <div
+          class="wrapper_logo"
+        >
+          <a
+            href="/"
+          >
+            <div
+              class="inner_logo"
+            >
+              <div
+                class="inner_logo_img"
+              >
+                <div
+                  class="logo_img1a"
+                >
+                  <div
+                    class="logo_img1b"
+                  >
+                    <div
+                      class="logo_img1c"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="logo_text1d"
+              />
+            </div>
+          </a>
+        </div>
+        <nav>
+          <ul
+            class="nav__links"
+          >
+            <li
+              class="active"
+            >
+              <a
+                href="/"
+              >
+                Make order
+              </a>
+            </li>
+            <li
+              class=""
+            >
+              <a
+                href="/login"
+              >
+                Log in
+              </a>
+            </li>
+            <li
+              class=""
+            >
+              <a
+                href="/registration-form"
+              >
+                Sign up
+              </a>
+            </li>
+            <li
+              class=""
+            >
+              <a
+                href="/blog"
+              >
+                Blog
+              </a>
+            </li>
+            <li>
+              <div
+                class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary css-463zxn-MuiInputBase-root-MuiOutlinedInput-root"
+              >
+                <div
+                  aria-expanded="false"
+                  aria-haspopup="listbox"
+                  class="MuiSelect-select MuiSelect-outlined MuiOutlinedInput-input MuiInputBase-input css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
+                  role="button"
+                  tabindex="0"
+                >
+                  English
+                </div>
+                <input
+                  aria-hidden="true"
+                  class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
+                  tabindex="-1"
+                  value="en"
+                />
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconOutlined css-hfutr2-MuiSvgIcon-root-MuiSelect-icon"
+                  data-testid="ArrowDropDownIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M7 10l5 5 5-5z"
+                  />
+                </svg>
+                <fieldset
+                  aria-hidden="true"
+                  class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+                >
+                  <legend
+                    class="css-nnbavb"
+                  >
+                    <span
+                      class="notranslate"
+                    >
+                      ​
+                    </span>
+                  </legend>
+                </fieldset>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <div
+      class="container_form"
+    >
+      <form
+        class="form"
+      >
+        <div
+          class="css-adynvz-MuiStack-root"
+        >
+          <div
+            class="form_section"
+          >
+            <div
+              class="form_input__label"
+            >
+              <label
+                class="MuiTypography-root MuiTypography-h6 MuiTypography-gutterBottom css-18k87ye-MuiTypography-root"
+              >
+                Enter city name:
+              </label>
+            </div>
+            <div
+              class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root css-1z10yd4-MuiFormControl-root-MuiTextField-root"
+            >
+              <label
+                class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-root MuiFormLabel-colorPrimary Mui-required css-1mog9k0-MuiFormLabel-root-MuiInputLabel-root"
+                data-shrink="false"
+                for="name"
+                id="name-label"
+              >
+                City name
+                <span
+                  aria-hidden="true"
+                  class="MuiInputLabel-asterisk MuiFormLabel-asterisk css-wgai2y-MuiFormLabel-asterisk"
+                >
+                   *
+                </span>
+              </label>
+              <div
+                class="MuiFilledInput-root MuiFilledInput-underline MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-sizeSmall css-10i04qz-MuiInputBase-root-MuiFilledInput-root"
+              >
+                <input
+                  aria-invalid="false"
+                  class="MuiFilledInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-c5v1qu-MuiInputBase-input-MuiFilledInput-input"
+                  datatestid="city-name-input"
+                  id="name"
+                  name="name"
+                  placeholder="Name"
+                  required=""
+                  type="text"
+                  value=""
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="form_section"
+          >
+            <button
+              class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButtonBase-root form_btn css-sghohy-MuiButtonBase-root-MuiButton-root"
+              style="font-size: 18px; background-color: green; border-radius: 15px;"
+              tabindex="0"
+              type="submit"
+            >
+              Submit
+              <span
+                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+              />
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</DocumentFragment>
+`;

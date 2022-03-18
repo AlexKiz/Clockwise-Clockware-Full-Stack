@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div>
+    <div
+      class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root css-1z10yd4-MuiFormControl-root-MuiTextField-root"
+    >
+      <label
+        class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-filled MuiFormLabel-root MuiFormLabel-colorPrimary Mui-disabled css-1mog9k0-MuiFormLabel-root-MuiInputLabel-root"
+        data-shrink="false"
+        for="mapAutocomplete"
+        id="mapAutocomplete-label"
+      >
+        labels.address
+      </label>
+      <div
+        class="MuiFilledInput-root MuiFilledInput-underline MuiInputBase-root MuiInputBase-colorPrimary Mui-disabled MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd css-1w8yruj-MuiInputBase-root-MuiFilledInput-root"
+        style="padding-right: 0px;"
+      >
+        <input
+          aria-invalid="false"
+          class="MuiFilledInput-input MuiInputBase-input Mui-disabled MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd css-1u9li0h-MuiInputBase-input-MuiFilledInput-input"
+          disabled=""
+          id="mapAutocomplete"
+          name="mapAutocomplete"
+          placeholder="Your address"
+          type="text"
+          value=""
+        />
+        <button
+          class="MuiButton-root MuiButton-text MuiButton-textInherit MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorInherit MuiButtonBase-root  css-9rr100-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+            data-testid="MapIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="m20.5 3-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"
+            />
+          </svg>
+          <span
+            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+          />
+        </button>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

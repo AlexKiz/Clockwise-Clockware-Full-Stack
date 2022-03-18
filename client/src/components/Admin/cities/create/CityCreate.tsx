@@ -116,6 +116,9 @@ const CityCreate: FC<CityCreateProps> = () => {
 								error={formik.touched.name && Boolean(formik.errors.name)}
 								helperText={formik.touched.name && formik.errors.name}
 								required
+								inputProps={
+									{dataTestid: 'city-name-input'}
+								}
 							/>
 						</div>
 
