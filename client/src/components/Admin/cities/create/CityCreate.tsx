@@ -103,6 +103,7 @@ const CityCreate: FC<CityCreateProps> = () => {
 							</div>
 							<TextField
 								id="name"
+								data-testid='city-name-input'
 								name="name"
 								label="City name"
 								placeholder="Name"
@@ -116,9 +117,6 @@ const CityCreate: FC<CityCreateProps> = () => {
 								error={formik.touched.name && Boolean(formik.errors.name)}
 								helperText={formik.touched.name && formik.errors.name}
 								required
-								inputProps={
-									{dataTestid: 'city-name-input'}
-								}
 							/>
 						</div>
 

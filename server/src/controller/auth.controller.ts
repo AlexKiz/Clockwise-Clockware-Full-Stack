@@ -54,6 +54,7 @@ export const isAuth = async (req: Request, res: Response, next: NextFunction) =>
 		}
 
 		const accessToken = authorization.split(' ')[1];
+
 		jwt.verify(accessToken, `${process.env.PRIVATE_KEY}`);
 		next();
 	} catch (error) {

@@ -10,10 +10,11 @@ import MasterCities from './MasterCities';
 import Order from './Order';
 import User from './User';
 import Geo from './Geo';
-const env = process.env.MODE || 'development';
+const env = process.env.NODE_ENV || 'development';
 const config = require('../config/dbconfig')[env];
 
-const sequelize = new Sequelize(`${config.database}`, `${config.username}`, `${config.password}`, {...config});
+const sequelize = new Sequelize(`${config.database}`, `${config.username}`, `${config.password}`,
+	{...config, logging: false});
 
 const db: any = {
 	sequelize,

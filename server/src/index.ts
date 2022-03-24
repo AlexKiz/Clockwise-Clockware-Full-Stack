@@ -48,7 +48,8 @@ app.post(URL.PAYMENT_HANDLER, express.raw({type: 'application/json'}), (req: Req
 
 	if (event?.type === 'checkout.session.completed') {
 		const session = event.data.object as Stripe.Response<Stripe.Checkout.Session>;
-		postOrder(session);
+		const metadata = session.metadata;
+		postOrder(metadata);
 		res.status(200);
 	}
 	res.send();
@@ -79,7 +80,7 @@ const start = async () => {
 		await db.sequelize.sync();
 		nearOrderNotification.start();
 		app.listen(PORT, () => {
-			console.log(`Server has been started on port ${PORT} `);
+			console.log(`Server has been started on port ${PORT}`);
 		});
 	} catch (e) {
 		console.log(e);
@@ -87,3 +88,5 @@ const start = async () => {
 };
 
 start();
+
+export default app;
