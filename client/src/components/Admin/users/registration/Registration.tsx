@@ -81,7 +81,7 @@ const Registration:FC<RegistrationProps> = () => {
 				formik.resetForm();
 			}).catch((error) => {
 				setLoading(false);
-				if (error.message.includes('status code 400')) {
+				if (error.response.status === 400) {
 					setAlertOptions({
 						message: 'User with current email already exists',
 						type: 'error',

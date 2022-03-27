@@ -23,7 +23,7 @@ import Blog from './components/Blog/Blog';
 import ArticlesList from './components/Admin/articles/list/ArticlesList';
 import ArticleCreate from './components/Admin/articles/create/ArticleCreate';
 import Article from './components/Blog/articleContent/Article';
-import GeoService from './components/Admin/geo/geoService';
+import GeoService from './components/Admin/geo/GeoService';
 
 
 const App = () => (

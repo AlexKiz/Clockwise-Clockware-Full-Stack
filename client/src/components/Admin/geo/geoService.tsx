@@ -20,11 +20,11 @@ import AlertMessage from 'src/components/Notification/AlertMessage';
 
 
 const GeoService: FC<GeoServiceProps> = () => {
-	const [isDrawingPanelActive, setIsDrawingPanelActive] = useState<boolean>(true);
+	const [isDrawingPanelActive, setIsDrawingPanelActive] = useState<boolean>(false);
 	const [drawingMode, setDrawingMode] = useState(null);
 	const [drawnPolygon, setDrawnPolygon] = useState<null | google.maps.Polygon>(null);
 	const [polygonCoordinates, setPolygonCoordinates] = useState<{lat: number, lng: number}[] | []>([]);
-	const [loading, setLoading] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(true);
 	const [alertOptions, setAlertOptions] = useState<AlertNotification>({
 		notify: false,
 		type: 'success',
@@ -34,7 +34,7 @@ const GeoService: FC<GeoServiceProps> = () => {
 	useEffect(() => {
 		const getSavedPolygon = async () => {
 			await axios.get(URL.GEO_COORDINATES).then((response) => {
-				if (response.data.length) {
+				if (response?.data?.length) {
 					const coordinates = response.data.map((elem) => {
 						return {
 							lat: Number(elem.lat),
@@ -60,6 +60,7 @@ const GeoService: FC<GeoServiceProps> = () => {
 		googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY || '',
 		libraries,
 	});
+
 	const mapRef = useRef(undefined);
 
 	const onLoad = useCallback((map) => {
@@ -70,9 +71,9 @@ const GeoService: FC<GeoServiceProps> = () => {
 		mapRef.current = undefined;
 	}, []);
 
-	const handleCoordinateSubmit = async () => {
+	const handleCoordinateSubmit = () => {
 		setLoading(true);
-		await axios.post(URL.GEO_COORDINATES, {
+		axios.post(URL.GEO_COORDINATES, {
 			coordinates: polygonCoordinates,
 		}).then(() => {
 			setAlertOptions({
@@ -226,14 +227,14 @@ const GeoService: FC<GeoServiceProps> = () => {
 							>
 								Submit
 								{loading && <CircularProgress
-									size={56}
+									size={28}
 									color="success"
 									sx={{
 										position: 'absolute',
 										top: '50%',
 										left: '50%',
-										marginTop: '-28px',
-										marginLeft: '-28px',
+										marginTop: '-14px',
+										marginLeft: '-14px',
 									}}
 								/>}
 							</Button>
