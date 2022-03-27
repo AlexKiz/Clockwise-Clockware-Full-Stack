@@ -1,19 +1,21 @@
 import React from 'react';
 import CityCreate from './CityCreate';
-import {customRender} from 'src/data/constants/test-utilities';
-import {fireEvent, act} from '@testing-library/react';
-import {Route} from 'react-router-dom';
+import {fireEvent, act, cleanup} from '@testing-library/react';
+import {renderWithRouter} from '../../../../data/constants/test-utilities';
+
 
 it('matches snapshot', () => {
-	const {asFragment} = customRender(
-		<Route path='/admin/city-create'>
-			<CityCreate />
-		</Route>);
-
+	const {asFragment} = renderWithRouter({
+		component: <CityCreate />,
+		path: '/admin/city-create',
+	});
 	expect(asFragment()).toMatchSnapshot();
 });
 
 describe('City Create', () => {
+	afterEach(() => {
+		cleanup();
+	});
 	const mockSubmit = jest.fn();
 	const cityCreateValues = {
 		name: '',
@@ -25,11 +27,18 @@ describe('City Create', () => {
 	}));
 
 	it('shows input with empty value', () => {
-		const {getByTestId} = customRender(
-			<Route path='/admin/city-create'>
-				<CityCreate />
-			</Route>);
-
+		const {getByTestId} = renderWithRouter({
+			component: <CityCreate />,
+			path: '/admin/city-create',
+		});
 		expect((getByTestId('city-name-input') as HTMLInputElement).value).toBe('');
+	});
+
+	it('shows render component with initial value', () => {
+		const {getByTestId} = renderWithRouter({
+			component: <CityCreate />,
+			path: '/admin/city-create/Dnipro',
+		});
+		expect((getByTestId('city-name-input') as HTMLInputElement).value).toBe('Dnipro');
 	});
 });

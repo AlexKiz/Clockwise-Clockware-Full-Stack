@@ -1,7 +1,26 @@
+import React from 'react';
 import {render} from '@testing-library/react';
-import {MemoryRouter} from 'react-router-dom';
+import {MemoryRouter, Route} from 'react-router-dom';
 
-export const customRender = (ui, options?) => {
-	return render(ui, {wrapper: MemoryRouter, ...options});
+
+export const renderWithRouter = ({component, path, exact = false}) => (
+	render(
+		<MemoryRouter initialEntries={[path]}>
+			<Route path={`${path}`} exact={exact}>
+				{component}
+			</Route>
+		</MemoryRouter>,
+	)
+);
+
+export const rerenderWrapper = ({component, path, exact = false}) => {
+	return (
+		<MemoryRouter initialEntries={[path]}>
+			<Route path={`${path}`} exact={exact}>
+				{component}
+			</Route>
+		</MemoryRouter>
+	);
 };
 
+export * from '@testing-library/react';

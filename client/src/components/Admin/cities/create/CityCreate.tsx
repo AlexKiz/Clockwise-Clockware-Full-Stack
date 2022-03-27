@@ -88,7 +88,7 @@ const CityCreate: FC<CityCreateProps> = () => {
 			<PrivateHeader/>
 			<div className={classes.container_form}>
 
-				<form className={classes.form} onSubmit = {formik.handleSubmit}>
+				<form className={classes.form} onSubmit={formik.handleSubmit}>
 
 					<Stack direction="column" justifyContent="center" spacing={1.5}>
 						<div className={classes.form_section}>
@@ -103,7 +103,6 @@ const CityCreate: FC<CityCreateProps> = () => {
 							</div>
 							<TextField
 								id="name"
-								data-testid='city-name-input'
 								name="name"
 								label="City name"
 								placeholder="Name"
@@ -116,6 +115,9 @@ const CityCreate: FC<CityCreateProps> = () => {
 								onBlur={formik.handleBlur}
 								error={formik.touched.name && Boolean(formik.errors.name)}
 								helperText={formik.touched.name && formik.errors.name}
+								inputProps={{
+									'data-testid': 'city-name-input',
+								}}
 								required
 							/>
 						</div>

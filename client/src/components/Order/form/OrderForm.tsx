@@ -109,10 +109,10 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 	useEffect(() => {
 		const readCitiesData = async () => {
-			const {data} = await axios.get<City[]>(URLS.CITY_FOR_ORDER);
-			if (data.length) {
-				setCities(data);
-			}
+			await axios.get<City[]>(URLS.CITY_FOR_ORDER)
+				.then((response) => {
+					setCities(response.data);
+				});
 		};
 
 		readCitiesData();
@@ -121,11 +121,10 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 	useEffect(() => {
 		const readClocksData = async () => {
-			const {data} = await axios.get<Clock[]>(URLS.CLOCK);
-
-			if (data.length) {
-				setClocks(data);
-			}
+			await axios.get<Clock[]>(URLS.CLOCK)
+				.then((response) => {
+					setClocks(response.data);
+				});
 		};
 
 		readClocksData();
@@ -141,24 +140,22 @@ const OrderForm: FC<OrderFormProps> = () => {
 				} = getOrderOptions(clocks, formik.values.orderDate, formik.values.orderTime, formik.values.clockId);
 
 				if (formik.values.cityId && formik.values.orderDate && formik.values.orderTime && formik.values.clockId) {
-					const {data} = await axios.get<Master[]>(URLS.AVAILABLE_MASTER, {
+					await axios.get<Master[]>(URLS.AVAILABLE_MASTER, {
 						params: {
 							cityId: formik.values.cityId,
 							startWorkOn: startDate,
 							endWorkOn: endDate,
 						},
-					});
-
-					if (!data.length) {
+					}).then((response) => {
+						setMasters(response.data);
+					}).catch(() => {
 						setAlertOptions({
 							message: 'All masters has been booked at that time. Please choose another time or date',
 							type: 'warning',
 							notify: true,
 						});
 						setMasters([]);
-					} else {
-						setMasters(data);
-					}
+					});
 				}
 			}
 		};
@@ -263,6 +260,9 @@ const OrderForm: FC<OrderFormProps> = () => {
 									onBlur={formik.handleBlur}
 									error={formik.touched.name && Boolean(formik.errors.name)}
 									helperText={formik.touched.name && formik.errors.name}
+									inputProps={{
+										'data-testid': 'user-name-input',
+									}}
 									required
 								/>
 							</div>
@@ -290,6 +290,9 @@ const OrderForm: FC<OrderFormProps> = () => {
 									onBlur={formik.handleBlur}
 									error={formik.touched.email && Boolean(formik.errors.email)}
 									helperText={formik.touched.email && formik.errors.email}
+									inputProps={{
+										'data-testid': 'user-email-input',
+									}}
 									required
 								/>
 							</div>
@@ -317,6 +320,9 @@ const OrderForm: FC<OrderFormProps> = () => {
 										value={formik.values.clockId || ''}
 										label={t('labels.size')}
 										onBlur={formik.handleBlur}
+										inputProps={{
+											'data-testid': 'clock-size-select',
+										}}
 										required
 									>
 										{
@@ -354,6 +360,9 @@ const OrderForm: FC<OrderFormProps> = () => {
 										value={formik.values.cityId || ''}
 										label={t('labels.city')}
 										onBlur={formik.handleBlur}
+										inputProps={{
+											'data-testid': 'order-city-select',
+										}}
 										required
 									>
 										{
@@ -393,7 +402,10 @@ const OrderForm: FC<OrderFormProps> = () => {
 									id="orderDate"
 									name='orderDate'
 									type='date'
-									InputProps={{inputProps: {min: format(new Date(), 'yyyy-MM-dd')}}}
+									InputProps={{inputProps: {
+										'min': format(new Date(), 'yyyy-MM-dd'),
+										'data-testid': 'order-date-input'},
+									}}
 									variant="outlined"
 									size="small"
 									margin="dense"
@@ -426,6 +438,9 @@ const OrderForm: FC<OrderFormProps> = () => {
 										value={formik.values.orderTime}
 										label={t('labels.time')}
 										onBlur={formik.handleBlur}
+										inputProps={{
+											'data-testid': 'order-time-select',
+										}}
 										required
 									>
 										{
@@ -469,6 +484,9 @@ const OrderForm: FC<OrderFormProps> = () => {
 										value={formik.values.masterId}
 										label={t('labels.master')}
 										onBlur={formik.handleBlur}
+										inputProps={{
+											'data-testid': 'order-master-select',
+										}}
 										required
 									>
 										{

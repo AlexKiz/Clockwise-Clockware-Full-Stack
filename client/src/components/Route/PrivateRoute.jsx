@@ -10,7 +10,6 @@ const PrivateRoute = ({component: Component, ...rest}) => {
 
 	useEffect(() => {
 		if (!localStorage.getItem(ACCESS_TOKEN)) {
-			alert('You must be authorizated');
 			history.push(`/${RESOURCE.LOGIN}`);
 		} else if ((jwtDecode(localStorage.getItem(ACCESS_TOKEN))).exp < Number((Date.now()/1000).toFixed())) {
 			localStorage.removeItem(ACCESS_TOKEN);

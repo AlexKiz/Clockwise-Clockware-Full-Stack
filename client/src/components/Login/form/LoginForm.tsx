@@ -133,6 +133,9 @@ const LoginForm:FC<LoginFormProps> = () => {
 									error={formik.touched.login && Boolean(formik.errors.login)}
 									helperText={formik.touched.login && formik.errors.login}
 									required
+									inputProps={{
+										'data-testid': 'login-email-input',
+									}}
 								/>
 							</div>
 							<div className={classes.form_section}>
@@ -163,6 +166,9 @@ const LoginForm:FC<LoginFormProps> = () => {
 												</IconButton>
 											</InputAdornment>
 										}
+										inputProps={{
+											'data-testid': 'login-password-input',
+										}}
 									/>
 								</FormControl>
 							</div>
