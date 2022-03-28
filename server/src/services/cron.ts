@@ -2,7 +2,7 @@ import {CronJob} from 'cron';
 import db from '../models';
 import {sendNearOrderMailNotification} from './nodemailer';
 
-export const nearOrderNotification = new CronJob('* * 1 * * *', async () => {
+export const nearOrderNotification = new CronJob('0 * * * *', async () => {
 	const currentDate = new Date();
 	currentDate.setUTCHours(currentDate.getHours() + 1);
 	const nearOrderDate = currentDate.toISOString();
