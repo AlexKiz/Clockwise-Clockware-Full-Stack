@@ -2,7 +2,7 @@ import React, {useState, useEffect, FC, useCallback} from 'react';
 import axios from 'axios';
 import classes from './order-form.module.css';
 import {Master, City, Clock, AlertNotification} from '../../../data/types/types';
-import {OPENING_HOURS} from '../../../data/constants/systemConstants';
+import {CITY_NAME, OPENING_HOURS} from '../../../data/constants/systemConstants';
 import {OrderFormProps, validate} from './componentConstants';
 import {URL as URLS} from '../../../data/constants/routeConstants';
 import {format, isBefore} from 'date-fns';
@@ -32,9 +32,10 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import PublicHeader from '../../Headers/PublicHeader';
 import {useFormik} from 'formik';
 import AlertMessage from 'src/components/Notification/AlertMessage';
-import {getBinaryImages, getOrderOptions} from 'src/data/utilities/systemUtilities';
+import {getBinaryImages, getCurrentCityName, getOrderOptions} from 'src/data/utilities/systemUtilities';
 import {useTranslation} from 'react-i18next';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
+import MapAutocomplete from 'src/components/GoogleMapAutocomplete/MapAutocomplete';
 
 
 const OrderForm: FC<OrderFormProps> = () => {
@@ -54,6 +55,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 	const [images, setImages] = useState<File[]>([]);
 	const [imageUrls, setImageUrls] = useState<string[]>([]);
 	const [openModalImg, setOpenModalImg] = useState<boolean>(false);
+	const [isGeoServiceAvailable, setIsGeoServiceAvailable] = useState<boolean>(false);
 
 	const isOpen = (value:boolean) => {
 		setAlertOptions({...alertOptions, notify: value});
@@ -69,6 +71,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 			orderTime: '',
 			masterId: '',
 			orderPhotos: [] as (string | ArrayBuffer | null)[],
+			orderAddress: null as string | null,
 		},
 		validate,
 		onSubmit: async (values) => {
@@ -92,6 +95,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 						startWorkOn: startDate,
 						endWorkOn: endDate,
 						orderPhotos: values.orderPhotos,
+						orderAddress: isGeoServiceAvailable ? values.orderAddress : null,
 					}).then((response) => {
 					setLoading(false);
 					setImages([]);
@@ -178,6 +182,19 @@ const OrderForm: FC<OrderFormProps> = () => {
 	}, [images]);
 
 
+	useEffect(() => {
+		const geoServiceChecking = () => {
+			if (cities.length && formik.values.cityId) {
+				const cityName = getCurrentCityName(cities, formik.values.cityId);
+
+				setIsGeoServiceAvailable(cityName === CITY_NAME.DNIPRO);
+			}
+		};
+
+		geoServiceChecking();
+	}, [formik.values.cityId]);
+
+
 	const handlePhotoUpload = (event) => {
 		if (event.currentTarget.files && event.currentTarget.files.length > 5) {
 			setImages([]);
@@ -209,6 +226,10 @@ const OrderForm: FC<OrderFormProps> = () => {
 		formik.values.orderPhotos = formik.values.orderPhotos.filter((elem, index) => position != index);
 		setImageUrls(imageUrls.filter((elem, index) => position != index));
 		setImages(images.filter((elem, index) => position != index));
+	};
+
+	const setOrderAddress = (address: string | null) => {
+		formik.values.orderAddress = address;
 	};
 
 	return (
@@ -346,6 +367,18 @@ const OrderForm: FC<OrderFormProps> = () => {
 									<FormHelperText> {formik.touched.cityId && formik.errors.cityId} </FormHelperText>
 								</FormControl>
 							</div>
+							{isGeoServiceAvailable && <div className={classes.form_sectionAddress}>
+								<div className={classes.form_input__label}>
+									<Typography
+										variant="h6"
+										gutterBottom
+										component="label"
+									>
+										{t('form.geoService')}
+									</Typography>
+								</div>
+								<MapAutocomplete setAddress={setOrderAddress}/>
+							</div>}
 							<div className={classes.form_section}>
 								<div className={classes.form_input__label}>
 									<Typography
@@ -565,14 +598,14 @@ const OrderForm: FC<OrderFormProps> = () => {
 								>
 									{t('buttons.create')}
 									{loading && <CircularProgress
-										size={56}
+										size={32}
 										color="success"
 										sx={{
 											position: 'absolute',
 											top: '50%',
 											left: '50%',
-											marginTop: '-28px',
-											marginLeft: '-28px',
+											marginTop: '-16px',
+											marginLeft: '-16px',
 										}}
 									/>}
 								</Button>

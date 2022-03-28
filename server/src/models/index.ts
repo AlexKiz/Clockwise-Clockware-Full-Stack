@@ -9,6 +9,7 @@ import Master from './Master';
 import MasterCities from './MasterCities';
 import Order from './Order';
 import User from './User';
+import Geo from './Geo';
 const env = process.env.MODE || 'development';
 const config = require('../config/dbconfig')[env];
 
@@ -24,6 +25,7 @@ const db: any = {
 	Order: Order(sequelize, Sequelize.DataTypes),
 	User: User(sequelize, Sequelize.DataTypes),
 	Blog: Blog(sequelize, Sequelize.DataTypes),
+	Geo: Geo(sequelize, Sequelize.DataTypes),
 };
 
 Object.keys(db).forEach((modelName) => {

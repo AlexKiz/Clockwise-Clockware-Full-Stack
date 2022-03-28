@@ -46,6 +46,7 @@ export interface OrderAttributes {
     isCompleted: boolean
     orderImages: string
     paymentDate: Date | string
+    orderAddress: string | null
 }
 
 export interface UserAttributes {
@@ -66,4 +67,11 @@ export interface BlogAttributes {
     background: string,
     description: string,
     body: string,
+}
+
+export interface GeoAttributes {
+    id: number,
+    cityId: number,
+    lat: number,
+    lng: number,
 }

@@ -28,6 +28,7 @@ export enum URL {
     ARTICLE = '/article',
     ARTICLE_FOR_UPDATE = '/articleForUpdate',
     IMAGE = '/image',
+    GEO_COORDINATES = '/geoCoordinates',
 }
 
 export enum RESOURCE {

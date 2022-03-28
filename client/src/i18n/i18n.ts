@@ -18,6 +18,7 @@ i18n.use(LanguageDetector)
 						date: 'Choose the date:',
 						time: 'Choose the time:',
 						master: 'Available masters:',
+						geoService: 'House call service(optional):',
 					},
 					login: {
 						userLogin: 'Enter User Login:',
@@ -43,6 +44,7 @@ i18n.use(LanguageDetector)
 						lastName: 'Last Name',
 						licenseTerm: '*Accept the license terms',
 						asMaster: 'Sign up as master',
+						address: 'Enter your address',
 					},
 					buttons: {
 						upload: 'Upload Photos',
@@ -69,6 +71,7 @@ i18n.use(LanguageDetector)
 						date: 'Выберите дату:',
 						time: 'Выберите время:',
 						master: 'Свободные мастера:',
+						geoService: 'Услуга вызова на дом(необязатено):',
 					},
 					login: {
 						userLogin: 'Введите логин:',
@@ -94,6 +97,7 @@ i18n.use(LanguageDetector)
 						lastName: 'Фамилия',
 						licenseTerm: '*Принять условия соглашения',
 						asMaster: 'Зарегистрироваться как мастер',
+						address: 'Введите свой адрес',
 					},
 					buttons: {
 						upload: 'Загрузить фото',
@@ -120,6 +124,7 @@ i18n.use(LanguageDetector)
 						date: 'Виберіть дату:',
 						time: 'Виберіть час:',
 						master: 'Вільні майстри:',
+						geoService: 'Послуга виклику додому(не обов\'язково):',
 					},
 					login: {
 						userLogin: 'Введіть логін:',
@@ -145,6 +150,7 @@ i18n.use(LanguageDetector)
 						lastName: 'Прізвище',
 						licenseTerm: '*Прийняти умови угоди',
 						asMaster: 'Зареєструватись як майстер',
+						address: 'Введіть свою адресу',
 					},
 					buttons: {
 						upload: 'Завантажити фото',

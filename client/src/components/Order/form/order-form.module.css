@@ -54,6 +54,11 @@ label, button {
     flex-wrap: wrap;
 }
 
+.form_sectionAddress{
+    width: 100%;
+    margin-bottom: 10px;
+}
+
 .form_btn {
     height: 65px;
     width: 70%;
