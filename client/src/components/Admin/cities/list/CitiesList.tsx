@@ -105,7 +105,7 @@ const CitiesList: FC<CitiesListProps> = () => {
 					notify: true,
 				});
 			}).catch((error) => {
-				if (error.message.includes('status code 405')) {
+				if (error.response.status === 405) {
 					setAlertOptions({
 						type: 'error',
 						message: 'City belongs to order and could not be deleted!',

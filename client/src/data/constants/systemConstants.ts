@@ -39,3 +39,7 @@ export enum SORTING_ORDER {
 	ASC = 'asc',
 	DESC = 'desc'
 }
+
+export enum CITY_NAME {
+	DNIPRO = 'Dnipro',
+}

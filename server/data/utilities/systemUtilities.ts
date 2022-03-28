@@ -78,6 +78,7 @@ const getAdminOrders = async (params: roleMappingOrderGetParams) => {
 			'isCompleted',
 			['orderImages', 'images'],
 			'paymentDate',
+			'orderAddress',
 		],
 		order: [[db.sequelize.col(`${params.sortedField}`), `${params.sortingOrder}`]],
 		include: [
@@ -121,6 +122,7 @@ const getMasterOrders = async (params: roleMappingOrderGetParams) => {
 			'isCompleted',
 			['orderImages', 'images'],
 			'paymentDate',
+			'orderAddress',
 		],
 		include: [
 			{
@@ -155,7 +157,15 @@ const getMasterOrders = async (params: roleMappingOrderGetParams) => {
 const getClientOrders = async (params: roleMappingOrderGetParams) => {
 	const orders = await db.Order.findAll({
 		order: [['startWorkOn', 'DESC']],
-		attributes: ['id', 'startWorkOn', 'endWorkOn', 'ratingIdentificator', 'isCompleted', 'orderRating'],
+		attributes: [
+			'id',
+			'startWorkOn',
+			'endWorkOn',
+			'ratingIdentificator',
+			'isCompleted',
+			'orderRating',
+			'orderAddress',
+		],
 		include: [
 			{
 				model: db.Clock,
@@ -194,7 +204,17 @@ export const postOrder = async (params: Stripe.Response<Stripe.Checkout.Session>
 		} = params;
 
 		if (metadata) {
-			const {name, email, clockId, cityId, masterId, startWorkOn, endWorkOn, orderImages} = metadata;
+			const {
+				name,
+				email,
+				clockId,
+				cityId,
+				masterId,
+				startWorkOn,
+				endWorkOn,
+				orderImages,
+				orderAddress,
+			} = metadata;
 			const generatedPassword = uuidv4();
 			const salt = bcrypt.genSaltSync(10);
 			const hashForVerification = bcrypt.hashSync(`${name}${email}`, salt);
@@ -227,6 +247,7 @@ export const postOrder = async (params: Stripe.Response<Stripe.Checkout.Session>
 				ratingIdentificator,
 				paymentDate,
 				orderImages,
+				orderAddress,
 			});
 
 			return order;

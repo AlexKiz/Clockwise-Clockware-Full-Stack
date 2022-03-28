@@ -1,4 +1,4 @@
-import {Clock} from './../types/types';
+import {Clock, City} from './../types/types';
 
 export const getOrderOptions = (clocks: Clock[], orderDate: string, orderTime:string, clockId: number) => {
 	const currentClock = clocks.filter((clock) => clock.id === clockId);
@@ -53,4 +53,14 @@ export const getBinaryFromBlob = async (blob: Blob) => {
 			resolve(reader.result);
 		};
 	});
+};
+
+
+export const getCurrentCityName = (cities: City[], id: number) => {
+	const chosenCity = cities.filter((elem) => id === elem.id);
+
+	if (chosenCity.length) {
+		const {name} = chosenCity[0];
+		return name;
+	}
 };

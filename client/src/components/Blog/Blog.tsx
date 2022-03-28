@@ -54,7 +54,7 @@ const Blog: FC<BlogProps> = () => {
 	return (
 		<div>
 			{localStorage.getItem(ACCESS_TOKEN) ? <PrivateHeader/> : <PublicHeader/>}
-			<div className={classes.conteiner}>
+			<div className={classes.container}>
 				<div className={classes.container_article}>
 					<Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '712px'}}>
 						<Stack direction="row" flexWrap='wrap' justifyContent='center'>

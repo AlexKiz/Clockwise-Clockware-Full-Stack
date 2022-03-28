@@ -16,6 +16,7 @@ export const createStripeCheckoutSession = async (req: Request, res: Response) =
 		orderPhotos,
 		clockSize,
 		price,
+		orderAddress,
 	} = req.body;
 
 	const stripe = new StripeService(<string>process.env.STRIPE_API_KEY, {
@@ -53,6 +54,7 @@ export const createStripeCheckoutSession = async (req: Request, res: Response) =
 			endWorkOn,
 			orderImages: orderImagesURL?.join(','),
 			price,
+			orderAddress,
 		},
 		mode: 'payment',
 		success_url: `${process.env.FRONT_MAIN_PAGE}/success`,

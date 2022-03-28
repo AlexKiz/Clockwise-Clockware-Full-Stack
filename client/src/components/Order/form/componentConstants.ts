@@ -11,6 +11,7 @@ export interface OrderFormValues {
 	orderTime: string
 	masterId: string
 	orderPhotos: (string | ArrayBuffer | null)[]
+	orderAddress: string | null
 }
 
 export type OrderFormValidation = {

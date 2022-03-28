@@ -38,6 +38,11 @@ export default (sequelize: any, DataTypes: any) => {
 				onDelete: 'CASCADE',
 				onUpdate: 'CASCADE',
 			});
+			City.hasMany(models.Geo, {
+				foreignKey: 'cityId',
+				onDelete: 'CASCADE',
+				onUpdate: 'CASCADE',
+			});
 		}
 	}
 

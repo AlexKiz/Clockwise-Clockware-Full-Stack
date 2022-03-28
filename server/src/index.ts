@@ -8,6 +8,7 @@ import userRouter from './routes/user.router';
 import login from './routes/auth.router';
 import adminRouter from './routes/admin.router';
 import blogRouter from './routes/blog.router';
+import geoRouter from './routes/geo.router';
 import cors from 'cors';
 import path from 'path';
 import {URL} from '../data/constants/routeConstants';
@@ -64,6 +65,7 @@ app.use(URL.API, userRouter);
 app.use(URL.API, adminRouter);
 app.use(URL.API, login);
 app.use(URL.API, blogRouter);
+app.use(URL.API, geoRouter);
 
 
 app.get('/*', function(req: Request, res: Response) {

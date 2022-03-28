@@ -40,6 +40,10 @@ export const ADMIN_MENU_LINKS = [{
 	title: 'Articles List',
 	path: '/admin/articles-list',
 	name: 'articles-list',
+}, {
+	title: 'Geo Service',
+	path: '/admin/geo-service',
+	name: 'geo-service',
 }];
 
 export const MASTER_MENU_LINKS = [{
