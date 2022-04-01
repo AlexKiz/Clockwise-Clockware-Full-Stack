@@ -180,6 +180,7 @@ const LoginForm:FC<LoginFormProps> = () => {
 									className={classes.form_btn}
 									style={ {fontSize: 18, borderRadius: 15} }
 									disabled={loading}
+									data-testid= 'login-submit-button'
 								>
 									{t('buttons.signIn')}
 									{loading && <CircularProgress

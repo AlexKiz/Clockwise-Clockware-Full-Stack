@@ -170,7 +170,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 						</TableHead>
 						<TableBody>
 							{orders.map((order) => (
-								<StyledTableRow key={order.id}>
+								<StyledTableRow data-testid='master-orders-list-row' key={order.id}>
 									<StyledTableCell component="th" scope="row" align="center"> {order.user.name} </StyledTableCell>
 									<StyledTableCell align="center"> {order.clock.size} </StyledTableCell>
 									<StyledTableCell align="center"> {order.city.name} </StyledTableCell>
@@ -188,6 +188,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 											onClick={() => {
 												handleOpenModalImg(order.images);
 											}}
+											data-testid='master-order-modal-images-button'
 										>
 											<ImageOutlinedIcon />
 										</Fab>
@@ -199,6 +200,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 											onClick={() =>
 												showOrderInfo(order.user.name, order.clock.price, order.paymentDate, order.orderAddress)
 											}
+											data-testid='master-order-modal-info-button'
 										>
 											<InfoOutlinedIcon/>
 										</Button>
@@ -210,6 +212,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 											color='success'
 											sx={{width: '100%', fontSize: 14, borderRadius: 15}}
 											onClick={() => completeOrder(order)}
+											data-testid='master-order-complete-button'
 										>
 											{order.isCompleted ? 'Done!' : 'Complete Order'}
 										</Button>
@@ -245,6 +248,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 										<Typography
 											variant='h3'
 											component='label'
+											data-testid='no-orders-label'
 										>
 											There are no orders yet!
 										</Typography>
@@ -270,7 +274,9 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 						border: '2px solid #000',
 						boxShadow: 24,
 						padding: '50px',
-					}}>
+					}}
+					data-testid='master-order-modal-images'
+					>
 						<div style={{position: 'relative', width: '100%'}}>
 							<HighlightOffIcon
 								fontSize='large'
@@ -313,6 +319,7 @@ const MasterOrdersList: FC<MasterOrdersListProps> = () => {
 				<Dialog
 					open={orderInfoOption.isInfoOpen}
 					onClose={hideOrderInfo}
+					data-testid='master-order-modal-info'
 				>
 					<Stack
 						direction="column"

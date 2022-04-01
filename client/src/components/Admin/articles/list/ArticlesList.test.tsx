@@ -1,10 +1,10 @@
 import React from 'react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import Blog from './Blog';
-import {cleanup, waitFor} from '@testing-library/react';
-import {URL} from '../../data/constants/routeConstants';
-import {renderWithRouter} from '../../data/constants/test-utilities';
+import ArticlesList from './ArticlesList';
+import {fireEvent, cleanup, waitFor} from '@testing-library/react';
+import {URL} from '../../../../data/constants/routeConstants';
+import {renderWithRouter} from '../../../../data/constants/test-utilities';
 
 const articles = [{
 	background: 'http://res.cloudinary.com/dplgyedon/image/upload/v1646413172/m2kybjtg5iezgcvdhy6k.jpg',
@@ -32,7 +32,7 @@ const articles = [{
 	updatedAt: '2022-03-30T14:15:18.790Z',
 }];
 
-describe('Blog', () => {
+describe('Article List', () => {
 	let mockAxios;
 
 	beforeEach(() => {
@@ -54,8 +54,8 @@ describe('Blog', () => {
 		mockAxios.onGet(URL.BLOG).reply(200, {count: articles.length, rows: articles});
 
 		const {asFragment} = renderWithRouter({
-			component: <Blog />,
-			path: '/blog',
+			component: <ArticlesList />,
+			path: '/admin/articles-list',
 		});
 
 		await waitFor(() => {
@@ -67,8 +67,8 @@ describe('Blog', () => {
 		mockAxios.onGet(URL.BLOG).reply(200, {count: 0, rows: []});
 
 		const {getByTestId} = renderWithRouter({
-			component: <Blog />,
-			path: '/blog',
+			component: <ArticlesList />,
+			path: '/admin/articles-list',
 		});
 
 		await waitFor(() => {
@@ -76,17 +76,28 @@ describe('Blog', () => {
 		});
 	});
 
-	it('should render component with fetched data', async () => {
+	it('should render component with data, delete article', async () => {
 		mockAxios.onGet(URL.BLOG).reply(200, {count: articles.length, rows: articles});
 		mockAxios.onDelete(URL.BLOG).reply(204);
 
-		const {getAllByTestId} = renderWithRouter({
-			component: <Blog />,
-			path: '/blog',
+		const {getAllByTestId, findAllByTestId} = renderWithRouter({
+			component: <ArticlesList />,
+			path: '/admin/articles-list',
 		});
 
 		await waitFor(() => {
 			expect(getAllByTestId('article-card').length).toBe(3);
+		});
+
+		const deleteButtons = await findAllByTestId('article-card-delete');
+		fireEvent.click(deleteButtons[0]);
+
+		await waitFor(() => {
+			expect(mockAxios.history.delete.length).toBe(1);
+			expect(mockAxios.history.delete[0].data).toBe(JSON.stringify({
+				id: 'd0ba340a-012f-43d6-8772-f55f27b513df',
+			}));
+			expect(getAllByTestId('article-card').length).toBe(2);
 		});
 	});
 });

@@ -198,6 +198,9 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 										value={formik.values.userId}
 										label="Size"
 										onBlur={formik.handleBlur}
+										inputProps={{
+											'data-testid': 'order-user-select',
+										}}
 										required
 									>
 										{
@@ -235,6 +238,9 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 										value={formik.values.clockId}
 										label="Size"
 										onBlur={formik.handleBlur}
+										inputProps={{
+											'data-testid': 'order-clock-select',
+										}}
 										required
 									>
 										{
@@ -272,6 +278,9 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 										value={formik.values.cityId}
 										label="City"
 										onBlur={formik.handleBlur}
+										inputProps={{
+											'data-testid': 'order-city-select',
+										}}
 										required
 									>
 										{
@@ -299,7 +308,10 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 									id="orderDate"
 									name='orderDate'
 									type='date'
-									InputProps={{inputProps: {min: format(new Date(), 'yyyy-MM-dd')}}}
+									InputProps={{inputProps: {
+										'min': format(new Date(), 'yyyy-MM-dd'),
+										'data-testid': 'order-date-input',
+									}}}
 									variant="outlined"
 									size="small"
 									margin="dense"
@@ -332,6 +344,9 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 										value={formik.values.orderTime}
 										label="Time"
 										onBlur={formik.handleBlur}
+										inputProps={{
+											'data-testid': 'order-time-select',
+										}}
 										required
 									>
 										{
@@ -372,6 +387,9 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 										value={formik.values.masterId}
 										label="Choose the master"
 										onBlur={formik.handleBlur}
+										inputProps={{
+											'data-testid': 'order-master-select',
+										}}
 										required
 									>
 										{
@@ -391,6 +409,7 @@ const OrderCreate: FC<OrderCreateProps> = () => {
 									type="submit"
 									className={classes.form_btn}
 									style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
+									data-testid='order-submit-button'
 								>
 									Submit
 								</Button>

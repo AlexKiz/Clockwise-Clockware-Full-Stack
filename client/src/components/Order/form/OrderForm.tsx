@@ -133,7 +133,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 
 	useEffect(() => {
 		const readAvailableMastersData = async () => {
-			if (clocks.length) {
+			if (clocks.length && formik.values.orderDate && formik.values.orderTime) {
 				const {
 					startDate,
 					endDate,
@@ -315,7 +315,6 @@ const OrderForm: FC<OrderFormProps> = () => {
 										id='clockId'
 										name='clockId'
 										labelId="clockId"
-										displayEmpty
 										onChange={formik.handleChange}
 										value={formik.values.clockId || ''}
 										label={t('labels.size')}
@@ -606,6 +605,7 @@ const OrderForm: FC<OrderFormProps> = () => {
 							</Modal>
 							<div className={classes.form_section}>
 								<Button
+									data-testid='order-submit-button'
 									variant="contained"
 									type="submit"
 									color='success'

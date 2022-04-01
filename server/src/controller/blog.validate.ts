@@ -47,7 +47,7 @@ export const putArticleValidate = async (req: Request, res: Response, next: Next
 	}
 
 	if (description.length > 170) {
-		console.log(1);
+
 		validationErrors.push('Description length more than allowed');
 	}
 

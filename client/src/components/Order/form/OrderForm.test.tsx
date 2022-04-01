@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import React from 'react';
 import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import OrderForm from './OrderForm';
-import {fireEvent, act} from '@testing-library/react';
+import {fireEvent, cleanup, waitFor} from '@testing-library/react';
 import {URL} from '../../../data/constants/routeConstants';
-import {renderWithRouter, rerenderWrapper} from '../../../data/constants/test-utilities';
+import {renderWithRouter} from '../../../data/constants/test-utilities';
 
 const cityForOrder = [{
 	id: 1,
@@ -47,106 +49,123 @@ const availableMasters = [{
 	rating: 5,
 }];
 
-describe('Order Form Component', () => {
-	beforeAll(async () => {
+describe('Order Form', () => {
+	let mockAxios;
+
+	beforeEach(() => {
+		mockAxios = new MockAdapter(axios);
 		jest.mock('react-router-dom', () => ({
 			...jest.requireActual('react-router-dom'),
 			useLocation: () => ({
 				pathname: '/',
 			}),
 		}));
+		jest.mock('react-i18next', () => ({
+			useTranslation: () => {
+				return {
+					t: (str) => str,
+					i18n: {
+						changeLanguage: () => new Promise(() => {}),
+					},
+				};
+			},
+		}));
+		mockAxios.onGet(URL.CITY_FOR_ORDER).reply(200, cityForOrder);
+		mockAxios.onGet(URL.CLOCK).reply(200, clocks);
+		mockAxios.onGet(URL.AVAILABLE_MASTER).reply(200, availableMasters);
+		mockAxios.onPost(URL.STRIPE).reply(201, 'https://www.google.com.ua/');
+	});
 
-		jest.mock('axios');
+	afterEach(() => {
+		mockAxios.reset();
+		cleanup();
 	});
 
 
-	it('matches snapshot', () => {
+	it('matches snapshot', async () => {
 		const {asFragment} = renderWithRouter({
 			component: <OrderForm />,
 			path: '/',
 		});
 
-		expect(asFragment()).toMatchSnapshot();
+		await waitFor(() => {
+			expect(asFragment()).toMatchSnapshot();
+		});
 	});
 
-	it('shows input with empty value', () => {
+	it('should render component with empty values', async () => {
 		const {getByTestId} = renderWithRouter({
 			component: <OrderForm />,
 			path: '/',
 		});
-		expect((getByTestId('user-name-input') as HTMLInputElement).value).toBe('');
-		expect((getByTestId('user-email-input') as HTMLInputElement).value).toBe('');
-		expect((getByTestId('clock-size-select') as HTMLInputElement).value).toBe('');
-		expect((getByTestId('order-city-select') as HTMLInputElement).value).toBe('');
-		expect((getByTestId('order-date-input') as HTMLInputElement).value).toBe('');
-		expect((getByTestId('order-time-select') as HTMLInputElement).value).toBe('');
-		expect((getByTestId('order-master-select') as HTMLInputElement).value).toBe('');
+
+		await waitFor(() => {
+			expect((getByTestId('user-name-input') as HTMLInputElement).value).toBe('');
+			expect((getByTestId('user-email-input') as HTMLInputElement).value).toBe('');
+			expect((getByTestId('clock-size-select') as HTMLInputElement).value).toBe('');
+			expect((getByTestId('order-city-select') as HTMLInputElement).value).toBe('');
+			expect((getByTestId('order-date-input') as HTMLInputElement).value).toBe('');
+			expect((getByTestId('order-time-select') as HTMLInputElement).value).toBe('');
+			expect((getByTestId('order-master-select') as HTMLInputElement).value).toBe('');
+		});
 	});
 
-	it('triggers event handlers on inputs and selects', async () => {
-		const {getByTestId, rerender} = await renderWithRouter({
+	it('should triggers event handlers on UI elements, post order on submit', async () => {
+		const {getByTestId, findByText, getByLabelText} = renderWithRouter({
 			component: <OrderForm />,
 			path: '/',
-			exact: true,
 		});
 
-		axios.mockImplementation(async (url) => {
-			switch (url) {
-			case URL.CITY_FOR_ORDER:
-				return Promise.resolve({
-					status: 200,
-					data: cityForOrder,
-				});
-
-			case URL.CLOCK:
-				return Promise.resolve({
-					status: 200,
-					data: clocks,
-				});
-
-			case URL.AVAILABLE_MASTER:
-				return Promise.resolve({
-					status: 200,
-					data: availableMasters,
-				});
-			}
+		fireEvent.change(getByTestId('user-name-input'), {
+			target: {value: 'Test Name'},
 		});
-		act(() => {
-			fireEvent.change(getByTestId('user-name-input'), {
-				target: {value: 'Test Name'},
-			});
-			fireEvent.change(getByTestId('user-email-input'), {
-				target: {value: 'testEmail@gmail.com'},
-			});
-			fireEvent.change(getByTestId('clock-size-select'), {
-				target: {value: 'Small'},
-			});
-			fireEvent.change(getByTestId('order-city-select'), {
-				target: {value: 'Dnipro'},
-			});
-			fireEvent.change(getByTestId('order-date-input'), {
-				target: {value: '2024-03-23T00:00:00.000Z'},
-			});
-			fireEvent.change(getByTestId('order-time-select'), {
-				target: {value: '09:00'},
-			});
-			fireEvent.change(getByTestId('order-master-select'), {
-				target: {value: 'Some Master'},
-			});
+		fireEvent.change(getByTestId('user-email-input'), {
+			target: {value: 'testEmail@gmail.com'},
 		});
 
-		await rerender(rerenderWrapper({
-			component: <OrderForm/>,
-			path: '/',
-			exact: true,
-		}));
+		fireEvent.mouseDown(getByLabelText('Size'));
+		const choosenClockOption = await findByText('Small');
+		fireEvent.click(choosenClockOption);
 
-		expect((getByTestId('user-name-input') as HTMLInputElement).value).toBe('Test Name');
-		expect((getByTestId('user-email-input') as HTMLInputElement).value).toBe('testEmail@gmail.com');
-		// expect((getByTestId('clock-size-select') as HTMLInputElement).value).toBe('Small');
-		// expect((getByTestId('order-city-select') as HTMLInputElement).value).toBe('Dnipro');
-		expect((getByTestId('order-date-input') as HTMLInputElement).value).toBe('2024-03-23T00:00:00.000Z');
-		expect((getByTestId('order-time-select') as HTMLInputElement).value).toBe('09:00');
-		expect((getByTestId('order-time-input') as HTMLInputElement).value).toBe('Some Master');
+		fireEvent.mouseDown(getByLabelText('City'));
+		const choosenCityOption = await findByText('Odessa');
+		fireEvent.click(choosenCityOption);
+
+		fireEvent.change(getByTestId('order-date-input'), {
+			target: {value: '2024-03-23'},
+		});
+		fireEvent.change(getByTestId('order-time-select'), {
+			target: {value: '09:00'},
+		});
+
+		fireEvent.mouseDown(getByLabelText('Choose the master'));
+		const choosenMasterOption = await findByText(/Valera/i);
+		fireEvent.click(choosenMasterOption);
+
+		fireEvent.click(getByTestId('order-submit-button'));
+
+		await waitFor(() => {
+			expect((getByTestId('user-name-input') as HTMLInputElement).value).toBe('Test Name');
+			expect((getByTestId('user-email-input') as HTMLInputElement).value).toBe('testEmail@gmail.com');
+			expect((getByTestId('clock-size-select') as HTMLInputElement).value).toBe('1');
+			expect((getByTestId('order-city-select') as HTMLInputElement).value).toBe('3');
+			expect((getByTestId('order-date-input') as HTMLInputElement).value).toBe('2024-03-23');
+			expect((getByTestId('order-time-select') as HTMLInputElement).value).toBe('09:00');
+			expect((getByTestId('order-master-select') as HTMLInputElement).value).toBe('dce55acd-b552-458b-85b5-785e821b336c');
+			expect(mockAxios.history.post.length).toBe(1);
+			expect(mockAxios.history.post[0].data).toBe(JSON.stringify({
+				name: 'Test Name',
+				email: 'testEmail@gmail.com',
+				clockId: 1,
+				clockSize: 'Small',
+				price: 1,
+				cityId: 3,
+				masterId: 'dce55acd-b552-458b-85b5-785e821b336c',
+				startWorkOn: '2024-03-23T09:00:00.000Z',
+				endWorkOn: '2024-03-23T10:00:00.000Z',
+				orderPhotos: [],
+				orderAddress: null,
+			}));
+		});
 	});
 });

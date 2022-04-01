@@ -333,7 +333,10 @@ const Registration:FC<RegistrationProps> = () => {
 											onChange={formik.handleChange}
 											value={formik.values.citiesId}
 											onBlur={formik.handleBlur}
-											input={<OutlinedInput label="Cities" data-testid='registration-cities-select'/>}
+											inputProps={{
+												'data-testid': 'registration-cities-select',
+											}}
+											input={<OutlinedInput label="Cities"/>}
 											MenuProps={{
 												sx: {
 													'&& .Mui-selected': {

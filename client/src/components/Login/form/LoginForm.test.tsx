@@ -1,21 +1,44 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import React from 'react';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import LoginForm from './LoginForm';
-import {act, cleanup, fireEvent} from '@testing-library/react';
-import {renderWithRouter, rerenderWrapper} from '../../../data/constants/test-utilities';
+import {cleanup, fireEvent, waitFor} from '@testing-library/react';
+import {URL} from '../../../data/constants/routeConstants';
+import {renderWithRouter} from '../../../data/constants/test-utilities';
 
-describe('Login Form Component', () => {
+describe('Login Form', () => {
+	let mockAxios;
+
 	beforeEach(() => {
+		mockAxios = new MockAdapter(axios);
+		jest.mock('react-router-dom', () => ({
+			...jest.requireActual('react-router-dom'),
+			useLocation: () => ({
+				pathname: '/login',
+			}),
+			useHistory: () => ({
+				push: jest.fn(),
+			}),
+		}));
+		jest.mock('react-i18next', () => ({
+			useTranslation: () => {
+				return {
+					t: (str) => str,
+					i18n: {
+						changeLanguage: () => new Promise(() => {}),
+					},
+				};
+			},
+		}));
+		mockAxios.onPost(URL.LOGIN).reply(200);
+	});
+
+	afterEach(() => {
+		mockAxios.reset();
 		cleanup();
 	});
-	jest.mock('react-router-dom', () => ({
-		...jest.requireActual('react-router-dom'),
-		useHistory: () => ({
-			push: jest.fn(),
-		}),
-		useLocation: () => ({
-			pathname: '/login',
-		}),
-	}));
+
 
 	it('matches snapshot', () => {
 		const {asFragment} = renderWithRouter({
@@ -36,27 +59,28 @@ describe('Login Form Component', () => {
 		expect((getByTestId('login-password-input') as HTMLInputElement).value).toBe('');
 	});
 
-	it('triggers event handlers on inputs', () => {
-		const {getByTestId, rerender} = renderWithRouter({
+	it('triggers event handlers on UI elements, post order on submit', async () => {
+		const {getByTestId} = renderWithRouter({
 			component: <LoginForm />,
 			path: '/login',
 		});
 
-		act(() => {
-			fireEvent.change(getByTestId('login-email-input'), {
-				target: {value: 'testLogin@gmail.com'},
-			});
-			fireEvent.change(getByTestId('login-password-input'), {
-				target: {value: 'TestPassword1!'},
-			});
+		fireEvent.change(getByTestId('login-email-input'), {
+			target: {value: 'testLogin@gmail.com'},
+		});
+		fireEvent.change(getByTestId('login-password-input'), {
+			target: {value: 'TestPassword1!'},
+		});
+		fireEvent.click(getByTestId('login-submit-button'));
 
-			rerender(rerenderWrapper({
-				component: <LoginForm />,
-				path: '/login',
+		await waitFor(() => {
+			expect((getByTestId('login-email-input') as HTMLInputElement).value).toBe('testLogin@gmail.com');
+			expect((getByTestId('login-password-input') as HTMLInputElement).value).toBe('TestPassword1!');
+			expect(mockAxios.history.post.length).toBe(1);
+			expect(mockAxios.history.post[0].data).toBe(JSON.stringify({
+				login: 'testLogin@gmail.com',
+				password: 'TestPassword1!',
 			}));
 		});
-
-		expect((getByTestId('login-email-input') as HTMLInputElement).value).toBe('testLogin@gmail.com');
-		expect((getByTestId('login-password-input') as HTMLInputElement).value).toBe('TestPassword1!');
 	});
 });

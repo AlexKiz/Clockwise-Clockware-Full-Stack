@@ -83,6 +83,7 @@ const Calendar: FC<CalendarProps> = () => {
 							handleModalOpen();
 							setCalendarEvent(orderOptions);
 						}}
+						data-testid='master-calendar-component'
 					/>
 				</Paper>
 				<Modal

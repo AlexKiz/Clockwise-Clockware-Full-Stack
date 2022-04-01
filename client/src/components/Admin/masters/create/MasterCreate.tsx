@@ -96,23 +96,20 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 
 	useEffect(() => {
 		const readCitiesData = async () => {
-			const {data} = await axios.get<City[]>(URL.CITY);
-
-			if (data.length) {
-				setCities(data);
-			}
+			await axios.get<City[]>(URL.CITY).then((response) => {
+				setCities(response.data);
+			});
 		};
 
 		readCitiesData();
 	}, []);
-
 
 	return (
 		<div>
 			<PrivateHeader/>
 			<div className={classes.container_form}>
 
-				<form className={classes.form} onSubmit = {formik.handleSubmit}>
+				<form className={classes.form} onSubmit={formik.handleSubmit}>
 
 					<Stack direction="column" justifyContent="center" spacing={1.5}>
 						<div className={classes.form_section}>
@@ -139,6 +136,9 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 								onBlur={formik.handleBlur}
 								error={formik.touched.name && Boolean(formik.errors.name)}
 								helperText={formik.touched.name && formik.errors.name}
+								inputProps={{
+									'data-testid': 'master-name-input',
+								}}
 								required
 							/>
 						</div>
@@ -168,6 +168,9 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
 									input={<OutlinedInput notched={Boolean(formik.values.citiesId.length)} label="Cities" />}
+									inputProps={{
+										'data-testid': 'master-cities-select',
+									}}
 									MenuProps={{
 										sx: {
 											'&& .Mui-selected': {
@@ -195,6 +198,7 @@ const MasterCreate: FC<MasterCreateProps> = () => {
 								type="submit"
 								className={classes.form_btn}
 								style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
+								data-testid='master-form-submit'
 							>
 								Submit
 							</Button>

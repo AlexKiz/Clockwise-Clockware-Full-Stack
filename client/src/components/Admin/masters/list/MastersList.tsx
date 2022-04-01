@@ -219,7 +219,7 @@ const MastersList: FC<MasterListProps> = () => {
 						</TableHead>
 						<TableBody>
 							{masters.map((master) => (
-								<StyledTableRow key={master.id}>
+								<StyledTableRow data-testid='masters-list-row' key={master.id}>
 									<StyledTableCell component="th" scope="row"> {master.id.slice(0, 4)} </StyledTableCell>
 									<StyledTableCell align="center"> {master.name} </StyledTableCell>
 									<StyledTableCell align="center">
@@ -244,6 +244,7 @@ const MastersList: FC<MasterListProps> = () => {
 											onClick={() => {
 												onDelete(master.id);
 											}}
+											data-testid='delete-list-button'
 										>
 											Delete
 										</Button>
@@ -259,6 +260,7 @@ const MastersList: FC<MasterListProps> = () => {
 										<Typography
 											variant='h3'
 											component='label'
+											data-testid='no-masters-label'
 										>
 											{loading ? 'Loading...' : 'There are no data matching the fetch!'}
 										</Typography>

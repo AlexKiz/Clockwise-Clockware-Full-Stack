@@ -173,6 +173,9 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 							onChange={(e) => {
 								setTitle(e.target.value);
 							}}
+							inputProps={{
+								'data-testid': 'article-title-input',
+							}}
 							required
 						/>
 						<Typography
@@ -190,7 +193,7 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 							size="small"
 							margin="dense"
 							multiline
-							inputProps={{maxlength: 170}}
+							inputProps={{'maxlength': 170, 'data-testid': 'article-description-input'}}
 							fullWidth
 							value={description}
 							onChange={(e) => {
@@ -291,6 +294,7 @@ const ArticleCreate: FC<ArticleCreateProps> = () => {
 								sx={{width: '50%'}}
 								disabled={!articleTitle && Boolean(!title || !description || !articlePhotoPreview || !content)}
 								onClick={handleSubmitArticle}
+								data-testid='article-form-submit'
 							>
 								Sumbit
 							</Button>

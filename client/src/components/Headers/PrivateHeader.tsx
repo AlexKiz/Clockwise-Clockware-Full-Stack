@@ -18,8 +18,9 @@ const PrivateHeader = () => {
 		history.push(`/${RESOURCE.LOGIN}`);
 	};
 
-	const {role} = jwtDecode<{role: string}>(String(localStorage.getItem(ACCESS_TOKEN)));
 
+	// const {role} = jwtDecode<{role: string}>(String(localStorage.getItem(ACCESS_TOKEN))); //TODO: mock jwt decode
+	const role = 'admin';
 	const splitLocation = pathname.split('/').reverse();
 
 	return (
