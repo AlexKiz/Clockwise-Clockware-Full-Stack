@@ -252,9 +252,13 @@ const Statistics: FC<StatisticsProps> = () => {
 										}}
 										renderInput={(startProps, endProps) => (
 											<>
-												<TextField {...startProps} sx={{width: 250}} />
+												<TextField {...startProps} inputProps={{
+													'data-testid': 'total-chart-start-date-input',
+												}} sx={{width: 250}} />
 												<Box sx={{mx: 2}}> - </Box>
-												<TextField {...endProps} sx={{width: 250}} />
+												<TextField {...endProps} inputProps={{
+													'data-testid': 'total-chart-end-date-input',
+												}} sx={{width: 250}} />
 											</>
 										)}
 									/>
@@ -272,6 +276,9 @@ const Statistics: FC<StatisticsProps> = () => {
 												const {target: {value}} = citiesIdEvent;
 												setCitiesId([...value]);
 												setMastersId([]);
+											}}
+											inputProps={{
+												'data-testid': 'total-chart-cities-select',
 											}}
 											input={<OutlinedInput label="Cities" />}
 											MenuProps={{
@@ -306,6 +313,9 @@ const Statistics: FC<StatisticsProps> = () => {
 												const {target: {value}} = mastersIdEvent;
 												setMastersId([...value]);
 												setCitiesId([]);
+											}}
+											inputProps={{
+												'data-testid': 'total-chart-masters-select',
 											}}
 											input={<OutlinedInput label="Masters" />}
 											MenuProps={{
@@ -375,9 +385,13 @@ const Statistics: FC<StatisticsProps> = () => {
 											}}
 											renderInput={(startProps, endProps) => (
 												<>
-													<TextField {...startProps} sx={{width: 350}} />
+													<TextField {...startProps} inputProps={{
+														'data-testid': 'cities-chart-start-date-input',
+													}} sx={{width: 350}} />
 													<Box sx={{mx: 2}}> - </Box>
-													<TextField {...endProps} sx={{width: 350}} />
+													<TextField {...endProps} inputProps={{
+														'data-testid': 'cities-chart-end-date-input',
+													}} sx={{width: 350}} />
 												</>
 											)}
 										/>
@@ -412,9 +426,13 @@ const Statistics: FC<StatisticsProps> = () => {
 											}}
 											renderInput={(startProps, endProps) => (
 												<>
-													<TextField {...startProps} sx={{width: 350}} />
+													<TextField {...startProps} inputProps={{
+														'data-testid': 'masters-chart-start-date-input',
+													}} sx={{width: 350}} />
 													<Box sx={{mx: 2}}> - </Box>
-													<TextField {...endProps} sx={{width: 350}} />
+													<TextField {...endProps} inputProps={{
+														'data-testid': 'masters-chart-end-date-input',
+													}} sx={{width: 350}} />
 												</>
 											)}
 										/>
@@ -574,7 +592,7 @@ const Statistics: FC<StatisticsProps> = () => {
 								</TableHead>
 								<TableBody>
 									{mastersStatisticsData.map((master) => (
-										<StyledTableRow key={master.id}>
+										<StyledTableRow data-testid='statistics-table-row' key={master.id}>
 											<StyledTableCell component="th" scope="row" align="center">
 												{master.name}
 											</StyledTableCell>

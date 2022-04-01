@@ -27,7 +27,7 @@
         "linebreak-style": ["error", "unix"],
         "indent": ["error", "tab"],
         "no-tabs": ["error", { "allowIndentationTabs": true }],
-        "max-len": ["error", { "code": 120 }],
+        "max-len": ["error", { "code": 140 }],
         "new-cap": ["error", { "properties": false, "capIsNew": false }]
     }
 }

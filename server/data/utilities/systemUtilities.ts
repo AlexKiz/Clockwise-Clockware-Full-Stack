@@ -197,13 +197,9 @@ export const rolesMappingGetOrders: any = {
 	'client': getClientOrders,
 };
 
-export const postOrder = async (params: Stripe.Response<Stripe.Checkout.Session>) => {
+export const postOrder = async (params: Stripe.Metadata | null) => {
 	try {
-		const {
-			metadata,
-		} = params;
-
-		if (metadata) {
+		if (params) {
 			const {
 				name,
 				email,
@@ -214,7 +210,7 @@ export const postOrder = async (params: Stripe.Response<Stripe.Checkout.Session>
 				endWorkOn,
 				orderImages,
 				orderAddress,
-			} = metadata;
+			} = params;
 			const generatedPassword = uuidv4();
 			const salt = bcrypt.genSaltSync(10);
 			const hashForVerification = bcrypt.hashSync(`${name}${email}`, salt);

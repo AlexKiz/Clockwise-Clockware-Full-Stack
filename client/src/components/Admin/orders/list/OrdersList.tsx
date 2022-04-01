@@ -351,6 +351,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 							pt: 3,
 							pb: 3,
 						}}
+						data-testid='filters-list'
 						style={{backgroundColor: '#a3a29b'}}
 					>
 						<Stack
@@ -375,7 +376,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 								}}
 								sx={{width: 200}}
 								renderInput={(params) =>
-									<TextField {...params}
+									<TextField {...params} inputProps={{'data-testid': 'master-filter'}}
 										label="Sort on master name"
 									/>}
 							/>
@@ -395,7 +396,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 								}}
 								sx={{width: 200}}
 								renderInput={(params) =>
-									<TextField {...params}
+									<TextField {...params} inputProps={{'data-testid': 'city-filter'}}
 										label="Sort on city name"
 									/>}
 							/>
@@ -415,7 +416,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 								}}
 								sx={{width: 200}}
 								renderInput={(params) =>
-									<TextField {...params}
+									<TextField {...params} inputProps={{'data-testid': 'clock-filter'}}
 										label="Sort on clock size"
 									/>}
 							/>
@@ -428,6 +429,10 @@ const OrdersList: FC<OrdersListProps> = () => {
 											dispatch(setIsFiltersButtonsDisabled(false, isFiltersButtonsDisabled.reset));
 										}}
 										checked={Boolean(isCompletedFilter)}
+										inputProps={{
+											// @ts-ignore
+											'data-testid': 'isCompleted-filter',
+										}}
 									/>
 								}
 								label="Completed orders"
@@ -445,9 +450,13 @@ const OrdersList: FC<OrdersListProps> = () => {
 									}}
 									renderInput={(startProps, endProps) => (
 										<>
-											<TextField {...startProps} sx={{width: 150}} />
+											<TextField {...startProps} inputProps={{
+												'data-testid': 'start-date-filter',
+											}} sx={{width: 150}} />
 											<Box sx={{mx: 2}}> - </Box>
-											<TextField {...endProps} sx={{width: 150}}/>
+											<TextField {...endProps} inputProps={{
+												'data-testid': 'end-date-filter',
+											}} sx={{width: 150}}/>
 										</>
 									)}
 								/>
@@ -624,6 +633,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 										color='inherit'
 										aria-label='filterButton'
 										onClick={handleFilterList}
+										data-testid='order-list-filter-button'
 									>
 										<FilterList />
 									</IconButton>
@@ -632,7 +642,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 						</TableHead>
 						<TableBody>
 							{orders.map((order) => (
-								<StyledTableRow key={order.id}>
+								<StyledTableRow data-testid='orders-list-row' key={order.id}>
 									<StyledTableCell component="th" scope="row"> {order.id.slice(0, 4)} </StyledTableCell>
 									<StyledTableCell align="center"> {order.clock.size} </StyledTableCell>
 									<StyledTableCell align="center"> {order.user.name} </StyledTableCell>
@@ -652,6 +662,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 											onClick={() => {
 												handleOpenModalImg(order.images);
 											}}
+											data-testid='order-modal-images-button'
 										>
 											<ImageOutlinedIcon />
 										</Fab>
@@ -663,6 +674,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 											onClick={() =>
 												showOrderInfo(order.user.name, order.clock.price, order.paymentDate, order.orderAddress)
 											}
+											data-testid='order-modal-info-button'
 										>
 											<InfoOutlinedIcon/>
 										</Button>
@@ -695,6 +707,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 											onClick={() => {
 												onDelete(order.id);
 											}}
+											data-testid='delete-list-button'
 										>
 											Delete
 										</Button>
@@ -710,6 +723,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 										<Typography
 											variant='h3'
 											component='label'
+											data-testid='no-orders-label'
 										>
 											{loading ? 'Loading...' : 'There are no data matching the fetch!'}
 										</Typography>
@@ -796,7 +810,9 @@ const OrdersList: FC<OrdersListProps> = () => {
 						border: '2px solid #000',
 						boxShadow: 24,
 						padding: '50px',
-					}}>
+					}}
+					data-testid='order-modal-images'
+					>
 						<div style={{position: 'relative', width: '100%'}}>
 							<HighlightOffIcon
 								fontSize='large'
@@ -839,6 +855,7 @@ const OrdersList: FC<OrdersListProps> = () => {
 				<Dialog
 					open={infoOptions.isInfoOpen}
 					onClose={hideOrderInfo}
+					data-testid='order-modal-info'
 				>
 					<Stack
 						direction="column"

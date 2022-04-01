@@ -133,6 +133,9 @@ const LoginForm:FC<LoginFormProps> = () => {
 									error={formik.touched.login && Boolean(formik.errors.login)}
 									helperText={formik.touched.login && formik.errors.login}
 									required
+									inputProps={{
+										'data-testid': 'login-email-input',
+									}}
 								/>
 							</div>
 							<div className={classes.form_section}>
@@ -163,6 +166,9 @@ const LoginForm:FC<LoginFormProps> = () => {
 												</IconButton>
 											</InputAdornment>
 										}
+										inputProps={{
+											'data-testid': 'login-password-input',
+										}}
 									/>
 								</FormControl>
 							</div>
@@ -174,6 +180,7 @@ const LoginForm:FC<LoginFormProps> = () => {
 									className={classes.form_btn}
 									style={ {fontSize: 18, borderRadius: 15} }
 									disabled={loading}
+									data-testid= 'login-submit-button'
 								>
 									{t('buttons.signIn')}
 									{loading && <CircularProgress

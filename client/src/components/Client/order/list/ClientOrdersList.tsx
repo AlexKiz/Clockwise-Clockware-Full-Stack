@@ -78,7 +78,7 @@ const ClientOrdersList: FC<ClientOrdersListProps> = () => {
 						</TableHead>
 						<TableBody>
 							{orders.map((order) => (
-								<StyledTableRow key={order.id}>
+								<StyledTableRow data-testid='orders-list-row' key={order.id}>
 									<StyledTableCell
 										component="th"
 										scope="row"
@@ -113,6 +113,7 @@ const ClientOrdersList: FC<ClientOrdersListProps> = () => {
 										<Typography
 											variant='h3'
 											component='label'
+											data-testid='no-orders-label'
 										>
 											There are no orders yet!
 										</Typography>

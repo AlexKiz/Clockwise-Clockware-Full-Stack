@@ -13,7 +13,7 @@ import {
 	Typography,
 } from '@mui/material';
 import AlertMessage from 'src/components/Notification/AlertMessage';
-import PrivateHeader from '../../../Headers/PublicHeader';
+import PrivateHeader from '../../../Headers/PrivateHeader';
 
 
 const CityCreate: FC<CityCreateProps> = () => {
@@ -26,7 +26,7 @@ const CityCreate: FC<CityCreateProps> = () => {
 		type: 'success',
 		message: '',
 	});
-
+	const [city, setCity] = useState<City>({} as City);
 
 	const isOpen = (value:boolean) => {
 		setAlertOptions({...alertOptions, notify: value});
@@ -54,7 +54,7 @@ const CityCreate: FC<CityCreateProps> = () => {
 				});
 			} else {
 				await axios.put<City>(URL.CITY, {
-					id: values.id,
+					id: city?.id,
 					name: values.name,
 				}).then(() => {
 					setAlertOptions({message: 'City has been updated', type: 'success', notify: true});
@@ -70,25 +70,24 @@ const CityCreate: FC<CityCreateProps> = () => {
 
 	useEffect(() => {
 		const readCityForUpdate = async () => {
-			const {data} = await axios.get<City>(URL.CITY_FOR_UPDATE, {
+			await axios.get<City>(URL.CITY_FOR_UPDATE, {
 				params: {
 					name: cityNameParam,
 				},
+			}).then((response) => {
+				setCity(response.data);
 			});
-
-			formik.values.id = data.id;
 		};
 
 		readCityForUpdate();
 	}, []);
-
 
 	return (
 		<div>
 			<PrivateHeader/>
 			<div className={classes.container_form}>
 
-				<form className={classes.form} onSubmit = {formik.handleSubmit}>
+				<form className={classes.form} onSubmit={formik.handleSubmit}>
 
 					<Stack direction="column" justifyContent="center" spacing={1.5}>
 						<div className={classes.form_section}>
@@ -115,6 +114,9 @@ const CityCreate: FC<CityCreateProps> = () => {
 								onBlur={formik.handleBlur}
 								error={formik.touched.name && Boolean(formik.errors.name)}
 								helperText={formik.touched.name && formik.errors.name}
+								inputProps={{
+									'data-testid': 'city-name-input',
+								}}
 								required
 							/>
 						</div>
@@ -125,6 +127,7 @@ const CityCreate: FC<CityCreateProps> = () => {
 								type="submit"
 								className={classes.form_btn}
 								style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
+								data-testid='city-form-submit'
 							>
 								Submit
 							</Button>

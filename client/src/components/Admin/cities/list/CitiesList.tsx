@@ -197,7 +197,7 @@ const CitiesList: FC<CitiesListProps> = () => {
 						</TableHead>
 						<TableBody>
 							{cities.map((city) => (
-								<StyledTableRow key={city.id}>
+								<StyledTableRow data-testid='cities-list-row' key={city.id}>
 									<StyledTableCell component="th" scope="row">{city.id}</StyledTableCell>
 									<StyledTableCell align="center"> {city.name} </StyledTableCell>
 									<StyledTableCell align="center">
@@ -216,6 +216,7 @@ const CitiesList: FC<CitiesListProps> = () => {
 											onClick={() => {
 												onDelete(city.id);
 											}}
+											data-testid='delete-list-button'
 										>
 											Delete
 										</Button>
@@ -231,6 +232,7 @@ const CitiesList: FC<CitiesListProps> = () => {
 										<Typography
 											variant='h3'
 											component='label'
+											data-testid='no-cities-label'
 										>
 											{loading ? 'Loading...' : 'There are no data matching the fetch!'}
 										</Typography>

@@ -85,6 +85,9 @@ const UserCreate: FC<UserCreateProps> = () => {
 								onBlur={formik.handleBlur}
 								error={formik.touched.name && Boolean(formik.errors.name)}
 								helperText={formik.touched.name && formik.errors.name}
+								inputProps={{
+									'data-testid': 'user-name-input',
+								}}
 								required
 							/>
 						</div>
@@ -112,6 +115,9 @@ const UserCreate: FC<UserCreateProps> = () => {
 								onBlur={formik.handleBlur}
 								error={formik.touched.email && Boolean(formik.errors.email)}
 								helperText={formik.touched.email && formik.errors.email}
+								inputProps={{
+									'data-testid': 'user-email-input',
+								}}
 								required
 							/>
 						</div>
@@ -121,6 +127,7 @@ const UserCreate: FC<UserCreateProps> = () => {
 								type="submit"
 								className={classes.form_btn}
 								style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
+								data-testid='user-form-submit'
 							>
 								Submit
 							</Button>

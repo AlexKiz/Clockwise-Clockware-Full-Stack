@@ -170,6 +170,7 @@ const RateOrder: FC<RateOrderProps> = () => {
 									type="submit"
 									className={classes.form_btn}
 									style={ {fontSize: 18, backgroundColor: 'green', borderRadius: 15} }
+									data-testid='order-rate-submit'
 								>
 										Rate order
 								</Button>

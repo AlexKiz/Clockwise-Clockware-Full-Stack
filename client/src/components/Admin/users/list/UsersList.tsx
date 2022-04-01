@@ -207,7 +207,7 @@ const UserList: FC<UserListProps> = () => {
 						</TableHead>
 						<TableBody>
 							{users.map((user) => (
-								<StyledTableRow key={user.id}>
+								<StyledTableRow data-testid='users-list-row' key={user.id}>
 									<StyledTableCell component="th" scope="row"> {user.id.slice(0, 4)} </StyledTableCell>
 									<StyledTableCell align="center"> {user.name} </StyledTableCell>
 									<StyledTableCell align="center"> {user.email} </StyledTableCell>
@@ -227,6 +227,7 @@ const UserList: FC<UserListProps> = () => {
 											onClick={() => {
 												onDelete(user.id);
 											}}
+											data-testid='delete-list-button'
 										>
 											Delete
 										</Button>
@@ -242,6 +243,7 @@ const UserList: FC<UserListProps> = () => {
 										<Typography
 											variant='h3'
 											component='label'
+											data-testid='no-users-label'
 										>
 											{loading ? 'Loading...' : 'There are no data matching the fetch!'}
 										</Typography>

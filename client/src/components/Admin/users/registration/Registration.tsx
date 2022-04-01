@@ -144,6 +144,9 @@ const Registration:FC<RegistrationProps> = () => {
 									error={formik.touched.email && Boolean(formik.errors.email)}
 									helperText={formik.touched.email && formik.errors.email}
 									required
+									inputProps={{
+										'data-testid': 'registration-email-input',
+									}}
 								/>
 							</div>
 							<div className={classes.form_section}>
@@ -177,6 +180,9 @@ const Registration:FC<RegistrationProps> = () => {
 												</IconButton>
 											</InputAdornment>
 										}
+										inputProps={{
+											'data-testid': 'registration-password-input',
+										}}
 									/>
 									<FormHelperText error> {formik.touched.password && formik.errors.password} </FormHelperText>
 								</FormControl>
@@ -201,6 +207,9 @@ const Registration:FC<RegistrationProps> = () => {
 												</IconButton>
 											</InputAdornment>
 										}
+										inputProps={{
+											'data-testid': 'registration-repeatPassword-input',
+										}}
 									/>
 									<FormHelperText error> {formik.touched.checkPassword && formik.errors.checkPassword} </FormHelperText>
 								</FormControl>
@@ -230,6 +239,9 @@ const Registration:FC<RegistrationProps> = () => {
 									error={formik.touched.firstName && Boolean(formik.errors.firstName)}
 									helperText={formik.touched.firstName && formik.errors.firstName}
 									required
+									inputProps={{
+										'data-testid': 'registration-firstName-input',
+									}}
 								/>
 								<TextField
 									id="lastName"
@@ -246,6 +258,9 @@ const Registration:FC<RegistrationProps> = () => {
 									error={formik.touched.lastName && Boolean(formik.errors.lastName)}
 									helperText={formik.touched.lastName && formik.errors.lastName}
 									required
+									inputProps={{
+										'data-testid': 'registration-lastName-input',
+									}}
 								/>
 							</div>
 							<div className={classes.form_section}>
@@ -263,6 +278,10 @@ const Registration:FC<RegistrationProps> = () => {
 													onChange={formik.handleChange('licenseAcception')}
 													checked={formik.values.licenseAcception}
 													required
+													inputProps={{
+														// @ts-ignore
+														'data-testid': 'registration-license-checkbox',
+													}}
 												/>
 											}
 											label={String(t('labels.licenseTerm'))}
@@ -273,6 +292,10 @@ const Registration:FC<RegistrationProps> = () => {
 													onChange={formik.handleChange('isMaster')}
 													checked={formik.values.isMaster}
 													value=''
+													inputProps={{
+														// @ts-ignore
+														'data-testid': 'registration-isMaster-checkbox',
+													}}
 												/>
 											}
 											label={String(t('labels.asMaster'))}
@@ -310,7 +333,10 @@ const Registration:FC<RegistrationProps> = () => {
 											onChange={formik.handleChange}
 											value={formik.values.citiesId}
 											onBlur={formik.handleBlur}
-											input={<OutlinedInput label="Cities" />}
+											inputProps={{
+												'data-testid': 'registration-cities-select',
+											}}
+											input={<OutlinedInput label="Cities"/>}
 											MenuProps={{
 												sx: {
 													'&& .Mui-selected': {

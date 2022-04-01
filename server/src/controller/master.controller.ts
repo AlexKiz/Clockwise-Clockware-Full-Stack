@@ -120,7 +120,7 @@ export const getAvailableMasters = async (req: Request, res: Response) => {
 			});
 		}
 
-		const bookedMastersId = bookedMasters.map((master: { masterId: number; }) => master.masterId);
+		const bookedMastersId = bookedMasters.map((master: { masterId: string; }) => master.masterId);
 
 		const availableMasters = await db.Master.findAll({
 			where: {

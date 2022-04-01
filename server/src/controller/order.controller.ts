@@ -2,66 +2,15 @@ import {FONTS} from './../../data/constants/systemConstants';
 import {QUERY_PARAMS} from './../../data/constants/routeConstants';
 import {filtersOptions, rolesMappingGetOrders, createReceiptBody} from './../../data/utilities/systemUtilities';
 import {Response, Request} from 'express';
-import {sendMail, sendAutoRegistrationMail} from '../services/nodemailer';
-import {v4 as uuidv4} from 'uuid';
+import {sendMail} from '../services/nodemailer';
 import db from '../models';
 import {BearerParser} from 'bearer-token-parser';
-import bcrypt from 'bcrypt';
-import {CloudinaryService} from './../services/cloudinary';
 import {Op} from 'sequelize';
 import dotenv from 'dotenv';
 import XLSX from 'xlsx';
 import stream from 'stream';
 import PdfPrinter from 'pdfmake';
 dotenv.config();
-
-
-export const postOrder = async (req: Request, res: Response) => {
-	try {
-		const {name, email, clockId, cityId, masterId, startWorkOn, endWorkOn, orderPhotos} = req.body;
-
-		const generatedPassword = uuidv4();
-		const salt = bcrypt.genSaltSync(10);
-		const hashForVerification = bcrypt.hashSync(`${name}${email}`, salt);
-		const hashVerify = hashForVerification.replace(/\//g, 'i');
-
-		const [user, isUserCreated] = await db.User.findOrCreate({
-			where: {email},
-			defaults: {name, email, password: generatedPassword, role: 'client', hashVerify},
-		});
-
-		if (isUserCreated) {
-			await sendAutoRegistrationMail(email, hashVerify, generatedPassword);
-		}
-
-		const {id: userId} = user;
-
-		const ratingIdentificator = uuidv4();
-
-		const cloudinary = new CloudinaryService({
-			cloud_name: process.env.CLOUD_NAME,
-			api_key: process.env.CLOUD_API_KEY,
-			api_secret: process.env.CLOUD_API_SECRET,
-		});
-
-		const orderImagesURL = await cloudinary.uploadPhotos(orderPhotos);
-
-		const order = await db.Order.create({
-			clockId,
-			userId,
-			cityId,
-			masterId,
-			startWorkOn,
-			endWorkOn,
-			ratingIdentificator,
-			orderImages: orderImagesURL?.join(','),
-		});
-
-		res.status(201).json(order);
-	} catch (error) {
-		res.status(500).send();
-	}
-};
 
 
 export const getOrders = async (req: Request, res: Response) => {
@@ -609,7 +558,6 @@ export const completeOrder = async (req: Request, res: Response) => {
 			sendMail(clientEmail, ratingIdentificator, result, masterName, id);
 		});
 		pdfDoc.end();
-
 
 		res.status(200).json(order);
 	} catch (e) {

@@ -59,7 +59,7 @@ const Blog: FC<BlogProps> = () => {
 					<Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '712px'}}>
 						<Stack direction="row" flexWrap='wrap' justifyContent='center'>
 							{articles?.length ? articles.map((article) => (
-								<Card sx={{width: 300, m: 1}} key={article.id}>
+								<Card sx={{width: 300, m: 1}} data-testid='article-card' key={article.id}>
 									<CardMedia
 										component="img"
 										height={220}
@@ -92,6 +92,7 @@ const Blog: FC<BlogProps> = () => {
 								<Typography
 									variant='h3'
 									component='label'
+									data-testid='no-articles-label'
 								>
 									{loading ? 'Loading...' : 'There are no articles!'}
 								</Typography>
